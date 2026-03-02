@@ -1,0 +1,87 @@
+import {useIsMobile} from "~/hooks/useIsMobile";
+import {Badge} from "~/components/ui/badge";
+import {AddToCartButton} from "~/components/product/AddToCartButton";
+import {BuyNowButton} from "~/components/product/BuyNowButton";
+import type {SellingPlanFragment} from "~/components/product/SellingPlanSelector";
+
+type ProductMobileStickyButtonsProps = {
+    product: any;
+    selectedVariant: any;
+    selectedSellingPlan?: SellingPlanFragment | null;
+    quantity: number;
+    onQuantityChange: (qty: number) => void;
+    isVariantTransitioning?: boolean;
+};
+
+const formatMoney = (amount: number, currencyCode: string) => {
+    return new Intl.NumberFormat("en-US", {style: "currency", currency: currencyCode}).format(amount);
+};
+
+export const ProductMobileStickyButtons = ({
+    product,
+    selectedVariant,
+    selectedSellingPlan,
+    quantity,
+    isVariantTransitioning = false
+}: ProductMobileStickyButtonsProps) => {
+    const isMobile = useIsMobile();
+
+    const isPreorder =
+        product?.tags?.some((tag: string) => tag.toLowerCase() === "preorder" || tag.toLowerCase() === "pre-order") ??
+        false;
+
+    if (!isMobile || !selectedVariant?.price) return null;
+
+    const unitPrice = parseFloat(selectedVariant.price.amount);
+    const currencyCode = selectedVariant.price.currencyCode || "USD";
+    const totalPrice = unitPrice * quantity;
+
+    const unitComparePrice = selectedVariant.compareAtPrice?.amount
+        ? parseFloat(selectedVariant.compareAtPrice.amount)
+        : null;
+    const totalComparePrice = unitComparePrice ? unitComparePrice * quantity : null;
+
+    const isOnSale = totalComparePrice !== null && totalComparePrice > totalPrice;
+    const savingsPercentage = isOnSale ? Math.round(((totalComparePrice - totalPrice) / totalComparePrice) * 100) : 0;
+
+    const lines = [
+        {
+            merchandiseId: selectedVariant.id,
+            quantity,
+            selectedVariant,
+            sellingPlanId: selectedSellingPlan?.id
+        }
+    ];
+    const isDisabled = !selectedVariant || isVariantTransitioning;
+
+    return (
+        <div className="fixed right-0 bottom-0 left-0 z-[45] lg:hidden" style={{transform: "translateZ(0)"}}>
+            <div className="bg-background/95 border-t shadow-lg backdrop-blur-md">
+                <div className="px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+                    <div className="mb-2.5 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="text-foreground font-mono text-lg font-bold">
+                                {formatMoney(totalPrice, currencyCode)}
+                            </span>
+                            {isOnSale && totalComparePrice && (
+                                <span className="text-muted-foreground font-mono text-sm line-through">
+                                    {formatMoney(totalComparePrice, currencyCode)}
+                                </span>
+                            )}
+                        </div>
+                        {isOnSale && savingsPercentage > 0 && (
+                            <Badge variant="secondary" className="border-emerald-200 bg-emerald-100 text-emerald-800">
+                                Save {savingsPercentage}%
+                            </Badge>
+                        )}
+                    </div>
+
+                    <div className={`grid ${isPreorder ? "grid-cols-1" : "grid-cols-2"} gap-3`}>
+                        <AddToCartButton lines={lines} disabled={isDisabled} isPreorder={isPreorder} />
+                        {!isPreorder && <BuyNowButton lines={lines} disabled={isDisabled} />}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

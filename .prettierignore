@@ -1,0 +1,10 @@
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Generated files
+*.generated.d.ts
+.react-router/
+dist/
+build/
+node_modules/

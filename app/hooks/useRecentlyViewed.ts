@@ -1,0 +1,232 @@
+import {useState, useEffect} from "react";
+
+export interface RecentlyViewedProduct {
+    id: string;
+    handle: string;
+    timestamp: number;
+    title: string;
+    imageUrl: string | null;
+    imageAlt: string | null;
+    price: string;
+    compareAtPrice?: string;
+}
+
+/** Legacy format from before data enrichment — only had id, handle, timestamp */
+interface LegacyRecentlyViewedProduct {
+    id: string;
+    handle: string;
+    timestamp: number;
+}
+
+export interface AddProductParams {
+    id: string;
+    handle: string;
+    title: string;
+    imageUrl: string | null;
+    imageAlt: string | null;
+    price: string;
+    compareAtPrice?: string;
+}
+
+interface RecentlyViewedConfig {
+    storageKey: string;
+    maxProducts: number;
+    expiryDays: number;
+}
+
+const DEFAULT_CONFIG: RecentlyViewedConfig = {
+    storageKey: "shopify-recently-viewed",
+    maxProducts: 16,
+    expiryDays: 30
+};
+
+const isBrowser = typeof window !== "undefined";
+
+function isLegacyProduct(product: any): product is LegacyRecentlyViewedProduct {
+    return product && typeof product.id === "string" && !("title" in product);
+}
+
+function isFullProduct(product: any): product is RecentlyViewedProduct {
+    return (
+        product &&
+        typeof product.id === "string" &&
+        product.id.length > 0 &&
+        typeof product.handle === "string" &&
+        product.handle.length > 0 &&
+        typeof product.timestamp === "number" &&
+        typeof product.title === "string" &&
+        typeof product.price === "string"
+    );
+}
+
+function loadFromStorage(config: RecentlyViewedConfig): RecentlyViewedProduct[] {
+    if (!isBrowser) return [];
+
+    try {
+        const stored = localStorage.getItem(config.storageKey);
+        if (stored) {
+            const parsed = JSON.parse(stored) as any[];
+            if (Array.isArray(parsed)) {
+                const expiryTime = config.expiryDays * 24 * 60 * 60 * 1000;
+                const now = Date.now();
+
+                // Filter out legacy entries (old format without title/price)
+                // and expired entries
+                return parsed.filter(
+                    (product): product is RecentlyViewedProduct =>
+                        !isLegacyProduct(product) &&
+                        isFullProduct(product) &&
+                        now - product.timestamp <= expiryTime
+                );
+            }
+        }
+    } catch {
+        // Silent fail
+    }
+    return [];
+}
+
+function persistToStorage(items: RecentlyViewedProduct[], config: RecentlyViewedConfig) {
+    if (!isBrowser) return;
+
+    try {
+        const dataToSave = JSON.stringify(items);
+        localStorage.setItem(config.storageKey, dataToSave);
+
+        const maxCookieSize = 3500;
+        const cookieData = dataToSave.length <= maxCookieSize ? dataToSave : JSON.stringify(items.slice(0, 6));
+
+        document.cookie = `${config.storageKey}=${encodeURIComponent(cookieData)}; path=/; max-age=${60 * 60 * 24 * config.expiryDays}; SameSite=Lax`;
+    } catch {
+        // Silent fail
+    }
+}
+
+export function useRecentlyViewed(config: RecentlyViewedConfig = DEFAULT_CONFIG) {
+    const [products, setProducts] = useState<RecentlyViewedProduct[]>([]);
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    useEffect(() => {
+        const stored = loadFromStorage(config);
+        setProducts(stored);
+        setIsHydrated(true);
+    }, [config]);
+
+    const addProduct = (params: AddProductParams) => {
+        if (!isBrowser || !params.id || !params.handle) return;
+
+        const currentProducts = loadFromStorage(config);
+        const now = Date.now();
+        const existingIndex = currentProducts.findIndex(p => p.id === params.id);
+
+        const productData: RecentlyViewedProduct = {
+            id: params.id,
+            handle: params.handle,
+            timestamp: now,
+            title: params.title,
+            imageUrl: params.imageUrl,
+            imageAlt: params.imageAlt,
+            price: params.price,
+            compareAtPrice: params.compareAtPrice
+        };
+
+        let newProducts: RecentlyViewedProduct[];
+
+        if (existingIndex !== -1) {
+            const updated = [...currentProducts];
+            updated.splice(existingIndex, 1);
+            newProducts = [productData, ...updated];
+        } else {
+            newProducts = [productData, ...currentProducts];
+
+            if (newProducts.length > config.maxProducts) {
+                newProducts = newProducts.slice(0, config.maxProducts);
+            }
+        }
+
+        persistToStorage(newProducts, config);
+        setProducts(newProducts);
+    };
+
+    const removeProduct = (id: string) => {
+        if (!isBrowser) return;
+
+        const currentProducts = loadFromStorage(config);
+        const newProducts = currentProducts.filter(p => p.id !== id);
+        persistToStorage(newProducts, config);
+        setProducts(newProducts);
+    };
+
+    const clear = () => {
+        if (!isBrowser) return;
+
+        setProducts([]);
+        persistToStorage([], config);
+        document.cookie = `${config.storageKey}=; path=/; max-age=0`;
+    };
+
+    const hasProduct = (id: string) => products.some(p => p.id === id);
+
+    return {
+        products,
+        productIds: products.map(p => p.id),
+        productHandles: products.map(p => p.handle),
+        count: products.length,
+        hasProducts: products.length > 0,
+        isHydrated,
+        addProduct,
+        removeProduct,
+        clear,
+        hasProduct
+    };
+}
+
+export function parseRecentlyViewedFromCookie(
+    cookieHeader: string | null,
+    config: RecentlyViewedConfig = DEFAULT_CONFIG
+): RecentlyViewedProduct[] {
+    if (!cookieHeader) return [];
+
+    try {
+        const cookies = cookieHeader.split(";").reduce(
+            (acc, cookie) => {
+                const [key, value] = cookie.trim().split("=");
+                if (key && value) {
+                    acc[key] = decodeURIComponent(value);
+                }
+                return acc;
+            },
+            {} as Record<string, string>
+        );
+
+        const recentlyViewedData = cookies[config.storageKey];
+        if (!recentlyViewedData) return [];
+
+        const parsed = JSON.parse(recentlyViewedData) as any[];
+        if (!Array.isArray(parsed)) return [];
+
+        const now = Date.now();
+        const expiryTime = config.expiryDays * 24 * 60 * 60 * 1000;
+
+        return parsed
+            .filter(
+                (item): item is RecentlyViewedProduct =>
+                    item != null &&
+                    typeof item === "object" &&
+                    !isLegacyProduct(item) &&
+                    isFullProduct(item) &&
+                    now - item.timestamp < expiryTime
+            )
+            .slice(0, 10);
+    } catch {
+        return [];
+    }
+}
+
+export function getRecentlyViewedIds(
+    cookieHeader: string | null,
+    config: RecentlyViewedConfig = DEFAULT_CONFIG
+): string[] {
+    const products = parseRecentlyViewedFromCookie(cookieHeader, config);
+    return products.map(p => p.id);
+}

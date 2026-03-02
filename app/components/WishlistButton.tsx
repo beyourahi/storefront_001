@@ -1,0 +1,84 @@
+import {useState} from "react";
+import {useWishlist} from "~/lib/wishlist-context";
+import {HiHeart, HiOutlineHeart} from "react-icons/hi";
+import {cva, type VariantProps} from "class-variance-authority";
+import {cn} from "~/lib/utils";
+
+const wishlistButtonVariants = cva(
+    "inline-flex items-center justify-center rounded-full transition-all duration-150 hover:scale-110 active:scale-95",
+    {
+        variants: {
+            size: {
+                sm: "h-8 w-8 p-1",
+                md: "h-10 w-10 p-2",
+                lg: "h-12 w-12 p-2.5"
+            }
+        },
+        defaultVariants: {
+            size: "md"
+        }
+    }
+);
+
+interface WishlistButtonProps
+    extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof wishlistButtonVariants> {
+    productId: string;
+    showLabel?: boolean;
+    className?: string;
+}
+
+export const WishlistButton = ({productId, size, showLabel = false, className, ...props}: WishlistButtonProps) => {
+    const {isWishlisted, toggleItem} = useWishlist();
+    const [isAnimating, setIsAnimating] = useState(false);
+
+    const wishlisted = isWishlisted(productId);
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        toggleItem(productId);
+
+        setIsAnimating(true);
+        setTimeout(() => setIsAnimating(false), 300);
+    };
+
+    const label = wishlisted ? "Remove from wishlist" : "Add to wishlist";
+
+    return (
+        <button
+            type="button"
+            onClick={handleClick}
+            className={cn(wishlistButtonVariants({size}), className)}
+            aria-label={label}
+            aria-pressed={wishlisted}
+            title={label}
+            {...props}
+        >
+            <span className={cn("transition-transform duration-300", isAnimating && "scale-125")}>
+                {wishlisted ? (
+                    <HiHeart
+                        className={cn(
+                            "transition-colors duration-150",
+                            size === "sm" && "h-5 w-5",
+                            size === "md" && "h-6 w-6",
+                            size === "lg" && "h-7 w-7",
+                            "fill-red-500 text-red-500"
+                        )}
+                    />
+                ) : (
+                    <HiOutlineHeart
+                        className={cn(
+                            "transition-colors duration-150",
+                            size === "sm" && "h-5 w-5",
+                            size === "md" && "h-6 w-6",
+                            size === "lg" && "h-7 w-7",
+                            "text-gray-400 hover:text-gray-600"
+                        )}
+                    />
+                )}
+            </span>
+            {showLabel && <span className="ml-2 text-sm font-medium">{wishlisted ? "Saved" : "Save"}</span>}
+        </button>
+    );
+};

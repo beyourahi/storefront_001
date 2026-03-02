@@ -1,0 +1,779 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "lenis/dist/lenis.css";
+@import "./view-transitions.css";
+/*---break---
+ */
+
+:root {
+    /* ── Base Colors (neutral: overridden at runtime by theme engine) ── */
+    --background: oklch(1 0 0);
+    --foreground: oklch(0 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0 0 0);
+    --primary: oklch(0 0 0);
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(1 0 0);
+    --secondary-foreground: oklch(0 0 0);
+    --muted: oklch(1 0 0);
+    --muted-foreground: oklch(0 0 0);
+    --accent: oklch(0 0 0);
+    --accent-foreground: oklch(1 0 0);
+    --destructive: oklch(0.55 0.2 25);
+    --destructive-foreground: oklch(1 0 0);
+    --border: oklch(0 0 0);
+    --input: oklch(0 0 0);
+    --ring: oklch(0 0 0);
+
+    /* ── Hero Overlay Tokens (used by contact.tsx) ── */
+    --hero-overlay-mobile: oklch(0 0 0 / 0.5);
+    --hero-overlay-desktop: oklch(0 0 0 / 0.6);
+    --hero-text-primary: oklch(1 0 0);
+    --hero-text-secondary: oklch(1 0 0 / 0.9);
+
+    /* ── Typography ── */
+    --font-sans: Inter, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: Inter, ui-sans-serif, sans-serif, system-ui;
+    --font-mono: Inter, ui-sans-serif, sans-serif, system-ui;
+
+    /* ── Radius ── */
+    --radius: 0.5rem;
+
+    /* ── Shadows - brand-tinted shadow color derived from primary hue ── */
+    /* Shadow color is overridden at runtime by generateThemeCssVariables()  */
+    /* Pure black for the default monochromatic theme */
+    --shadow-color: oklch(0 0 0);
+    --shadow-2xs: 0.125rem 0.125rem 0 0 oklch(from var(--shadow-color) l c h / 0.06);
+    --shadow-xs: 0.125rem 0.125rem 0 0 oklch(from var(--shadow-color) l c h / 0.06);
+    --shadow-sm:
+        0.125rem 0.125rem 0 0 oklch(from var(--shadow-color) l c h / 0.11),
+        0.125rem 0.0625rem 0.125rem -0.0625rem oklch(from var(--shadow-color) l c h / 0.11);
+    --shadow:
+        0.125rem 0.125rem 0 0 oklch(from var(--shadow-color) l c h / 0.11),
+        0.125rem 0.0625rem 0.125rem -0.0625rem oklch(from var(--shadow-color) l c h / 0.11);
+    --shadow-md:
+        0.125rem 0.125rem 0 0 oklch(from var(--shadow-color) l c h / 0.11),
+        0.125rem 0.125rem 0.25rem -0.0625rem oklch(from var(--shadow-color) l c h / 0.11);
+    --shadow-lg:
+        0.125rem 0.125rem 0 0 oklch(from var(--shadow-color) l c h / 0.11),
+        0.125rem 0.25rem 0.375rem -0.0625rem oklch(from var(--shadow-color) l c h / 0.11);
+    --shadow-xl:
+        0.125rem 0.125rem 0 0 oklch(from var(--shadow-color) l c h / 0.11),
+        0.125rem 0.5rem 0.625rem -0.0625rem oklch(from var(--shadow-color) l c h / 0.11);
+    --shadow-2xl: 0.125rem 0.125rem 0 0 oklch(from var(--shadow-color) l c h / 0.28);
+
+    /* ── Layout ── */
+    --spacing: 0.25rem;
+    --container-padding: clamp(0.5rem, 0.75vw, 0.75rem);
+
+    /* ── Header Height Tracking System ── */
+    /* These variables are dynamically updated by useHeaderHeight hook */
+    --announcement-height: 0px; /* AnnouncementBanner (conditional) */
+    --navbar-height-mobile: 64px; /* Navbar mobile (h-16) */
+    --navbar-height-desktop: 80px; /* Navbar desktop (lg:h-20) */
+
+    /* Responsive navbar height (updates via media query) */
+    --navbar-height: var(--navbar-height-mobile);
+
+    /* Total header stack height (auto-calculated) */
+    --total-header-height: calc(var(--announcement-height) + var(--navbar-height));
+
+    /* ── Status Colors ── */
+    --success: oklch(0.72 0.17 142);
+    --success-foreground: oklch(1 0 0);
+    --success-on-dark: oklch(0.88 0.16 145);
+    --success-on-dark-foreground: oklch(0.25 0.08 142);
+    --warning: oklch(0.79 0.17 75);
+    --warning-foreground: oklch(0.25 0.02 60);
+    --info: oklch(0.63 0.18 245);
+    --info-foreground: oklch(1 0 0);
+
+    /* ── Overlay Colors ── */
+    --overlay-dark: oklch(0 0 0 / 0.3);
+    --overlay-light: oklch(1 0 0 / 0.1);
+    --overlay-light-hover: oklch(1 0 0 / 0.2);
+
+    /* ── Primary Button Active State ── */
+    --primary-active: oklch(0 0 0);
+
+    /* ── Wishlist Active Colors ── */
+    --wishlist-active: oklch(0.58 0.22 20);
+    --wishlist-active-foreground: oklch(1 0 0);
+    --wishlist-active-hover: oklch(0.52 0.22 20);
+
+    /* ── Discount Badge Colors ── */
+    --discount-bg: oklch(0.2 0.08 160 / 0.8);
+    --discount-icon-bg: oklch(0.27 0.1 160);
+    --discount-text: oklch(0.84 0.16 160);
+    --discount-shimmer-start: oklch(0.76 0.18 160);
+    --discount-shimmer-mid: oklch(0.95 0.05 160);
+
+    /* ── Sale Link Text Colors ── */
+    --sale-text: oklch(0.6 0.17 160);
+    --sale-text-hover: oklch(0.53 0.16 160);
+}
+
+/* Cart-only contrast remediation tokens */
+.cart-contrast-scope {
+    --destructive: oklch(0.5783 0.2 25);
+    --destructive-foreground: oklch(0.98 0.002 0);
+    --border: oklch(0.6545 0.004 264);
+    --input: oklch(0.6545 0.004 264);
+    --cart-warning-bg: oklch(0.93 0.05 80);
+    --cart-warning-fg: oklch(0.3 0.08 70);
+    --cart-warning-icon: oklch(0.42 0.12 72);
+    --cart-success-bg: oklch(0.508 0.154 160);
+    --cart-success-fg: oklch(0.98 0.002 0);
+    --cart-success-icon: oklch(0.508 0.154 160);
+    --cart-discount-bg: oklch(0.508 0.154 160);
+    --cart-discount-fg: oklch(0.98 0.002 0);
+    --cart-discount-border: oklch(0.43 0.13 160);
+    --cart-remove-bg: oklch(0.94 0.03 25);
+    --cart-remove-bg-hover: oklch(0.9 0.05 25);
+    --cart-remove-fg: oklch(0.49 0.16 25);
+}
+
+.cart-overlay {
+    background: oklch(0 0 0 / 0.45);
+    backdrop-filter: blur(12px);
+}
+
+/* Desktop navbar height override */
+@media (min-width: 1024px) {
+    :root {
+        --navbar-height: var(--navbar-height-desktop);
+    }
+}
+
+/* ============================================================================
+   Announcement Banner Animation
+   ============================================================================
+
+   Seamless infinite scroll using the translateX(-50%) technique.
+
+   The scrolling container holds two identical halves (Set A + Set B). When
+   Set A scrolls fully off-screen to the left (translateX(-50%)), Set B is
+   in the exact starting position — the browser loops back to 0% with zero
+   visual discontinuity.
+
+   Duration is set dynamically via inline --announcement-scroll-duration custom property,
+   calculated in AnnouncementBanner.tsx based on content width and responsive scroll speed.
+*/
+@keyframes announcement-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Default duration fallback for SSR/pre-hydration. Overridden by inline style once JS measures content. */
+:root {
+    --announcement-scroll-duration: 20s;
+}
+
+@theme inline {
+    /* Animation utilities */
+    --animate-announcement-scroll: announcement-scroll var(--announcement-scroll-duration) linear infinite;
+
+    /* Base colors */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    /* Hero colors */
+    --color-hero-overlay-mobile: var(--hero-overlay-mobile);
+    --color-hero-overlay-desktop: var(--hero-overlay-desktop);
+    --color-hero-text-primary: var(--hero-text-primary);
+    --color-hero-text-secondary: var(--hero-text-secondary);
+
+    /* Status colors */
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-success-on-dark: var(--success-on-dark);
+    --color-success-on-dark-foreground: var(--success-on-dark-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-info: var(--info);
+    --color-info-foreground: var(--info-foreground);
+
+    /* Overlay colors */
+    --color-overlay-dark: var(--overlay-dark);
+    --color-overlay-light: var(--overlay-light);
+    --color-overlay-light-hover: var(--overlay-light-hover);
+
+    /* Primary button interaction */
+    --color-primary-active: var(--primary-active);
+
+    /* Wishlist toggle colors */
+    --color-wishlist-active: var(--wishlist-active);
+    --color-wishlist-active-foreground: var(--wishlist-active-foreground);
+    --color-wishlist-active-hover: var(--wishlist-active-hover);
+
+    /* Discount badge colors */
+    --color-discount-bg: var(--discount-bg);
+    --color-discount-icon-bg: var(--discount-icon-bg);
+    --color-discount-text: var(--discount-text);
+    --color-discount-shimmer-start: var(--discount-shimmer-start);
+    --color-discount-shimmer-mid: var(--discount-shimmer-mid);
+
+    /* Sale link text colors */
+    --color-sale-text: var(--sale-text);
+    --color-sale-text-hover: var(--sale-text-hover);
+
+    /* Pure black/white utility colors */
+    --color-dark: oklch(0 0 0);
+    --color-light: oklch(1 0 0);
+
+    --font-sans: var(--font-sans);
+    --font-mono: var(--font-mono);
+    --font-serif: var(--font-serif);
+
+    --radius-sm: calc(var(--radius) - 0.25rem);
+    --radius-md: calc(var(--radius) - 0.125rem);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 0.25rem);
+
+    --shadow-2xs: var(--shadow-2xs);
+    --shadow-xs: var(--shadow-xs);
+    --shadow-sm: var(--shadow-sm);
+    --shadow: var(--shadow);
+    --shadow-md: var(--shadow-md);
+    --shadow-lg: var(--shadow-lg);
+    --shadow-xl: var(--shadow-xl);
+    --shadow-2xl: var(--shadow-2xl);
+
+    /* Z-Index Design System */
+    --z-base: 0;
+    --z-dropdown: 10;
+    --z-sticky: 20;
+    --z-navbar: 50;
+    --z-overlay: 100;
+    --z-modal: 101;
+    --z-nested-overlay: 102;
+    --z-nested-modal: 103;
+    --z-tooltip: 110;
+    --z-notification: 120;
+    --z-alert: 200;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    button:not(:disabled),
+    a[href],
+    [role="button"]:not([aria-disabled="true"]),
+    [onclick],
+    [data-slot="button"]:not([aria-disabled="true"]),
+    input[type="submit"]:not(:disabled),
+    input[type="button"]:not(:disabled),
+    input[type="checkbox"]:not(:disabled),
+    input[type="radio"]:not(:disabled),
+    select:not(:disabled),
+    [tabindex]:not([tabindex="-1"]):not(:disabled),
+    summary,
+    [data-state="closed"],
+    [data-state="open"] {
+        cursor: pointer;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="number"],
+    textarea {
+        cursor: text;
+    }
+
+    button:disabled,
+    input:disabled,
+    select:disabled,
+    textarea:disabled,
+    [aria-disabled="true"],
+    [data-disabled="true"],
+    .disabled,
+    .cursor-not-allowed {
+        cursor: not-allowed !important;
+    }
+
+    .cursor-wait,
+    [data-loading="true"] {
+        cursor: wait;
+    }
+
+    [draggable="true"] {
+        cursor: grab;
+    }
+
+    [draggable="true"]:active {
+        cursor: grabbing;
+    }
+
+    [title]:not(button):not(a),
+    abbr[title] {
+        cursor: help;
+    }
+
+    html {
+        font-feature-settings:
+            "kern" 1,
+            "liga" 1,
+            "calt" 1,
+            "pnum" 1,
+            "tnum" 0,
+            "onum" 1,
+            "lnum" 0,
+            "dlig" 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        font-display: swap;
+    }
+
+    body {
+        font-variation-settings: normal;
+        @apply bg-background text-foreground;
+    }
+
+    .font-serif {
+        font-display: swap;
+    }
+
+    .font-sans {
+        font-display: swap;
+    }
+
+    .font-mono {
+        font-display: swap;
+    }
+
+    .cta-enhanced {
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    @media (max-width: 768px) {
+        .cta-enhanced {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            min-height: 44px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .cta-enhanced:hover {
+            transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    }
+
+    .cta-primary-emphasis {
+        font-family: var(--font-sans);
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        line-height: 1.2;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    @media (max-width: 768px) {
+        .cta-primary-emphasis {
+            font-size: 1.125rem;
+            font-weight: 800;
+            letter-spacing: 0.075em;
+            min-height: 48px;
+            padding: 0.75rem 1.5rem;
+        }
+    }
+
+    .hero-title-fluid {
+        font-size: clamp(2rem, 1.5rem + 2.5vw, 4rem);
+        font-weight: 300;
+        font-family: var(--font-serif);
+        line-height: clamp(1.1, 1.05 + 0.25vw, 1.2);
+        letter-spacing: -0.02em;
+    }
+}
+
+.cool-underline {
+    @apply after:bg-primary hover:text-primary relative transform-gpu transition-all duration-300 ease-in-out after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2 after:transition-[width] after:duration-200 hover:after:w-[35%];
+}
+
+.cool-active-underline {
+    @apply text-primary after:bg-primary relative transform-gpu transition-all duration-300 ease-in-out after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-[35%] after:-translate-x-1/2 after:transition-[width] after:duration-200;
+}
+
+.group:hover {
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active {
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mobile-menu-enter {
+    animation: slide-down 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mobile-nav-link {
+    @apply relative transition-all duration-200 ease-out;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-link::before {
+    content: "";
+    @apply bg-accent/60 absolute inset-0 rounded-md opacity-0 transition-opacity duration-200;
+}
+
+.mobile-nav-link:active::before {
+    opacity: 1;
+}
+
+.mobile-search-bar .sleek {
+    height: 3rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-width: 1px;
+    border-radius: 0.5rem;
+}
+
+button,
+a,
+.card,
+.sleek,
+.group,
+[data-slot="button"],
+input:not([type="range"]),
+textarea,
+select {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0ms !important;
+        animation-duration: 0ms !important;
+    }
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}
+
+input {
+    border-radius: 0;
+}
+
+input[type="search"] {
+    -webkit-appearance: none;
+}
+
+iframe {
+    margin-bottom: 0 !important;
+}
+
+html.cart-drawer-open body,
+html.cart-sheet-open body {
+    overflow: hidden !important;
+    position: fixed !important;
+    top: calc(-1 * var(--scroll-y, 0px)) !important;
+    width: 100% !important;
+}
+
+.sleek {
+    @apply transform-gpu transition-all duration-300 ease-in-out;
+    will-change: transform, opacity;
+}
+
+.product-image,
+.product-card,
+video,
+.carousel {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.masonry-grid {
+    column-fill: balance;
+    column-gap: 0.5rem;
+}
+
+.masonry-grid > * {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+@media (min-width: 640px) {
+    .masonry-grid {
+        columns: 2;
+    }
+}
+
+@media (min-width: 1024px) {
+    .masonry-grid {
+        columns: 3;
+    }
+}
+
+@media (min-width: 1280px) {
+    .masonry-grid {
+        columns: 4;
+    }
+}
+
+@media (min-width: 1536px) {
+    .masonry-grid {
+        columns: 5;
+    }
+}
+
+/* Search loading dots — staggered pulse animation */
+.search-dot-1 {
+    animation-delay: 0ms;
+}
+.search-dot-2 {
+    animation-delay: 150ms;
+}
+.search-dot-3 {
+    animation-delay: 300ms;
+}
+
+*::-webkit-scrollbar {
+    @apply bg-background w-2;
+}
+
+*::-webkit-scrollbar-thumb {
+    @apply bg-primary rounded-lg;
+}
+
+*::-webkit-scrollbar-track {
+    @apply bg-background rounded-lg;
+}
+
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.animate-shimmer {
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+.article-content {
+    color: var(--color-foreground);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.article-content h2 {
+    @apply font-serif text-xl sm:text-2xl md:text-3xl font-normal leading-snug text-primary;
+    opacity: 1;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.article-content h3 {
+    @apply font-serif text-lg sm:text-xl md:text-2xl font-normal leading-snug text-primary;
+    opacity: 1;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.article-content h4 {
+    @apply font-serif text-base sm:text-lg md:text-xl font-normal text-primary;
+    opacity: 1;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.article-content p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+}
+
+.article-content > p:first-of-type {
+    @apply text-lg md:text-xl;
+    opacity: 0.7;
+    line-height: 1.7;
+}
+
+.article-content a {
+    @apply text-primary font-medium;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: all 0.2s ease;
+    word-break: break-all;
+    opacity: 1;
+}
+
+.article-content a:hover {
+    @apply text-primary/80;
+    text-decoration-thickness: 2px;
+}
+
+.article-content blockquote {
+    @apply italic text-muted-foreground;
+    margin: 2rem 0;
+    padding: 1.5rem 2rem;
+    border-left: 4px solid var(--color-primary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    opacity: 1;
+}
+
+.article-content blockquote p {
+    margin-bottom: 0;
+}
+
+.article-content ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.article-content ol {
+    list-style: decimal;
+    padding-left: 1.75rem;
+    margin: 1.5rem 0;
+}
+
+.article-content li {
+    margin-bottom: 0.5rem;
+}
+
+.article-content ul ul,
+.article-content ol ol,
+.article-content ul ol,
+.article-content ol ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.article-content img {
+    @apply h-auto w-full rounded-xl;
+    margin: 1.5rem 0 2rem;
+}
+
+.article-content code {
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm;
+    word-break: break-all;
+}
+
+.article-content pre {
+    @apply bg-muted p-3 md:p-4 rounded-xl overflow-x-auto text-sm md:text-base;
+    margin: 1.5rem 0 2rem;
+}
+
+.article-content pre code {
+    @apply bg-transparent p-0;
+    word-break: normal;
+}
+
+.article-content strong {
+    @apply text-foreground font-semibold;
+    opacity: 1;
+}
+
+.article-content em {
+    font-style: italic;
+}
+
+.article-content hr {
+    margin: 2.5rem 0;
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-border) 20%, var(--color-border) 80%, transparent);
+}
+
+.article-content table {
+    @apply w-full border-collapse;
+    margin: 1.5rem 0;
+}
+
+.article-content th {
+    @apply text-left font-semibold text-foreground border-b-2 border-border p-2;
+    opacity: 1;
+}
+
+.article-content td {
+    @apply text-left border-b border-border p-2;
+}
+
+.article-content tbody tr:hover {
+    @apply bg-muted/30;
+}

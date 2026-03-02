@@ -1,0 +1,38 @@
+node_modules
+
+# Output
+.output
+.vercel
+.netlify
+/build
+/dist
+
+# React Router
+.react-router/
+
+# Generated types
+*.generated.d.ts
+*.tsbuildinfo
+types.d.ts
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+.vite/
+
+.dev.vars*
+
+# VS Code
+.vscode
+
+.shopify
