@@ -374,6 +374,22 @@ SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID=your_client_id
 SESSION_SECRET=32_character_random_string  # Generate: openssl rand -base64 32
 ```
 
+### Fallback Demo Store (Cloudflare Workers, Local Dev, and Portfolio Showcase ONLY)
+
+> ⚠️ These credentials are for the **shared demo store** used during local development and when deployed to Cloudflare Workers for portfolio display. **NEVER use on Oxygen / client deployments.**
+
+```bash
+PUBLIC_STOREFRONT_API_TOKEN=586d8fd7c598fea7e1b97a8eff48ed49
+PUBLIC_STORE_DOMAIN=horcrux-demo-store.myshopify.com
+PUBLIC_CHECKOUT_DOMAIN=horcrux-demo-store.myshopify.com
+PRIVATE_STOREFRONT_API_TOKEN=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
+PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID=d59946cb-1d27-415f-bb8e-c8ea32ffb5eb
+PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopify.com/66049638586
+SHOP_ID=66049638586
+```
+
+Non-product content falls back to `fallback-data.ts` in `app/lib/`.
+
 ### Accessing in Code
 
 ```typescript
@@ -441,9 +457,21 @@ export async function loader({context}: Route.LoaderArgs) {
 
 ---
 
-## Deployment
+## Business Model & Deployment
 
-### Shopify Oxygen (Recommended)
+This storefront is a **commercial Shopify Hydrogen template** built to be sold to multiple client brands across different niches. The backend (Shopify Storefront API) is shared; only the frontend/UI differs per storefront.
+
+### Dual Deployment Targets
+
+| Target                             | Purpose                         | Data Source                               |
+| ---------------------------------- | ------------------------------- | ----------------------------------------- |
+| **Shopify Oxygen**                 | Client production deployments   | Client's own Shopify store (no fallback)  |
+| **Cloudflare Workers + local dev** | Portfolio showcase + dev server | Fallback demo store + `fallback-data.ts`  |
+
+- On **Oxygen**: NEVER use the fallback store or `fallback-data.ts` — all data comes from the client's Shopify store
+- On **Cloudflare Workers** and during **local development**: ALWAYS use the fallback demo store for products and `fallback-data.ts` for non-product content
+
+### Target 1: Shopify Oxygen (Client Production)
 
 ```bash
 bun run build  # Creates production build in dist/
@@ -453,11 +481,17 @@ bun run build  # Creates production build in dist/
 **Environment:** Cloudflare Workers (global edge)
 **URL:** `*.myshopify.com` or custom domain
 
-### Self-Hosted Cloudflare Workers
+> ❌ NEVER activate the fallback store or `fallback-data.ts` in Oxygen builds.
+
+### Target 2: Cloudflare Workers (Portfolio Showcase) + Local Development
 
 ```bash
 bunx wrangler deploy dist/worker/
 ```
+
+**Data:** Fallback demo Shopify store (see credentials in Environment Variables section) + `fallback-data.ts` for non-product content.
+
+> ✅ Activate the fallback data layer automatically (e.g. via `IS_PORTFOLIO_DEMO=true` env flag or absence of `PUBLIC_STORE_DOMAIN`). The same fallback data layer is active during local dev.
 
 ---
 
