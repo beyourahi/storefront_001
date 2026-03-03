@@ -307,6 +307,16 @@ export const parseSiteSettings = (data: any): SiteSettings => {
 
     return {
         brandName: data.brandName?.value || FALLBACK_SITE_SETTINGS.brandName,
+        brandLogo: (() => {
+            const ref = data.brandLogo?.reference;
+            if (!ref || ref.__typename !== "MediaImage" || !ref.image?.url) return null;
+            return {
+                url: ref.image.url as string,
+                altText: (ref.image.altText as string | null) ?? null,
+                width: (ref.image.width as number | null) ?? null,
+                height: (ref.image.height as number | null) ?? null
+            };
+        })(),
         brandWords: parseBrandWords(data.brandWords),
         missionStatement: data.missionStatement?.value || FALLBACK_SITE_SETTINGS.missionStatement,
 

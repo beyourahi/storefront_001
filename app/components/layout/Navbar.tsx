@@ -32,7 +32,7 @@ const NAVBAR_ICON_INTERACTION_CLASSES =
 export const Navbar = ({shopName, collections}: NavbarProps) => {
     const {pathname: currentPath} = useLocation();
     const data = useRouteLoaderData<RootLoader>("root");
-    const {brandName} = useSiteSettings();
+    const {brandName, brandLogo} = useSiteSettings();
     const displayBrandName = brandName?.trim() || shopName;
 
     const {open: openCart} = useCartDrawer();
@@ -114,9 +114,22 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                             to="/"
                             className="text-primary sleek flex items-center space-x-2 px-2 py-2 hover:opacity-80 md:px-4"
                         >
-                            <span className="font-serif text-base font-bold whitespace-nowrap uppercase lg:text-lg">
-                                {displayBrandName}
-                            </span>
+                            {brandLogo?.url ? (
+                                <img
+                                    src={brandLogo.url}
+                                    alt={brandLogo.altText ?? displayBrandName}
+                                    width={brandLogo.width ?? undefined}
+                                    height={brandLogo.height ?? undefined}
+                                    className="h-8 w-auto object-contain lg:h-10"
+                                    loading="eager"
+                                    fetchPriority="high"
+                                    decoding="async"
+                                />
+                            ) : (
+                                <span className="font-serif text-base font-bold whitespace-nowrap uppercase lg:text-lg">
+                                    {displayBrandName}
+                                </span>
+                            )}
                         </Link>
                     </div>
 

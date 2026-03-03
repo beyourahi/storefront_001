@@ -317,6 +317,12 @@ export interface WishlistContent {
 
 export interface SiteSettings {
     brandName: string;
+    brandLogo?: {
+        url: string;
+        altText?: string | null;
+        width?: number | null;
+        height?: number | null;
+    } | null;
     brandWords: string[];
     missionStatement: string;
     heroHeading: string;
@@ -814,6 +820,7 @@ export const FALLBACK_WISHLIST_CONTENT: WishlistContent = {
 
 export const FALLBACK_SITE_SETTINGS: SiteSettings = {
     brandName: "",
+    brandLogo: null,
     brandWords: FALLBACK_BRAND_WORDS,
     missionStatement: "",
 

@@ -22,6 +22,20 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
     brandWords: field(key: "words_to_describe_your_brand") { value }
     missionStatement: field(key: "brand_mission") { value }
 
+    brandLogo: field(key: "brand_logo") {
+      reference {
+        ... on MediaImage {
+          __typename
+          image {
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
+
     heroHeading: field(key: "hero_main_heading") { value }
     heroDescription: field(key: "hero_description_text") { value }
     heroMediaMobile: field(key: "hero_background_media_mobile") {
