@@ -489,7 +489,7 @@ export const ProductVariantDialog = ({
                                             >
                                                 {(fetcher: FetcherWithComponents<any>) => (
                                                     <>
-                                                        <input type="hidden" name="redirectTo" value="/checkout" />
+                                                        <input type="hidden" name="redirectTo" value="__checkout_url__" />
                                                         <Button
                                                             type="submit"
                                                             variant="outline"

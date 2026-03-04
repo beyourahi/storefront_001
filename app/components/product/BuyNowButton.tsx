@@ -21,7 +21,7 @@ export const BuyNowButton = ({lines, disabled = false, className}: BuyNowButtonP
         >
             {(fetcher: FetcherWithComponents<any>) => (
                 <>
-                    <input type="hidden" name="redirectTo" value="/checkout" />
+                    <input type="hidden" name="redirectTo" value="__checkout_url__" />
                     <Button
                         type="submit"
                         variant="secondary"
