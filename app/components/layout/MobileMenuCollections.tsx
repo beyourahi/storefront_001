@@ -46,7 +46,7 @@ export const MobileMenuCollections = ({
                                 : "hover:bg-accent hover:text-accent-foreground"
                         )}
                     >
-                        <div className="group/icon relative h-12 w-12 flex-shrink-0 overflow-visible">
+                        <div className="group/icon relative h-12 w-12 shrink-0 overflow-visible">
                             <div className="absolute inset-0 scale-100 animate-spin" style={{animationDuration: "8s"}}>
                                 <div
                                     className="bg-primary/80 absolute h-1.5 w-1.5 animate-pulse rounded-full blur-[0.5px]"

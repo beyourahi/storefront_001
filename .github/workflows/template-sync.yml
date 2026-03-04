@@ -1,20 +1,12 @@
-name: template-sync
-
-on:
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+on: [push, pull_request]
 
 jobs:
-  template-sync:
-    timeout-minutes: 20
-    runs-on: ubuntu-latest
+    template-sync:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ahmadnassri/action-template-repository-sync@v2
-        with:
-          github-token: ${{ secrets.SYNC_TOKEN }}
-          config: .github/template-sync.yml
-          dry-run: true
-          skip-ci: true
+        steps:
+            - uses: actions/checkout@v2 # important!
+            - uses: ahmadnassri/action-template-repository-sync@v2
+              with:
+                  github-token: ${{ secrets.SYNC_TOKEN }}
+                  dry-run: false

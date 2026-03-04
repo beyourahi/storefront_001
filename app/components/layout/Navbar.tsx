@@ -4,7 +4,6 @@ import {AlignLeft, Search as SearchIcon, ShoppingCart, User} from "lucide-react"
 import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {NAVIGATION_LINKS} from "~/lib/navigation";
-
 import {useCartDrawer} from "~/hooks/useCartDrawer";
 import {useSearchController} from "~/hooks/useSearchController";
 import {WishlistCount} from "~/components/WishlistCount";
@@ -59,8 +58,8 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
         <>
             <header
                 className={cn(
-                    "bg-background/95 supports-[backdrop-filter]:bg-background/60 sleek fixed backdrop-blur main-nav z-50 w-full",
-                    "top-[var(--announcement-height)]"
+                    "bg-background/95 supports-backdrop-filter:bg-background/60 sleek fixed backdrop-blur main-nav z-50 w-full",
+                    "top-(--announcement-height)"
                 )}
             >
                 <div className="relative mx-auto flex h-16 max-w-[2000px] items-center lg:h-20 lg:px-1">
