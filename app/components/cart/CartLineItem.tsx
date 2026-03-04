@@ -261,7 +261,7 @@ function CartLineQuantity({
                 <div
                     className={cn(
                         "flex h-10 w-10 items-center justify-center border-0 text-sm font-medium",
-                        "bg-[var(--background)] text-[var(--foreground)]",
+                        "bg-background text-foreground",
                         disabled && "opacity-50"
                     )}
                     aria-label={`Quantity for ${productTitle}`}
