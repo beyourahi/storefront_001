@@ -31,6 +31,8 @@ vite.config.ts.timestamp-*
 .vite/
 
 .dev.vars*
+!.dev.vars.example
+.wrangler/
 
 # VS Code
 .vscode
