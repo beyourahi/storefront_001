@@ -24,7 +24,7 @@ export const ProductPageDiscountIndicator = ({
 
     return (
         <Badge
-            className={`rounded-[var(--radius-xl)] bg-emerald-950/80 px-1 pr-1.5 hover:bg-emerald-950/80 ${className || ""}`}
+            className={`rounded-[var(--radius-xl)] bg-emerald-950/80 px-1 pr-1.5 text-xs hover:bg-emerald-950/80 ${className || ""}`}
         >
             <span className="flex items-center gap-1.5 font-medium text-emerald-300">
                 <span className="flex items-center justify-center rounded-[var(--radius-xl)] bg-emerald-900 p-0.5 text-sm">
