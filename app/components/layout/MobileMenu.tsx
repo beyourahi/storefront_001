@@ -1,6 +1,11 @@
 import {useCallback, useMemo} from "react";
 import {useLocation} from "react-router";
-import {FALLBACK_SPECIAL_COLLECTIONS} from "~/lib/fallback-data";
+const FALLBACK_SPECIAL_COLLECTIONS = {
+    featured: "featured",
+    bestSellers: "best-sellers",
+    newArrivals: "new-arrivals",
+    trending: "trending"
+} as const;
 import {useLockBodyScroll} from "~/lib/LenisProvider";
 import {useIsMobile} from "~/hooks/useIsMobile";
 import {MobileMenuWrapper} from "~/components/layout/MobileMenuWrapper";

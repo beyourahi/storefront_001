@@ -1,4 +1,5 @@
-import {FALLBACK_FREE_SHIPPING_THRESHOLD, FALLBACK_CURRENCY_CODE} from "./fallback-data";
+const FALLBACK_FREE_SHIPPING_THRESHOLD = 7500;
+const FALLBACK_CURRENCY_CODE = "USD";
 
 export interface ShippingConfig {
     freeShippingThreshold: number | null;

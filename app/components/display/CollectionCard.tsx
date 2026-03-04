@@ -2,7 +2,7 @@ import {useEffect, useMemo, useState} from "react";
 import {Link} from "react-router";
 import {Image} from "@shopify/hydrogen";
 import {Gem, Heart, Home, Percent, Shirt, ShoppingBag, Smartphone, Sparkles, Star, Tag, Watch, Zap} from "lucide-react";
-import {FALLBACK_THEME_CARD_ASPECT_RATIO} from "~/lib/fallback-data";
+const FALLBACK_THEME_CARD_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 import type {CollectionCardData} from "~/lib/types/collections";
 
 type CollectionCardProps = {

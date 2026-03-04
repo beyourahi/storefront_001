@@ -6,7 +6,7 @@ import {Image} from "@shopify/hydrogen";
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
-import {FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO} from "~/lib/fallback-data";
+const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 import {ProductImageGalleryDialog} from "~/components/product/ProductImageGalleryDialog";
 import {ProductLightbox} from "~/components/ProductLightbox";
 

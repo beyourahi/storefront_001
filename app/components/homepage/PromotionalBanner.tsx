@@ -1,5 +1,5 @@
 import {Image} from "@shopify/hydrogen";
-import type {HeroMedia} from "~/lib/fallback-data";
+import type {HeroMedia} from "~/lib/metaobject-parsers";
 
 interface PromotionalBannerProps {
     media: HeroMedia | null | undefined;

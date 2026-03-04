@@ -2,8 +2,9 @@ import {useMemo} from "react";
 import {Star} from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "~/components/ui/carousel";
-import {FALLBACK_HAPPY_CUSTOMERS_COUNT} from "~/lib/fallback-data";
-import type {Testimonial} from "~/lib/fallback-data";
+import type {Testimonial} from "~/lib/metaobject-parsers";
+
+const FALLBACK_HAPPY_CUSTOMERS_COUNT = 2500;
 import {useSiteSettings} from "~/lib/site-content-context";
 
 type TestimonialsSectionProps = {

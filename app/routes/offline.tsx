@@ -5,7 +5,26 @@ import {Badge} from "~/components/ui/badge";
 import {WifiOff} from "lucide-react";
 import {trackOfflinePageView} from "~/hooks/usePwaAnalytics";
 import {getThemeFromStorage} from "~/lib/theme-storage";
-import {FALLBACK_ERROR_CONTENT} from "~/lib/fallback-data";
+const FALLBACK_ERROR_CONTENT = {
+    notFoundHeading: "Page Not Found",
+    notFoundMessage: "The page you're looking for doesn't exist or has been moved.",
+    notFoundPrimaryCta: "Back to Home",
+    notFoundSecondaryCta: "Browse Collections",
+    serverErrorHeading: "Something Went Wrong",
+    serverErrorMessage: "We're experiencing technical difficulties. Please try again.",
+    serverErrorRetry: "Try Again",
+    serverErrorHome: "Return Home",
+    serverErrorContactPrefix: "Need help?",
+    serverErrorContactLink: "Contact Support",
+    offlineHeading: "You're Offline",
+    offlineMessage: "Please check your internet connection and try again.",
+    offlineRetry: "Retry",
+    offlineHome: "Return Home",
+    offlineTip: "Tip: Some pages you've visited before may still be available",
+    maintenanceHeading: "We'll Be Right Back",
+    maintenanceMessage: "We're making some improvements. Please check back soon.",
+    maintenanceEstimated: "Estimated time: a few minutes"
+};
 import type {GeneratedTheme} from "~/lib/theme-utils";
 
 const useOnlineRedirect = () => {

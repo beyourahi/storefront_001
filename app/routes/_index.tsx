@@ -3,7 +3,12 @@ import {useLoaderData, useRouteLoaderData, Await} from "react-router";
 import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {FALLBACK_SPECIAL_COLLECTIONS} from "~/lib/fallback-data";
+const FALLBACK_SPECIAL_COLLECTIONS = {
+    featured: "featured",
+    bestSellers: "best-sellers",
+    newArrivals: "new-arrivals",
+    trending: "trending"
+} as const;
 
 import {VideoHero} from "~/components/homepage/VideoHero";
 import {DiscountedProductsSection} from "~/components/homepage/DiscountedProductsSection";

@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 import {Skeleton} from "~/components/ui/skeleton";
-import {FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO} from "~/lib/fallback-data";
+const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 import {ProductImageCarousel} from "~/components/product/ProductImageCarousel";
 
 type ProductImage = {

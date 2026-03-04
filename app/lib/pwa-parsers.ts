@@ -1,5 +1,4 @@
-import type {SiteSettings} from "~/lib/fallback-data";
-import type {ThemeConfig} from "~/lib/metaobject-parsers";
+import type {SiteSettings, ThemeConfig} from "~/lib/metaobject-parsers";
 import {toHex} from "./color";
 
 export interface ManifestIcon {

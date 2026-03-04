@@ -2,7 +2,12 @@ import {useLoaderData, useRouteLoaderData} from "react-router";
 import type {Route} from "./+types/collections._index";
 import {getSeoMeta} from "@shopify/hydrogen";
 import type {RootLoader} from "~/root";
-import {FALLBACK_SPECIAL_COLLECTIONS} from "~/lib/fallback-data";
+const FALLBACK_SPECIAL_COLLECTIONS = {
+    featured: "featured",
+    bestSellers: "best-sellers",
+    newArrivals: "new-arrivals",
+    trending: "trending"
+} as const;
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {MobileSearchBar} from "~/components/layout/MobileSearchBar";
 import {CollectionsPageHero} from "~/components/sections/CollectionsPageHero";

@@ -2,7 +2,22 @@ import {useState, useEffect, useCallback, useRef} from "react";
 import {Link} from "react-router";
 import {ArrowRight, Search as SearchIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
-import {FALLBACK_GREETINGS, FALLBACK_HERO_MEDIA_CONFIG} from "~/lib/fallback-data";
+const FALLBACK_GREETINGS = {
+    nightOwl: "Night owls find the best things",
+    evening: "Wind down with something worth it",
+    earlyBird: "Early birds get the best picks",
+    morning: "Great days start with great finds",
+    midMorning: "Your next favorite is waiting",
+    lunch: "Take a break. Treat yourself.",
+    afternoon: "Afternoon energy, endless options",
+    goldenHour: "Golden hour, golden finds",
+    fallback: "Discover something worth keeping"
+} as const;
+
+const FALLBACK_HERO_MEDIA_CONFIG: {type: "video" | "image"; videoSrc?: string; imageSrc?: string} = {
+    type: "video",
+    videoSrc: "/hero-video.mp4"
+};
 import {useSiteSettings} from "~/lib/site-content-context";
 import {useScreenSize, BREAKPOINTS} from "~/hooks/useScreenSize";
 import {useSearchController} from "~/hooks/useSearchController";

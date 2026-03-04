@@ -8,11 +8,11 @@ import type {
     Testimonial,
     FAQItem,
     InstagramMedia,
-    HeroMedia
-} from "~/lib/fallback-data";
-import type {ThemeFonts, ThemeCoreColors, GeneratedTheme} from "~/lib/theme-utils";
-import type {ThemeConfig} from "~/lib/metaobject-parsers";
+    HeroMedia,
+    ThemeConfig
+} from "~/lib/metaobject-parsers";
 import {DEFAULT_SITE_SETTINGS, DEFAULT_THEME_CONFIG} from "~/lib/metaobject-parsers";
+import type {ThemeFonts, ThemeCoreColors, GeneratedTheme} from "~/lib/theme-utils";
 import {generateTheme} from "~/lib/theme-utils";
 import {getSwatchBorderColor, getSmartSwatchBorderColor} from "~/lib/color";
 

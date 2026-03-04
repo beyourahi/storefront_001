@@ -23,7 +23,14 @@ import {getGridClassName, type GridColumns} from "~/lib/gridColumns";
 import {urlWithTrackingParams} from "~/lib/search/url-with-tracking";
 import {sortWithPinnedFirst} from "~/lib/product-tags";
 import {ProductCardTitle} from "~/components/common/ProductCardTitle";
-import {FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO, FALLBACK_POPULAR_SEARCHES} from "~/lib/fallback-data";
+const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
+const FALLBACK_POPULAR_SEARCHES = [
+    "new arrivals",
+    "best sellers",
+    "gift ideas",
+    "on sale",
+    "trending now"
+];
 import {cn} from "~/lib/utils";
 import type {RootLoader} from "~/root";
 import {

@@ -26,13 +26,18 @@ import type {
 // Re-export for consumers that want to reference these types
 export type {WithContext, Organization, WebSite, SchemaProduct, FAQPage, BlogPosting, BreadcrumbList, CollectionPage};
 
-import {
-    FALLBACK_SLOGAN,
-    FALLBACK_SOCIAL_LINKS,
-    FALLBACK_CONTACT_EMAIL,
-    FALLBACK_CONTACT_PHONE,
-    FALLBACK_ADDRESS
-} from "~/lib/fallback-data";
+import {DEFAULT_SOCIAL_LINKS} from "~/lib/metaobject-parsers";
+
+const FALLBACK_SLOGAN = "Your store. Your story. Built to sell.";
+const FALLBACK_CONTACT_EMAIL = "hello@example.com";
+const FALLBACK_CONTACT_PHONE = "+1 (555) 123-4567";
+const FALLBACK_ADDRESS = {
+    street: "123 Broadway",
+    city: "New York",
+    state: "NY",
+    zip: "10001",
+    country: "United States"
+};
 
 type MoneyV2 = {amount: string; currencyCode: string};
 type ImageNode = {url: string; altText?: string | null; width?: number | null; height?: number | null};
@@ -140,7 +145,7 @@ export function createFAQSchema(faqs: Array<{question: string; answer: string}>)
 
 export function createOrganizationSchema(shopName?: string, url?: string) {
     const name = shopName || SEO_CONFIG.siteName;
-    const socialUrls = FALLBACK_SOCIAL_LINKS.map(link => link.url).filter(Boolean);
+    const socialUrls = DEFAULT_SOCIAL_LINKS.map(link => link.url).filter(Boolean);
 
     return {
         "@context": "https://schema.org",

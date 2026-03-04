@@ -9,7 +9,7 @@ import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {getProductDataForCard} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import type {UnifiedProductCardProps} from "~/lib/types/product-card";
-import {FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO} from "~/lib/fallback-data";
+const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 
 export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardProps) => {
     const productData = useMemo(() => getProductDataForCard(product, {showPriceRange: true}), [product]);

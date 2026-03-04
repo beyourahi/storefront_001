@@ -1,4 +1,9 @@
-import {FALLBACK_SPECIAL_COLLECTIONS} from "~/lib/fallback-data";
+const FALLBACK_SPECIAL_COLLECTIONS = {
+    featured: "featured",
+    bestSellers: "best-sellers",
+    newArrivals: "new-arrivals",
+    trending: "trending"
+} as const;
 
 type ShopifyMoney = {
     amount: string;

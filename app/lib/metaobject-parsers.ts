@@ -1,34 +1,751 @@
-import type {
-    SiteSettings,
-    SocialLink,
-    Testimonial,
-    FAQItem,
-    InstagramMedia,
-    SiteContent,
-    HeroMedia,
-    ProductContent,
-    CartContent,
-    AccountContent,
-    SearchContent,
-    UIMessages,
-    ErrorContent,
-    WishlistContent
-} from "~/lib/fallback-data";
 import type {ThemeFonts, ThemeCoreColors} from "~/lib/theme-utils";
-import {
-    FALLBACK_BRAND_WORDS,
-    FALLBACK_SOCIAL_LINKS,
-    FALLBACK_SITE_SETTINGS,
-    FALLBACK_THEME_FONTS,
-    FALLBACK_THEME_COLORS,
-    FALLBACK_PRODUCT_CONTENT,
-    FALLBACK_CART_CONTENT,
-    FALLBACK_ACCOUNT_CONTENT,
-    FALLBACK_SEARCH_CONTENT,
-    FALLBACK_UI_MESSAGES,
-    FALLBACK_ERROR_CONTENT,
-    FALLBACK_WISHLIST_CONTENT
-} from "~/lib/fallback-data";
+
+// =============================================================================
+// TYPES (moved from fallback-data.ts)
+// =============================================================================
+
+export interface SocialLink {
+    id: string;
+    platform: string;
+    handle: string;
+    url: string;
+    displayOrder: number;
+}
+
+export interface Testimonial {
+    id: string;
+    customerName: string;
+    location: string;
+    rating: number;
+    text: string;
+    avatar?: {
+        url: string;
+        altText?: string;
+    };
+}
+
+export interface FAQItem {
+    id: string;
+    question: string;
+    answer: string;
+}
+
+export type InstagramMedia =
+    | {
+          id: string;
+          mediaType: "image";
+          url: string;
+          altText?: string;
+          width?: number;
+          height?: number;
+      }
+    | {
+          id: string;
+          mediaType: "video";
+          url: string;
+          altText?: string;
+          previewImage?: {
+              url: string;
+              altText?: string;
+          };
+      };
+
+export type HeroMedia =
+    | {
+          mediaType: "image";
+          url: string;
+          altText?: string;
+          width?: number;
+          height?: number;
+      }
+    | {
+          mediaType: "video";
+          url: string;
+          altText?: string;
+          previewImage?: {
+              url: string;
+              altText?: string;
+          };
+      };
+
+export interface ContactInfo {
+    email: string;
+    phone: string;
+    businessHours: string;
+    address: {
+        street: string;
+        city: string;
+        state: string;
+        zip: string;
+        country: string;
+    };
+}
+
+export interface SectionHeadings {
+    blogSectionTitle: string;
+    collectionsTitle: string;
+    relatedProductsTitle: string;
+    recommendedTitle: string;
+    instagramTitle: string;
+}
+
+export interface ProductContent {
+    addToCartStandard: string;
+    addToCartPreorder: string;
+    addToCartSoldOut: string;
+    addToCartSubscribe: string;
+    addToCartOffline: string;
+    offlineHelperText: string;
+    selectFrequency: string;
+    stockInStock: string;
+    stockOutOfStock: string;
+    stockLowTemplate: string;
+    purchaseTypeLabel: string;
+    oneTimeLabel: string;
+    subscribeSaveLabel: string;
+    savePercentageTemplate: string;
+    sizeGuideCta: string;
+    quantityLabel: string;
+    tabDescription: string;
+    tabShipping: string;
+    tabReviews: string;
+    badgeNew: string;
+    badgeSale: string;
+    badgeBestseller: string;
+    badgeClearance: string;
+    badgePremium: string;
+    badgePreorder: string;
+    badgeLimited: string;
+    shareButtonLabel: string;
+    wishlistAddLabel: string;
+    wishlistRemoveLabel: string;
+    relatedProductsTitle: string;
+}
+
+export interface CartContent {
+    cartDrawerTitle: string;
+    cartPageTitle: string;
+    itemCountSingular: string;
+    itemCountPlural: string;
+    emptyCartHeading: string;
+    emptyCartCta: string;
+    quantityLabel: string;
+    removeLabel: string;
+    subtotalLabel: string;
+    shippingLabel: string;
+    taxLabel: string;
+    totalLabel: string;
+    taxShippingNotice: string;
+    discountPlaceholder: string;
+    discountApplyButton: string;
+    discountApplied: string;
+    discountError: string;
+    freeShippingLabel: string;
+    freeShippingUnlocked: string;
+    freeShippingAwayTemplate: string;
+    freeShippingAlmost: string;
+    freeShippingCalculating: string;
+    orderNotesPlaceholder: string;
+    checkoutButton: string;
+    checkoutCalculating: string;
+    checkoutOfflineWarning: string;
+    storeCreditNotice: string;
+    closeButton: string;
+    suggestionsTitle: string;
+}
+
+export interface AccountContent {
+    greetingMorning: string;
+    greetingMidday: string;
+    greetingAfternoon: string;
+    greetingEvening: string;
+    greetingNight: string;
+    greetingFallback: string;
+    sectionRecentOrders: string;
+    sectionQuickActions: string;
+    sectionAccountStats: string;
+    sectionRecentlyViewed: string;
+    actionTrackOrders: string;
+    actionShopNow: string;
+    actionAddresses: string;
+    actionGetHelp: string;
+    actionEditProfile: string;
+    actionOrderHistory: string;
+    statOrdersPlaced: string;
+    statSavedAddresses: string;
+    statMemberSince: string;
+    emptyNoOrdersHeading: string;
+    emptyNoOrdersMessage: string;
+    emptyNoAddresses: string;
+    navDashboard: string;
+    navOrders: string;
+    navReturns: string;
+    navWishlist: string;
+    navAccountDetails: string;
+    logoutButton: string;
+    saveButton: string;
+    cancelButton: string;
+    viewAllOrders: string;
+    storeCreditLabel: string;
+    storeCreditAvailable: string;
+}
+
+export interface SearchContent {
+    searchPlaceholder: string;
+    recentSearchesHeading: string;
+    popularSearchesHeading: string;
+    featuredCollectionsHeading: string;
+    clearAllButton: string;
+    emptyResultsHeading: string;
+    emptyResultsMessageTemplate: string;
+    viewAllResults: string;
+    categoryProducts: string;
+    categoryCollections: string;
+    categoryArticles: string;
+    sortFeatured: string;
+    sortPriceLowHigh: string;
+    sortPriceHighLow: string;
+    sortNewest: string;
+    sortBestSelling: string;
+    sortAToZ: string;
+    sortZToA: string;
+    filterByPrice: string;
+    filterByColor: string;
+    filterBySize: string;
+    filterAvailability: string;
+    filterInStock: string;
+    resultsCountTemplate: string;
+    loadMoreButton: string;
+    loadingText: string;
+    gridViewLabel: string;
+    listViewLabel: string;
+    col2Label: string;
+    col3Label: string;
+    col4Label: string;
+    applyFilters: string;
+    clearFilters: string;
+}
+
+export interface UIMessages {
+    successGeneric: string;
+    successCartAdd: string;
+    successCartRemove: string;
+    successWishlistAdd: string;
+    successWishlistRemove: string;
+    successWishlistCleared: string;
+    successSaved: string;
+    successLinkCopied: string;
+    successDiscount: string;
+    successSubscribed: string;
+    errorGeneric: string;
+    errorNetwork: string;
+    errorSession: string;
+    errorRequired: string;
+    errorInvalidEmail: string;
+    errorCopyFailed: string;
+    loadingGeneric: string;
+    loadingProcessing: string;
+    loadingCalculating: string;
+    loadingSaving: string;
+    loadingAdding: string;
+    validationPasswordShort: string;
+    validationPasswordMismatch: string;
+    validationEmailRequired: string;
+    statusOnline: string;
+    statusOffline: string;
+    cartItemsRemain: string;
+    cartQuantityUpdated: string;
+    cartAllItemsAddedTemplate: string;
+    cartSomeUnavailable: string;
+}
+
+export interface ErrorContent {
+    notFoundHeading: string;
+    notFoundMessage: string;
+    notFoundPrimaryCta: string;
+    notFoundSecondaryCta: string;
+    serverErrorHeading: string;
+    serverErrorMessage: string;
+    serverErrorRetry: string;
+    serverErrorHome: string;
+    serverErrorContactPrefix: string;
+    serverErrorContactLink: string;
+    offlineHeading: string;
+    offlineMessage: string;
+    offlineRetry: string;
+    offlineHome: string;
+    offlineTip: string;
+    maintenanceHeading: string;
+    maintenanceMessage: string;
+    maintenanceEstimated: string;
+}
+
+export interface WishlistContent {
+    pageHeading: string;
+    metaDescription: string;
+    itemCountLoading: string;
+    itemCountEmpty: string;
+    itemCountSingularTemplate: string;
+    itemCountPluralTemplate: string;
+    emptyHeading: string;
+    emptyMessage: string;
+    emptyCta: string;
+    sortNewest: string;
+    sortOldest: string;
+    sortPriceUp: string;
+    sortPriceDown: string;
+    listLabel: string;
+    shareButton: string;
+    addAllButton: string;
+    clearButton: string;
+    shareDialogHeading: string;
+    shareCopyLink: string;
+    shareCopied: string;
+    shareDescriptionTemplate: string;
+    clearDialogTitle: string;
+    clearDialogMessageTemplate: string;
+    clearDialogWarning: string;
+    clearDialogKeep: string;
+    clearDialogConfirm: string;
+    addAllSuccessTemplate: string;
+    unavailableHeading: string;
+    unavailableMessage: string;
+    clearUnavailableButton: string;
+    browseProductsButton: string;
+    sharedWishlistBadge: string;
+    sharedWishlistEmpty: string;
+    myWishlistTitle: string;
+    curatedItemsTemplate: string;
+}
+
+export interface SiteSettings {
+    brandName: string;
+    brandLogo?: {
+        url: string;
+        altText?: string | null;
+        width?: number | null;
+        height?: number | null;
+    } | null;
+    brandWords: string[];
+    missionStatement: string;
+    heroHeading: string;
+    heroDescription: string;
+    heroMediaMobile?: HeroMedia;
+    heroMediaLargeScreen?: HeroMedia;
+    siteUrl: string;
+    defaultSeoTitle: string;
+    defaultSeoDescription: string;
+    contactEmail: string;
+    contactPhone: string;
+    businessHours: string;
+    address: {
+        street: string;
+        city: string;
+        state: string;
+        zip: string;
+        country: string;
+    };
+    blogSectionTitle: string;
+    collectionsTitle: string;
+    relatedProductsTitle: string;
+    recommendedTitle: string;
+    instagramTitle: string;
+    galleryPageHeading: string;
+    galleryPageDescription: string;
+    blogPageHeading: string;
+    blogPageDescription: string;
+    announcementBanner: string[];
+    promotionalBannerOneMedia?: HeroMedia;
+    promotionalBannerTwoMedia?: HeroMedia;
+    freeShippingThreshold: number | null;
+    socialLinks: SocialLink[];
+    testimonials: Testimonial[];
+    faqItems: FAQItem[];
+    instagramMedia: InstagramMedia[];
+    faviconUrl: string | null;
+    icon192Url: string | null;
+    icon512Url: string | null;
+    icon180AppleUrl: string | null;
+}
+
+export interface SiteContent {
+    siteSettings: SiteSettings;
+    themeConfig: ThemeConfig;
+}
+
+// =============================================================================
+// FALLBACK CONSTANTS (private — not exported; used only within this file)
+// =============================================================================
+
+const FALLBACK_BRAND_WORDS: string[] = [
+    "Quality",
+    "Crafted",
+    "Curated",
+    "Timeless",
+    "Refined",
+    "Purposeful",
+    "Distinct",
+    "Essential",
+    "Thoughtful",
+    "Premium"
+];
+
+const FALLBACK_SOCIAL_LINKS: SocialLink[] = [
+    {
+        id: "social-facebook",
+        platform: "Facebook",
+        handle: "/yourbrand",
+        url: "https://facebook.com/yourbrand",
+        displayOrder: 1
+    },
+    {
+        id: "social-instagram",
+        platform: "Instagram",
+        handle: "@yourbrand",
+        url: "https://instagram.com/yourbrand",
+        displayOrder: 2
+    },
+    {
+        id: "social-tiktok",
+        platform: "TikTok",
+        handle: "@yourbrand",
+        url: "https://tiktok.com/@yourbrand",
+        displayOrder: 3
+    },
+    {
+        id: "social-x",
+        platform: "X",
+        handle: "@yourbrand",
+        url: "https://x.com/yourbrand",
+        displayOrder: 4
+    },
+    {
+        id: "social-whatsapp",
+        platform: "WhatsApp",
+        handle: "+15551234567",
+        url: "https://wa.me/15551234567",
+        displayOrder: 5
+    },
+    {
+        id: "social-youtube",
+        platform: "YouTube",
+        handle: "@yourbrand",
+        url: "https://youtube.com/@yourbrand",
+        displayOrder: 6
+    },
+    {
+        id: "social-linkedin",
+        platform: "LinkedIn",
+        handle: "company/yourbrand",
+        url: "https://linkedin.com/company/yourbrand",
+        displayOrder: 7
+    },
+    {
+        id: "social-pinterest",
+        platform: "Pinterest",
+        handle: "@yourbrand",
+        url: "https://pinterest.com/yourbrand",
+        displayOrder: 8
+    }
+];
+
+const FALLBACK_THEME_FONTS: ThemeFonts = {
+    sans: "Inter",
+    serif: "Inter",
+    mono: "Inter"
+};
+
+const FALLBACK_THEME_COLORS: ThemeCoreColors = {
+    primary: "oklch(0.2 0 0)",
+    secondary: "oklch(0.9 0 0)",
+    background: "oklch(1 0 0)",
+    foreground: "oklch(0.15 0 0)",
+    accent: "oklch(0.45 0 0)"
+};
+
+const FALLBACK_PRODUCT_CONTENT: ProductContent = {
+    addToCartStandard: "Add to Bag",
+    addToCartPreorder: "Pre-Order",
+    addToCartSoldOut: "Sold Out",
+    addToCartSubscribe: "Subscribe",
+    addToCartOffline: "Unavailable Offline",
+    offlineHelperText: "Connect to the internet to add items to your bag",
+    selectFrequency: "Select delivery frequency",
+    stockInStock: "In Stock",
+    stockOutOfStock: "Out of Stock",
+    stockLowTemplate: "Only {quantity} left",
+    purchaseTypeLabel: "Purchase Type",
+    oneTimeLabel: "One-time purchase",
+    subscribeSaveLabel: "Subscribe & Save",
+    savePercentageTemplate: "Save {percent}%",
+    sizeGuideCta: "Size Guide",
+    quantityLabel: "Quantity",
+    tabDescription: "Description",
+    tabShipping: "Shipping",
+    tabReviews: "Reviews",
+    badgeNew: "New",
+    badgeSale: "Sale",
+    badgeBestseller: "Bestseller",
+    badgeClearance: "Clearance",
+    badgePremium: "Premium",
+    badgePreorder: "Pre-Order",
+    badgeLimited: "Limited Edition",
+    shareButtonLabel: "Share",
+    wishlistAddLabel: "Add to wishlist",
+    wishlistRemoveLabel: "Remove from wishlist",
+    relatedProductsTitle: "You might also like"
+};
+
+const FALLBACK_CART_CONTENT: CartContent = {
+    cartDrawerTitle: "Your Bag",
+    cartPageTitle: "Shopping Bag",
+    itemCountSingular: "item",
+    itemCountPlural: "items",
+    emptyCartHeading: "Your bag is empty",
+    emptyCartCta: "Continue Shopping",
+    quantityLabel: "Quantity",
+    removeLabel: "Remove",
+    subtotalLabel: "Subtotal",
+    shippingLabel: "Shipping",
+    taxLabel: "Tax",
+    totalLabel: "Total",
+    taxShippingNotice: "Taxes and shipping calculated at checkout",
+    discountPlaceholder: "Enter discount code",
+    discountApplyButton: "Apply",
+    discountApplied: "Discount applied",
+    discountError: "Invalid discount code",
+    freeShippingLabel: "Free Shipping",
+    freeShippingUnlocked: "You've unlocked free shipping!",
+    freeShippingAwayTemplate: "{amount} away from free shipping",
+    freeShippingAlmost: "You're almost there!",
+    freeShippingCalculating: "Calculating...",
+    orderNotesPlaceholder: "Add a note to your order",
+    checkoutButton: "Checkout",
+    checkoutCalculating: "Calculating...",
+    checkoutOfflineWarning: "Connect to the internet to checkout",
+    storeCreditNotice: "Store credit will be applied at checkout",
+    closeButton: "Close",
+    suggestionsTitle: "Complete your look"
+};
+
+const FALLBACK_ACCOUNT_CONTENT: AccountContent = {
+    greetingMorning: "Good morning, {name}",
+    greetingMidday: "Good day, {name}",
+    greetingAfternoon: "Good afternoon, {name}",
+    greetingEvening: "Good evening, {name}",
+    greetingNight: "Good night, {name}",
+    greetingFallback: "Welcome back",
+    sectionRecentOrders: "Recent Orders",
+    sectionQuickActions: "Quick Actions",
+    sectionAccountStats: "Account Overview",
+    sectionRecentlyViewed: "Recently Viewed",
+    actionTrackOrders: "Track Orders",
+    actionShopNow: "Shop Now",
+    actionAddresses: "Addresses",
+    actionGetHelp: "Get Help",
+    actionEditProfile: "Edit Profile",
+    actionOrderHistory: "Order History",
+    statOrdersPlaced: "Orders Placed",
+    statSavedAddresses: "Saved Addresses",
+    statMemberSince: "Member Since",
+    emptyNoOrdersHeading: "No orders yet",
+    emptyNoOrdersMessage: "When you place an order, it will appear here",
+    emptyNoAddresses: "No saved addresses yet",
+    navDashboard: "Dashboard",
+    navOrders: "Orders",
+    navReturns: "Returns",
+    navWishlist: "Wishlist",
+    navAccountDetails: "Account Details",
+    logoutButton: "Sign Out",
+    saveButton: "Save Changes",
+    cancelButton: "Cancel",
+    viewAllOrders: "View All Orders",
+    storeCreditLabel: "Store Credit",
+    storeCreditAvailable: "Available Credit"
+};
+
+const FALLBACK_SEARCH_CONTENT: SearchContent = {
+    searchPlaceholder: "Search products...",
+    recentSearchesHeading: "Recent Searches",
+    popularSearchesHeading: "Popular Searches",
+    featuredCollectionsHeading: "Featured Collections",
+    clearAllButton: "Clear All",
+    emptyResultsHeading: "No results found",
+    emptyResultsMessageTemplate: 'We couldn\'t find anything for "{term}"',
+    viewAllResults: "View All Results",
+    categoryProducts: "Products",
+    categoryCollections: "Collections",
+    categoryArticles: "Articles",
+    sortFeatured: "Featured",
+    sortPriceLowHigh: "Price: Low to High",
+    sortPriceHighLow: "Price: High to Low",
+    sortNewest: "Newest",
+    sortBestSelling: "Best Selling",
+    sortAToZ: "A to Z",
+    sortZToA: "Z to A",
+    filterByPrice: "Price",
+    filterByColor: "Color",
+    filterBySize: "Size",
+    filterAvailability: "Availability",
+    filterInStock: "In Stock",
+    resultsCountTemplate: "Showing {count} of {total} products",
+    loadMoreButton: "Load More",
+    loadingText: "Loading...",
+    gridViewLabel: "Grid view",
+    listViewLabel: "List view",
+    col2Label: "2 columns",
+    col3Label: "3 columns",
+    col4Label: "4 columns",
+    applyFilters: "Apply Filters",
+    clearFilters: "Clear Filters"
+};
+
+const FALLBACK_UI_MESSAGES: UIMessages = {
+    successGeneric: "Success!",
+    successCartAdd: "Added to bag",
+    successCartRemove: "Item removed",
+    successWishlistAdd: "Added to wishlist",
+    successWishlistRemove: "Removed from wishlist",
+    successWishlistCleared: "Wishlist cleared",
+    successSaved: "Changes saved",
+    successLinkCopied: "Link copied!",
+    successDiscount: "Discount applied",
+    successSubscribed: "Thanks for subscribing!",
+    errorGeneric: "Something went wrong. Please try again.",
+    errorNetwork: "Please check your connection and try again",
+    errorSession: "Your session has expired. Please sign in again.",
+    errorRequired: "This field is required",
+    errorInvalidEmail: "Please enter a valid email address",
+    errorCopyFailed: "Couldn't copy to clipboard",
+    loadingGeneric: "Loading...",
+    loadingProcessing: "Processing...",
+    loadingCalculating: "Calculating...",
+    loadingSaving: "Saving...",
+    loadingAdding: "Adding...",
+    validationPasswordShort: "Password must be at least 8 characters",
+    validationPasswordMismatch: "Passwords don't match",
+    validationEmailRequired: "Email is required",
+    statusOnline: "You're back online",
+    statusOffline: "You're offline",
+    cartItemsRemain: "items remain in your bag",
+    cartQuantityUpdated: "Quantity updated",
+    cartAllItemsAddedTemplate: "{count} items added to bag",
+    cartSomeUnavailable: "Some items are no longer available"
+};
+
+const FALLBACK_ERROR_CONTENT: ErrorContent = {
+    notFoundHeading: "Page Not Found",
+    notFoundMessage: "The page you're looking for doesn't exist or has been moved.",
+    notFoundPrimaryCta: "Back to Home",
+    notFoundSecondaryCta: "Browse Collections",
+    serverErrorHeading: "Something Went Wrong",
+    serverErrorMessage: "We're experiencing technical difficulties. Please try again.",
+    serverErrorRetry: "Try Again",
+    serverErrorHome: "Return Home",
+    serverErrorContactPrefix: "Need help?",
+    serverErrorContactLink: "Contact Support",
+    offlineHeading: "You're Offline",
+    offlineMessage: "Please check your internet connection and try again.",
+    offlineRetry: "Retry",
+    offlineHome: "Return Home",
+    offlineTip: "Tip: Some pages you've visited before may still be available",
+    maintenanceHeading: "We'll Be Right Back",
+    maintenanceMessage: "We're making some improvements. Please check back soon.",
+    maintenanceEstimated: "Estimated time: a few minutes"
+};
+
+const FALLBACK_WISHLIST_CONTENT: WishlistContent = {
+    pageHeading: "Wishlist",
+    metaDescription: "Your curated collection of favorite items",
+    itemCountLoading: "Loading...",
+    itemCountEmpty: "No items saved",
+    itemCountSingularTemplate: "{count} item you've saved",
+    itemCountPluralTemplate: "{count} items you've saved",
+    emptyHeading: "Your wishlist is empty",
+    emptyMessage: "Save your favorite pieces by tapping the heart icon",
+    emptyCta: "Explore Collection",
+    sortNewest: "Newest",
+    sortOldest: "Oldest",
+    sortPriceUp: "Price: Low to High",
+    sortPriceDown: "Price: High to Low",
+    listLabel: "List",
+    shareButton: "Share",
+    addAllButton: "Add All to Bag",
+    clearButton: "Clear All",
+    shareDialogHeading: "Share Your Wishlist",
+    shareCopyLink: "Copy Link",
+    shareCopied: "Link copied!",
+    shareDescriptionTemplate: "Check out my wishlist with {count} items from {brand}",
+    clearDialogTitle: "Clear Wishlist",
+    clearDialogMessageTemplate: "Are you sure you want to remove all {count} items?",
+    clearDialogWarning: "This action cannot be undone",
+    clearDialogKeep: "Keep Items",
+    clearDialogConfirm: "Clear All",
+    addAllSuccessTemplate: "{count} items added to bag",
+    unavailableHeading: "Some items are unavailable",
+    unavailableMessage: "These items are currently out of stock or discontinued",
+    clearUnavailableButton: "Remove Unavailable",
+    browseProductsButton: "Browse Products",
+    sharedWishlistBadge: "Shared",
+    sharedWishlistEmpty: "This shared wishlist is empty",
+    myWishlistTitle: "My Wishlist",
+    curatedItemsTemplate: "{count} curated items"
+};
+
+const FALLBACK_SITE_SETTINGS: SiteSettings = {
+    brandName: "",
+    brandLogo: null,
+    brandWords: FALLBACK_BRAND_WORDS,
+    missionStatement: "",
+
+    heroHeading: "Shop with Intention",
+    heroDescription:
+        "Discover products built to last. Quality craftsmanship, thoughtful design, everyday value. Your next favorite find is here.",
+    heroMediaMobile: undefined,
+    heroMediaLargeScreen: undefined,
+
+    siteUrl: "",
+    defaultSeoTitle: "",
+    defaultSeoDescription: "",
+
+    contactEmail: "",
+    contactPhone: "",
+    businessHours: "",
+    address: {street: "", city: "", state: "", zip: "", country: ""},
+
+    blogSectionTitle: "From the Blog",
+    collectionsTitle: "Featured Collections",
+    relatedProductsTitle: "You Might Also Like",
+    recommendedTitle: "Recommended For You",
+    instagramTitle: "Follow Us",
+
+    galleryPageHeading: "The Gallery",
+    galleryPageDescription:
+        "A visual showcase of our products and the stories behind them\u2014craftsmanship, process, and everyday use.",
+    blogPageHeading: "The Blog",
+    blogPageDescription:
+        "Ideas, guides, and stories from our world\u2014exploring craft, design, and the things worth owning.",
+
+    announcementBanner: [],
+    promotionalBannerOneMedia: undefined,
+    promotionalBannerTwoMedia: undefined,
+
+    freeShippingThreshold: null,
+
+    socialLinks: [],
+    testimonials: [],
+    faqItems: [],
+    instagramMedia: [],
+
+    faviconUrl: null,
+    icon192Url: null,
+    icon512Url: null,
+    icon180AppleUrl: null
+};
+
+// =============================================================================
+// THEME CONFIG
+// =============================================================================
 
 export interface ThemeConfig {
     fonts: ThemeFonts;
@@ -48,6 +765,10 @@ export const DEFAULT_THEME_CONFIG: ThemeConfig = {
 export const DEFAULT_words_to_describe_your_brand = FALLBACK_BRAND_WORDS;
 export const DEFAULT_SOCIAL_LINKS = FALLBACK_SOCIAL_LINKS;
 export const DEFAULT_SITE_SETTINGS: SiteSettings = FALLBACK_SITE_SETTINGS;
+
+// =============================================================================
+// PARSERS
+// =============================================================================
 
 const parseHeroMedia = (heroMediaField: any): HeroMedia | undefined => {
     const ref = heroMediaField?.reference;
