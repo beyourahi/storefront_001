@@ -28,17 +28,17 @@ git checkout -b feature-branch  # ❌ NEVER CREATE BRANCHES
 
 ## Quick Reference
 
-| Component       | Technology                          | Version   |
-| --------------- | ----------------------------------- | --------- |
-| Framework       | Shopify Hydrogen                    | 2026.1.0  |
-| Storefront API  | Shopify Storefront API              | 2026-01   |
-| Router          | React Router 7                      | 7.12.0    |
-| React           | React (with Compiler)               | 18.3.1    |
-| Styling         | Tailwind CSS v4                     | 4.1.18    |
-| Components      | Radix UI + shadcn/ui                | Latest    |
-| Deployment      | Shopify Oxygen (Cloudflare Workers) | —         |
-| Package Manager | Bun                                 | —         |
-| Node            | >=20.19.0                           | Required  |
+| Component       | Technology                          | Version  |
+| --------------- | ----------------------------------- | -------- |
+| Framework       | Shopify Hydrogen                    | 2026.1.0 |
+| Storefront API  | Shopify Storefront API              | 2026-01  |
+| Router          | React Router 7                      | 7.12.0   |
+| React           | React (with Compiler)               | 18.3.1   |
+| Styling         | Tailwind CSS v4                     | 4.1.18   |
+| Components      | Radix UI + shadcn/ui                | Latest   |
+| Deployment      | Shopify Oxygen (Cloudflare Workers) | —        |
+| Package Manager | Bun                                 | —        |
+| Node            | >=20.19.0                           | Required |
 
 ---
 
@@ -463,10 +463,10 @@ This storefront is a **commercial Shopify Hydrogen template** built to be sold t
 
 ### Dual Deployment Targets
 
-| Target                             | Purpose                         | Data Source                               |
-| ---------------------------------- | ------------------------------- | ----------------------------------------- |
-| **Shopify Oxygen**                 | Client production deployments   | Client's own Shopify store (no fallback)  |
-| **Cloudflare Workers + local dev** | Portfolio showcase + dev server | Fallback demo store + `fallback-data.ts`  |
+| Target                             | Purpose                         | Data Source                              |
+| ---------------------------------- | ------------------------------- | ---------------------------------------- |
+| **Shopify Oxygen**                 | Client production deployments   | Client's own Shopify store (no fallback) |
+| **Cloudflare Workers + local dev** | Portfolio showcase + dev server | Fallback demo store + `fallback-data.ts` |
 
 - On **Oxygen**: NEVER use the fallback store or `fallback-data.ts` — all data comes from the client's Shopify store
 - On **Cloudflare Workers** and during **local development**: ALWAYS use the fallback demo store for products and `fallback-data.ts` for non-product content
@@ -491,7 +491,7 @@ bunx wrangler deploy dist/worker/
 
 **Data:** Fallback demo Shopify store (see credentials in Environment Variables section) + `fallback-data.ts` for non-product content.
 
-> ✅ Activate the fallback data layer automatically (e.g. via `IS_PORTFOLIO_DEMO=true` env flag or absence of `PUBLIC_STORE_DOMAIN`). The same fallback data layer is active during local dev.
+> ✅ Activate the fallback data layer automatically (e.g. via absence of `PUBLIC_STORE_DOMAIN`). The same fallback data layer is active during local dev.
 
 ---
 
@@ -519,17 +519,17 @@ bunx wrangler deploy dist/worker/
 
 ### Cart Actions Reference (`app/routes/cart.tsx`)
 
-| Action                              | Method                          | Notes                                  |
-| ----------------------------------- | ------------------------------- | -------------------------------------- |
-| `CartForm.ACTIONS.LinesAdd`         | `cart.addLines()`               | Add line items                         |
-| `CartForm.ACTIONS.LinesUpdate`      | `cart.updateLines()`            | Update quantities / attributes         |
-| `CartForm.ACTIONS.LinesRemove`      | `cart.removeLines()`            | Remove line items                      |
-| `CartForm.ACTIONS.DiscountCodesUpdate` | `cart.updateDiscountCodes()` | Replace all discount codes             |
-| `CartForm.ACTIONS.GiftCardCodesUpdate` | `cart.updateGiftCardCodes()` | Replace all gift card codes            |
-| `CartForm.ACTIONS.GiftCardCodesAdd`    | `cart.addGiftCardCodes()`    | Append gift card codes (2026.1.0+)     |
-| `CartForm.ACTIONS.GiftCardCodesRemove` | `cart.removeGiftCardCodes()` | Remove applied gift card codes         |
-| `CartForm.ACTIONS.NoteUpdate`       | `cart.updateNote()`             | Update cart note                       |
-| `CartForm.ACTIONS.BuyerIdentityUpdate` | `cart.updateBuyerIdentity()` | Update buyer country / customer        |
+| Action                                 | Method                       | Notes                              |
+| -------------------------------------- | ---------------------------- | ---------------------------------- |
+| `CartForm.ACTIONS.LinesAdd`            | `cart.addLines()`            | Add line items                     |
+| `CartForm.ACTIONS.LinesUpdate`         | `cart.updateLines()`         | Update quantities / attributes     |
+| `CartForm.ACTIONS.LinesRemove`         | `cart.removeLines()`         | Remove line items                  |
+| `CartForm.ACTIONS.DiscountCodesUpdate` | `cart.updateDiscountCodes()` | Replace all discount codes         |
+| `CartForm.ACTIONS.GiftCardCodesUpdate` | `cart.updateGiftCardCodes()` | Replace all gift card codes        |
+| `CartForm.ACTIONS.GiftCardCodesAdd`    | `cart.addGiftCardCodes()`    | Append gift card codes (2026.1.0+) |
+| `CartForm.ACTIONS.GiftCardCodesRemove` | `cart.removeGiftCardCodes()` | Remove applied gift card codes     |
+| `CartForm.ACTIONS.NoteUpdate`          | `cart.updateNote()`          | Update cart note                   |
+| `CartForm.ACTIONS.BuyerIdentityUpdate` | `cart.updateBuyerIdentity()` | Update buyer country / customer    |
 
 ---
 

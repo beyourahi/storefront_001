@@ -491,7 +491,7 @@ bunx wrangler deploy dist/worker/
 
 **Data:** Fallback demo Shopify store (see credentials in Environment Variables section) + `fallback-data.ts` for non-product content.
 
-> ✅ Activate the fallback data layer automatically (e.g. via `IS_PORTFOLIO_DEMO=true` env flag or absence of `PUBLIC_STORE_DOMAIN`). The same fallback data layer is active during local dev.
+> ✅ Activate the fallback data layer automatically (e.g. via absence of `PUBLIC_STORE_DOMAIN`). The same fallback data layer is active during local dev.
 
 ---
 
