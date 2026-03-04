@@ -180,7 +180,7 @@ const SubscriptionCard = ({subscription}: {subscription: SubscriptionContract}) 
                         {subscription.lines.nodes.slice(0, 3).map(line => (
                             <div
                                 key={line.id}
-                                className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border bg-muted"
+                                className="h-16 w-16 shrink-0 overflow-hidden rounded-md border bg-muted"
                             >
                                 {line.image ? (
                                     <Image data={line.image} sizes="64px" className="h-full w-full object-cover" />

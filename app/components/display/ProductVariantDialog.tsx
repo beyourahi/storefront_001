@@ -305,7 +305,7 @@ export const ProductVariantDialog = ({
                     <DialogContent className="!fixed !top-[50%] !left-[50%] !h-auto !w-[92vw] !max-w-[380px] !-translate-x-1/2 !-translate-y-1/2 overflow-hidden rounded-lg border-0 p-0 shadow-2xl sm:!max-w-[480px] md:!w-[700px] md:!max-w-2xl lg:!w-[900px] xl:!w-[1100px] 2xl:!w-[1300px]">
                         <div className="bg-background flex h-full flex-col lg:flex-row">
                             {productImages.length > 0 && (
-                                <div className="border-border/10 hidden max-h-[55vh] flex-shrink-0 border-r lg:block lg:w-2/5">
+                                <div className="border-border/10 hidden max-h-[55vh] shrink-0 border-r lg:block lg:w-2/5">
                                     <div className="scrollbar-hide h-full overflow-x-hidden overflow-y-auto p-3">
                                         <div className="space-y-3">
                                             {productImages.map((image, index) => (
@@ -351,7 +351,7 @@ export const ProductVariantDialog = ({
                                         <div className="mb-8 sm:mb-10">
                                             <div className="flex gap-4 lg:block">
                                                 {productImages.length > 0 && (
-                                                    <div className="flex-shrink-0 lg:hidden">
+                                                    <div className="shrink-0 lg:hidden">
                                                         <div className="relative h-20 w-20 overflow-hidden rounded-lg shadow-md">
                                                             <Image
                                                                 data={{
@@ -425,7 +425,7 @@ export const ProductVariantDialog = ({
 
                                                     {selectedVariant && !selectedVariant.availableForSale && (
                                                         <div className="bg-destructive/10 border-destructive/20 flex animate-pulse items-center gap-3 rounded-lg border-2 p-4 shadow-sm">
-                                                            <AlertTriangle className="text-destructive h-5 w-5 flex-shrink-0" />
+                                                            <AlertTriangle className="text-destructive h-5 w-5 shrink-0" />
                                                             <p className="text-destructive text-sm font-semibold">
                                                                 This combination is currently out of stock.
                                                             </p>
@@ -463,7 +463,7 @@ export const ProductVariantDialog = ({
                                         </div>
                                     </div>
 
-                                    <div className="border-border/10 flex-shrink-0 space-y-1.5 border-t pt-2 sm:space-y-2">
+                                    <div className="border-border/10 shrink-0 space-y-1.5 border-t pt-2 sm:space-y-2">
                                         <CartForm
                                             fetcherKey="variant-dialog-add"
                                             route="/cart"

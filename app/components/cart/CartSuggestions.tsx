@@ -129,7 +129,7 @@ function CartSuggestionsSkeleton() {
         <div>
             <div className="flex gap-3 overflow-hidden">
                 {[0, 1, 2, 3, 4, 5].map(i => (
-                    <div key={i} className="w-[180px] flex-shrink-0 space-y-2 sm:w-[180px]">
+                    <div key={i} className="w-[180px] shrink-0 space-y-2 sm:w-[180px]">
                         <Skeleton className="aspect-square w-full rounded-lg" />
                         <Skeleton className="h-4 w-3/4" />
                         <Skeleton className="h-3 w-1/2" />

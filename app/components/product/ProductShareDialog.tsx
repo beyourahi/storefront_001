@@ -74,7 +74,7 @@ export const ProductShareDialog = ({product, open = false, onOpenChange, shopNam
                         <div className="flex gap-3">
                             {firstImage && (
                                 <div
-                                    className="relative flex-shrink-0 overflow-hidden rounded-md"
+                                    className="relative shrink-0 overflow-hidden rounded-md"
                                     style={{width: 80, height: 80}}
                                 >
                                     {!imageLoaded && <div className="bg-muted absolute inset-0 animate-pulse" />}

@@ -144,7 +144,7 @@ export const MobileMenuCollections = ({
                                     : "hover:bg-accent hover:text-accent-foreground"
                             )}
                         >
-                            <div className="group/icon relative h-12 w-12 flex-shrink-0 overflow-visible">
+                            <div className="group/icon relative h-12 w-12 shrink-0 overflow-visible">
                                 <div className="absolute inset-0 scale-100 animate-ping rounded-full bg-emerald-500/20" />
                                 <div className="absolute inset-0 scale-110 animate-ping rounded-full bg-green-500/15" />
 
@@ -189,7 +189,7 @@ export const MobileMenuCollections = ({
                                             : "hover:bg-accent hover:text-accent-foreground"
                                     )}
                                 >
-                                    <div className="bg-muted relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-md">
+                                    <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-md">
                                         {collection.image?.url ? (
                                             <img
                                                 src={collection.image.url}
@@ -227,7 +227,7 @@ export const MobileMenuCollections = ({
                                             : "hover:bg-accent hover:text-accent-foreground"
                                     )}
                                 >
-                                    <div className="from-primary/20 to-primary/10 relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-md bg-gradient-to-br">
+                                    <div className="from-primary/20 to-primary/10 relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-gradient-to-br">
                                         {collection.image?.url ? (
                                             <img
                                                 src={collection.image.url}

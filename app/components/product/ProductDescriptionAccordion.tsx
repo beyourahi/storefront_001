@@ -137,7 +137,7 @@ export const ProductDescriptionAccordion = ({product, className = ""}: ProductDe
                                             </div>
                                         )}
                                     </div>
-                                    <div className="ml-4 flex-shrink-0">
+                                    <div className="ml-4 shrink-0">
                                         <div
                                             className={cn(
                                                 "group-hover:bg-primary/10 rounded-full p-2 transition-all duration-300",

@@ -43,7 +43,7 @@ export const IosInstallInstructions = ({open, onDismiss, appName, appIcon}: IosI
 
                     <ol className="space-y-4 mt-6">
                         <li className="flex items-start gap-3">
-                            <span className="flex-shrink-0 size-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+                            <span className="shrink-0 size-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
                                 1
                             </span>
                             <div className="flex items-center gap-2 pt-0.5">
@@ -56,7 +56,7 @@ export const IosInstallInstructions = ({open, onDismiss, appName, appIcon}: IosI
                         </li>
 
                         <li className="flex items-start gap-3">
-                            <span className="flex-shrink-0 size-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+                            <span className="shrink-0 size-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
                                 2
                             </span>
                             <div className="flex items-center gap-2 pt-0.5 flex-wrap">

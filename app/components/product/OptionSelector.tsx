@@ -33,14 +33,7 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                         <h3 className="text-foreground mb-3 text-sm font-semibold">{option.name}</h3>
                         <div className="flex flex-wrap items-center gap-2">
                             {availableValues.map(value => {
-                                const {
-                                    name,
-                                    handle,
-                                    variantUriQuery,
-                                    selected,
-                                    available,
-                                    isDifferentProduct
-                                } = value;
+                                const {name, handle, variantUriQuery, selected, available, isDifferentProduct} = value;
 
                                 if (isDifferentProduct) {
                                     return (
@@ -90,10 +83,8 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
 
             {hasUnavailableSelection && (
                 <div className="bg-destructive/10 border-destructive/20 flex animate-pulse items-center gap-2 rounded-md border p-3">
-                    <AlertTriangle className="text-destructive h-4 w-4 flex-shrink-0" />
-                    <p className="text-destructive text-sm font-medium">
-                        This combination is currently out of stock.
-                    </p>
+                    <AlertTriangle className="text-destructive h-4 w-4 shrink-0" />
+                    <p className="text-destructive text-sm font-medium">This combination is currently out of stock.</p>
                 </div>
             )}
         </div>

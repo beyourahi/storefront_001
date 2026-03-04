@@ -146,7 +146,7 @@ function CartLineImage({
 }) {
     const size = small ? 48 : 64;
     return (
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
             <Link to={`/products/${handle}`} prefetch="viewport" className="block" onClick={onNavigate}>
                 {image && (
                     <Image
@@ -210,7 +210,10 @@ function CartLinePricing({cost, quantity}: {cost: CartLine["cost"]; quantity: nu
             </p>
             <p className={cn("text-muted-foreground text-xs sm:text-sm", quantity > 1 ? "opacity-100" : "opacity-0")}>
                 <span className="font-mono font-medium tracking-tight tabular-nums" aria-label="Price per item">
-                    <Money data={{amount: perItemAmount, currencyCode: totalAmount.currencyCode}} withoutTrailingZeros />
+                    <Money
+                        data={{amount: perItemAmount, currencyCode: totalAmount.currencyCode}}
+                        withoutTrailingZeros
+                    />
                 </span>
                 <span className=""> each</span>
             </p>

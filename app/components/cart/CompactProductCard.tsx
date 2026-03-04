@@ -27,9 +27,9 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
     };
 
     return (
-        <div className={cn("sleek group w-[180px] flex-shrink-0 overflow-hidden rounded-lg sm:w-[180px]", className)}>
+        <div className={cn("sleek group w-[180px] shrink-0 overflow-hidden rounded-lg sm:w-[180px]", className)}>
             <div className="flex gap-3 p-3">
-                <div className="relative size-16 flex-shrink-0 overflow-hidden rounded-sm">
+                <div className="relative size-16 shrink-0 overflow-hidden rounded-sm">
                     <button className="block w-full text-left" onClick={handleProductClick}>
                         {productImage ? (
                             <Image

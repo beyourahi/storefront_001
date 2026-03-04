@@ -47,7 +47,11 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
           : `/collections/${collection.handle}`;
 
     return (
-        <Link to={linkHref} prefetch="intent" className="sleek group bg-card collection-card block overflow-hidden rounded-lg">
+        <Link
+            to={linkHref}
+            prefetch="intent"
+            className="sleek group bg-card collection-card block overflow-hidden rounded-lg"
+        >
             <div className={`bg-muted relative ${aspectRatioClass} w-full overflow-hidden`}>
                 {shouldShowShopAllImage && shopAllImage ? (
                     <Image
@@ -223,7 +227,7 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
                                     <h3 className="sleek text-card-foreground flex-1 text-sm leading-tight font-bold sm:text-base">
                                         {collection.title}
                                     </h3>
-                                    <span className="text-muted-foreground hidden flex-shrink-0 text-xs sm:inline 2xl:text-sm">
+                                    <span className="text-muted-foreground hidden shrink-0 text-xs sm:inline 2xl:text-sm">
                                         {productCount} products
                                     </span>
                                 </div>
