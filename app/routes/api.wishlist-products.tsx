@@ -45,11 +45,25 @@ const WISHLIST_PRODUCTS_QUERY = `#graphql
             currencyCode
           }
         }
-        variants(first: 1) {
+        variants(first: 100) {
           edges {
             node {
               id
+              title
               availableForSale
+              quantityAvailable
+              selectedOptions {
+                name
+                value
+              }
+              price {
+                amount
+                currencyCode
+              }
+              compareAtPrice {
+                amount
+                currencyCode
+              }
             }
           }
         }

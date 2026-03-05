@@ -146,6 +146,15 @@ const SALE_PRODUCT_FRAGMENT = `#graphql
       width
       height
     }
+    images(first: 5) {
+      nodes {
+        id
+        altText
+        url
+        width
+        height
+      }
+    }
     priceRange {
       minVariantPrice {
         amount
@@ -165,6 +174,12 @@ const SALE_PRODUCT_FRAGMENT = `#graphql
     variants(first: 250) {
       nodes {
         ...SaleVariant
+        title
+        quantityAvailable
+        selectedOptions {
+          name
+          value
+        }
       }
     }
   }

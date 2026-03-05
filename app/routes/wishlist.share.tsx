@@ -16,22 +16,59 @@ const SHARED_WISHLIST_QUERY = `#graphql
         title
         handle
         availableForSale
+        tags
+        productType
+        vendor
         featuredImage {
+          id
           url
           altText
           width
           height
+        }
+        images(first: 4) {
+          nodes {
+            id
+            url
+            altText
+            width
+            height
+          }
         }
         priceRange {
           minVariantPrice {
             amount
             currencyCode
           }
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
         }
-        variants(first: 1) {
+        compareAtPriceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        variants(first: 100) {
           nodes {
             id
+            title
             availableForSale
+            quantityAvailable
+            selectedOptions {
+              name
+              value
+            }
+            price {
+              amount
+              currencyCode
+            }
+            compareAtPrice {
+              amount
+              currencyCode
+            }
           }
         }
       }

@@ -1,8 +1,8 @@
 import {useMemo} from "react";
-import {Plus} from "lucide-react";
 import {Image} from "@shopify/hydrogen";
+import {Plus} from "lucide-react";
 import {Badge} from "~/components/ui/badge";
-import {ProductVariantDialog} from "~/components/display/ProductVariantDialog";
+import {ProductVariantDialog} from "~/components/ProductVariantDialog";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {cn} from "~/lib/utils";
 import {getProductDataForCard} from "~/lib/product/product-card-utils";
@@ -95,7 +95,11 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
             </div>
 
             <div className="px-3 pb-3">
-                <ProductVariantDialog productHandle={product.handle} autoAddSingleVariant={true} onSuccess={onCartAdd}>
+                <ProductVariantDialog
+                    productHandle={product.handle}
+                    autoAddSingleVariant={true}
+                    onSuccess={onCartAdd}
+                >
                     <div className="flex w-full items-center justify-center gap-1.5">
                         <Plus className="h-3 w-3" />
                         <span>{isPreorder ? "PRE ORDER" : "ADD TO CART"}</span>

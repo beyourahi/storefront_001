@@ -33,10 +33,20 @@ const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
       handle
       availableForSale
       featuredImage {
+        id
         url
         altText
         width
         height
+      }
+      images(first: 4) {
+        nodes {
+          id
+          url
+          altText
+          width
+          height
+        }
       }
       priceRange {
         minVariantPrice {
@@ -46,6 +56,26 @@ const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
         maxVariantPrice {
           amount
           currencyCode
+        }
+      }
+      variants(first: 100) {
+        nodes {
+          id
+          title
+          availableForSale
+          quantityAvailable
+          selectedOptions {
+            name
+            value
+          }
+          price {
+            amount
+            currencyCode
+          }
+          compareAtPrice {
+            amount
+            currencyCode
+          }
         }
       }
     }
