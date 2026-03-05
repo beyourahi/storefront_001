@@ -267,7 +267,7 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
 
                         <button
                             type="button"
-                            className="sleek bg-secondary text-secondary-foreground hover:bg-secondary/80 focus-visible:border-ring focus-visible:ring-ring/50 inline-flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold whitespace-nowrap shadow-xs outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                            className="sleek bg-secondary text-secondary-foreground hover:bg-secondary/80 focus-visible:border-ring focus-visible:ring-ring/50 inline-flex h-12 w-full shrink-0 select-none items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold whitespace-nowrap shadow-xs outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                             onClick={event => openSearch(event.currentTarget)}
                         >
                             <SearchIcon className="h-4 w-4" />

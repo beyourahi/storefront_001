@@ -5,7 +5,7 @@ import {cva, type VariantProps} from "class-variance-authority";
 import {cn} from "~/lib/utils";
 
 const wishlistButtonVariants = cva(
-    "inline-flex items-center justify-center rounded-full transition-all duration-150 hover:scale-110 active:scale-95",
+    "inline-flex select-none items-center justify-center rounded-full transition-all duration-150 hover:scale-110 active:scale-95",
     {
         variants: {
             size: {

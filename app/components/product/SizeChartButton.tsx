@@ -18,13 +18,13 @@ export function SizeChartButton({sizeChart, variant = "link", className}: SizeCh
 
     const variantStyles = {
         link: cn(
-            "inline-flex items-center gap-1.5 text-sm font-medium",
+            "inline-flex select-none items-center gap-1.5 text-sm font-medium",
             "text-primary underline underline-offset-4",
             "hover:text-primary/80 transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         ),
         outline: cn(
-            "inline-flex items-center justify-center gap-2",
+            "inline-flex select-none items-center justify-center gap-2",
             "min-h-10 px-3 sm:px-4 py-2 rounded-full",
             "border-2 border-primary text-primary",
             "font-medium text-sm",
@@ -33,7 +33,7 @@ export function SizeChartButton({sizeChart, variant = "link", className}: SizeCh
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         ),
         ghost: cn(
-            "inline-flex items-center gap-1.5",
+            "inline-flex select-none items-center gap-1.5",
             "min-h-10 px-3 sm:px-4 py-2 rounded-md",
             "text-muted-foreground text-sm",
             "hover:text-primary hover:bg-muted/50",
@@ -41,7 +41,7 @@ export function SizeChartButton({sizeChart, variant = "link", className}: SizeCh
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         ),
         mobile: cn(
-            "inline-flex items-center gap-1.5 text-sm font-medium",
+            "inline-flex select-none items-center gap-1.5 text-sm font-medium",
             "text-primary-foreground underline underline-offset-4",
             "hover:text-primary-foreground/80 transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
@@ -71,7 +71,7 @@ export function SizeChartButtonCompact({sizeChart, className}: {sizeChart: SizeC
                 type="button"
                 onClick={() => setIsOpen(true)}
                 className={cn(
-                    "inline-flex items-center gap-1.5",
+                    "inline-flex select-none items-center gap-1.5",
                     "min-h-10 min-w-10 px-2 sm:px-3 py-2 rounded-md",
                     "text-muted-foreground text-sm",
                     "hover:text-primary hover:bg-muted/50",

@@ -72,7 +72,7 @@ function DialogContent({
                         data-slot="dialog-close"
                         className={cn(
                             "absolute top-2 right-2 sm:top-3 sm:right-3",
-                            "flex items-center justify-center size-10 sm:size-11",
+                            "flex select-none items-center justify-center size-10 sm:size-11",
                             "rounded-full bg-muted/50 hover:bg-muted cursor-pointer",
                             "opacity-70 transition-all hover:opacity-100",
                             "ring-offset-background focus:ring-ring focus:ring-2 focus:ring-offset-2 focus:outline-hidden",

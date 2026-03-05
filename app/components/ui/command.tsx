@@ -72,7 +72,7 @@ function CommandItem({className, ...props}: React.ComponentProps<"button">) {
             type="button"
             data-slot="command-item"
             className={cn(
-                "aria-selected:bg-accent aria-selected:text-accent-foreground hover:bg-accent hover:text-accent-foreground relative flex w-full items-center gap-2 rounded-sm px-2 py-2 text-sm outline-hidden",
+                "aria-selected:bg-accent aria-selected:text-accent-foreground hover:bg-accent hover:text-accent-foreground relative flex w-full select-none items-center gap-2 rounded-sm px-2 py-2 text-sm outline-hidden",
                 className
             )}
             {...props}

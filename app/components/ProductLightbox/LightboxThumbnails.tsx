@@ -56,7 +56,7 @@ export function LightboxThumbnails({media, currentIndex, onSelect}: LightboxThum
                             aria-selected={isActive}
                             aria-label={`View ${isVideo ? "video" : "image"} ${index + 1} of ${media.length}`}
                             className={cn(
-                                "relative shrink-0 w-12 h-15 md:w-14 md:h-[70px]",
+                                "relative shrink-0 w-12 h-15 select-none md:w-14 md:h-[70px]",
                                 "rounded-md overflow-hidden",
                                 "transition-all duration-200",
                                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-light",

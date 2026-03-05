@@ -174,7 +174,7 @@ export const ProductImageGalleryDialog = ({
                                         key={image.id}
                                         type="button"
                                         className={cn(
-                                            "sleek h-16 w-16 shrink-0 overflow-hidden rounded-md border-2",
+                                            "sleek h-16 w-16 shrink-0 select-none overflow-hidden rounded-md border-2",
                                             activeIndex === index
                                                 ? "border-popover-foreground scale-105 opacity-100"
                                                 : "border-transparent opacity-60 hover:scale-105 hover:opacity-80"

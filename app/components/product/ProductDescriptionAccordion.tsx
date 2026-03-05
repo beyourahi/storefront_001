@@ -114,7 +114,7 @@ export const ProductDescriptionAccordion = ({product, className = ""}: ProductDe
                             >
                                 <button
                                     className={cn(
-                                        "group flex w-full items-start justify-between text-left focus:outline-none",
+                                        "group flex w-full select-none items-start justify-between text-left focus:outline-none",
                                         "sleek text-foreground"
                                     )}
                                     onClick={() => handleAccordionClick(section.id)}

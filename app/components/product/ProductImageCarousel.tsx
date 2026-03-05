@@ -149,7 +149,7 @@ export const ProductImageCarousel = ({
                                 <div key={image.id} className="min-w-0 shrink-0 grow-0 basis-full">
                                     <button
                                         type="button"
-                                        className={`focus:ring-primary h-full w-full cursor-zoom-in focus:ring-2 focus:outline-none focus:ring-inset lg:cursor-zoom-in ${aspectRatioClass}`}
+                                        className={`focus:ring-primary h-full w-full cursor-zoom-in select-none focus:ring-2 focus:outline-none focus:ring-inset lg:cursor-zoom-in ${aspectRatioClass}`}
                                         onClick={() => {
                                             if (typeof window !== "undefined" && window.innerWidth >= 1024) {
                                                 openGallery(activeIndex);
@@ -213,7 +213,7 @@ export const ProductImageCarousel = ({
                                     <div key={image.id} className="min-w-0 shrink-0 grow-0 basis-1/4">
                                         <button
                                             type="button"
-                                            className={`bg-muted sleek w-full overflow-hidden rounded-md border-2 ${
+                                            className={`bg-muted sleek w-full select-none overflow-hidden rounded-md border-2 ${
                                                 activeIndex === index ? "border-primary" : "border-transparent"
                                             } hover:border-primary/50`}
                                             onClick={() => onThumbClick(index)}
@@ -259,7 +259,7 @@ export const ProductImageCarousel = ({
                             <button
                                 key={image.id}
                                 type="button"
-                                className={`sleek h-2 w-2 rounded-full ${
+                                className={`sleek h-2 w-2 select-none rounded-full ${
                                     activeIndex === index ? "bg-primary" : "bg-primary/30"
                                 }`}
                                 onClick={() => onThumbClick(index)}
