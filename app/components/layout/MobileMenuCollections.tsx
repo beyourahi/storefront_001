@@ -145,25 +145,22 @@ export const MobileMenuCollections = ({
                             )}
                         >
                             <div className="group/icon relative h-12 w-12 shrink-0 overflow-visible">
-                                <div className="absolute inset-0 scale-100 animate-ping rounded-full bg-emerald-500/20" />
-                                <div className="absolute inset-0 scale-110 animate-ping rounded-full bg-green-500/15" />
+                                <div className="bg-discount-bg/20 absolute inset-0 scale-100 animate-ping rounded-full" />
+                                <div className="bg-discount-icon-bg/15 absolute inset-0 scale-110 animate-ping rounded-full" />
 
-                                <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-emerald-400/80 to-green-600/90 transition-all duration-500 group-hover/icon:scale-110 group-hover/icon:from-emerald-500/90 group-hover/icon:to-green-700/95 group-hover/icon:shadow-lg group-hover/icon:shadow-emerald-500/40">
+                                <div className="from-discount-icon-bg/90 via-discount-bg to-accent/60 group-hover/icon:shadow-discount-icon-bg/30 relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br transition-all duration-500 group-hover/icon:scale-110 group-hover/icon:shadow-lg">
                                     <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover/icon:translate-x-full" />
-                                    <div
-                                        className="absolute inset-0 animate-spin rounded-lg border-2 border-dashed border-emerald-300/60"
-                                        style={{animationDuration: "6s"}}
-                                    />
+                                    <div className="border-discount-text/60 absolute inset-0 animate-spin rounded-lg border-2 border-dashed" style={{animationDuration: "6s"}} />
                                     <Tag className="absolute inset-0 m-auto h-6 w-6 animate-pulse text-white drop-shadow-sm transition-all duration-300 group-hover/icon:scale-110 group-hover/icon:rotate-12" />
                                 </div>
 
-                                <div className="absolute -top-1 -left-3 animate-bounce rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-2 py-1 text-xs font-bold text-white shadow-md">
+                                <div className="bg-primary text-primary-foreground absolute -top-1 -left-3 animate-bounce rounded-full px-2 py-1 text-xs font-bold shadow-md">
                                     SALE
                                 </div>
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-sm font-bold text-emerald-700">Special Offers</span>
-                                <span className="text-xs text-emerald-600/80">
+                                <span className="text-sale-text text-sm font-bold">Special Offers</span>
+                                <span className="text-sale-text/80 text-xs">
                                     {discountStats.count} {discountStats.count === 1 ? "deal" : "deals"} available
                                 </span>
                             </div>

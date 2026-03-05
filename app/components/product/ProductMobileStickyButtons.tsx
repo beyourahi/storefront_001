@@ -70,7 +70,7 @@ export const ProductMobileStickyButtons = ({
                             )}
                         </div>
                         {isOnSale && savingsPercentage > 0 && (
-                            <Badge variant="secondary" className="border-emerald-200 bg-emerald-100 text-emerald-800">
+                            <Badge variant="secondary" className="bg-discount-bg text-discount-text border-discount-icon-bg">
                                 Save {savingsPercentage}%
                             </Badge>
                         )}

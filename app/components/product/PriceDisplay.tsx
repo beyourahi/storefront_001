@@ -37,7 +37,7 @@ export const PriceDisplay = ({selectedVariant, discountPercentage, isLoading = f
                 )}
             </div>
             {discountPercentage && discountPercentage > 0 && (
-                <p className="text-sm font-medium text-emerald-600">Save {discountPercentage}%</p>
+                <p className="text-sale-text text-sm font-medium">Save {discountPercentage}%</p>
             )}
         </div>
     );

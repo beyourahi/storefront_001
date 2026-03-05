@@ -124,43 +124,43 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
                         </div>
                     </div>
                 ) : isSpecialOffers ? (
-                    <div className="sleek relative h-full w-full overflow-hidden bg-gradient-to-br from-emerald-500/60 via-green-500/50 to-teal-500/40 xl:group-hover:scale-110">
+                    <div className="from-discount-icon-bg/80 via-discount-bg to-accent/35 sleek relative h-full w-full overflow-hidden bg-gradient-to-br xl:group-hover:scale-110">
                         <div className="absolute inset-0">
                             <div className="absolute top-3 left-3 animate-bounce opacity-20 delay-300 transform-gpu">
-                                <Zap className="h-4 w-4 rotate-45 text-teal-400 sm:h-5 sm:w-5" />
+                                <Zap className="text-discount-text h-4 w-4 rotate-45 sm:h-5 sm:w-5" />
                             </div>
                             <div className="absolute top-6 right-4 animate-pulse opacity-15 delay-700 transform-gpu">
-                                <Star className="h-3 w-3 text-green-300 sm:h-4 sm:w-4" />
+                                <Star className="text-discount-text h-3 w-3 sm:h-4 sm:w-4" />
                             </div>
                             <div className="absolute bottom-4 left-4 animate-bounce opacity-25 delay-500 transform-gpu">
-                                <Sparkles className="h-3 w-3 rotate-12 text-emerald-400 sm:h-4 sm:w-4" />
+                                <Sparkles className="text-discount-text h-3 w-3 rotate-12 sm:h-4 sm:w-4" />
                             </div>
                             <div className="absolute right-3 bottom-3 animate-pulse opacity-20 delay-900 transform-gpu">
-                                <Percent className="h-4 w-4 -rotate-12 text-teal-500 sm:h-5 sm:w-5" />
+                                <Percent className="text-sale-text h-4 w-4 -rotate-12 sm:h-5 sm:w-5" />
                             </div>
                         </div>
 
                         <div className="relative flex h-full items-center justify-center p-4">
                             <div className="relative">
                                 <div
-                                    className="absolute inset-0 scale-150 animate-ping rounded-full bg-emerald-500/35 delay-0 transform-gpu"
+                                    className="bg-discount-bg/35 absolute inset-0 scale-150 animate-ping rounded-full delay-0 transform-gpu"
                                     style={{animationDuration: "3s"}}
                                 />
                                 <div
-                                    className="absolute inset-0 scale-125 animate-ping rounded-full bg-green-500/35 delay-500 transform-gpu"
+                                    className="bg-discount-icon-bg/35 absolute inset-0 scale-125 animate-ping rounded-full delay-500 transform-gpu"
                                     style={{animationDuration: "4s"}}
                                 />
                                 <div
-                                    className="absolute inset-0 scale-100 animate-ping rounded-full bg-teal-500/35 delay-1000 transform-gpu"
+                                    className="bg-accent/30 absolute inset-0 scale-100 animate-ping rounded-full delay-1000 transform-gpu"
                                     style={{animationDuration: "5s"}}
                                 />
 
                                 <div className="relative">
                                     <div
-                                        className="absolute inset-0 animate-spin rounded-full border-2 border-dashed border-emerald-400/40 transform-gpu"
+                                        className="border-discount-text/40 absolute inset-0 animate-spin rounded-full border-2 border-dashed transform-gpu"
                                         style={{animationDuration: "12s"}}
                                     />
-                                    <div className="relative flex items-center justify-center rounded-full bg-gradient-to-br from-emerald-500/80 to-green-500/80 p-5 transform-gpu transition-all duration-500 group-hover:from-emerald-500/90 group-hover:to-green-500/90 group-hover:shadow-lg sm:p-7">
+                                    <div className="from-discount-icon-bg/90 to-discount-bg relative flex items-center justify-center rounded-full bg-gradient-to-br p-5 transform-gpu transition-all duration-500 group-hover:shadow-lg sm:p-7">
                                         <Tag className="h-5 w-5 text-white transform-gpu transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12 sm:h-7 sm:w-7" />
                                     </div>
                                 </div>
@@ -168,19 +168,19 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
                                 {maxDiscountPercentage > 0 && (
                                     <>
                                         <div
-                                            className="absolute -top-2 -right-3 flex animate-bounce items-center justify-center rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-2 py-1 text-xs font-bold text-white shadow-lg delay-200 transform-gpu sm:text-sm"
+                                            className="bg-primary text-primary-foreground absolute -top-2 -right-3 flex animate-bounce items-center justify-center rounded-full px-2 py-1 text-xs font-bold shadow-lg delay-200 transform-gpu sm:text-sm"
                                             style={{animationDuration: "2s"}}
                                         >
                                             -{maxDiscountPercentage}%
                                         </div>
                                         <div
-                                            className="absolute -top-1 -left-2 flex animate-pulse items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-2 py-1 text-xs font-bold text-white shadow-md delay-1500 transform-gpu"
+                                            className="bg-discount-text text-background absolute -top-1 -left-2 flex animate-pulse items-center justify-center rounded-full px-2 py-1 text-xs font-bold shadow-md delay-1500 transform-gpu"
                                             style={{animationDuration: "3s"}}
                                         >
                                             HOT
                                         </div>
                                         <div
-                                            className="absolute -bottom-2 -left-3 flex animate-bounce items-center justify-center rounded-full bg-gradient-to-r from-teal-500 to-green-500 px-2 py-1 text-xs font-bold text-white shadow-md delay-2000 transform-gpu"
+                                            className="bg-sale-text text-background absolute -bottom-2 -left-3 flex animate-bounce items-center justify-center rounded-full px-2 py-1 text-xs font-bold shadow-md delay-2000 transform-gpu"
                                             style={{animationDuration: "2.5s"}}
                                         >
                                             SALE
@@ -194,13 +194,13 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
                             className="absolute top-1 left-1 animate-spin opacity-30 transform-gpu"
                             style={{animationDuration: "6s"}}
                         >
-                            <Sparkles className="h-2 w-2 text-teal-300 sm:h-3 sm:w-3" />
+                            <Sparkles className="text-discount-text h-2 w-2 sm:h-3 sm:w-3" />
                         </div>
                         <div
                             className="absolute top-1 right-1 animate-spin opacity-30 transform-gpu"
                             style={{animationDuration: "8s", animationDirection: "reverse"}}
                         >
-                            <Star className="h-2 w-2 text-emerald-300 sm:h-3 sm:w-3" />
+                            <Star className="text-discount-text h-2 w-2 sm:h-3 sm:w-3" />
                         </div>
                     </div>
                 ) : collection.image ? (

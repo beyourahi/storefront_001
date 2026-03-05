@@ -22,7 +22,7 @@ export function CartMain({
 
     if (isEmpty) {
         return (
-            <div className="cart-contrast-scope flex h-full flex-col">
+            <div className="flex h-full flex-col">
                 <CartAsideHeader itemCount={0} />
                 <CartEmpty />
             </div>
@@ -30,7 +30,7 @@ export function CartMain({
     }
 
     return (
-        <div className="cart-contrast-scope flex h-full flex-col">
+        <div className="flex h-full flex-col">
             <CartAsideHeader itemCount={cart?.totalQuantity ?? 0} />
 
             <div className="flex-1 overflow-y-auto px-4 md:px-6" data-lenis-prevent>

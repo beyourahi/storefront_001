@@ -116,7 +116,7 @@ export default function Cart() {
     const cartPromise = useLoaderData<typeof loader>();
 
     return (
-        <div className="cart-contrast-scope min-h-[70dvh] bg-background">
+        <div className="min-h-[70dvh] bg-background">
             <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 lg:px-8">
                 <h1 className="mb-8 font-serif text-3xl font-medium tracking-tight text-foreground md:text-4xl">
                     Shopping Cart

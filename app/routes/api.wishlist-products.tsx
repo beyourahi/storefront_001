@@ -19,14 +19,12 @@ const WISHLIST_PRODUCTS_QUERY = `#graphql
           values
         }
         images(first: 5) {
-          edges {
-            node {
-              id
-              url
-              altText
-              width
-              height
-            }
+          nodes {
+            id
+            url
+            altText
+            width
+            height
           }
         }
         priceRange {
@@ -46,24 +44,22 @@ const WISHLIST_PRODUCTS_QUERY = `#graphql
           }
         }
         variants(first: 100) {
-          edges {
-            node {
-              id
-              title
-              availableForSale
-              quantityAvailable
-              selectedOptions {
-                name
-                value
-              }
-              price {
-                amount
-                currencyCode
-              }
-              compareAtPrice {
-                amount
-                currencyCode
-              }
+          nodes {
+            id
+            title
+            availableForSale
+            quantityAvailable
+            selectedOptions {
+              name
+              value
+            }
+            price {
+              amount
+              currencyCode
+            }
+            compareAtPrice {
+              amount
+              currencyCode
             }
           }
         }

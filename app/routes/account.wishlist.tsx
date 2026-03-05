@@ -1,4 +1,4 @@
-import {useState, useEffect, useMemo} from "react";
+import {useState, useEffect, useMemo, useRef} from "react";
 import {Link, useFetcher} from "react-router";
 import type {MetaFunction} from "react-router";
 import {useWishlist} from "~/lib/wishlist-context";
@@ -63,20 +63,20 @@ const ConfirmDialog = ({
     onCancel: () => void;
 }) => {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="w-full max-w-md rounded-lg bg-white p-6">
+        <div className="bg-overlay-dark fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+            <div className="bg-card text-card-foreground border-border w-full max-w-md rounded-lg border p-6 shadow-2xl">
                 <h2 className="mb-4 text-xl font-bold">{title}</h2>
-                <p className="mb-6 text-gray-600">{message}</p>
+                <p className="text-muted-foreground mb-6">{message}</p>
                 <div className="flex justify-end gap-3">
                     <button
                         onClick={onCancel}
-                        className="rounded-lg border border-gray-300 px-4 py-2 transition-colors hover:bg-gray-100"
+                        className="border-border bg-background text-foreground hover:bg-muted rounded-lg border px-4 py-2 transition-colors"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-lg px-4 py-2 transition-colors"
                     >
                         {confirmLabel}
                     </button>
@@ -89,6 +89,7 @@ const ConfirmDialog = ({
 const AccountWishlist = () => {
     const {wishlistIds, count, clearAll} = useWishlist();
     const fetcher = useFetcher<{products: WishlistProduct[]}>();
+    const requestedWishlistKeyRef = useRef<string | null>(null);
 
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
     const [columns, setColumns] = useState<2 | 3 | 4>(3);
@@ -136,9 +137,16 @@ const AccountWishlist = () => {
 
     useEffect(() => {
         if (wishlistIds.length === 0) {
+            requestedWishlistKeyRef.current = null;
             return;
         }
 
+        const wishlistKey = wishlistIds.join(",");
+        if (requestedWishlistKeyRef.current === wishlistKey) {
+            return;
+        }
+
+        requestedWishlistKeyRef.current = wishlistKey;
         const gids = wishlistIds.map(id => reconstructGid(id));
 
         void fetcher.submit(
@@ -214,19 +222,19 @@ const AccountWishlist = () => {
         <div className="mx-auto max-w-7xl px-4 py-8">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold">My Wishlist</h1>
-                <p className="mt-2 text-gray-600">
+                <p className="text-muted-foreground mt-2">
                     {count} {count === 1 ? "item" : "items"} saved
                 </p>
             </div>
 
             {count === 0 ? (
-                <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
-                    <HiShare className="mb-4 h-16 w-16 text-gray-400" />
+                <div className="border-border/60 flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed">
+                    <HiShare className="text-muted-foreground/60 mb-4 h-16 w-16" />
                     <h3 className="mb-2 text-xl font-semibold">Your wishlist is empty</h3>
-                    <p className="mb-6 text-gray-600">Start adding products you love</p>
+                    <p className="text-muted-foreground mb-6">Start adding products you love</p>
                     <Link
                         to="/products"
-                        className="rounded-lg bg-black px-6 py-3 text-white transition-colors hover:bg-gray-800"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 transition-colors"
                     >
                         Start Browsing
                     </Link>
@@ -240,7 +248,7 @@ const AccountWishlist = () => {
                                     <button
                                         type="submit"
                                         disabled={cartLines.length === 0 || fetcher.state !== "idle"}
-                                        className="flex items-center gap-2 rounded-lg bg-black px-6 py-3 font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         <HiShoppingCart className="h-5 w-5" />
                                         {fetcher.state !== "idle" ? "Adding..." : "Add All to Cart"}
@@ -256,8 +264,8 @@ const AccountWishlist = () => {
                                 onClick={() => setViewMode("grid")}
                                 className={`rounded-lg p-2 transition-colors ${
                                     viewMode === "grid"
-                                        ? "bg-black text-white"
-                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                                 }`}
                                 aria-label="Grid view"
                             >
@@ -267,8 +275,8 @@ const AccountWishlist = () => {
                                 onClick={() => setViewMode("list")}
                                 className={`rounded-lg p-2 transition-colors ${
                                     viewMode === "list"
-                                        ? "bg-black text-white"
-                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                                 }`}
                                 aria-label="List view"
                             >
@@ -277,15 +285,15 @@ const AccountWishlist = () => {
 
                             {viewMode === "grid" && (
                                 <div className="ml-4 flex items-center gap-2">
-                                    <span className="text-sm text-gray-600">Columns:</span>
+                                    <span className="text-muted-foreground text-sm">Columns:</span>
                                     {[2, 3, 4].map(col => (
                                         <button
                                             key={col}
                                             onClick={() => setColumns(col as 2 | 3 | 4)}
                                             className={`h-8 w-8 rounded-lg text-sm font-medium transition-colors ${
                                                 columns === col
-                                                    ? "bg-black text-white"
-                                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                                    ? "bg-primary text-primary-foreground"
+                                                    : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                                             }`}
                                         >
                                             {col}
@@ -299,7 +307,7 @@ const AccountWishlist = () => {
                             <select
                                 value={sortBy}
                                 onChange={e => setSortBy(e.target.value as SortOption)}
-                                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm"
+                                className="border-border bg-background text-foreground rounded-lg border px-4 py-2 text-sm"
                             >
                                 <option value="date-added">Date Added</option>
                                 <option value="price-low">Price: Low to High</option>
@@ -308,7 +316,7 @@ const AccountWishlist = () => {
 
                             <button
                                 onClick={() => setShowShareDialog(true)}
-                                className="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-200"
+                                className="bg-muted text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                             >
                                 <HiShare className="h-4 w-4" />
                                 Share
@@ -316,7 +324,7 @@ const AccountWishlist = () => {
 
                             <button
                                 onClick={() => setShowClearDialog(true)}
-                                className="flex items-center gap-2 rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-200"
+                                className="bg-destructive/10 text-destructive hover:bg-destructive/15 flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                             >
                                 <HiTrash className="h-4 w-4" />
                                 Clear All
@@ -329,7 +337,7 @@ const AccountWishlist = () => {
                             {Array.from({length: count}).map((_, i) => (
                                 <div
                                     key={wishlistIds[i] ?? `wishlist-loading-${i}`}
-                                    className="aspect-square animate-pulse rounded-lg bg-gray-200"
+                                    className="bg-muted aspect-square animate-pulse rounded-lg"
                                 />
                             ))}
                         </div>

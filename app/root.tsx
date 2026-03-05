@@ -79,7 +79,6 @@ export function links() {
         {rel: "preconnect", href: "https://shop.app"},
         {rel: "preconnect", href: "https://fonts.googleapis.com"},
         {rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" as const},
-        // Note: Google Fonts link is dynamically generated in Layout from metaobject theme settings
         {rel: "stylesheet", href: appCss},
         {rel: "manifest", href: "/manifest.webmanifest"},
         {rel: "apple-touch-icon", href: "/apple-touch-icon.png"},
@@ -271,10 +270,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width,initial-scale=1" />
+                <script src="/pwa-install-capture.js" nonce={nonce} />
                 {generatedTheme?.googleFontsUrl && <link rel="stylesheet" href={generatedTheme.googleFontsUrl} />}
                 <Meta />
                 <Links />
-                <script src="/pwa-install-capture.js" />
                 {generatedTheme?.cssVariables && <ThemeStyleTag css={generatedTheme.cssVariables} />}
             </head>
             <body>

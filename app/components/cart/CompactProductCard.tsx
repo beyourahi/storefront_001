@@ -52,7 +52,7 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                     {discountPercentage && (
                         <Badge
                             variant="outline"
-                            className="absolute top-0 left-0 z-30 rounded-bl-none border-[var(--cart-discount-border)] bg-[var(--cart-discount-bg)] px-1 py-0 text-[10px] font-semibold text-[var(--cart-discount-fg)]"
+                            className="bg-discount-bg text-discount-text border-discount-icon-bg absolute top-0 left-0 z-30 rounded-bl-none px-1 py-0 text-[10px] font-semibold"
                         >
                             -{Math.round(discountPercentage)}%
                         </Badge>

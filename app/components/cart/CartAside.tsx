@@ -17,7 +17,7 @@ export function CartAside() {
     if (isMobile) {
         return (
             <Drawer open={isOpen} onOpenChange={(open: boolean) => !open && close()}>
-                <DrawerContent className="cart-drawer cart-contrast-scope" overlayClassName="cart-overlay">
+                <DrawerContent className="cart-drawer" overlayClassName="bg-overlay-dark backdrop-blur-md">
                     <div className="flex max-h-[80vh] flex-col overflow-hidden">
                         <Suspense fallback={<CartLoadingSkeleton />}>
                             <Await resolve={rootData.cart}>
@@ -35,8 +35,8 @@ export function CartAside() {
             <SheetContent
                 side="right"
                 hideCloseButton
-                overlayClassName="cart-overlay"
-                className="cart-drawer cart-contrast-scope m-4 mr-0 flex max-h-[calc(100vh-2rem)] w-full max-w-md flex-col rounded-l-2xl shadow-2xl lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl [&>button]:hidden"
+                overlayClassName="bg-overlay-dark backdrop-blur-md"
+                className="cart-drawer m-4 mr-0 flex max-h-[calc(100vh-2rem)] w-full max-w-md flex-col rounded-l-2xl shadow-2xl lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl [&>button]:hidden"
             >
                 <div className="flex flex-1 flex-col overflow-hidden">
                     <Suspense fallback={<CartLoadingSkeleton />}>

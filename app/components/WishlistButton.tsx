@@ -63,7 +63,7 @@ export const WishlistButton = ({productId, size, showLabel = false, className, .
                             size === "sm" && "h-5 w-5",
                             size === "md" && "h-6 w-6",
                             size === "lg" && "h-7 w-7",
-                            "fill-red-500 text-red-500"
+                            "fill-wishlist-active text-wishlist-active"
                         )}
                     />
                 ) : (
@@ -73,7 +73,7 @@ export const WishlistButton = ({productId, size, showLabel = false, className, .
                             size === "sm" && "h-5 w-5",
                             size === "md" && "h-6 w-6",
                             size === "lg" && "h-7 w-7",
-                            "text-gray-400 hover:text-gray-600"
+                            "text-muted-foreground hover:text-foreground"
                         )}
                     />
                 )}

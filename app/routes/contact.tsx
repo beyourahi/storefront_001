@@ -181,16 +181,16 @@ export default function Contact() {
         <>
             <PageBreadcrumbs customTitle="Contact Us" />
 
-            <section className="relative py-8 bg-hero-overlay-mobile lg:bg-hero-overlay-desktop">
+            <section className="bg-overlay-dark relative py-8">
                 <div className="mx-auto max-w-[2000px] px-2 md:px-4">
                     <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
                         <GiantText
                             text={title}
                             className={cn("w-full font-black", title.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]")}
-                            textClass="text-hero-text-primary drop-shadow-lg"
+                            textClass="text-light drop-shadow-lg"
                         />
 
-                        <p className="text-hero-text-secondary drop-shadow-lg w-full text-xs lg:w-[60%] lg:text-sm 2xl:text-base">
+                        <p className="text-light/90 drop-shadow-lg w-full text-xs lg:w-[60%] lg:text-sm 2xl:text-base">
                             {subtitle}
                         </p>
                     </div>

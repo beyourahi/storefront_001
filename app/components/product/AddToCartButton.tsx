@@ -50,7 +50,7 @@ const AddToCartButtonInner = ({
 
     const buttonClass = cn(
         "sleek cta-primary-emphasis w-full",
-        justAdded && "border-green-600 bg-green-600 hover:bg-green-700",
+        justAdded && "border-success bg-success text-success-foreground hover:border-success hover:bg-success/90",
         className
     );
 

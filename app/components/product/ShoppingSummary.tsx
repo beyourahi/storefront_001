@@ -116,7 +116,7 @@ const SummaryContent = ({
                 </div>
 
                 {isOnSale && totalSavings > 0 && (
-                    <div className="flex items-center justify-between py-1 text-emerald-600">
+                    <div className="text-sale-text flex items-center justify-between py-1">
                         <span className="text-xs">You save</span>
                         <span className="font-mono text-xs font-medium">
                             -{formatMoney(totalSavings, currencyCode)} ({savingsPercentage}%)

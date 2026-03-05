@@ -202,7 +202,7 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
                 className="border-primary/20 ring-primary/10 gap-0 overflow-hidden border-2 p-0 shadow-2xl ring-1 sm:max-w-[750px] md:max-w-[750px] sm:rounded-xl"
-                overlayClassName="bg-black/50 backdrop-blur-sm"
+                overlayClassName="bg-overlay-dark backdrop-blur-md"
                 showCloseButton={false}
             >
                 <DialogTitle className="pointer-events-none sr-only">Search</DialogTitle>

@@ -164,15 +164,15 @@ const WishlistShare = () => {
     if (products.length === 0) {
         return (
             <div className="mx-auto max-w-7xl px-4 py-16">
-                <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
-                    <HiHeart className="mb-4 h-16 w-16 text-gray-400" />
+                <div className="border-border/60 flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed">
+                    <HiHeart className="text-muted-foreground/60 mb-4 h-16 w-16" />
                     <h2 className="mb-2 text-xl font-semibold">No products found</h2>
-                    <p className="mb-6 text-gray-600">
+                    <p className="text-muted-foreground mb-6">
                         The products in this wishlist are no longer available
                     </p>
                     <Link
                         to="/products"
-                        className="rounded-lg bg-black px-6 py-3 text-white transition-colors hover:bg-gray-800"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 transition-colors"
                     >
                         Browse Products
                     </Link>
@@ -185,7 +185,7 @@ const WishlistShare = () => {
         <div className="mx-auto max-w-7xl px-4 py-8">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold">Shared Wishlist</h1>
-                <p className="mt-2 text-gray-600">
+                <p className="text-muted-foreground mt-2">
                     {products.length} {products.length === 1 ? "item" : "items"}
                 </p>
             </div>
@@ -194,7 +194,7 @@ const WishlistShare = () => {
                 <button
                     onClick={handleAddAllToWishlist}
                     disabled={addedToWishlist}
-                    className="flex items-center gap-2 rounded-lg bg-black px-6 py-3 font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors disabled:opacity-50"
                 >
                     <HiHeart className="h-5 w-5" />
                     {addedToWishlist ? "Added to Your Wishlist!" : "Add All to My Wishlist"}
@@ -202,7 +202,7 @@ const WishlistShare = () => {
 
                 <button
                     onClick={() => setShowShareDialog(true)}
-                    className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-3 font-medium transition-colors hover:bg-gray-100"
+                    className="border-border bg-background text-foreground hover:bg-muted flex items-center gap-2 rounded-lg border px-6 py-3 font-medium transition-colors"
                 >
                     <HiShare className="h-5 w-5" />
                     Share This Wishlist

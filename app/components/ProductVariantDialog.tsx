@@ -226,7 +226,8 @@ export function ProductVariantDialog({
                 disabled={triggerDisabled}
                 className={cn(
                     "sleek !border-foreground/20 !bg-card !text-card-foreground hover:!bg-muted hover:!text-card-foreground hover:!border-foreground/40 inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-md !border-2 px-6 text-sm font-medium whitespace-nowrap !opacity-100 shadow-xs outline-none hover:!scale-[1.02] hover:!shadow-md focus-visible:ring-[3px] active:!scale-[0.98] has-[>svg]:px-4",
-                    addToCartState === "success" && "!border-green-600 !bg-green-600 !text-white hover:!bg-green-700",
+                    addToCartState === "success" &&
+                        "!border-success !bg-success !text-success-foreground hover:!border-success hover:!bg-success/90",
                     addToCartState === "adding" && "cursor-wait",
                     triggerDisabled && addToCartState !== "success" && addToCartState !== "adding"
                         ? "disabled:pointer-events-none"
@@ -609,7 +610,7 @@ function ProductVariantDialogContent({
                             <div className="flex-1 overflow-y-auto">
                                 {discountPercentage ? (
                                     <div className="mb-1.5">
-                                        <div className="inline-flex rounded-full border border-emerald-600 bg-emerald-500 px-2.5 py-1 text-xs font-semibold text-white">
+                                        <div className="bg-discount-bg text-discount-text border-discount-icon-bg inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold">
                                             -{discountPercentage}%
                                         </div>
                                     </div>
@@ -752,7 +753,7 @@ function ProductVariantDialogContent({
                                     className={cn(
                                         "sleek cta-primary-emphasis h-12 w-full shadow-lg hover:shadow-xl active:scale-[0.98] sm:h-12",
                                         addToCartState === "success"
-                                            ? "border-green-600 bg-green-600 hover:bg-green-700"
+                                            ? "border-success bg-success text-success-foreground hover:border-success hover:bg-success/90"
                                             : "",
                                         addToCartState === "adding" ? "cursor-wait" : ""
                                     )}

@@ -356,7 +356,7 @@ export const ShareDialog = ({url, title, onClose}: ShareDialogProps) => {
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            className="bg-overlay-dark fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md"
             role="button"
             tabIndex={0}
             onClick={onClose}
@@ -366,7 +366,7 @@ export const ShareDialog = ({url, title, onClose}: ShareDialogProps) => {
         >
             {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
             <div
-                className="w-full max-w-md rounded-lg bg-white p-6"
+                className="bg-card text-card-foreground border-border w-full max-w-md rounded-lg border p-6 shadow-2xl"
                 role="dialog"
                 onClick={e => e.stopPropagation()}
                 onKeyDown={e => e.stopPropagation()}
@@ -375,7 +375,7 @@ export const ShareDialog = ({url, title, onClose}: ShareDialogProps) => {
                     <h2 className="text-xl font-bold">{title}</h2>
                     <button
                         onClick={onClose}
-                        className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100"
+                        className="text-muted-foreground hover:bg-muted rounded-lg p-2 transition-colors"
                     >
                         <X className="h-5 w-5" />
                     </button>
@@ -385,7 +385,7 @@ export const ShareDialog = ({url, title, onClose}: ShareDialogProps) => {
                         <button
                             key={platform.id}
                             onClick={() => void handlePlatformClick(platform)}
-                            className="flex flex-col items-center gap-2 rounded-lg p-3 transition-colors hover:bg-gray-100"
+                            className="hover:bg-muted flex flex-col items-center gap-2 rounded-lg p-3 transition-colors"
                         >
                             <platform.icon className="h-6 w-6" />
                             <span className="text-xs">

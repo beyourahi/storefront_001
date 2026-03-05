@@ -45,7 +45,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                                 )}
                             />
                             {wishlistCount > 0 && (
-                                <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+                                <span className="bg-wishlist-active text-wishlist-active-foreground absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-semibold">
                                     {wishlistCount > 99 ? "99+" : wishlistCount}
                                 </span>
                             )}

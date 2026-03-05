@@ -58,10 +58,7 @@ export const ArticleHero = ({article, variant = "listing", showReadMore = true, 
                                 sizes="100vw"
                                 className="h-full w-full object-cover absolute inset-0"
                             />
-                            <div
-                                className="absolute inset-0"
-                                style={{background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)"}}
-                            />
+                            <div className="from-dark/85 absolute inset-0 bg-gradient-to-t to-transparent via-dark/35" />
                         </>
                     ) : (
                         <div className="h-full w-full bg-muted absolute inset-0" />
@@ -81,8 +78,8 @@ export const ArticleHero = ({article, variant = "listing", showReadMore = true, 
                                     ))}
                                 </div>
                             )}
-                            <h2 className="hero-title-fluid text-white leading-tight">{title}</h2>
-                            <p className="font-mono text-sm text-white/80">
+                            <h2 className="hero-title-fluid text-light leading-tight">{title}</h2>
+                            <p className="text-light/80 font-mono text-sm">
                                 {author?.name && <>{author.name} · </>}
                                 {publishedDate}
                                 {readingMinutes && <> · {readingMinutes} min</>}

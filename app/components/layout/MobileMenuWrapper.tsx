@@ -10,7 +10,7 @@ type MobileMenuWrapperProps = {
 export const MobileMenuWrapper = ({open, onOpenChange, children}: MobileMenuWrapperProps) => {
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
-            <DrawerContent className="flex h-[70vh] flex-col" overlayClassName="cart-overlay" id="mobile-menu">
+            <DrawerContent className="flex h-[70vh] flex-col" overlayClassName="bg-overlay-dark backdrop-blur-md" id="mobile-menu">
                 <h2 className="sr-only">Menu</h2>
                 {children}
             </DrawerContent>
