@@ -24,8 +24,8 @@ export function PromotionalBanner({media, className = ""}: PromotionalBannerProp
 
 function VideoMedia({media}: {media: Extract<HeroMedia, {mediaType: "video"}>}) {
     return (
-        <div className="w-full h-[90dvh] overflow-hidden">
-            <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+        <div className="w-full">
+            <video autoPlay loop muted playsInline className="w-full h-auto object-contain">
                 <source src={media.url} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
@@ -42,8 +42,8 @@ function ImageMedia({media}: {media: Extract<HeroMedia, {mediaType: "image"}>}) 
     };
 
     return (
-        <div className="w-full h-[90dvh] overflow-hidden">
-            <Image data={imageData} className="w-full h-full object-cover" sizes="100vw" loading="lazy" />
+        <div className="w-full">
+            <Image data={imageData} className="w-full h-auto object-contain" sizes="100vw" loading="lazy" />
         </div>
     );
 }
