@@ -27,7 +27,7 @@ function DialogOverlay({className, ...props}: React.ComponentProps<typeof Dialog
         <DialogPrimitive.Overlay
             data-slot="dialog-overlay"
             className={cn(
-                "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[var(--z-overlay)] bg-overlay-dark backdrop-blur-md",
+                "motion-overlay data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[var(--z-overlay)] bg-overlay-dark backdrop-blur-md",
                 className
             )}
             {...props}
@@ -58,10 +58,9 @@ function DialogContent({
                     "max-w-[calc(100%-1.5rem)] sm:max-w-[calc(100%-2rem)] md:max-w-lg",
                     "max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-4rem)]",
                     "overflow-y-auto",
-                    "data-[state=open]:animate-in data-[state=closed]:animate-out",
+                    "motion-overlay data-[state=open]:animate-in data-[state=closed]:animate-out",
                     "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
                     "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-                    "duration-200",
                     className
                 )}
                 {...props}
@@ -73,8 +72,8 @@ function DialogContent({
                         className={cn(
                             "absolute top-2 right-2 sm:top-3 sm:right-3",
                             "flex select-none items-center justify-center size-10 sm:size-11",
-                            "rounded-full bg-muted/50 hover:bg-muted cursor-pointer",
-                            "opacity-70 transition-all hover:opacity-100",
+                            "motion-interactive motion-press rounded-full bg-muted/50 hover:bg-muted cursor-pointer",
+                            "opacity-70 hover:opacity-100 active:scale-[var(--motion-press-scale)]",
                             "ring-offset-background focus:ring-ring focus:ring-2 focus:ring-offset-2 focus:outline-hidden",
                             "disabled:pointer-events-none disabled:cursor-not-allowed",
                             "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:size-4 sm:[&_svg]:size-5"

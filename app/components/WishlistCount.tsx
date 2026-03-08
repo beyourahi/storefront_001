@@ -24,7 +24,7 @@ export const WishlistCount = ({className, iconSize = 24}: WishlistCountProps) =>
     const ariaLabel = count > 0 ? `${count} items in wishlist` : "Wishlist";
 
     return (
-        <Link
+        <Link viewTransition
             to="/account/wishlist"
             className={cn("relative inline-flex items-center justify-center rounded-lg p-2", className)}
             aria-label={ariaLabel}

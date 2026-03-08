@@ -140,7 +140,7 @@ export const HomepageWishlistSection = () => {
 
                 <div className="flex justify-center">
                     <Button size="lg" asChild className="w-[80vw] sm:w-auto">
-                        <Link to="/account/wishlist" className="flex items-center gap-2 px-10 leading-none">
+                        <Link viewTransition to="/account/wishlist" className="flex items-center gap-2 px-10 leading-none">
                             View Full Wishlist
                             <ArrowRight className="h-4 w-4" />
                         </Link>

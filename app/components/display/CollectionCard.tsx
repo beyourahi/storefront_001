@@ -3,6 +3,8 @@ import {Link} from "react-router";
 import {Image} from "@shopify/hydrogen";
 import {Gem, Heart, Home, Percent, Shirt, ShoppingBag, Smartphone, Sparkles, Star, Tag, Watch, Zap} from "lucide-react";
 const FALLBACK_THEME_CARD_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
+import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
+import {cn} from "~/lib/utils";
 import type {CollectionCardData} from "~/lib/types/collections";
 
 type CollectionCardProps = {
@@ -10,6 +12,7 @@ type CollectionCardProps = {
 };
 
 export const CollectionCard = ({collection}: CollectionCardProps) => {
+    const {canHover} = usePointerCapabilities();
     const productCount = collection.productCount || 0;
 
     const aspectRatioClass = useMemo(() => {
@@ -47,10 +50,13 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
           : `/collections/${collection.handle}`;
 
     return (
-        <Link
+        <Link viewTransition
             to={linkHref}
             prefetch="intent"
-            className="sleek group bg-card collection-card block overflow-hidden rounded-lg"
+            className={cn(
+                "sleek bg-card collection-card block overflow-hidden rounded-lg",
+                canHover ? "group" : "motion-press active:scale-[var(--motion-press-scale)]"
+            )}
         >
             <div className={`bg-muted relative ${aspectRatioClass} w-full overflow-hidden`}>
                 {shouldShowShopAllImage && shopAllImage ? (

@@ -2,6 +2,7 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import {useLoaderData} from "react-router";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {GalleryMasonrySection} from "~/components/sections/GalleryMasonrySection";
 import type {GalleryImageData} from "~/lib/gallery";
 import {transformToGalleryImages} from "~/lib/gallery";
@@ -46,22 +47,26 @@ export default function Gallery() {
                 <Breadcrumbs className="mx-auto max-w-[2000px]" items={[{label: "Gallery"}]} />
             </div>
 
-            <section className="py-8">
-                <div className="mx-auto max-w-[2000px] px-2 md:px-4">
-                    <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
-                        <GiantText
-                            text={title}
-                            className={cn("w-full font-black", title.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]")}
-                        />
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <section className="py-8">
+                    <div className="mx-auto max-w-[2000px] px-2 md:px-4">
+                        <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
+                            <GiantText
+                                text={title}
+                                className={cn("w-full font-black", title.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]")}
+                            />
 
-                        <p className="text-muted-foreground w-full text-xs lg:w-[60%] lg:text-sm 2xl:text-base">
-                            {subtitle}
-                        </p>
+                            <p className="text-muted-foreground w-full text-xs lg:w-[60%] lg:text-sm 2xl:text-base">
+                                {subtitle}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </AnimatedSection>
 
-            <GalleryMasonrySection productImages={productImages} />
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <GalleryMasonrySection productImages={productImages} />
+            </AnimatedSection>
         </div>
     );
 }

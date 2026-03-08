@@ -86,7 +86,7 @@ export const ArticleHero = ({article, variant = "listing", showReadMore = true, 
                             </p>
                             {showReadMore && (
                                 <div className="pt-2">
-                                    <Link to={articleUrl} prefetch="viewport" className="no-underline">
+                                    <Link viewTransition to={articleUrl} prefetch="viewport" className="no-underline">
                                         <Button
                                             size="lg"
                                         >

@@ -110,10 +110,10 @@ const NotFoundErrorUI = ({title, message}: NotFoundErrorUIProps) => {
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                         <Button asChild>
-                            <Link to="/">Back to Home</Link>
+                            <Link viewTransition to="/">Back to Home</Link>
                         </Button>
                         <Button variant="outline" asChild>
-                            <Link to="/collections/all-products">Browse All Products</Link>
+                            <Link viewTransition to="/collections/all-products">Browse All Products</Link>
                         </Button>
                     </div>
                     <div className="sr-only">
@@ -156,7 +156,7 @@ const GenericErrorUI = ({statusCode, title, message}: GenericErrorUIProps) => {
                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                         <Button onClick={() => window.location.reload()}>Try Again</Button>
                         <Button variant="outline" asChild>
-                            <Link to="/">Back to Home</Link>
+                            <Link viewTransition to="/">Back to Home</Link>
                         </Button>
                     </div>
                     <div className="bg-muted/50 border-border mt-6 inline-block rounded-full border px-4 py-2">

@@ -96,7 +96,7 @@ export function ProductHeroMobile({
                                           : null;
 
                                 const pillClasses = cn(
-                                    "inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-full px-4 py-2 text-base font-medium transition-all duration-200",
+                                    "inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-[var(--radius-pill-raw)] px-4 py-2 text-base font-medium transition-all duration-200",
                                     "active:scale-95",
                                     selected
                                         ? "bg-primary-foreground text-primary"
@@ -122,7 +122,7 @@ export function ProductHeroMobile({
 
                                 if (isDifferentProduct) {
                                     return (
-                                        <Link
+                                        <Link viewTransition
                                             key={option.name + name}
                                             prefetch="viewport"
                                             preventScrollReset
@@ -180,7 +180,7 @@ export function ProductHeroMobile({
                                 type="submit"
                                 disabled={isDisabled}
                                 className={cn(
-                                    "w-full min-h-14 inline-flex select-none items-center justify-between gap-4 rounded-full bg-primary-foreground px-4 py-3 text-base font-medium text-primary transition-all duration-200",
+                                    "w-full min-h-14 inline-flex select-none items-center justify-between gap-4 rounded-[var(--radius-pill-raw)] bg-primary-foreground px-4 py-3 text-base font-medium text-primary transition-all duration-200",
                                     "hover:bg-primary-foreground/90 active:scale-[0.98]",
                                     isDisabled && "opacity-60 cursor-not-allowed"
                                 )}
@@ -223,7 +223,7 @@ function MobileQuantitySelector({
     const canIncrement = max === undefined || quantity < max;
 
     return (
-        <div className="inline-flex w-fit select-none items-center justify-between rounded-full bg-primary-foreground">
+        <div className="inline-flex w-fit select-none items-center justify-between rounded-[var(--radius-pill-raw)] bg-primary-foreground">
             <button
                 type="button"
                 onClick={handleDecrement}

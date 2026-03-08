@@ -7,6 +7,7 @@ import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
 import {CollectionPagination} from "~/components/custom/CollectionPagination";
 import {MobileSearchBar} from "~/components/layout/MobileSearchBar";
 import {SaleHero} from "~/components/sections/SaleHero";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {
     parsePaginationParams,
     buildPaginationVariables,
@@ -85,32 +86,39 @@ export default function Sale() {
     return (
         <div className="min-h-dvh bg-background text-foreground">
             {/* Hero Section */}
-            <div className="pt-24 sm:pt-32">
-                <SaleHero totalCount={totalCount} maxDiscount={maxDiscount} products={products} />
-            </div>
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <div className="pt-24 sm:pt-32">
+                    <SaleHero totalCount={totalCount} maxDiscount={maxDiscount} products={products} />
+                </div>
+            </AnimatedSection>
 
-            {/* Mobile Search Bar */}
-            <div className="mx-auto max-w-[2000px] px-4 sm:px-6 lg:hidden lg:px-8">
-                <MobileSearchBar shopName="Store" />
-            </div>
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <div className="mx-auto max-w-[2000px] px-4 sm:px-6 lg:hidden lg:px-8">
+                    <MobileSearchBar shopName="Store" />
+                </div>
+            </AnimatedSection>
 
             {totalCount > 0 && (
                 <>
                     {/* Mobile Pagination (Above Grid) */}
                     {showPagination && (
-                        <div className="mx-auto max-w-[2000px] px-4 sm:px-6 lg:hidden lg:px-8">
-                            <CollectionPagination {...pagination} />
-                        </div>
+                        <AnimatedSection animation="fade" threshold={0.12}>
+                            <div className="mx-auto max-w-[2000px] px-4 sm:px-6 lg:hidden lg:px-8">
+                                <CollectionPagination {...pagination} />
+                            </div>
+                        </AnimatedSection>
                     )}
 
-                    {/* Products Grid */}
-                    <ProductsGridSection products={normalizedProducts} pagination={pagination} preserveOrder={true} sortLabel="Highest discount first" />
+                    <AnimatedSection animation="slide-up" threshold={0.12}>
+                        <ProductsGridSection products={normalizedProducts} pagination={pagination} preserveOrder={true} sortLabel="Highest discount first" />
+                    </AnimatedSection>
 
-                    {/* Pagination (Below Grid) */}
                     {showPagination && (
-                        <div className="mx-auto max-w-[2000px] px-4 pb-16 sm:px-6 lg:px-8">
-                            <CollectionPagination {...pagination} />
-                        </div>
+                        <AnimatedSection animation="fade" threshold={0.08}>
+                            <div className="mx-auto max-w-[2000px] px-4 pb-16 sm:px-6 lg:px-8">
+                                <CollectionPagination {...pagination} />
+                            </div>
+                        </AnimatedSection>
                     )}
                 </>
             )}

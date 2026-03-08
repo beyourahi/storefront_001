@@ -170,7 +170,7 @@ const WishlistShare = () => {
                     <p className="text-muted-foreground mb-6">
                         The products in this wishlist are no longer available
                     </p>
-                    <Link
+                    <Link viewTransition
                         to="/products"
                         className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 transition-colors"
                     >

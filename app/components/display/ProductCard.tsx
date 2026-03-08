@@ -6,12 +6,15 @@ import {ProductCardTitle} from "~/components/common/ProductCardTitle";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
+import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
 import {getProductDataForCard} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
+import {cn} from "~/lib/utils";
 import type {UnifiedProductCardProps} from "~/lib/types/product-card";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 
 export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardProps) => {
+    const {canHover} = usePointerCapabilities();
     const productData = useMemo(() => getProductDataForCard(product, {showPriceRange: true}), [product]);
     const {price, compareAtPrice, discountPercentage, image: productImage, priceRange} = productData;
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
@@ -52,7 +55,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
     const priceStyles = "font-mono font-bold tabular-nums tracking-tight antialiased";
 
     return (
-        <div className="sleek group product-card overflow-hidden rounded-lg">
+        <div className={cn("motion-surface product-card overflow-hidden rounded-lg", canHover ? "group" : "motion-press")}>
             <div className={`relative ${aspectRatioClass} overflow-hidden rounded-b-lg`}>
                 {discountPercentage && (
                     <div className="absolute top-1 left-1 z-10 sm:top-1.5 sm:left-1.5">
@@ -69,11 +72,14 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     </div>
                 )}
 
-                <Link to={`/products/${product.handle}`} prefetch="intent">
+                <Link viewTransition to={`/products/${product.handle}`} prefetch="intent">
                     {productImage ? (
                         <Image
                             data={{url: productImage.url, altText: productImage.altText || product.title}}
-                            className="sleek product-image h-full w-full rounded-lg object-cover"
+                            className={cn(
+                                "motion-image product-image h-full w-full rounded-lg object-cover",
+                                canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]"
+                            )}
                             sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
                         />
                     ) : (
@@ -108,7 +114,11 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
 
             <div className={`${hasSecondPart ? "space-y-2 sm:space-y-3" : "space-y-0.5 sm:space-y-1"} py-3 sm:py-4`}>
                 <div>
-                    <Link to={`/products/${product.handle}`} className="sleek group-hover:text-primary" prefetch="intent">
+                    <Link viewTransition
+                        to={`/products/${product.handle}`}
+                        className={cn("motion-link", canHover && "group-hover:text-primary")}
+                        prefetch="intent"
+                    >
                         <ProductCardTitle productTitle={product.title} viewMode={viewMode} />
                     </Link>
                 </div>

@@ -2,10 +2,11 @@ import {useState} from "react";
 import {useWishlist} from "~/lib/wishlist-context";
 import {HiHeart, HiOutlineHeart} from "react-icons/hi";
 import {cva, type VariantProps} from "class-variance-authority";
+import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
 import {cn} from "~/lib/utils";
 
 const wishlistButtonVariants = cva(
-    "inline-flex select-none items-center justify-center rounded-full transition-all duration-150 hover:scale-110 active:scale-95",
+    "motion-interactive motion-press inline-flex select-none items-center justify-center rounded-full hover:scale-110 active:scale-[var(--motion-press-scale)]",
     {
         variants: {
             size: {
@@ -29,6 +30,7 @@ interface WishlistButtonProps
 
 export const WishlistButton = ({productId, size, showLabel = false, className, ...props}: WishlistButtonProps) => {
     const {isWishlisted, toggleItem} = useWishlist();
+    const {canHover} = usePointerCapabilities();
     const [isAnimating, setIsAnimating] = useState(false);
 
     const wishlisted = isWishlisted(productId);
@@ -49,17 +51,17 @@ export const WishlistButton = ({productId, size, showLabel = false, className, .
         <button
             type="button"
             onClick={handleClick}
-            className={cn(wishlistButtonVariants({size}), className)}
+            className={cn(wishlistButtonVariants({size}), !canHover && "hover:scale-100", className)}
             aria-label={label}
             aria-pressed={wishlisted}
             title={label}
             {...props}
         >
-            <span className={cn("transition-transform duration-300", isAnimating && "scale-125")}>
+            <span className={cn("motion-image", isAnimating && "scale-125")}>
                 {wishlisted ? (
                     <HiHeart
                         className={cn(
-                            "transition-colors duration-150",
+                            "motion-interactive",
                             size === "sm" && "h-5 w-5",
                             size === "md" && "h-6 w-6",
                             size === "lg" && "h-7 w-7",
@@ -69,11 +71,11 @@ export const WishlistButton = ({productId, size, showLabel = false, className, .
                 ) : (
                     <HiOutlineHeart
                         className={cn(
-                            "transition-colors duration-150",
+                            "motion-interactive",
                             size === "sm" && "h-5 w-5",
                             size === "md" && "h-6 w-6",
                             size === "lg" && "h-7 w-7",
-                            "text-muted-foreground hover:text-foreground"
+                            canHover ? "text-muted-foreground hover:text-foreground" : "text-muted-foreground"
                         )}
                     />
                 )}

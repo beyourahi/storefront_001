@@ -165,7 +165,7 @@ const ReturnsHistoryRoute = () => {
                 </div>
                 {hasReturns && (
                     <Button variant="ghost" asChild className="hidden sm:flex">
-                        <Link to="/account/orders" className="flex items-center gap-1.5">
+                        <Link viewTransition to="/account/orders" className="flex items-center gap-1.5">
                             View Orders
                             <ArrowRightIcon className="size-4" />
                         </Link>
@@ -198,13 +198,13 @@ const ReturnsEmpty = () => (
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
                 <Button asChild size="lg">
-                    <Link to="/account/orders" className="gap-2">
+                    <Link viewTransition to="/account/orders" className="gap-2">
                         <PackageSearchIcon className="size-4" />
                         View Orders
                     </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                    <Link to="/collections">Continue Shopping</Link>
+                    <Link viewTransition to="/collections">Continue Shopping</Link>
                 </Button>
             </div>
         </CardContent>
@@ -218,7 +218,7 @@ const ReturnCard = ({returnItem, index: _index = 0}: {returnItem: ReturnWithOrde
     const totalQuantity = lineItems.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
-        <Link to="/account/orders" className="group block no-underline">
+        <Link viewTransition to="/account/orders" className="group block no-underline">
             <Card className="hover:shadow-lg transition-all duration-300 rounded-2xl py-0 overflow-hidden h-full group-hover:-translate-y-0.5">
                 <CardContent className="p-5 md:p-6 flex flex-col h-full">
                     <div className="flex items-center justify-between mb-4">

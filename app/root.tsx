@@ -6,6 +6,7 @@ import {
     Meta,
     Scripts,
     ScrollRestoration,
+    useLocation,
     useRouteLoaderData,
     useRouteError,
     isRouteErrorResponse,
@@ -47,6 +48,7 @@ import {NetworkStatusIndicator} from "~/components/NetworkStatusIndicator";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
 import {createWebSiteSchema, getSeoDefaults} from "~/lib/structured-data";
+import {usePageTransitionOrchestrator} from "~/lib/navigation-transitions";
 import appCss from "./styles/app.css?url";
 
 export type RootLoader = typeof loader;
@@ -128,7 +130,8 @@ export async function loader({context, request}: Route.LoaderArgs) {
     const siteContent = parseSiteContent(siteContentData, themeSettingsData);
     const generatedTheme: GeneratedTheme | null = generateTheme(
         siteContent.themeConfig.colors,
-        siteContent.themeConfig.fonts
+        siteContent.themeConfig.fonts,
+        siteContent.themeConfig.borderRadius
     );
     const hasBlog = (blogData as any)?.articles?.nodes?.length > 0;
     const websiteSchema = createWebSiteSchema(
@@ -296,6 +299,8 @@ export function Layout({children}: {children?: React.ReactNode}) {
 
 export default function App() {
     const data = useRouteLoaderData<RootLoader>("root");
+    const location = useLocation();
+    const {shouldAnimateFallbackTransition} = usePageTransitionOrchestrator();
 
     useEffect(() => {
         if (data?.generatedTheme) {
@@ -351,7 +356,16 @@ export default function App() {
                                         popularProducts={data.popularProducts ?? []}
                                     />
                                     <main className="pt-[var(--total-header-height)] transition-[padding-top] duration-300 ease-in-out">
-                                        <Outlet />
+                                        <div
+                                            key={location.key}
+                                            className={
+                                                shouldAnimateFallbackTransition
+                                                    ? "animate-page-fade-in will-change-[transform,opacity]"
+                                                    : undefined
+                                            }
+                                        >
+                                            <Outlet />
+                                        </div>
                                     </main>
                                     <Footer shopName={shopName} />
                                     <Toaster position="top-center" />

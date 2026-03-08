@@ -70,7 +70,7 @@ export function ErrorBoundary() {
                         </div>
                         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                             <Button asChild>
-                                <Link to="/">Back to Home</Link>
+                                <Link viewTransition to="/">Back to Home</Link>
                             </Button>
                         </div>
                         <div className="sr-only">

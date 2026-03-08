@@ -21,7 +21,7 @@ const CommandInput = React.forwardRef<HTMLInputElement, React.ComponentProps<"in
                     ref={ref}
                     data-slot="command-input"
                     className={cn(
-                        "placeholder:text-muted-foreground flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50",
+                        "motion-interactive placeholder:text-muted-foreground flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50",
                         className
                     )}
                     {...props}
@@ -72,7 +72,7 @@ function CommandItem({className, ...props}: React.ComponentProps<"button">) {
             type="button"
             data-slot="command-item"
             className={cn(
-                "aria-selected:bg-accent aria-selected:text-accent-foreground hover:bg-accent hover:text-accent-foreground relative flex w-full select-none items-center gap-2 rounded-sm px-2 py-2 text-sm outline-hidden",
+                "motion-interactive aria-selected:bg-accent aria-selected:text-accent-foreground hover:bg-accent hover:text-accent-foreground relative flex w-full select-none items-center gap-2 rounded-sm px-2 py-2 text-sm outline-hidden",
                 className
             )}
             {...props}

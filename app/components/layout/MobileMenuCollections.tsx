@@ -36,7 +36,7 @@ export const MobileMenuCollections = ({
         <>
             <div>
                 <nav className="">
-                    <Link
+                    <Link viewTransition
                         to="/collections/all-products"
                         onClick={onLinkClick}
                         className={cn(
@@ -134,7 +134,7 @@ export const MobileMenuCollections = ({
             {discountStats.count > 0 && (
                 <div>
                     <nav className="">
-                        <Link
+                        <Link viewTransition
                             to="/sale"
                             onClick={onLinkClick}
                             className={cn(
@@ -175,7 +175,7 @@ export const MobileMenuCollections = ({
                         {collections.map(collection => {
                             const IconComponent = getCollectionIcon(collection);
                             return (
-                                <Link
+                                <Link viewTransition
                                     key={collection.handle}
                                     to={`/collections/${collection.handle}`}
                                     onClick={onLinkClick}
@@ -213,7 +213,7 @@ export const MobileMenuCollections = ({
                         {specialCollections.map(collection => {
                             const SpecialIcon = specialCollectionIcons[collection.handle] || Sparkles;
                             return (
-                                <Link
+                                <Link viewTransition
                                     key={collection.handle}
                                     to={`/collections/${collection.handle}`}
                                     onClick={onLinkClick}

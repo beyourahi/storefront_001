@@ -14,6 +14,7 @@ import type {ArticleCardData} from "~/components/blog/ArticleCard";
 import {useReadingProgress} from "~/hooks/useReadingProgress";
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const shopName =
@@ -114,25 +115,28 @@ export default function Article() {
             <PageBreadcrumbs />
 
             {image && (
-                <div className="relative w-full overflow-hidden md:rounded-2xl md:mx-auto md:max-w-5xl">
-                    <div className="aspect-[16/9] relative">
-                        <Image
-                            data={image}
-                            sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 100vw"
-                            loading="eager"
-                            className="h-full w-full object-cover absolute inset-0"
-                        />
-                        <div
-                            className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
-                            style={{background: "linear-gradient(to top, var(--color-background), transparent)"}}
-                            aria-hidden="true"
-                        />
+                <AnimatedSection animation="fade" threshold={0.08}>
+                    <div className="relative w-full overflow-hidden md:rounded-2xl md:mx-auto md:max-w-5xl">
+                        <div className="aspect-[16/9] relative">
+                            <Image
+                                data={image}
+                                sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 100vw"
+                                loading="eager"
+                                className="h-full w-full object-cover absolute inset-0"
+                            />
+                            <div
+                                className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+                                style={{background: "linear-gradient(to top, var(--color-background), transparent)"}}
+                                aria-hidden="true"
+                            />
+                        </div>
                     </div>
-                </div>
+                </AnimatedSection>
             )}
 
-            <article className="mx-auto max-w-[2000px] px-2 md:px-4">
-                <header className="mx-auto max-w-3xl text-center space-y-5 md:space-y-6 pt-6 md:pt-8 mb-10 md:mb-14 lg:mb-16">
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <article className="mx-auto max-w-[2000px] px-2 md:px-4">
+                    <header className="mx-auto max-w-3xl text-center space-y-5 md:space-y-6 pt-6 md:pt-8 mb-10 md:mb-14 lg:mb-16">
                     {tags && tags.length > 0 && (
                         <div className="flex justify-center">
                             <TagList tags={tags} variant="outline" size="sm" blogHandle={blogHandle} />
@@ -182,20 +186,23 @@ export default function Article() {
                     </div>
                 )}
 
-                <div className="mx-auto max-w-3xl pt-4 md:pt-6 pb-8 md:pb-12">
-                    <Button variant="ghost" asChild>
-                        <Link to={`/blogs/${blogHandle}`} prefetch="viewport" className="inline-flex items-center gap-2">
-                            <ArrowLeft className="size-4" />
-                            Back to {blogTitle || "Blog"}
-                        </Link>
-                    </Button>
-                </div>
-            </article>
+                    <div className="mx-auto max-w-3xl pt-4 md:pt-6 pb-8 md:pb-12">
+                        <Button variant="ghost" asChild>
+                            <Link viewTransition to={`/blogs/${blogHandle}`} prefetch="viewport" className="inline-flex items-center gap-2">
+                                <ArrowLeft className="size-4" />
+                                Back to {blogTitle || "Blog"}
+                            </Link>
+                        </Button>
+                    </div>
+                </article>
+            </AnimatedSection>
 
             {relatedArticles && relatedArticles.length > 0 && (
-                <div className="mt-12 sm:mt-16 md:mt-20 mx-auto max-w-[2000px] px-2 md:px-4">
-                    <RelatedArticles articles={relatedArticles} title="More Articles" />
-                </div>
+                <AnimatedSection animation="fade" threshold={0.1}>
+                    <div className="mt-12 sm:mt-16 md:mt-20 mx-auto max-w-[2000px] px-2 md:px-4">
+                        <RelatedArticles articles={relatedArticles} title="More Articles" />
+                    </div>
+                </AnimatedSection>
             )}
         </div>
     );

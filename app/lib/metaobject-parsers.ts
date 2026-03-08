@@ -1,4 +1,9 @@
-import type {ThemeFonts, ThemeCoreColors} from "~/lib/theme-utils";
+import {
+    DEFAULT_BORDER_RADIUS_SEED,
+    sanitizeBorderRadiusSeed,
+    type ThemeFonts,
+    type ThemeCoreColors
+} from "~/lib/theme-utils";
 
 // =============================================================================
 // TYPES (moved from fallback-data.ts)
@@ -327,6 +332,7 @@ export interface SiteSettings {
     } | null;
     brandWords: string[];
     missionStatement: string;
+    featuredProductSection: FeaturedProductSection | null;
     heroHeading: string;
     heroDescription: string;
     heroMediaMobile?: HeroMedia;
@@ -361,6 +367,29 @@ export interface SiteSettings {
     icon192Url: string | null;
     icon512Url: string | null;
     icon180AppleUrl: string | null;
+}
+
+export interface FeaturedProductSection {
+    id: string;
+    handle: string;
+    title: string;
+    vendor: string;
+    description: string;
+    availableForSale: boolean;
+    featuredImage: {
+        url: string;
+        altText?: string | null;
+        width?: number | null;
+        height?: number | null;
+    } | null;
+    price: {
+        amount: string;
+        currencyCode: string;
+    };
+    compareAtPrice: {
+        amount: string;
+        currencyCode: string;
+    } | null;
 }
 
 export interface SiteContent {
@@ -692,6 +721,7 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     brandLogo: null,
     brandWords: FALLBACK_BRAND_WORDS,
     missionStatement: "",
+    featuredProductSection: null,
 
     heroHeading: "Shop with Intention",
     heroDescription:
@@ -741,11 +771,13 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
 export interface ThemeConfig {
     fonts: ThemeFonts;
     colors: ThemeCoreColors;
+    borderRadius: number;
 }
 
 export const DEFAULT_THEME_CONFIG: ThemeConfig = {
     fonts: FALLBACK_THEME_FONTS,
-    colors: FALLBACK_THEME_COLORS
+    colors: FALLBACK_THEME_COLORS,
+    borderRadius: DEFAULT_BORDER_RADIUS_SEED
 };
 
 // =============================================================================
@@ -826,6 +858,71 @@ const parseAnnouncementTexts = (announcementField: any): string[] => {
     } catch {
         return [];
     }
+};
+
+const warnFeaturedProductSection = (reason: string) => {
+    if (process.env.NODE_ENV === "development") {
+        console.warn(`[SiteSettings] featured_product_section omitted: ${reason}`);
+    }
+};
+
+const parseFeaturedProductSection = (featuredProductField: any): FeaturedProductSection | null => {
+    const reference = featuredProductField?.reference;
+
+    if (!reference) return null;
+
+    if (reference.__typename !== "Product") {
+        warnFeaturedProductSection(`expected Product reference, received ${reference.__typename ?? "unknown"}`);
+        return null;
+    }
+
+    const selectedVariant = reference.selectedOrFirstAvailableVariant;
+    if (!reference.availableForSale || !selectedVariant?.availableForSale) {
+        warnFeaturedProductSection(`product "${reference.handle ?? reference.id}" is unavailable`);
+        return null;
+    }
+
+    if (!selectedVariant.price?.amount || !selectedVariant.price.currencyCode) {
+        warnFeaturedProductSection(`product "${reference.handle ?? reference.id}" is missing sellable pricing`);
+        return null;
+    }
+
+    const featuredImage = reference.featuredImage?.url
+        ? {
+              url: reference.featuredImage.url as string,
+              altText: (reference.featuredImage.altText as string | null) ?? null,
+              width: (reference.featuredImage.width as number | null) ?? null,
+              height: (reference.featuredImage.height as number | null) ?? null
+          }
+        : reference.selectedOrFirstAvailableVariant?.image?.url
+          ? {
+                url: reference.selectedOrFirstAvailableVariant.image.url as string,
+                altText: (reference.selectedOrFirstAvailableVariant.image.altText as string | null) ?? null,
+                width: (reference.selectedOrFirstAvailableVariant.image.width as number | null) ?? null,
+                height: (reference.selectedOrFirstAvailableVariant.image.height as number | null) ?? null
+            }
+          : null;
+
+    return {
+        id: reference.id as string,
+        handle: reference.handle as string,
+        title: reference.title as string,
+        vendor: (reference.vendor as string | null) ?? "",
+        description: (reference.description as string | null) ?? "",
+        availableForSale: true,
+        featuredImage,
+        price: {
+            amount: selectedVariant.price.amount as string,
+            currencyCode: selectedVariant.price.currencyCode as string
+        },
+        compareAtPrice:
+            selectedVariant.compareAtPrice?.amount && selectedVariant.compareAtPrice.currencyCode
+                ? {
+                      amount: selectedVariant.compareAtPrice.amount as string,
+                      currencyCode: selectedVariant.compareAtPrice.currencyCode as string
+                  }
+                : null
+    };
 };
 
 const parseFreeShippingThreshold = (value: any): number | null => {
@@ -1006,7 +1103,8 @@ export const parseThemeSettings = (data: any): ThemeConfig => {
 
     return {
         fonts: parseThemeFonts(data),
-        colors: parseThemeColors(data)
+        colors: parseThemeColors(data),
+        borderRadius: sanitizeBorderRadiusSeed(data.borderRadius?.value, DEFAULT_THEME_CONFIG.borderRadius)
     };
 };
 
@@ -1031,6 +1129,7 @@ export const parseSiteSettings = (data: any): SiteSettings => {
         })(),
         brandWords: parseBrandWords(data.brandWords),
         missionStatement: data.missionStatement?.value || FALLBACK_SITE_SETTINGS.missionStatement,
+        featuredProductSection: parseFeaturedProductSection(data.featuredProductSection),
 
         heroHeading: data.heroHeading?.value || FALLBACK_SITE_SETTINGS.heroHeading,
         heroDescription: data.heroDescription?.value || FALLBACK_SITE_SETTINGS.heroDescription,

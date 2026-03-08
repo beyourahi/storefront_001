@@ -121,13 +121,13 @@ export default function Blog() {
             {allTags.length > 0 && (
                 <nav className="flex flex-wrap items-center gap-2 mt-8 md:mt-12" aria-label="Filter by topic">
                     <Badge variant={!activeTag ? "default" : "outline"} asChild>
-                        <Link to={`/blogs/${blog.handle}`} prefetch="viewport" className="cursor-pointer">
+                        <Link viewTransition to={`/blogs/${blog.handle}`} prefetch="viewport" className="cursor-pointer">
                             All
                         </Link>
                     </Badge>
                     {allTags.map(tag => (
                         <Badge key={tag} variant={activeTag === tag ? "default" : "outline"} asChild>
-                            <Link
+                            <Link viewTransition
                                 to={`/blogs/${blog.handle}?tag=${encodeURIComponent(tag)}`}
                                 prefetch="viewport"
                                 className="cursor-pointer"

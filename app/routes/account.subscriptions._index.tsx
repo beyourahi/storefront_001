@@ -122,7 +122,7 @@ export default function SubscriptionsIndex() {
                     <CardContent className="py-12 text-center">
                         <p className="text-muted-foreground">You have no active subscriptions.</p>
                         <Button asChild variant="link" className="mt-4">
-                            <Link to="/collections">Browse Products</Link>
+                            <Link viewTransition to="/collections">Browse Products</Link>
                         </Button>
                     </CardContent>
                 </Card>
@@ -214,7 +214,7 @@ const SubscriptionCard = ({subscription}: {subscription: SubscriptionContract}) 
             </CardContent>
             <CardFooter>
                 <Button variant="link" className="h-auto p-0" asChild>
-                    <Link to={`/account/subscriptions/${btoa(subscription.id)}`}>Manage Subscription →</Link>
+                    <Link viewTransition to={`/account/subscriptions/${btoa(subscription.id)}`}>Manage Subscription →</Link>
                 </Button>
             </CardFooter>
         </Card>

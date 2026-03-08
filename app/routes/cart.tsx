@@ -182,10 +182,10 @@ function EmptyCartPage() {
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <Button asChild size="lg">
-                    <Link to="/collections/all-products">Browse All Products</Link>
+                    <Link viewTransition to="/collections/all-products">Browse All Products</Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                    <Link to="/">Back to Home</Link>
+                    <Link viewTransition to="/">Back to Home</Link>
                 </Button>
             </div>
         </div>

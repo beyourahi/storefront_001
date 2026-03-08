@@ -59,7 +59,27 @@
     --font-mono: Inter, ui-sans-serif, sans-serif, system-ui;
 
     /* ── Radius ── */
-    --radius: 0.5rem;
+    --radius: 8px;
+    --radius-xs-raw: 4px;
+    --radius-sm-raw: 6px;
+    --radius-md-raw: 8px;
+    --radius-lg-raw: 12px;
+    --radius-xl-raw: 16px;
+    --radius-2xl-raw: 24px;
+    --radius-3xl-raw: 32px;
+    --radius-pill-raw: 32px;
+
+    /* ── Interaction Motion ── */
+    --motion-duration-fast: 140ms;
+    --motion-duration-standard: 220ms;
+    --motion-duration-slow: 320ms;
+    --motion-duration-overlay: 260ms;
+    --motion-duration-image: 360ms;
+    --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+    --motion-hover-lift: 2px;
+    --motion-press-scale: 0.97;
+    --pointer-hover-enabled: 0;
 
     /* ── Shadows - brand-tinted shadow color derived from primary hue ── */
     /* Shadow color is overridden at runtime by generateThemeCssVariables()  */
@@ -154,6 +174,12 @@
     }
 }
 
+@media (hover: hover) and (pointer: fine) {
+    :root {
+        --pointer-hover-enabled: 1;
+    }
+}
+
 /* ============================================================================
    Announcement Banner Animation
    ============================================================================
@@ -244,10 +270,14 @@
     --font-mono: var(--font-mono);
     --font-serif: var(--font-serif);
 
-    --radius-sm: calc(var(--radius) - 0.25rem);
-    --radius-md: calc(var(--radius) - 0.125rem);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 0.25rem);
+    --radius-xs: var(--radius-xs-raw);
+    --radius-sm: var(--radius-sm-raw);
+    --radius-md: var(--radius-md-raw);
+    --radius-lg: var(--radius-lg-raw);
+    --radius-xl: var(--radius-xl-raw);
+    --radius-2xl: var(--radius-2xl-raw);
+    --radius-3xl: var(--radius-3xl-raw);
+    --radius-pill: var(--radius-pill-raw);
 
     --shadow-2xs: var(--shadow-2xs);
     --shadow-xs: var(--shadow-xs);
@@ -422,19 +452,40 @@
 }
 
 .cool-underline {
-    @apply after:bg-primary hover:text-primary relative transform-gpu transition-all duration-300 ease-in-out after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2 after:transition-[width] after:duration-200 hover:after:w-[35%];
+    @apply after:bg-primary hover:text-primary relative transform-gpu after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2 hover:after:w-[35%];
+    transition-property: color, opacity, transform;
+    transition-duration: var(--motion-duration-standard);
+    transition-timing-function: var(--motion-ease-standard);
+}
+
+.cool-underline::after {
+    transition-property: width;
+    transition-duration: var(--motion-duration-fast);
+    transition-timing-function: var(--motion-ease-standard);
 }
 
 .cool-active-underline {
-    @apply text-primary after:bg-primary relative transform-gpu transition-all duration-300 ease-in-out after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-[35%] after:-translate-x-1/2 after:transition-[width] after:duration-200;
+    @apply text-primary after:bg-primary relative transform-gpu after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-[35%] after:-translate-x-1/2;
+    transition-property: color, opacity, transform;
+    transition-duration: var(--motion-duration-standard);
+    transition-timing-function: var(--motion-ease-standard);
+}
+
+.cool-active-underline::after {
+    transition-property: width;
+    transition-duration: var(--motion-duration-fast);
+    transition-timing-function: var(--motion-ease-standard);
 }
 
 .group:hover {
-    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: var(--motion-duration-standard);
+    transition-timing-function: var(--motion-ease-standard);
 }
 
 button:active {
-    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: transform;
+    transition-duration: var(--motion-duration-fast);
+    transition-timing-function: var(--motion-ease-standard);
 }
 
 @keyframes slide-down {
@@ -453,14 +504,18 @@ button:active {
 }
 
 .mobile-nav-link {
-    @apply relative transition-all duration-200 ease-out;
+    @apply relative;
+    transition-property: color, opacity, transform, background-color;
+    transition-duration: var(--motion-duration-fast);
+    transition-timing-function: var(--motion-ease-standard);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-nav-link::before {
     content: "";
-    @apply bg-accent/60 absolute inset-0 rounded-md opacity-0 transition-opacity duration-200;
+    @apply bg-accent/60 absolute inset-0 rounded-md opacity-0;
+    transition: opacity var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .mobile-nav-link:active::before {
@@ -475,18 +530,52 @@ button:active {
     border-radius: 0.5rem;
 }
 
+.motion-interactive,
+.motion-link,
+.motion-overlay,
+.motion-image,
+.sleek,
+[data-slot="button"],
 button,
 a,
 .card,
-.sleek,
-.group,
-[data-slot="button"],
 input:not([type="range"]),
 textarea,
 select {
     transition-property: background-color, border-color, color, fill, stroke, opacity, transform;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 200ms;
+    transition-timing-function: var(--motion-ease-standard);
+    transition-duration: var(--motion-duration-standard);
+}
+
+.motion-link {
+    transition-property: color, opacity, text-decoration-color, transform;
+    transition-duration: var(--motion-duration-fast);
+}
+
+.motion-overlay {
+    transition-property: opacity, transform, filter;
+    transition-duration: var(--motion-duration-overlay);
+    transition-timing-function: var(--motion-ease-emphasized);
+}
+
+.motion-image {
+    transition-property: transform, opacity, filter;
+    transition-duration: var(--motion-duration-image);
+    transition-timing-function: var(--motion-ease-emphasized);
+}
+
+.motion-surface {
+    transition-property: background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: var(--motion-duration-standard);
+    transition-timing-function: var(--motion-ease-standard);
+}
+
+.motion-lift:hover {
+    transform: translateY(calc(var(--motion-hover-lift) * -1));
+}
+
+.motion-press:active {
+    transform: scale(var(--motion-press-scale));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -495,6 +584,11 @@ select {
     *::after {
         transition-duration: 0ms !important;
         animation-duration: 0ms !important;
+    }
+
+    .motion-lift:hover,
+    .motion-press:active {
+        transform: none !important;
     }
 }
 
@@ -526,7 +620,7 @@ html.cart-sheet-open body {
 }
 
 .sleek {
-    @apply transform-gpu transition-all duration-300 ease-in-out;
+    @apply transform-gpu;
     will-change: transform, opacity;
 }
 
@@ -616,6 +710,21 @@ video,
 .animate-shimmer {
     background-size: 200% 100%;
     animation: shimmer 2s infinite linear;
+}
+
+@keyframes page-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.995);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-page-fade-in {
+    animation: page-fade-in 280ms var(--motion-ease-standard) both;
 }
 
 @keyframes float {
@@ -772,4 +881,10 @@ video,
 
 .article-content tbody tr:hover {
     @apply bg-muted/30;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-page-fade-in {
+        animation: none !important;
+    }
 }

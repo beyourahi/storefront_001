@@ -13,6 +13,7 @@ const FALLBACK_SPECIAL_COLLECTIONS = {
 import {VideoHero} from "~/components/homepage/VideoHero";
 import {DiscountedProductsSection} from "~/components/homepage/DiscountedProductsSection";
 import {CollectionsSection} from "~/components/homepage/CollectionsSection";
+import {FeaturedProductSpotlight} from "~/components/homepage/FeaturedProductSpotlight";
 import {RecentlyViewedSection} from "~/components/homepage/RecentlyViewedSection";
 import {HomepageWishlistSection} from "~/components/HomepageWishlistSection";
 import {ProductSection} from "~/components/homepage/ProductSection";
@@ -21,6 +22,7 @@ import {TestimonialsSection} from "~/components/homepage/TestimonialsSection";
 import {FAQSection} from "~/components/homepage/FAQSection";
 import {OrderHistorySection} from "~/components/account/OrderHistorySection";
 import {HomepageBlogSection} from "~/components/homepage/HomepageBlogSection";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {
     CUSTOMER_ORDER_HISTORY_QUERY,
     extractOrderHistoryProducts,
@@ -58,11 +60,6 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         if (availableProducts.length === 0) return null;
         return {collection: {...response.collection, products: {nodes: availableProducts}}};
     };
-
-    const featuredProducts = dataAdapter
-        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.featured}})
-        .then(filterCollectionProducts)
-        .catch((error: unknown) => { console.error("Failed to load featured products:", error); return null; });
 
     const bestSellers = dataAdapter
         .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.bestSellers}})
@@ -145,7 +142,6 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 
     return {
         exploreCollections,
-        featuredProducts,
         bestSellers,
         newArrivals,
         trending,
@@ -162,153 +158,159 @@ export default function Homepage() {
     const data = useLoaderData<typeof loader>();
     const rootData = useRouteLoaderData<RootLoader>("root");
     const shopName = rootData?.siteContent?.siteSettings?.brandName ?? "Store";
+    const featuredProduct = rootData?.siteContent?.siteSettings?.featuredProductSection ?? null;
+    const sectionNumbers = featuredProduct
+        ? {bestSellers: "04", newArrivals: "05", trending: "06"}
+        : {bestSellers: "03", newArrivals: "04", trending: "05"};
 
     return (
         <div className="-mt-[var(--total-header-height)] min-h-dvh bg-background text-foreground">
             <VideoHero shopName={shopName} />
 
-            <Suspense fallback={<DiscountedProductsSection products={[]} loading />}>
-                <Await resolve={data.allProducts}>
-                    {(resolvedProducts: any) => <DiscountedProductsSection products={resolvedProducts ?? []} />}
-                </Await>
-            </Suspense>
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <Suspense fallback={<DiscountedProductsSection products={[]} loading />}>
+                    <Await resolve={data.allProducts}>
+                        {(resolvedProducts: any) => <DiscountedProductsSection products={resolvedProducts ?? []} />}
+                    </Await>
+                </Suspense>
+            </AnimatedSection>
 
-            <CollectionsSection collections={data.exploreCollections} />
+            <AnimatedSection animation="slide-up" threshold={0.12} delay={40}>
+                <CollectionsSection collections={data.exploreCollections} />
+            </AnimatedSection>
 
-            <RecentlyViewedSection allProducts={data.allProducts} />
+            <AnimatedSection animation="fade" threshold={0.12} delay={80}>
+                <RecentlyViewedSection allProducts={data.allProducts} />
+            </AnimatedSection>
 
-            <HomepageWishlistSection />
+            <AnimatedSection animation="slide-up" threshold={0.12} delay={120}>
+                <HomepageWishlistSection />
+            </AnimatedSection>
 
             {data.orderHistory?.isLoggedIn && data.orderHistory.products.length > 0 && (
-                <OrderHistorySection products={data.orderHistory.products} />
+                <AnimatedSection animation="slide-up" threshold={0.14}>
+                    <OrderHistorySection products={data.orderHistory.products} />
+                </AnimatedSection>
             )}
 
-            <Suspense
-                fallback={
-                    <ProductSection
-                        products={[]}
-                        collection={null}
-                        title="Featured"
-                        subheading="Handpicked for you"
-                        loading
-                        sectionNumber="03"
-                    />
-                }
-            >
-                <Await resolve={data.featuredProducts}>
-                    {(resolved: any) => {
-                        if (!resolved?.collection) return null;
-                        return (
-                            <ProductSection
-                                products={resolved.collection.products.nodes}
-                                collection={{handle: resolved.collection.handle, title: resolved.collection.title}}
-                                title="Featured"
-                                subheading="Handpicked for you"
-                                sectionNumber="03"
-                            />
-                        );
-                    }}
-                </Await>
-            </Suspense>
+            {featuredProduct ? (
+                <AnimatedSection animation="fade" threshold={0.14}>
+                    <FeaturedProductSpotlight product={featuredProduct} sectionNumber="03" />
+                </AnimatedSection>
+            ) : null}
 
-            <Suspense
-                fallback={
-                    <ProductSection
-                        products={[]}
-                        collection={null}
-                        title="Best Sellers"
-                        subheading="Most loved by our customers"
-                        loading
-                        sectionNumber="04"
-                    />
-                }
-            >
-                <Await resolve={data.bestSellers}>
-                    {(resolved: any) => {
-                        if (!resolved?.collection) return null;
-                        return (
-                            <ProductSection
-                                products={resolved.collection.products.nodes}
-                                collection={{handle: resolved.collection.handle, title: resolved.collection.title}}
-                                title="Best Sellers"
-                                subheading="Most loved by our customers"
-                                sectionNumber="04"
-                            />
-                        );
-                    }}
-                </Await>
-            </Suspense>
+            <AnimatedSection animation="slide-up" threshold={0.12}>
+                <Suspense
+                    fallback={
+                        <ProductSection
+                            products={[]}
+                            collection={null}
+                            title="Best Sellers"
+                            subheading="Most loved by our customers"
+                            loading
+                            sectionNumber={sectionNumbers.bestSellers}
+                        />
+                    }
+                >
+                    <Await resolve={data.bestSellers}>
+                        {(resolved: any) => {
+                            if (!resolved?.collection) return null;
+                            return (
+                                <ProductSection
+                                    products={resolved.collection.products.nodes}
+                                    collection={{handle: resolved.collection.handle, title: resolved.collection.title}}
+                                    title="Best Sellers"
+                                    subheading="Most loved by our customers"
+                                    sectionNumber={sectionNumbers.bestSellers}
+                                />
+                            );
+                        }}
+                    </Await>
+                </Suspense>
+            </AnimatedSection>
 
-            <Suspense
-                fallback={
-                    <ProductSection
-                        products={[]}
-                        collection={null}
-                        title="New Arrivals"
-                        subheading="Fresh drops just landed"
-                        loading
-                        sectionNumber="05"
-                    />
-                }
-            >
-                <Await resolve={data.newArrivals}>
-                    {(resolved: any) => {
-                        if (!resolved?.collection) return null;
-                        return (
-                            <ProductSection
-                                products={resolved.collection.products.nodes}
-                                collection={{handle: resolved.collection.handle, title: resolved.collection.title}}
-                                title="New Arrivals"
-                                subheading="Fresh drops just landed"
-                                sectionNumber="05"
-                            />
-                        );
-                    }}
-                </Await>
-            </Suspense>
+            <AnimatedSection animation="slide-up" threshold={0.12}>
+                <Suspense
+                    fallback={
+                        <ProductSection
+                            products={[]}
+                            collection={null}
+                            title="New Arrivals"
+                            subheading="Fresh drops just landed"
+                            loading
+                            sectionNumber={sectionNumbers.newArrivals}
+                        />
+                    }
+                >
+                    <Await resolve={data.newArrivals}>
+                        {(resolved: any) => {
+                            if (!resolved?.collection) return null;
+                            return (
+                                <ProductSection
+                                    products={resolved.collection.products.nodes}
+                                    collection={{handle: resolved.collection.handle, title: resolved.collection.title}}
+                                    title="New Arrivals"
+                                    subheading="Fresh drops just landed"
+                                    sectionNumber={sectionNumbers.newArrivals}
+                                />
+                            );
+                        }}
+                    </Await>
+                </Suspense>
+            </AnimatedSection>
 
-            <Suspense
-                fallback={
-                    <ProductSection
-                        products={[]}
-                        collection={null}
-                        title="Trending"
-                        subheading="What everyone is talking about"
-                        loading
-                        sectionNumber="06"
-                    />
-                }
-            >
-                <Await resolve={data.trending}>
-                    {(resolved: any) => {
-                        if (!resolved?.collection) return null;
-                        return (
-                            <ProductSection
-                                products={resolved.collection.products.nodes}
-                                collection={{handle: resolved.collection.handle, title: resolved.collection.title}}
-                                title="Trending"
-                                subheading="What everyone is talking about"
-                                sectionNumber="06"
-                            />
-                        );
-                    }}
-                </Await>
-            </Suspense>
+            <AnimatedSection animation="slide-up" threshold={0.12}>
+                <Suspense
+                    fallback={
+                        <ProductSection
+                            products={[]}
+                            collection={null}
+                            title="Trending"
+                            subheading="What everyone is talking about"
+                            loading
+                            sectionNumber={sectionNumbers.trending}
+                        />
+                    }
+                >
+                    <Await resolve={data.trending}>
+                        {(resolved: any) => {
+                            if (!resolved?.collection) return null;
+                            return (
+                                <ProductSection
+                                    products={resolved.collection.products.nodes}
+                                    collection={{handle: resolved.collection.handle, title: resolved.collection.title}}
+                                    title="Trending"
+                                    subheading="What everyone is talking about"
+                                    sectionNumber={sectionNumbers.trending}
+                                />
+                            );
+                        }}
+                    </Await>
+                </Suspense>
+            </AnimatedSection>
 
-            <Suspense fallback={<HomepageBlogSection articles={[]} loading />}>
-                <Await resolve={data.recentArticles}>
-                    {(resolved: any) => {
-                        if (!resolved || resolved.length === 0) return null;
-                        return <HomepageBlogSection articles={resolved} />;
-                    }}
-                </Await>
-            </Suspense>
+            <AnimatedSection animation="fade" threshold={0.1}>
+                <Suspense fallback={<HomepageBlogSection articles={[]} loading />}>
+                    <Await resolve={data.recentArticles}>
+                        {(resolved: any) => {
+                            if (!resolved || resolved.length === 0) return null;
+                            return <HomepageBlogSection articles={resolved} />;
+                        }}
+                    </Await>
+                </Suspense>
+            </AnimatedSection>
 
-            <SocialMediaSection />
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <SocialMediaSection />
+            </AnimatedSection>
 
-            <TestimonialsSection />
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <TestimonialsSection />
+            </AnimatedSection>
 
-            <FAQSection />
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <FAQSection />
+            </AnimatedSection>
         </div>
     );
 }

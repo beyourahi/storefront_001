@@ -8,6 +8,7 @@ import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
 import {CollectionPagination} from "~/components/custom/CollectionPagination";
 import {MobileSearchBar} from "~/components/layout/MobileSearchBar";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {fromStorefrontNode} from "~/lib/product/product-card-normalizers";
 import {
     parsePaginationParams,
@@ -129,29 +130,34 @@ export default function CollectionPage() {
             {/* Breadcrumbs */}
             <PageBreadcrumbs customTitle={collection.title} />
 
-            {/* Collection Hero */}
-            <CollectionHero collection={collection} />
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <CollectionHero collection={collection} />
+            </AnimatedSection>
 
-            {/* Mobile Search Bar */}
-            <div className="mx-auto max-w-[2000px] px-2 md:px-4 lg:hidden">
-                <MobileSearchBar shopName="Store" />
-            </div>
-
-            {/* Mobile Pagination (Above Grid) */}
-            {showPagination && (
+            <AnimatedSection animation="slide-up" threshold={0.1}>
                 <div className="mx-auto max-w-[2000px] px-2 md:px-4 lg:hidden">
-                    <CollectionPagination {...pagination} />
+                    <MobileSearchBar shopName="Store" />
                 </div>
+            </AnimatedSection>
+
+            {showPagination && (
+                <AnimatedSection animation="fade" threshold={0.12}>
+                    <div className="mx-auto max-w-[2000px] px-2 md:px-4 lg:hidden">
+                        <CollectionPagination {...pagination} />
+                    </div>
+                </AnimatedSection>
             )}
 
-            {/* Products Grid */}
-            <ProductsGridSection products={normalizedProducts} pagination={pagination} preserveOrder={true} />
+            <AnimatedSection animation="slide-up" threshold={0.12}>
+                <ProductsGridSection products={normalizedProducts} pagination={pagination} preserveOrder={true} />
+            </AnimatedSection>
 
-            {/* Pagination (Below Grid) */}
             {showPagination && (
-                <div className="mx-auto max-w-[2000px] px-2 pb-16 md:px-4">
-                    <CollectionPagination {...pagination} />
-                </div>
+                <AnimatedSection animation="fade" threshold={0.08}>
+                    <div className="mx-auto max-w-[2000px] px-2 pb-16 md:px-4">
+                        <CollectionPagination {...pagination} />
+                    </div>
+                </AnimatedSection>
             )}
 
             <Analytics.CollectionView

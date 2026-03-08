@@ -2,6 +2,7 @@ import {useState, useEffect, useCallback, useRef} from "react";
 import {Link} from "react-router";
 import {ArrowRight, Search as SearchIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
+import {ParallaxLayer} from "~/components/motion/ParallaxLayer";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 const FALLBACK_GREETINGS = {
     nightOwl: "Night owls find the best things",
@@ -214,14 +215,19 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
     return (
         <section className="group relative flex h-full min-h-[calc(100dvh)] w-full items-center justify-center overflow-hidden">
             <div className="absolute inset-0 z-0">
-                <div className="sleek h-full w-full overflow-hidden group-hover:scale-105">
+                <ParallaxLayer
+                    className="h-full w-full"
+                    contentClassName="sleek h-full w-full group-hover:scale-105"
+                    amplitude={32}
+                    scale={1.08}
+                >
                     <HeroBackgroundMedia
                         mobile={heroMediaMobile}
                         largeScreen={heroMediaLargeScreen}
                         fallbackVideoSrc={fallbackVideoSrc}
                         fallbackImageSrc={fallbackImageSrc}
                     />
-                </div>
+                </ParallaxLayer>
                 <div className="absolute inset-0 bg-black/50 transition-colors duration-300 lg:bg-black/60 lg:group-hover:bg-black/50" />
             </div>
 
@@ -251,7 +257,7 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
                     </div>
 
                     <div className="mx-auto flex w-[70%] flex-col gap-4 sm:w-auto sm:flex-row sm:justify-center">
-                        <Link to="/collections" className="w-full sm:w-auto">
+                        <Link viewTransition to="/collections" className="w-full sm:w-auto">
                             <Button size="lg" className="h-12 w-full gap-2 !px-8 leading-none font-semibold sm:w-auto">
                                 Explore Collections
                                 <ArrowRight className="h-4 w-4" />

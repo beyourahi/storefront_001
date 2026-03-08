@@ -24,6 +24,7 @@ import {ProductMobileTitlePrice} from "~/components/product/ProductMobileTitlePr
 import {ProductPurchaseSection} from "~/components/product/ProductPurchaseSection";
 import {ProductMobileStickyButtons} from "~/components/product/ProductMobileStickyButtons";
 import {ProductRelatedSection} from "~/components/product/ProductRelatedSection";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
     formMethod,
@@ -228,67 +229,71 @@ const Product = () => {
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <section className="pt-4 md:pt-6">
-                <div className="mx-auto max-w-[2000px] px-2 md:px-4">
-                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-12">
-                        <ProductImageSection productImages={productImages} product={product} onSale={onSale} />
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <section className="pt-4 md:pt-6">
+                    <div className="mx-auto max-w-[2000px] px-2 md:px-4">
+                        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-12">
+                            <ProductImageSection productImages={productImages} product={product} onSale={onSale} />
 
-                        <ProductMobileTitlePrice product={product} discountPercentage={discountPercentage} />
+                            <ProductMobileTitlePrice product={product} discountPercentage={discountPercentage} />
 
-                        <div className="lg:hidden">
-                            <ProductPurchaseSection
-                                product={product}
-                                selectedVariant={selectedVariant}
-                                productOptions={productOptions}
-                                selectedSellingPlan={selectedSellingPlan}
-                                quantity={quantity}
-                                onQuantityChange={setQuantity}
-                                discountPercentage={discountPercentage}
-                                sizeChartButton={
-                                    sizeChartData ? (
-                                        <SizeChartButton sizeChart={sizeChartData} variant="link" />
-                                    ) : undefined
-                                }
-                            />
-                        </div>
+                            <div className="lg:hidden">
+                                <ProductPurchaseSection
+                                    product={product}
+                                    selectedVariant={selectedVariant}
+                                    productOptions={productOptions}
+                                    selectedSellingPlan={selectedSellingPlan}
+                                    quantity={quantity}
+                                    onQuantityChange={setQuantity}
+                                    discountPercentage={discountPercentage}
+                                    sizeChartButton={
+                                        sizeChartData ? (
+                                            <SizeChartButton sizeChart={sizeChartData} variant="link" />
+                                        ) : undefined
+                                    }
+                                />
+                            </div>
 
-                        <div className="hidden lg:col-span-4 lg:block">
-                            <ProductInfoSection product={product} discountPercentage={discountPercentage} />
-                        </div>
+                            <div className="hidden lg:col-span-4 lg:block">
+                                <ProductInfoSection product={product} discountPercentage={discountPercentage} />
+                            </div>
 
-                        <div className="lg:hidden">
-                            <ProductInfoSection product={product} discountPercentage={discountPercentage} />
-                        </div>
+                            <div className="lg:hidden">
+                                <ProductInfoSection product={product} discountPercentage={discountPercentage} />
+                            </div>
 
-                        <div className="hidden lg:col-span-4 lg:block">
-                            <ProductPurchaseSection
-                                product={product}
-                                selectedVariant={selectedVariant}
-                                productOptions={productOptions}
-                                selectedSellingPlan={selectedSellingPlan}
-                                quantity={quantity}
-                                onQuantityChange={setQuantity}
-                                discountPercentage={discountPercentage}
-                                sizeChartButton={
-                                    sizeChartData ? (
-                                        <SizeChartButton sizeChart={sizeChartData} variant="link" />
-                                    ) : undefined
-                                }
-                            />
+                            <div className="hidden lg:col-span-4 lg:block">
+                                <ProductPurchaseSection
+                                    product={product}
+                                    selectedVariant={selectedVariant}
+                                    productOptions={productOptions}
+                                    selectedSellingPlan={selectedSellingPlan}
+                                    quantity={quantity}
+                                    onQuantityChange={setQuantity}
+                                    discountPercentage={discountPercentage}
+                                    sizeChartButton={
+                                        sizeChartData ? (
+                                            <SizeChartButton sizeChart={sizeChartData} variant="link" />
+                                        ) : undefined
+                                    }
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </AnimatedSection>
 
-            <Suspense fallback={null}>
-                <Await resolve={recommendations}>
-                    {resolvedRecs =>
-                        resolvedRecs && resolvedRecs.length > 0 ? (
-                            <ProductRelatedSection relatedProducts={resolvedRecs} />
-                        ) : null
-                    }
-                </Await>
-            </Suspense>
+            <AnimatedSection animation="slide-up" threshold={0.12}>
+                <Suspense fallback={null}>
+                    <Await resolve={recommendations}>
+                        {resolvedRecs =>
+                            resolvedRecs && resolvedRecs.length > 0 ? (
+                                <ProductRelatedSection relatedProducts={resolvedRecs} />
+                            ) : null
+                        }
+                    </Await>
+                </Suspense>
+            </AnimatedSection>
 
             <ProductMobileStickyButtons
                 product={product}
@@ -350,7 +355,7 @@ export const ErrorBoundary = () => {
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                         <Button asChild>
-                            <Link to="/collections/all-products">Browse All Products</Link>
+                            <Link viewTransition to="/collections/all-products">Browse All Products</Link>
                         </Button>
                     </div>
                     <div className="sr-only">

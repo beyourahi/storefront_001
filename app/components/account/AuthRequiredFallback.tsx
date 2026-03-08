@@ -20,11 +20,11 @@ export const AuthRequiredFallback = ({
         <p className="text-muted-foreground max-w-md">{description}</p>
         <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg">
-                <Link to="/account/login">Sign In</Link>
+                <Link viewTransition to="/account/login">Sign In</Link>
             </Button>
             {secondaryCTA && (
                 <Button asChild size="lg" variant="outline">
-                    <Link to={secondaryCTA.to}>{secondaryCTA.label}</Link>
+                    <Link viewTransition to={secondaryCTA.to}>{secondaryCTA.label}</Link>
                 </Button>
             )}
         </div>

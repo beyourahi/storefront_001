@@ -9,6 +9,7 @@ import {Avatar, AvatarFallback} from "~/components/ui/avatar";
 import {OrderCard} from "~/components/account/OrderCard";
 import {AuthRequiredFallback} from "~/components/account/AuthRequiredFallback";
 import {StoreCreditWidget} from "~/components/account/StoreCreditWidget";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {PackageSearchIcon, ShoppingBagIcon, UserCogIcon, ArrowRightIcon, LogOutIcon} from "lucide-react";
 import {
     CUSTOMER_STORE_CREDIT_QUERY,
@@ -179,7 +180,7 @@ const QuickActionsGrid = () => (
         <h2 className="mb-4 text-xl font-semibold">Quick Actions</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {QUICK_ACTIONS.map(action => (
-                <Link key={action.to} to={action.to} className="group">
+                <Link viewTransition key={action.to} to={action.to} className="group">
                     <Card className="h-full p-4 transition-colors group-hover:bg-accent">
                         <CardContent className="flex items-start gap-4 p-0">
                             <div className="rounded-lg bg-primary/10 p-2">
@@ -203,7 +204,7 @@ const RecentOrdersSection = ({orders}: {orders: NonNullable<Awaited<ReturnType<t
         <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold">Recent Orders</h2>
             <Button variant="ghost" size="sm" asChild>
-                <Link to="/account/orders" className="gap-1">
+                <Link viewTransition to="/account/orders" className="gap-1">
                     View All
                     <ArrowRightIcon className="size-4" />
                 </Link>
@@ -220,7 +221,7 @@ const RecentOrdersSection = ({orders}: {orders: NonNullable<Awaited<ReturnType<t
                 <PackageSearchIcon className="mx-auto mb-3 size-10 text-muted-foreground" />
                 <p className="text-muted-foreground">No orders yet</p>
                 <Button asChild className="mt-4" variant="outline">
-                    <Link to="/collections">Start Shopping</Link>
+                    <Link viewTransition to="/collections">Start Shopping</Link>
                 </Button>
             </Card>
         )}
@@ -240,11 +241,25 @@ const AccountDashboard = () => {
 
     return (
         <div className="space-y-8 sm:space-y-10 lg:space-y-12">
-            <WelcomeBanner customer={customer} />
-            {hasStoreCredit && <StoreCreditWidget balance={storeCreditBalance} accounts={storeCreditAccounts} />}
-            <AccountStats customer={customer} orderCount={orderCount} />
-            <QuickActionsGrid />
-            {orders && <RecentOrdersSection orders={orders} />}
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <WelcomeBanner customer={customer} />
+            </AnimatedSection>
+            {hasStoreCredit && (
+                <AnimatedSection animation="slide-up" threshold={0.1}>
+                    <StoreCreditWidget balance={storeCreditBalance} accounts={storeCreditAccounts} />
+                </AnimatedSection>
+            )}
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <AccountStats customer={customer} orderCount={orderCount} />
+            </AnimatedSection>
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <QuickActionsGrid />
+            </AnimatedSection>
+            {orders && (
+                <AnimatedSection animation="fade" threshold={0.1}>
+                    <RecentOrdersSection orders={orders} />
+                </AnimatedSection>
+            )}
         </div>
     );
 };

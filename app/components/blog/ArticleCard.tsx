@@ -63,7 +63,7 @@ export const ArticleCard = ({
 
     if (variant === "compact") {
         return (
-            <Link
+            <Link viewTransition
                 to={articleUrl}
                 prefetch="viewport"
                 className={cn(
@@ -102,7 +102,7 @@ export const ArticleCard = ({
 
     if (variant === "featured") {
         return (
-            <Link
+            <Link viewTransition
                 to={articleUrl}
                 prefetch="viewport"
                 className={cn("block no-underline group animate-in fade-in cursor-pointer", className)}
@@ -157,7 +157,7 @@ export const ArticleCard = ({
     }
 
     return (
-        <Link
+        <Link viewTransition
             to={articleUrl}
             prefetch="viewport"
             className={cn("group block no-underline animate-in fade-in cursor-pointer h-full", className)}

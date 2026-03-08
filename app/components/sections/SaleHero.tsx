@@ -71,7 +71,7 @@ export const SaleHero = ({totalCount, maxDiscount, products}: SaleHeroProps) => 
                                     Check back soon for special offers and deals, or explore our full collection of
                                     premium products.
                                 </p>
-                                <Link
+                                <Link viewTransition
                                     to="/collections/all"
                                     className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                                 >

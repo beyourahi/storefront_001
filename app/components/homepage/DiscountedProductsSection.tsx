@@ -162,7 +162,7 @@ export const DiscountedProductsSection = ({products, loading = false}: Discounte
                 {!isLoadingState && discountedProducts.length > 0 && (
                     <div className="text-center">
                         <Button size="lg" asChild className="w-[80vw] sm:w-auto">
-                            <Link to="/sale" className="flex items-center gap-2">
+                            <Link viewTransition to="/sale" className="flex items-center gap-2">
                                 View All Discounts
                                 <ArrowRight className="h-4 w-4" />
                             </Link>

@@ -25,7 +25,7 @@ function SheetOverlay({className, ...props}: React.ComponentProps<typeof SheetPr
         <SheetPrimitive.Overlay
             data-slot="sheet-overlay"
             className={cn(
-                "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[var(--z-overlay)] bg-overlay-dark backdrop-blur-md",
+                "motion-overlay data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[var(--z-overlay)] bg-overlay-dark backdrop-blur-md",
                 className
             )}
             {...props}
@@ -54,8 +54,8 @@ function SheetContent({
                 data-slot="sheet-content"
                 className={cn(
                     "bg-background fixed z-[var(--z-modal)] flex flex-col shadow-lg",
-                    "data-[state=open]:animate-in data-[state=closed]:animate-out",
-                    "transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+                    "motion-overlay data-[state=open]:animate-in data-[state=closed]:animate-out",
+                    "transition-[transform,opacity] data-[state=closed]:duration-[var(--motion-duration-overlay)] data-[state=open]:duration-[var(--motion-duration-overlay)]",
                     side === "right" && [
                         "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
                         "top-3 sm:top-4 bottom-[max(0.75rem,env(safe-area-inset-bottom))] sm:bottom-[max(1rem,env(safe-area-inset-bottom))]",
@@ -87,8 +87,8 @@ function SheetContent({
                         className={cn(
                             "absolute top-2 right-2 sm:top-3 sm:right-3",
                             "flex select-none items-center justify-center size-10 sm:size-11",
-                            "rounded-full bg-muted/50 hover:bg-muted cursor-pointer",
-                            "opacity-70 transition-all hover:opacity-100",
+                            "motion-interactive motion-press rounded-full bg-muted/50 hover:bg-muted cursor-pointer",
+                            "opacity-70 hover:opacity-100 active:scale-[var(--motion-press-scale)]",
                             "ring-offset-background focus:ring-ring focus:ring-2 focus:ring-offset-2 focus:outline-hidden",
                             "disabled:pointer-events-none disabled:cursor-not-allowed",
                             "[&_svg]:pointer-events-none [&_svg]:shrink-0"

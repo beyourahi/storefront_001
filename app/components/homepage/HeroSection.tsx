@@ -122,14 +122,14 @@ export const HeroSection = ({shopName}: HeroSectionProps) => {
                     </div>
 
                     <div className="mx-auto flex w-[70%] flex-col gap-4 sm:w-auto sm:flex-row sm:justify-center">
-                        <Link to="/collections" className="w-full sm:w-auto">
+                        <Link viewTransition to="/collections" className="w-full sm:w-auto">
                             <Button size="lg" className="h-12 w-full gap-2 !px-8 leading-none font-semibold sm:w-auto">
                                 Explore Collections
                                 <ArrowRight className="h-4 w-4" />
                             </Button>
                         </Link>
 
-                        <Link to="/search" className="w-full sm:w-auto">
+                        <Link viewTransition to="/search" className="w-full sm:w-auto">
                             <Button variant="secondary" size="lg" className="h-12 w-full gap-2 font-semibold sm:w-auto">
                                 <Search className="h-4 w-4" />
                                 {shopName ? `Search ${shopName}` : "Search"}

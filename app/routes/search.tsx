@@ -15,6 +15,7 @@ import {Alert, AlertDescription} from "~/components/ui/alert";
 import {Badge} from "~/components/ui/badge";
 import {Skeleton} from "~/components/ui/skeleton";
 import {InfiniteScrollGrid} from "~/components/sections/InfiniteScrollGrid";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {ViewOptionsSelector, type LayoutMode} from "~/components/search/ViewOptionsSelector";
 import {ProductPrice} from "~/components/search/ProductPrice";
 import {DiscountBadge} from "~/components/DiscountBadge";
@@ -380,28 +381,32 @@ export default function SearchPage() {
 
     return (
         <div className="mb-4 min-h-dvh px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16 3xl:mx-auto 3xl:max-w-[1600px] 3xl:px-12">
-            <header className="pt-(--total-header-height) pb-6 sm:pb-8 md:pb-12 lg:pb-16">
-                <h1 className="m-0 font-serif text-3xl font-medium text-primary tracking-tight sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl">
-                    / Search
-                </h1>
-            </header>
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <header className="pt-(--total-header-height) pb-6 sm:pb-8 md:pb-12 lg:pb-16">
+                    <h1 className="m-0 font-serif text-3xl font-medium text-primary tracking-tight sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl">
+                        / Search
+                    </h1>
+                </header>
+            </AnimatedSection>
 
-            <form onSubmit={handleSubmit} className="mb-6 max-w-4xl sm:mb-8 md:mb-10 lg:mb-12 xl:max-w-5xl 2xl:max-w-6xl">
-                <div className="relative flex items-center gap-3">
-                    <input
-                        ref={searchInputRef}
-                        defaultValue={term}
-                        name="q"
-                        type="search"
-                        placeholder="Search..."
-                        className={cn(
-                            "w-full border-0 border-b-2 border-[var(--border-strong)] bg-transparent",
-                            "py-3 text-xl font-serif text-primary outline-none transition-colors duration-300 placeholder:text-primary/40",
-                            "focus:border-primary sm:py-4 sm:text-2xl md:text-4xl lg:text-5xl"
-                        )}
-                    />
-                </div>
-            </form>
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <form onSubmit={handleSubmit} className="mb-6 max-w-4xl sm:mb-8 md:mb-10 lg:mb-12 xl:max-w-5xl 2xl:max-w-6xl">
+                    <div className="relative flex items-center gap-3">
+                        <input
+                            ref={searchInputRef}
+                            defaultValue={term}
+                            name="q"
+                            type="search"
+                            placeholder="Search..."
+                            className={cn(
+                                "w-full border-0 border-b-2 border-[var(--border-strong)] bg-transparent",
+                                "py-3 text-xl font-serif text-primary outline-none transition-colors duration-300 placeholder:text-primary/40",
+                                "focus:border-primary sm:py-4 sm:text-2xl md:text-4xl lg:text-5xl"
+                            )}
+                        />
+                    </div>
+                </form>
+            </AnimatedSection>
 
             {error && (
                 <Alert variant="destructive" className="mb-8 max-w-2xl">
@@ -411,21 +416,26 @@ export default function SearchPage() {
             )}
 
             {!term ? (
-                <SearchPageInitialState
-                    recentSearches={recentSearches}
-                    collections={featuredCollections}
-                    popularSearches={popularSearches}
-                    onClearRecent={clearSearches}
-                    onSuggestionClick={handleSuggestionClick}
-                />
+                <AnimatedSection animation="fade" threshold={0.1}>
+                    <SearchPageInitialState
+                        recentSearches={recentSearches}
+                        collections={featuredCollections}
+                        popularSearches={popularSearches}
+                        onClearRecent={clearSearches}
+                        onSuggestionClick={handleSuggestionClick}
+                    />
+                </AnimatedSection>
             ) : totalResults === 0 ? (
-                <SearchEmptyState term={term} />
+                <AnimatedSection animation="fade" threshold={0.1}>
+                    <SearchEmptyState term={term} />
+                </AnimatedSection>
             ) : (
-                <div className="space-y-6">
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <div className="mb-6 flex flex-col gap-4">
-                            <div className="flex items-center justify-between gap-4">
-                                <TabsList className="h-auto shrink-0 gap-1 overflow-x-auto bg-transparent p-0 sm:gap-1.5 md:gap-2">
+                <AnimatedSection animation="slide-up" threshold={0.12}>
+                    <div className="space-y-6">
+                        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                            <div className="mb-6 flex flex-col gap-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <TabsList className="h-auto shrink-0 gap-1 overflow-x-auto bg-transparent p-0 sm:gap-1.5 md:gap-2">
                                     <TabsTrigger
                                         value="products"
                                         className={cn(
@@ -467,9 +477,20 @@ export default function SearchPage() {
                                         <span>Articles</span>
                                         <span className="ml-1 text-sm opacity-80">({articles.totalCount})</span>
                                     </TabsTrigger>
-                                </TabsList>
+                                    </TabsList>
 
-                                <div className="hidden shrink-0 md:block">
+                                    <div className="hidden shrink-0 md:block">
+                                        <ViewOptionsSelector
+                                            gridColumns={currentGridColumns}
+                                            onGridColumnsChange={handleGridColumnsChange}
+                                            layoutMode={currentLayoutMode}
+                                            onLayoutModeChange={handleLayoutModeChange}
+                                            showSortOptions={false}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="md:hidden">
                                     <ViewOptionsSelector
                                         gridColumns={currentGridColumns}
                                         onGridColumnsChange={handleGridColumnsChange}
@@ -480,44 +501,34 @@ export default function SearchPage() {
                                 </div>
                             </div>
 
-                            <div className="md:hidden">
-                                <ViewOptionsSelector
-                                    gridColumns={currentGridColumns}
-                                    onGridColumnsChange={handleGridColumnsChange}
-                                    layoutMode={currentLayoutMode}
-                                    onLayoutModeChange={handleLayoutModeChange}
-                                    showSortOptions={false}
+                            <TabsContent value="products" className="mt-0">
+                                <SearchProductsTab
+                                    products={products}
+                                    term={term}
+                                    gridColumns={productsGridColumns}
+                                    layoutMode={productsLayoutMode}
                                 />
-                            </div>
-                        </div>
+                            </TabsContent>
 
-                        <TabsContent value="products" className="mt-0">
-                            <SearchProductsTab
-                                products={products}
-                                term={term}
-                                gridColumns={productsGridColumns}
-                                layoutMode={productsLayoutMode}
-                            />
-                        </TabsContent>
+                            <TabsContent value="collections" className="mt-0">
+                                <SearchCollectionsTab
+                                    collections={collections}
+                                    gridColumns={collectionsGridColumns}
+                                    layoutMode={collectionsLayoutMode}
+                                />
+                            </TabsContent>
 
-                        <TabsContent value="collections" className="mt-0">
-                            <SearchCollectionsTab
-                                collections={collections}
-                                gridColumns={collectionsGridColumns}
-                                layoutMode={collectionsLayoutMode}
-                            />
-                        </TabsContent>
-
-                        <TabsContent value="articles" className="mt-0">
-                            <SearchArticlesTab
-                                articles={articles}
-                                term={term}
-                                gridColumns={articlesGridColumns}
-                                layoutMode={articlesLayoutMode}
-                            />
-                        </TabsContent>
-                    </Tabs>
-                </div>
+                            <TabsContent value="articles" className="mt-0">
+                                <SearchArticlesTab
+                                    articles={articles}
+                                    term={term}
+                                    gridColumns={articlesGridColumns}
+                                    layoutMode={articlesLayoutMode}
+                                />
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+                </AnimatedSection>
             )}
 
             <Analytics.SearchView
@@ -617,7 +628,7 @@ function SearchPageInitialState({
                     </h3>
                     <div className="grid grid-cols-2 gap-2 sm:gap-responsive sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                         {collections.map(collection => (
-                            <Link key={collection.id} to={`/collections/${collection.handle}`} className="group">
+                            <Link viewTransition key={collection.id} to={`/collections/${collection.handle}`} className="group">
                                 <div className="bg-muted/50 mb-2 aspect-square overflow-hidden rounded-xl sm:mb-3 sm:rounded-2xl">
                                     {collection.image ? (
                                         <img
@@ -770,7 +781,7 @@ function SearchProductItem({
 
     if (variant === "list") {
         return (
-            <Link
+            <Link viewTransition
                 to={productUrl}
                 prefetch="viewport"
                 className={cn(
@@ -821,7 +832,7 @@ function SearchProductItem({
                         <DiscountBadge percentage={discountPercentage} position="inline" />
                     </div>
                 )}
-                <Link to={productUrl} prefetch="viewport" className="block h-full w-full">
+                <Link viewTransition to={productUrl} prefetch="viewport" className="block h-full w-full">
                     {image ? (
                         <Image
                             alt={image.altText || product.title}
@@ -848,7 +859,7 @@ function SearchProductItem({
                 </Link>
             </div>
 
-            <Link
+            <Link viewTransition
                 to={productUrl}
                 prefetch="viewport"
                 className={cn(
@@ -926,7 +937,7 @@ function SearchCollectionCard({
 
     if (variant === "list") {
         return (
-            <Link
+            <Link viewTransition
                 to={`/collections/${collection.handle}`}
                 prefetch="viewport"
                 className={cn(
@@ -960,7 +971,7 @@ function SearchCollectionCard({
     }
 
     return (
-        <Link
+        <Link viewTransition
             to={`/collections/${collection.handle}`}
             prefetch="viewport"
             className="sleek group bg-card collection-card block overflow-hidden rounded-lg animate-product-fade-in"
@@ -1075,7 +1086,7 @@ function SearchArticleCard({
 
     if (variant === "list") {
         return (
-            <Link
+            <Link viewTransition
                 to={articleUrl}
                 prefetch="viewport"
                 className={cn(
@@ -1119,7 +1130,7 @@ function SearchArticleCard({
             style={{animationDelay: `${staggerDelay}ms`}}
         >
             <div className="relative aspect-[4/3] overflow-hidden rounded-b-lg bg-muted/50">
-                <Link to={articleUrl} prefetch="viewport" className="block h-full w-full">
+                <Link viewTransition to={articleUrl} prefetch="viewport" className="block h-full w-full">
                     {article.image ? (
                         <Image
                             alt={article.image.altText || article.title}
@@ -1135,7 +1146,7 @@ function SearchArticleCard({
                 </Link>
             </div>
 
-            <Link to={articleUrl} prefetch="viewport" className="block no-underline py-3 sm:py-4 space-y-1.5">
+            <Link viewTransition to={articleUrl} prefetch="viewport" className="block no-underline py-3 sm:py-4 space-y-1.5">
                 <h3 className="line-clamp-2 font-serif font-semibold text-base leading-snug text-foreground">
                     {article.title}
                 </h3>

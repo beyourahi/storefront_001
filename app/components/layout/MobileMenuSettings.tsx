@@ -25,7 +25,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
         <div className="border-border/40 mt-4 border-t pt-4">
             <nav className="space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                    <Link
+                    <Link viewTransition
                         to="/account/wishlist"
                         onClick={onLinkClick}
                         className={cn(
@@ -59,7 +59,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                             Wishlist
                         </span>
                     </Link>
-                    <Link
+                    <Link viewTransition
                         to="/account"
                         onClick={onLinkClick}
                         className={cn(
@@ -87,7 +87,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                         </span>
                     </Link>
                 </div>
-                <Link
+                <Link viewTransition
                     to="/gallery"
                     onClick={onLinkClick}
                     className={cn(
@@ -114,7 +114,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                         Gallery
                     </span>
                 </Link>
-                <Link
+                <Link viewTransition
                     to="/contact"
                     onClick={onLinkClick}
                     className={cn(

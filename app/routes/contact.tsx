@@ -7,6 +7,7 @@ import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {ContactMethodCard} from "~/components/contact/ContactMethodCard";
 import {FAQSection} from "~/components/homepage/FAQSection";
 import {SocialMediaSection} from "~/components/homepage/SocialMediaSection";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {cn} from "~/lib/utils";
 import {useContactInfo, useFaqItems, useSocialLinks} from "~/lib/site-content-context";
 import {STORE_COUNTRY_NAME} from "~/lib/store-locale";
@@ -151,86 +152,98 @@ export default function Contact() {
         <>
             <PageBreadcrumbs customTitle="Contact Us" />
 
-            <section className="bg-overlay-dark relative py-8">
-                <div className="mx-auto max-w-[2000px] px-2 md:px-4">
-                    <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
-                        <GiantText
-                            text={title}
-                            className={cn("w-full font-black", title.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]")}
-                            textClass="text-light drop-shadow-lg"
-                        />
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <section className="bg-overlay-dark relative py-8">
+                    <div className="mx-auto max-w-[2000px] px-2 md:px-4">
+                        <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
+                            <GiantText
+                                text={title}
+                                className={cn("w-full font-black", title.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]")}
+                                textClass="text-light drop-shadow-lg"
+                            />
 
-                        <p className="text-light/90 drop-shadow-lg w-full text-xs lg:w-[60%] lg:text-sm 2xl:text-base">
-                            {subtitle}
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section className="bg-background py-8 md:py-20">
-                <div className="mx-auto max-w-7xl px-6">
-                    {contactMethods.length > 0 ? (
-                        <div className={cn("grid grid-cols-1 gap-8", getGridColsClass(contactMethods.length))}>
-                            {contactMethods.map(method => (
-                                <ContactMethodCard
-                                    key={method.title}
-                                    icon={method.icon}
-                                    title={method.title}
-                                    content={method.content}
-                                    description={method.description}
-                                    href={method.href}
-                                    openInNewTab={method.openInNewTab}
-                                />
-                            ))}
+                            <p className="text-light/90 drop-shadow-lg w-full text-xs lg:w-[60%] lg:text-sm 2xl:text-base">
+                                {subtitle}
+                            </p>
                         </div>
-                    ) : (
-                        <div className="text-center">
-                            <div className="bg-card mx-auto max-w-md rounded-2xl border p-8">
-                                <h3 className="text-foreground mb-4 text-xl font-semibold">Contact Information Coming Soon</h3>
-                                <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
-                                    We&apos;re currently updating our contact information. In the meantime, you can reach us
-                                    through our social media channels below.
-                                </p>
+                    </div>
+                </section>
+            </AnimatedSection>
+
+            <AnimatedSection animation="slide-up" threshold={0.12}>
+                <section className="bg-background py-8 md:py-20">
+                    <div className="mx-auto max-w-7xl px-6">
+                        {contactMethods.length > 0 ? (
+                            <div className={cn("grid grid-cols-1 gap-8", getGridColsClass(contactMethods.length))}>
+                                {contactMethods.map(method => (
+                                    <ContactMethodCard
+                                        key={method.title}
+                                        icon={method.icon}
+                                        title={method.title}
+                                        content={method.content}
+                                        description={method.description}
+                                        href={method.href}
+                                        openInNewTab={method.openInNewTab}
+                                    />
+                                ))}
                             </div>
-                        </div>
-                    )}
-                </div>
-            </section>
-
-            <FAQSection faqItems={faqItems} contactEmail={contactInfo.email} contactPhone={contactInfo.phone} />
-
-            {contextSocialLinks.length > 0 && <SocialMediaSection socialLinks={contextSocialLinks} />}
-
-            <section className="bg-background py-16">
-                <div className="mx-auto max-w-4xl px-6">
-                    <div className="mb-12 text-center">
-                        <h2 className="text-foreground mb-4 font-serif text-2xl font-bold">Legal Information</h2>
-                        <p className="text-muted-foreground mx-auto max-w-2xl leading-relaxed">
-                            Find important information about our policies, terms, and legal guidelines.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        {LEGAL_LINKS.map(link => {
-                            const Icon = link.icon;
-
-                            return (
-                                <a key={link.href} href={link.href} className={legalCardClass}>
-                                    <div className="mb-3 flex items-center gap-3">
-                                        <div className="bg-secondary/90 group-hover:bg-secondary group-hover:shadow-secondary/20 sleek flex h-12 w-12 items-center justify-center rounded-lg group-hover:scale-105 group-hover:shadow-sm">
-                                            <Icon className="text-secondary-foreground sleek h-6 w-6" />
-                                        </div>
-                                        <h3 className="text-card-foreground/95 sleek text-lg font-semibold">{link.title}</h3>
-                                    </div>
-                                    <p className="text-muted-foreground/85 group-hover:text-foreground/80 sleek text-sm leading-relaxed">
-                                        {link.description}
+                        ) : (
+                            <div className="text-center">
+                                <div className="bg-card mx-auto max-w-md rounded-2xl border p-8">
+                                    <h3 className="text-foreground mb-4 text-xl font-semibold">Contact Information Coming Soon</h3>
+                                    <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
+                                        We&apos;re currently updating our contact information. In the meantime, you can reach us
+                                        through our social media channels below.
                                     </p>
-                                </a>
-                            );
-                        })}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
-            </section>
+                </section>
+            </AnimatedSection>
+
+            <AnimatedSection animation="fade" threshold={0.1}>
+                <FAQSection faqItems={faqItems} contactEmail={contactInfo.email} contactPhone={contactInfo.phone} />
+            </AnimatedSection>
+
+            {contextSocialLinks.length > 0 && (
+                <AnimatedSection animation="slide-up" threshold={0.1}>
+                    <SocialMediaSection socialLinks={contextSocialLinks} />
+                </AnimatedSection>
+            )}
+
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <section className="bg-background py-16">
+                    <div className="mx-auto max-w-4xl px-6">
+                        <div className="mb-12 text-center">
+                            <h2 className="text-foreground mb-4 font-serif text-2xl font-bold">Legal Information</h2>
+                            <p className="text-muted-foreground mx-auto max-w-2xl leading-relaxed">
+                                Find important information about our policies, terms, and legal guidelines.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            {LEGAL_LINKS.map(link => {
+                                const Icon = link.icon;
+
+                                return (
+                                    <a key={link.href} href={link.href} className={legalCardClass}>
+                                        <div className="mb-3 flex items-center gap-3">
+                                            <div className="bg-secondary/90 group-hover:bg-secondary group-hover:shadow-secondary/20 sleek flex h-12 w-12 items-center justify-center rounded-lg group-hover:scale-105 group-hover:shadow-sm">
+                                                <Icon className="text-secondary-foreground sleek h-6 w-6" />
+                                            </div>
+                                            <h3 className="text-card-foreground/95 sleek text-lg font-semibold">{link.title}</h3>
+                                        </div>
+                                        <p className="text-muted-foreground/85 group-hover:text-foreground/80 sleek text-sm leading-relaxed">
+                                            {link.description}
+                                        </p>
+                                    </a>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </section>
+            </AnimatedSection>
         </>
     );
 }

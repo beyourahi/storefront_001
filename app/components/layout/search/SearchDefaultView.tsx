@@ -104,7 +104,7 @@ export const SearchDefaultView = ({
                                 parseFloat(compareAtPrice.amount) >
                                     parseFloat(product.priceRange.minVariantPrice.amount);
                             return (
-                                <Link
+                                <Link viewTransition
                                     key={product.id}
                                     to={`/products/${product.handle}`}
                                     className="hover:bg-accent hover:text-accent-foreground relative flex items-center gap-2 rounded-sm px-2 py-2 text-sm outline-hidden"
@@ -158,7 +158,7 @@ export const SearchDefaultView = ({
                         })}
                         {hasMoreProducts && (
                             <div className="px-2 pt-3 pb-2">
-                                <Link
+                                <Link viewTransition
                                     to="/collections/all"
                                     className="bg-[var(--brand-primary-subtle)] hover:bg-[var(--surface-interactive)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
                                     onClick={handleLinkClick}
@@ -175,7 +175,7 @@ export const SearchDefaultView = ({
                     <div className="flex-1 mt-4 lg:mt-0">
                         <div className="text-muted-foreground mb-2 px-1 text-xs font-medium">Featured Collections</div>
                         {featuredCollections.map(collection => (
-                            <Link
+                            <Link viewTransition
                                 key={collection.id}
                                 to={`/collections/${collection.handle}`}
                                 className="hover:bg-accent hover:text-accent-foreground relative flex items-center gap-2 rounded-sm px-2 py-2 text-sm outline-hidden"
@@ -200,7 +200,7 @@ export const SearchDefaultView = ({
                             </Link>
                         ))}
                         <div className="px-2 pt-3 pb-2">
-                            <Link
+                            <Link viewTransition
                                 to="/collections"
                                 className="bg-[var(--brand-primary-subtle)] hover:bg-[var(--surface-interactive)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
                                 onClick={handleLinkClick}

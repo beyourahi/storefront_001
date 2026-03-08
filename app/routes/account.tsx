@@ -72,7 +72,7 @@ export type AccountOutletContext = {
 };
 
 const AccountNavLink = ({to, end, children}: {to: string; end?: boolean; children: React.ReactNode}) => (
-    <NavLink to={to} end={end} className="group shrink-0">
+    <NavLink viewTransition to={to} end={end} className="group shrink-0">
         {({isActive, isPending}) => (
             <span
                 className={cn(

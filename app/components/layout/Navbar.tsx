@@ -26,7 +26,7 @@ type NavbarProps = {
 };
 
 const NAVBAR_ICON_INTERACTION_CLASSES =
-    "sleek hover:bg-transparent active:bg-transparent hover:text-primary active:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";
+    "motion-interactive motion-press hover:bg-transparent active:bg-transparent hover:text-primary active:text-primary active:scale-[var(--motion-press-scale)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";
 
 export const Navbar = ({shopName, collections}: NavbarProps) => {
     const {pathname: currentPath} = useLocation();
@@ -80,11 +80,12 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
 
                     <nav className="hidden items-center lg:flex">
                         {NAVIGATION_LINKS.map(link => (
-                            <Link
+                            <Link viewTransition
                                 key={link.href}
                                 to={link.href}
                                 className={cn(
                                     "hover:text-primary sleek px-3 py-2 text-sm font-semibold",
+                                    "motion-link",
                                     currentPath === link.href
                                         ? "text-primary cool-active-underline"
                                         : "text-foreground/80 cool-underline"
@@ -94,10 +95,11 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                             </Link>
                         ))}
                         {data?.hasBlog && (
-                            <Link
+                            <Link viewTransition
                                 to="/blogs"
                                 className={cn(
                                     "hover:text-primary sleek px-3 py-2 text-sm font-semibold",
+                                    "motion-link",
                                     currentPath === "/blogs" || currentPath.startsWith("/blogs/")
                                         ? "text-primary cool-active-underline"
                                         : "text-foreground/80 cool-underline"
@@ -109,9 +111,9 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                     </nav>
 
                     <div className="absolute left-1/2 -translate-x-1/2">
-                        <Link
+                        <Link viewTransition
                             to="/"
-                            className="text-primary sleek flex items-center space-x-2 px-2 py-2 hover:opacity-80 md:px-4"
+                            className="motion-link text-primary flex items-center space-x-2 px-2 py-2 hover:opacity-80 md:px-4"
                         >
                             {brandLogo?.url ? (
                                 <img
@@ -156,7 +158,7 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                         </div>
 
                         <div className="hidden lg:block">
-                            <Link to="/account">
+                            <Link viewTransition to="/account">
                                 <Button
                                     variant="ghost"
                                     size="icon"

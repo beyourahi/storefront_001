@@ -74,7 +74,7 @@ function CartEmpty() {
                 </div>
                 <h3 className="mb-2 text-lg font-semibold md:text-lg lg:text-xl">Nothing here yet</h3>
                 <p className="text-muted-foreground mb-6 text-sm">Add some of our awesome products!</p>
-                <Link to="/collections/all-products" prefetch="viewport" onClick={close}>
+                <Link viewTransition to="/collections/all-products" prefetch="viewport" onClick={close}>
                     <Button className="gap-2 leading-none">Keep Shopping</Button>
                 </Link>
             </div>

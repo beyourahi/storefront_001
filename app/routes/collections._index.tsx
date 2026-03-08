@@ -12,6 +12,7 @@ import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {MobileSearchBar} from "~/components/layout/MobileSearchBar";
 import {CollectionsPageHero} from "~/components/sections/CollectionsPageHero";
 import {CollectionsGridSection} from "~/components/sections/CollectionsGridSection";
+import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import type {CollectionCardData} from "~/lib/types/collections";
 
 type CollectionProductNode = {
@@ -203,9 +204,15 @@ export default function CollectionsIndex() {
     return (
         <div className="min-h-dvh bg-background text-foreground">
             <PageBreadcrumbs customTitle="Collections" />
-            <CollectionsPageHero />
-            <MobileSearchBar shopName={shopName} />
-            <CollectionsGridSection collections={data.collections} isLoading={false} />
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <CollectionsPageHero />
+            </AnimatedSection>
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <MobileSearchBar shopName={shopName} />
+            </AnimatedSection>
+            <AnimatedSection animation="slide-up" threshold={0.12}>
+                <CollectionsGridSection collections={data.collections} isLoading={false} />
+            </AnimatedSection>
         </div>
     );
 }

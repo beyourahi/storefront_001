@@ -121,7 +121,7 @@ export const ProductSection = ({
                 {collection?.handle && (
                     <div className="flex justify-center">
                         <Button size="lg" asChild className="w-[80vw] sm:w-auto">
-                            <Link
+                            <Link viewTransition
                                 to={`/collections/${collection.handle}`}
                                 className="flex items-center gap-2 px-10 leading-none"
                             >
