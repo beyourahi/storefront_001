@@ -332,8 +332,6 @@ export interface SiteSettings {
     heroMediaMobile?: HeroMedia;
     heroMediaLargeScreen?: HeroMedia;
     siteUrl: string;
-    defaultSeoTitle: string;
-    defaultSeoDescription: string;
     contactEmail: string;
     contactPhone: string;
     businessHours: string;
@@ -355,7 +353,6 @@ export interface SiteSettings {
     announcementBanner: string[];
     promotionalBannerOneMedia?: HeroMedia;
     promotionalBannerTwoMedia?: HeroMedia;
-    freeShippingThreshold: number | null;
     socialLinks: SocialLink[];
     testimonials: Testimonial[];
     faqItems: FAQItem[];
@@ -703,8 +700,6 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     heroMediaLargeScreen: undefined,
 
     siteUrl: "",
-    defaultSeoTitle: "",
-    defaultSeoDescription: "",
 
     contactEmail: "",
     contactPhone: "",
@@ -727,8 +722,6 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     announcementBanner: [],
     promotionalBannerOneMedia: undefined,
     promotionalBannerTwoMedia: undefined,
-
-    freeShippingThreshold: null,
 
     socialLinks: [],
     testimonials: [],
@@ -1045,8 +1038,6 @@ export const parseSiteSettings = (data: any): SiteSettings => {
         heroMediaLargeScreen: parseHeroMedia(data.heroMediaLargeScreen) || FALLBACK_SITE_SETTINGS.heroMediaLargeScreen,
 
         siteUrl: data.siteUrl?.value || FALLBACK_SITE_SETTINGS.siteUrl,
-        defaultSeoTitle: data.defaultSeoTitle?.value || FALLBACK_SITE_SETTINGS.defaultSeoTitle,
-        defaultSeoDescription: data.defaultSeoDescription?.value || FALLBACK_SITE_SETTINGS.defaultSeoDescription,
 
         contactEmail: data.contactEmail?.value || FALLBACK_SITE_SETTINGS.contactEmail,
         contactPhone: data.contactPhone?.value || FALLBACK_SITE_SETTINGS.contactPhone,
@@ -1072,8 +1063,6 @@ export const parseSiteSettings = (data: any): SiteSettings => {
         announcementBanner: parseAnnouncementTexts(data.announcementBanner),
         promotionalBannerOneMedia: parseHeroMedia(data.promotionalBannerOneMedia),
         promotionalBannerTwoMedia: parseHeroMedia(data.promotionalBannerTwoMedia),
-
-        freeShippingThreshold: parseFreeShippingThreshold(data.freeShippingThreshold),
 
         socialLinks: parseSocialLinks(data.socialLinksData),
         testimonials: parsedTestimonials,

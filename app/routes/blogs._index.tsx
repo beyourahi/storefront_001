@@ -25,8 +25,9 @@ interface BlogWithArticles {
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const shopName =
-        (matches.find(m => m?.id === "root") as {data?: {header?: {shop?: {name?: string}}}} | undefined)?.data?.header
-            ?.shop?.name ?? "Store";
+        (matches.find(m => m?.id === "root") as
+            | {data?: {siteContent?: {siteSettings?: {brandName?: string}}}}
+            | undefined)?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const featuredArticle = data?.featuredArticle;
 
     const rootMatch = matches.find(m => m?.id === "root");

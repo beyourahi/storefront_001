@@ -1,6 +1,8 @@
 import type {Route} from "./+types/apple-touch-icon[.]png";
 import {redirect} from "react-router";
 import {SITE_SETTINGS_FRAGMENT} from "~/lib/metaobject-fragments";
+import {parseSiteSettings} from "~/lib/metaobject-parsers";
+import {buildLettermarkIconSvg, getAppleTouchIconUrl} from "~/lib/pwa-parsers";
 
 const APPLE_ICON_QUERY = `#graphql
   query AppleTouchIcon(
@@ -22,7 +24,8 @@ export const loader = async ({context}: Route.LoaderArgs) => {
             cache: dataAdapter.CacheLong()
         });
 
-        const iconUrl = data?.siteSettings?.icon180Apple?.reference?.image?.url;
+        const siteSettings = parseSiteSettings(data?.siteSettings);
+        const iconUrl = getAppleTouchIconUrl(siteSettings);
 
         if (iconUrl) {
             return redirect(iconUrl, {
@@ -33,10 +36,10 @@ export const loader = async ({context}: Route.LoaderArgs) => {
             });
         }
 
-        return new Response("Apple touch icon not configured", {
-            status: 404,
+        return new Response(buildLettermarkIconSvg(siteSettings.brandName || "Store"), {
+            status: 200,
             headers: {
-                "Content-Type": "text/plain",
+                "Content-Type": "image/svg+xml",
                 "Cache-Control": "public, max-age=300"
             }
         });

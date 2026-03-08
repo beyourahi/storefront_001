@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {useNonce, Analytics, getShopAnalytics} from "@shopify/hydrogen";
+import {useNonce, Analytics, getSeoMeta, getShopAnalytics} from "@shopify/hydrogen";
 import {
     Outlet,
     Links,
@@ -46,7 +46,7 @@ import {ServiceWorkerUpdateBanner} from "~/components/pwa/ServiceWorkerUpdateBan
 import {NetworkStatusIndicator} from "~/components/NetworkStatusIndicator";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
-import {createWebSiteSchema} from "~/lib/structured-data";
+import {createWebSiteSchema, getSeoDefaults} from "~/lib/structured-data";
 import appCss from "./styles/app.css?url";
 
 export type RootLoader = typeof loader;
@@ -87,8 +87,26 @@ export function links() {
 }
 
 export const meta: Route.MetaFunction = ({data}) => {
-    if (!data?.websiteSchema) return [];
-    return [{"script:ld+json": data.websiteSchema}];
+    const seoDefaults = getSeoDefaults(data?.siteContent?.siteSettings, data?.siteContent?.themeConfig);
+    const seoMeta =
+        getSeoMeta({
+            title: seoDefaults.brandName,
+            titleTemplate: `%s | ${seoDefaults.brandName}`,
+            description: seoDefaults.description,
+            url: seoDefaults.siteUrl || undefined,
+            media: seoDefaults.media
+        }) ?? [];
+
+    return [
+        ...seoMeta,
+        {name: "theme-color", content: seoDefaults.themeColor},
+        {name: "apple-mobile-web-app-capable", content: "yes"},
+        {name: "apple-mobile-web-app-status-bar-style", content: "default"},
+        {name: "apple-mobile-web-app-title", content: seoDefaults.brandName},
+        {name: "mobile-web-app-capable", content: "yes"},
+        {name: "format-detection", content: "telephone=no"},
+        ...(data?.websiteSchema ? [{"script:ld+json": data.websiteSchema}] : [])
+    ];
 };
 
 export async function loader({context, request}: Route.LoaderArgs) {
@@ -113,7 +131,10 @@ export async function loader({context, request}: Route.LoaderArgs) {
         siteContent.themeConfig.fonts
     );
     const hasBlog = (blogData as any)?.articles?.nodes?.length > 0;
-    const websiteSchema = createWebSiteSchema(header.shop.name, requestUrl.origin);
+    const websiteSchema = createWebSiteSchema(
+        siteContent.siteSettings.brandName || "Store",
+        siteContent.siteSettings.siteUrl || requestUrl.origin
+    );
     const shippingConfig = parseShippingConfig(shopData?.shop?.freeShippingThreshold?.value);
 
     // Process collections for navigation (product counts, discounts)
@@ -213,21 +234,6 @@ export async function loader({context, request}: Route.LoaderArgs) {
         .then(data => data.products?.nodes?.filter((p: any) => p.availableForSale) ?? null)
         .catch((error: unknown) => { console.error("Failed to load cart suggestions:", error); return null; });
 
-    const policyAvailability = storefront
-        .query(POLICY_AVAILABILITY_QUERY)
-        .then((data: any) => ({
-            privacyPolicy: !!data?.shop?.privacyPolicy?.id,
-            termsOfService: !!data?.shop?.termsOfService?.id,
-            shippingPolicy: !!data?.shop?.shippingPolicy?.id,
-            refundPolicy: !!data?.shop?.refundPolicy?.id
-        }))
-        .catch(() => ({
-            privacyPolicy: false,
-            termsOfService: false,
-            shippingPolicy: false,
-            refundPolicy: false
-        }));
-
     return {
         header,
         siteContent,
@@ -244,7 +250,6 @@ export async function loader({context, request}: Route.LoaderArgs) {
         hasStoreCredit: hasStoreCreditWithTimeout,
         footer,
         cartSuggestions,
-        policyAvailability,
         publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
         shop: getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID}),
         consent: {
@@ -257,7 +262,7 @@ export async function loader({context, request}: Route.LoaderArgs) {
 }
 
 function ThemeStyleTag({css}: {css: string}) {
-    return <style>{css}</style>;
+    return <style dangerouslySetInnerHTML={{__html: css}} />;
 }
 
 export function Layout({children}: {children?: React.ReactNode}) {
@@ -270,7 +275,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width,initial-scale=1" />
-                <script src="/pwa-install-capture.js" nonce={nonce} />
+                <script src="/pwa-install-capture.js" nonce={nonce} suppressHydrationWarning />
                 {generatedTheme?.googleFontsUrl && <link rel="stylesheet" href={generatedTheme.googleFontsUrl} />}
                 <Meta />
                 <Links />
@@ -301,7 +306,7 @@ export default function App() {
 
     if (!data) return <Outlet />;
 
-    const shopName = data.header?.shop?.name ?? "Store";
+    const shopName = data.siteContent.siteSettings.brandName?.trim() || "Store";
     const mobileMenuCollections = (data.menuCollections ?? []).map((collection: any) => ({
         id: collection.id,
         title: collection.title,
@@ -422,25 +427,6 @@ export function ErrorBoundary() {
         </html>
     );
 }
-
-const POLICY_AVAILABILITY_QUERY = `#graphql
-  query PolicyAvailability {
-    shop {
-      privacyPolicy {
-        id
-      }
-      termsOfService {
-        id
-      }
-      shippingPolicy {
-        id
-      }
-      refundPolicy {
-        id
-      }
-    }
-  }
-` as const;
 
 const HAS_BLOG_QUERY = `#graphql
   query HasBlog {

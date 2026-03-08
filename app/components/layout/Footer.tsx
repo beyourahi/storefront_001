@@ -1,10 +1,7 @@
-import {Link, useLocation, useRouteLoaderData} from "react-router";
+import {Link, useLocation} from "react-router";
 import {FileText, RefreshCw, Shield, Truck, type LucideIcon} from "lucide-react";
 import {POLICY_LINKS, DEVELOPER_CONFIG} from "~/lib/navigation";
 import {cn} from "~/lib/utils";
-import type {RootLoader} from "~/root";
-
-type PolicyAvailability = Record<string, boolean>;
 
 const getPolicyIcon = (policyKey: string): LucideIcon => {
     switch (policyKey) {
@@ -23,15 +20,8 @@ const getPolicyIcon = (policyKey: string): LucideIcon => {
 
 export const Footer = ({shopName}: {shopName: string}) => {
     const {pathname} = useLocation();
-    const data = useRouteLoaderData<RootLoader>("root");
 
     const isProductPage = pathname.startsWith("/products/");
-
-    const policyAvailability = (data as Record<string, unknown> | undefined)?.policyAvailability as
-        | PolicyAvailability
-        | undefined;
-
-    const availablePolicyLinks = POLICY_LINKS.filter(link => policyAvailability?.[link.policyKey] === true);
 
     return (
         <footer className="bg-background relative">
@@ -44,10 +34,10 @@ export const Footer = ({shopName}: {shopName: string}) => {
                 )}
             >
                 <div className="flex flex-col space-y-6">
-                    {availablePolicyLinks.length > 0 && (
+                    {POLICY_LINKS.length > 0 && (
                         <nav className="w-full">
                             <ul className="grid grid-cols-2 gap-3 lg:flex lg:items-center lg:justify-center lg:gap-0 lg:space-x-8">
-                                {availablePolicyLinks.map(link => {
+                                {POLICY_LINKS.map(link => {
                                     const IconComponent = getPolicyIcon(link.policyKey);
                                     return (
                                         <li key={link.href} className="lg:list-item">
@@ -70,7 +60,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                         </nav>
                     )}
 
-                    {availablePolicyLinks.length > 0 && <div className="bg-border/30 h-px lg:hidden" />}
+                    {POLICY_LINKS.length > 0 && <div className="bg-border/30 h-px lg:hidden" />}
 
                     <div className="flex flex-col items-center justify-between space-y-3 text-center md:w-full md:flex-row md:space-y-0">
                         <p className="text-muted-foreground/70 text-base font-medium">

@@ -233,57 +233,11 @@ const MENU_FRAGMENT = `#graphql
 ` as const;
 
 export const HEADER_QUERY = `#graphql
-  fragment Shop on Shop {
-    id
-    name
-    description
-    primaryDomain {
-      url
-    }
-    brand {
-      logo {
-        image {
-          url
-          width
-          height
-        }
-      }
-      squareLogo {
-        image {
-          url
-          width
-          height
-        }
-      }
-      coverImage {
-        image {
-          url
-          width
-          height
-        }
-      }
-      shortDescription
-      slogan
-      colors {
-        primary {
-          background
-          foreground
-        }
-        secondary {
-          background
-          foreground
-        }
-      }
-    }
-  }
   query Header(
     $country: CountryCode
     $headerMenuHandle: String!
     $language: LanguageCode
   ) @inContext(language: $language, country: $country) {
-    shop {
-      ...Shop
-    }
     menu(handle: $headerMenuHandle) {
       ...Menu
     }

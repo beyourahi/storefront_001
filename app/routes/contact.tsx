@@ -1,5 +1,4 @@
-import {Suspense, useMemo} from "react";
-import {Await, useRouteLoaderData} from "react-router";
+import {useMemo} from "react";
 import type {Route} from "./+types/contact";
 import {getSeoMeta} from "@shopify/hydrogen";
 import {Mail, Phone, MapPin, Shield, FileCheck, Truck, RotateCcw, type LucideIcon} from "lucide-react";
@@ -8,19 +7,9 @@ import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {ContactMethodCard} from "~/components/contact/ContactMethodCard";
 import {FAQSection} from "~/components/homepage/FAQSection";
 import {SocialMediaSection} from "~/components/homepage/SocialMediaSection";
-import type {RootLoader} from "~/root";
 import {cn} from "~/lib/utils";
 import {useContactInfo, useFaqItems, useSocialLinks} from "~/lib/site-content-context";
 import {STORE_COUNTRY_NAME} from "~/lib/store-locale";
-
-type PolicyAvailability = {
-    privacyPolicy: boolean;
-    termsOfService: boolean;
-    shippingPolicy: boolean;
-    refundPolicy: boolean;
-};
-
-type PolicyKey = keyof PolicyAvailability;
 
 type ContactMethod = {
     icon: LucideIcon;
@@ -32,44 +21,32 @@ type ContactMethod = {
 };
 
 type LegalLink = {
-    policyKey: PolicyKey;
     href: string;
     title: string;
     description: string;
     icon: LucideIcon;
 };
 
-const EMPTY_POLICY_AVAILABILITY: PolicyAvailability = {
-    privacyPolicy: false,
-    termsOfService: false,
-    shippingPolicy: false,
-    refundPolicy: false
-};
-
 const LEGAL_LINKS: LegalLink[] = [
     {
-        policyKey: "privacyPolicy",
         href: "/policies/privacy-policy",
         title: "Privacy Policy",
         description: "Learn how we collect, use, and protect your personal information.",
         icon: Shield
     },
     {
-        policyKey: "termsOfService",
         href: "/policies/terms-of-service",
         title: "Terms of Service",
         description: "Terms and conditions for using our services and platform.",
         icon: FileCheck
     },
     {
-        policyKey: "shippingPolicy",
         href: "/policies/shipping-policy",
         title: "Shipping Policy",
         description: "Information about shipping, delivery, and handling processes.",
         icon: Truck
     },
     {
-        policyKey: "refundPolicy",
         href: "/policies/refund-policy",
         title: "Refund Policy",
         description: "Our refund and return policy information and procedures.",
@@ -94,8 +71,8 @@ const legalCardClass =
 
 export const meta: Route.MetaFunction = ({matches}) => {
     const rootMatch = matches.find((match): match is (typeof matches)[number] & {id: "root"} => match?.id === "root");
-    const rootData = rootMatch?.data as {header?: {shop?: {name?: string}}} | undefined;
-    const shopName = rootData?.header?.shop?.name?.trim();
+    const rootData = rootMatch?.data as {siteContent?: {siteSettings?: {brandName?: string}}} | undefined;
+    const shopName = rootData?.siteContent?.siteSettings?.brandName?.trim();
 
     const title = shopName ? `Contact Us - ${shopName}` : "Contact Us";
 
@@ -112,7 +89,6 @@ export default function Contact() {
     const title = "Get in Touch";
     const subtitle = "Have questions about our products, orders, or services? We're here to help!";
 
-    const rootData = useRouteLoaderData<RootLoader>("root");
     const contactInfo = useContactInfo();
     const faqItems = useFaqItems();
     const socialLinks = useSocialLinks();
@@ -171,13 +147,6 @@ export default function Contact() {
             }));
     }, [socialLinks]);
 
-    const policyAvailabilityPromise = useMemo(() => {
-        return Promise.resolve(
-            (rootData?.policyAvailability as PolicyAvailability | Promise<PolicyAvailability> | undefined) ??
-                EMPTY_POLICY_AVAILABILITY
-        ).then(resolved => resolved ?? EMPTY_POLICY_AVAILABILITY);
-    }, [rootData?.policyAvailability]);
-
     return (
         <>
             <PageBreadcrumbs customTitle="Contact Us" />
@@ -232,48 +201,36 @@ export default function Contact() {
 
             {contextSocialLinks.length > 0 && <SocialMediaSection socialLinks={contextSocialLinks} />}
 
-            <Suspense fallback={null}>
-                <Await resolve={policyAvailabilityPromise}>
-                    {(policyAvailability: PolicyAvailability) => {
-                        const availableLegalLinks = LEGAL_LINKS.filter(link => policyAvailability[link.policyKey]);
+            <section className="bg-background py-16">
+                <div className="mx-auto max-w-4xl px-6">
+                    <div className="mb-12 text-center">
+                        <h2 className="text-foreground mb-4 font-serif text-2xl font-bold">Legal Information</h2>
+                        <p className="text-muted-foreground mx-auto max-w-2xl leading-relaxed">
+                            Find important information about our policies, terms, and legal guidelines.
+                        </p>
+                    </div>
 
-                        if (availableLegalLinks.length === 0) return null;
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        {LEGAL_LINKS.map(link => {
+                            const Icon = link.icon;
 
-                        return (
-                            <section className="bg-background py-16">
-                                <div className="mx-auto max-w-4xl px-6">
-                                    <div className="mb-12 text-center">
-                                        <h2 className="text-foreground mb-4 font-serif text-2xl font-bold">Legal Information</h2>
-                                        <p className="text-muted-foreground mx-auto max-w-2xl leading-relaxed">
-                                            Find important information about our policies, terms, and legal guidelines.
-                                        </p>
+                            return (
+                                <a key={link.href} href={link.href} className={legalCardClass}>
+                                    <div className="mb-3 flex items-center gap-3">
+                                        <div className="bg-secondary/90 group-hover:bg-secondary group-hover:shadow-secondary/20 sleek flex h-12 w-12 items-center justify-center rounded-lg group-hover:scale-105 group-hover:shadow-sm">
+                                            <Icon className="text-secondary-foreground sleek h-6 w-6" />
+                                        </div>
+                                        <h3 className="text-card-foreground/95 sleek text-lg font-semibold">{link.title}</h3>
                                     </div>
-
-                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                        {availableLegalLinks.map(link => {
-                                            const Icon = link.icon;
-
-                                            return (
-                                                <a key={link.href} href={link.href} className={legalCardClass}>
-                                                    <div className="mb-3 flex items-center gap-3">
-                                                        <div className="bg-secondary/90 group-hover:bg-secondary group-hover:shadow-secondary/20 sleek flex h-12 w-12 items-center justify-center rounded-lg group-hover:scale-105 group-hover:shadow-sm">
-                                                            <Icon className="text-secondary-foreground sleek h-6 w-6" />
-                                                        </div>
-                                                        <h3 className="text-card-foreground/95 sleek text-lg font-semibold">{link.title}</h3>
-                                                    </div>
-                                                    <p className="text-muted-foreground/85 group-hover:text-foreground/80 sleek text-sm leading-relaxed">
-                                                        {link.description}
-                                                    </p>
-                                                </a>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </section>
-                        );
-                    }}
-                </Await>
-            </Suspense>
+                                    <p className="text-muted-foreground/85 group-hover:text-foreground/80 sleek text-sm leading-relaxed">
+                                        {link.description}
+                                    </p>
+                                </a>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
         </>
     );
 }

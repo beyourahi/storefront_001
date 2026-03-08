@@ -118,7 +118,6 @@ function HeroBackgroundMedia({
     }
 
     if (activeMedia?.mediaType === "video") {
-        const videoFallbackImage = activeMedia.previewImage?.url || fallbackImageSrc;
         return (
             <video
                 ref={videoRef}
@@ -130,13 +129,6 @@ function HeroBackgroundMedia({
                 poster={activeMedia.previewImage?.url}
             >
                 <source src={activeMedia.url} type="video/mp4" />
-                {videoFallbackImage && (
-                    <img
-                        src={videoFallbackImage}
-                        alt="Hero Section Background"
-                        className="h-full w-full cursor-zoom-in object-cover"
-                    />
-                )}
             </video>
         );
     }
@@ -164,15 +156,15 @@ function HeroBackgroundMedia({
     if (!fallbackVideoSrc) return null;
 
     return (
-        <video autoPlay loop muted playsInline className="h-full w-full cursor-zoom-in object-cover">
+        <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full cursor-zoom-in object-cover"
+            poster={fallbackImageSrc}
+        >
             <source src={fallbackVideoSrc} type="video/mp4" />
-            {fallbackImageSrc && (
-                <img
-                    src={fallbackImageSrc}
-                    alt="Hero Section Background"
-                    className="h-full w-full cursor-zoom-in object-cover"
-                />
-            )}
         </video>
     );
 }

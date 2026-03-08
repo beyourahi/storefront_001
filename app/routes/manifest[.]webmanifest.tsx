@@ -1,6 +1,6 @@
 import type {Route} from "./+types/manifest[.]webmanifest";
 import {PWA_MANIFEST_QUERY} from "~/lib/pwa-queries";
-import {parseShopBrand, buildWebAppManifest} from "~/lib/pwa-parsers";
+import {buildWebAppManifest, getThemeColor} from "~/lib/pwa-parsers";
 import {parseSiteSettings, parseThemeSettings} from "~/lib/metaobject-parsers";
 
 export const loader = async ({context, request}: Route.LoaderArgs) => {
@@ -16,21 +16,42 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
 
         const siteSettings = parseSiteSettings(data?.siteSettings);
         const themeConfig = parseThemeSettings(data?.themeSettings);
-        const shopBrand = parseShopBrand(data?.shop);
 
-        const manifest = buildWebAppManifest(siteSettings, themeConfig, shopBrand, manifestUrl);
+        const manifest = buildWebAppManifest(siteSettings, themeConfig, manifestUrl);
 
         if (!manifest) {
-            console.error("[PWA Manifest] Missing required icons - PWA will not be installable");
+            console.error("[PWA Manifest] Missing PWA icons in site_settings; serving minimal manifest");
             return new Response(
-                JSON.stringify({
-                    error: "PWA manifest requires icons. Please add icon_192 and icon_512 fields to your site_settings metaobject."
-                }),
+                JSON.stringify(
+                    {
+                        name: siteSettings.brandName || "Store",
+                        short_name: (siteSettings.brandName || "Store").slice(0, 12),
+                        description: siteSettings.missionStatement || `Shop at ${siteSettings.brandName || "Store"}`,
+                        start_url: "/",
+                        scope: "/",
+                        display: "standalone",
+                        orientation: "any",
+                        theme_color: getThemeColor(themeConfig),
+                        background_color: "#ffffff",
+                        categories: ["shopping"],
+                        icons: [],
+                        related_applications: [
+                            {
+                                platform: "webapp",
+                                url: manifestUrl
+                            }
+                        ],
+                        prefer_related_applications: false,
+                        id: "/"
+                    },
+                    null,
+                    2
+                ),
                 {
-                    status: 500,
+                    status: 200,
                     headers: {
-                        "Content-Type": "application/json",
-                        "Cache-Control": "no-store"
+                        "Content-Type": "application/manifest+json",
+                        "Cache-Control": "public, max-age=300"
                     }
                 }
             );

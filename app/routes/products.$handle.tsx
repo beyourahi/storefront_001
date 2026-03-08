@@ -39,11 +39,11 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const rootData = (
         matches.find(m => m?.id === "root") as
-            | {data?: {header?: {shop?: {name?: string}}; publicStoreDomain?: string}}
+            | {data?: {siteContent?: {siteSettings?: {brandName?: string; siteUrl?: string}}}}
             | undefined
     )?.data;
-    const shopName = rootData?.header?.shop?.name ?? "Store";
-    const publicStoreDomain = rootData?.publicStoreDomain ?? "";
+    const shopName = rootData?.siteContent?.siteSettings?.brandName ?? "Store";
+    const siteUrl = rootData?.siteContent?.siteSettings?.siteUrl ?? "";
 
     const product = data?.product;
     if (!product) return [{title: `Product Not Found | ${shopName}`}];
@@ -53,9 +53,7 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const description = product.seo?.description || product.description?.substring(0, 155) || "";
     const image = variant?.image || product.images?.nodes?.[0];
 
-    const url = publicStoreDomain
-        ? `https://${publicStoreDomain}/products/${product.handle}`
-        : `/products/${product.handle}`;
+    const url = siteUrl ? `${siteUrl}/products/${product.handle}` : `/products/${product.handle}`;
 
     const seoMeta =
         getSeoMeta({

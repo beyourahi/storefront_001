@@ -23,6 +23,8 @@ import type {
     CollectionPage
 } from "schema-dts";
 import {STORE_COUNTRY_NAME, STORE_LOCALE} from "~/lib/store-locale";
+import {toHex} from "~/lib/color";
+import type {SiteSettings, ThemeConfig} from "~/lib/metaobject-parsers";
 
 // Re-export for consumers that want to reference these types
 export type {WithContext, Organization, WebSite, SchemaProduct, FAQPage, BlogPosting, BreadcrumbList, CollectionPage};
@@ -82,6 +84,28 @@ export function getBrandNameFromMatches(matches: Array<{id: string; data?: unkno
     const rootMatch = matches.find(m => m?.id === "root");
     const rootData = rootMatch?.data as {siteContent?: {siteSettings?: {brandName?: string}}} | undefined;
     return rootData?.siteContent?.siteSettings?.brandName || "Store";
+}
+
+export function getSeoDefaults(
+    siteSettings?: Pick<SiteSettings, "brandName" | "brandLogo" | "missionStatement" | "siteUrl"> | null,
+    themeConfig?: Pick<ThemeConfig, "colors"> | null,
+    fallbackSiteUrl?: string
+) {
+    const brandName = siteSettings?.brandName?.trim() || "Store";
+    const description = truncateDescription(siteSettings?.missionStatement?.trim() || SEO_CONFIG.defaultDescription);
+    const siteUrl = siteSettings?.siteUrl?.trim() || fallbackSiteUrl || "";
+    const themeColor = toHex(themeConfig?.colors.primary ?? "") ?? "#000000";
+    const media = siteSettings?.brandLogo?.url
+        ? {
+              url: siteSettings.brandLogo.url,
+              width: siteSettings.brandLogo.width ?? undefined,
+              height: siteSettings.brandLogo.height ?? undefined,
+              altText: siteSettings.brandLogo.altText ?? brandName,
+              type: "image" as const
+          }
+        : undefined;
+
+    return {brandName, description, siteUrl, themeColor, media};
 }
 
 export function createProductSchema(

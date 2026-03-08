@@ -11,24 +11,6 @@ export const PWA_MANIFEST_QUERY = `#graphql
     themeSettings: metaobject(handle: {type: "theme_settings", handle: "main"}) {
       ...ThemeSettings
     }
-    shop {
-      name
-      description
-      brand {
-        shortDescription
-        logo {
-          image {
-            url
-          }
-        }
-        colors {
-          primary {
-            background
-            foreground
-          }
-        }
-      }
-    }
   }
   ${SITE_SETTINGS_FRAGMENT}
   ${THEME_SETTINGS_FRAGMENT}

@@ -31,31 +31,15 @@ export interface WebAppManifest {
     id: string;
 }
 
-export interface ShopBrandData {
-    name: string;
-    description: string | null;
-    shortDescription: string | null;
-    logoUrl: string | null;
-    primaryColor: string | null;
-}
-
 const toHexColor = (color: string): string => {
     const hex = toHex(color);
     return hex ?? "#000000";
 };
 
-export const parseShopBrand = (shop: any): ShopBrandData => ({
-    name: shop?.name ?? "Store",
-    description: shop?.description ?? null,
-    shortDescription: shop?.brand?.shortDescription ?? null,
-    logoUrl: shop?.brand?.logo?.image?.url ?? null,
-    primaryColor: shop?.brand?.colors?.primary?.[0]?.background ?? null
-});
-
 const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] | null => {
     const icons: ManifestIcon[] = [];
 
-    const icon192 = siteSettings.icon192Url;
+    const icon192 = siteSettings.icon192Url ?? siteSettings.brandLogo?.url ?? null;
     if (icon192) {
         icons.push({
             src: icon192,
@@ -65,7 +49,7 @@ const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] | null => {
         });
     }
 
-    const icon512 = siteSettings.icon512Url;
+    const icon512 = siteSettings.icon512Url ?? siteSettings.brandLogo?.url ?? null;
     if (icon512) {
         icons.push({
             src: icon512,
@@ -85,7 +69,6 @@ const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] | null => {
 export const buildWebAppManifest = (
     siteSettings: SiteSettings,
     themeConfig: ThemeConfig,
-    shopBrand: ShopBrandData,
     manifestUrl: string
 ): WebAppManifest | null => {
     const icons = buildIconsArray(siteSettings);
@@ -97,13 +80,9 @@ export const buildWebAppManifest = (
     const backgroundColor = toHexColor(themeConfig.colors.background);
 
     return {
-        name: siteSettings.brandName || shopBrand.name,
-        short_name: (siteSettings.brandName || shopBrand.name).slice(0, 12),
-        description:
-            siteSettings.missionStatement ||
-            shopBrand.shortDescription ||
-            shopBrand.description ||
-            `Shop at ${shopBrand.name}`,
+        name: siteSettings.brandName || "Store",
+        short_name: (siteSettings.brandName || "Store").slice(0, 12),
+        description: siteSettings.missionStatement || `Shop at ${siteSettings.brandName || "Store"}`,
         start_url: "/",
         scope: "/",
         display: "standalone",
@@ -124,7 +103,18 @@ export const buildWebAppManifest = (
 };
 
 export const getAppleTouchIconUrl = (siteSettings: SiteSettings): string | null => {
-    return siteSettings.icon180AppleUrl ?? null;
+    return siteSettings.icon180AppleUrl ?? siteSettings.icon192Url ?? siteSettings.brandLogo?.url ?? null;
+};
+
+export const buildLettermarkIconSvg = (brandName: string): string => {
+    const letter = brandName.trim().charAt(0).toUpperCase() || "S";
+    return [
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="${letter}">`,
+        `<rect width="180" height="180" rx="32" fill="#161616" />`,
+        `<text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" fill="#ffffff"`,
+        ` font-family="Inter, Arial, sans-serif" font-size="88" font-weight="700">${letter}</text>`,
+        `</svg>`
+    ].join("");
 };
 
 export const getThemeColor = (themeConfig: ThemeConfig): string => {

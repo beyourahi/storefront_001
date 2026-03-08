@@ -17,16 +17,20 @@ import {Button} from "~/components/ui/button";
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const shopName =
-        (matches.find(m => m?.id === "root") as {data?: {header?: {shop?: {name?: string}}}} | undefined)?.data?.header
-            ?.shop?.name ?? "Store";
+        (matches.find(m => m?.id === "root") as
+            | {data?: {siteContent?: {siteSettings?: {brandName?: string; siteUrl?: string}}}}
+            | undefined)?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const article = data?.article;
     const blogHandle = data?.blogHandle;
+    const siteUrl =
+        (matches.find(m => m?.id === "root") as
+            | {data?: {siteContent?: {siteSettings?: {siteUrl?: string}}}}
+            | undefined)?.data?.siteContent?.siteSettings?.siteUrl ?? "";
 
     if (!article) return [{title: `Article Not Found | ${shopName}`}];
 
     const title = article.seo?.title || article.title;
     const description = article.seo?.description || (article.excerpt ? article.excerpt.substring(0, 155) : "");
-    const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
 
     return (
         getSeoMeta({

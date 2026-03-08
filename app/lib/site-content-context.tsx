@@ -91,8 +91,6 @@ export const usePromotionalBanners = (): {
     };
 };
 
-export const useFreeShippingThreshold = (): number | null => useSiteSettings().freeShippingThreshold;
-
 export const useTestimonials = (): Testimonial[] => useSiteSettings().testimonials;
 
 export const useFaqItems = (): FAQItem[] => useSiteSettings().faqItems;

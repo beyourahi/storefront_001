@@ -1,5 +1,7 @@
 import type {Route} from "./+types/favicon[.]ico";
 import {redirect} from "react-router";
+import {parseSiteSettings} from "~/lib/metaobject-parsers";
+import {buildLettermarkIconSvg} from "~/lib/pwa-parsers";
 
 const FAVICON_QUERY = `#graphql
   query Favicon(
@@ -7,10 +9,27 @@ const FAVICON_QUERY = `#graphql
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     siteSettings: metaobject(handle: {type: "site_settings", handle: "main"}) {
+      brandLogo: field(key: "brand_logo") {
+        reference {
+          ... on MediaImage {
+            __typename
+            image { url altText width height }
+          }
+        }
+      }
       favicon: field(key: "favicon") {
         reference {
           ... on MediaImage {
+            __typename
             image { url }
+          }
+        }
+      }
+      icon192: field(key: "icon_192") {
+        reference {
+          ... on MediaImage {
+            __typename
+            image { url altText width height }
           }
         }
       }
@@ -26,7 +45,8 @@ export const loader = async ({context}: Route.LoaderArgs) => {
             cache: dataAdapter.CacheLong()
         });
 
-        const metaobjectFavicon = data?.siteSettings?.favicon?.reference?.image?.url;
+        const siteSettings = parseSiteSettings(data?.siteSettings);
+        const metaobjectFavicon = siteSettings.faviconUrl || siteSettings.brandLogo?.url || siteSettings.icon192Url;
 
         if (metaobjectFavicon) {
             return redirect(metaobjectFavicon, {
@@ -37,10 +57,10 @@ export const loader = async ({context}: Route.LoaderArgs) => {
             });
         }
 
-        return new Response("Favicon not configured", {
-            status: 404,
+        return new Response(buildLettermarkIconSvg(siteSettings.brandName || "Store"), {
+            status: 200,
             headers: {
-                "Content-Type": "text/plain",
+                "Content-Type": "image/svg+xml",
                 "Cache-Control": "public, max-age=300"
             }
         });

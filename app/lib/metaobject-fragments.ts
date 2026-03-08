@@ -90,8 +90,6 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
     }
 
     siteUrl: field(key: "website_url") { value }
-    defaultSeoTitle: field(key: "default_page_title") { value }
-    defaultSeoDescription: field(key: "default_page_description") { value }
 
     contactEmail: field(key: "contact_email") { value }
     contactPhone: field(key: "contact_phone") { value }
@@ -163,8 +161,6 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
         }
       }
     }
-
-    freeShippingThreshold: field(key: "free_shipping_minimum_order") { value }
 
     socialLinksData: field(key: "social_links_data") { value }
     testimonialsData: field(key: "testimonials_data") { value }

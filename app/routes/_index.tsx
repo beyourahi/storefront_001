@@ -29,12 +29,13 @@ import {
 
 export const meta: Route.MetaFunction = ({matches}) => {
     const rootMatch = matches.find((m): m is (typeof matches)[number] & {id: "root"} => m?.id === "root");
-    const rootData = rootMatch?.data as {header?: {shop?: {name?: string}}} | undefined;
-    const shopName = rootData?.header?.shop?.name ?? "Store";
+    const rootData = rootMatch?.data as {siteContent?: {siteSettings?: {brandName?: string; missionStatement?: string}}} | undefined;
+    const shopName = rootData?.siteContent?.siteSettings?.brandName ?? "Store";
+    const description = rootData?.siteContent?.siteSettings?.missionStatement ?? "";
 
     // JSON-LD intentionally omitted from homepage to prevent React hydration
     // mismatch. Structured data is provided on product, collection, and article pages.
-    return getSeoMeta({title: shopName, titleTemplate: null}) ?? [];
+    return getSeoMeta({title: shopName, titleTemplate: null, description}) ?? [];
 };
 
 export const loader = async ({context}: Route.LoaderArgs) => {
@@ -160,7 +161,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 export default function Homepage() {
     const data = useLoaderData<typeof loader>();
     const rootData = useRouteLoaderData<RootLoader>("root");
-    const shopName = rootData?.header?.shop?.name ?? "Store";
+    const shopName = rootData?.siteContent?.siteSettings?.brandName ?? "Store";
 
     return (
         <div className="-mt-[var(--total-header-height)] min-h-dvh bg-background text-foreground">

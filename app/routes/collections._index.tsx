@@ -198,7 +198,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 export default function CollectionsIndex() {
     const data = useLoaderData<typeof loader>();
     const rootData = useRouteLoaderData<RootLoader>("root");
-    const shopName = rootData?.header?.shop?.name ?? "Store";
+    const shopName = rootData?.siteContent?.siteSettings?.brandName ?? "Store";
 
     return (
         <div className="min-h-dvh bg-background text-foreground">
