@@ -68,12 +68,17 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                 </div>
 
                 <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)] lg:gap-6">
-                    <Link viewTransition
+                    <Link
                         to={`/products/${product.handle}`}
                         prefetch="intent"
                         className="group relative overflow-hidden rounded-[var(--radius-3xl-raw)] bg-muted/35"
                     >
-                        <ParallaxLayer className="h-full w-full" contentClassName="h-full w-full" amplitude={18} scale={1.04}>
+                        <ParallaxLayer
+                            className="h-full w-full"
+                            contentClassName="h-full w-full"
+                            amplitude={18}
+                            scale={1.04}
+                        >
                             {displayImage ? (
                                 <Image
                                     data={{
@@ -86,7 +91,9 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                             ) : (
                                 <div className="flex aspect-[4/5] h-full w-full items-center justify-center bg-gradient-to-br from-muted to-muted/30 px-10 text-center">
                                     <div>
-                                        <p className="text-primary font-serif text-3xl uppercase md:text-4xl">Featured pick</p>
+                                        <p className="text-primary font-serif text-3xl uppercase md:text-4xl">
+                                            Featured pick
+                                        </p>
                                         <p className="text-muted-foreground mt-3 text-sm uppercase tracking-[0.28em]">
                                             Product image unavailable
                                         </p>
@@ -105,7 +112,9 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                     <div className="flex h-full flex-col justify-between rounded-[var(--radius-3xl-raw)] border border-border/60 bg-card/65 p-6 shadow-sm backdrop-blur md:p-8">
                         <div className="space-y-5">
                             {product.vendor ? (
-                                <p className="text-muted-foreground text-xs uppercase tracking-[0.35em]">{product.vendor}</p>
+                                <p className="text-muted-foreground text-xs uppercase tracking-[0.35em]">
+                                    {product.vendor}
+                                </p>
                             ) : null}
 
                             <div className="space-y-3">
@@ -128,8 +137,12 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                         </div>
 
                         <div className="mt-8 space-y-3">
-                            <Button asChild size="lg" className="w-full justify-between rounded-[var(--radius-pill-raw)] px-6 py-6 text-sm uppercase tracking-[0.22em]">
-                                <Link viewTransition to={`/products/${product.handle}`} prefetch="intent">
+                            <Button
+                                asChild
+                                size="lg"
+                                className="w-full justify-between rounded-[var(--radius-pill-raw)] px-6 py-6 text-sm uppercase tracking-[0.22em]"
+                            >
+                                <Link to={`/products/${product.handle}`} prefetch="intent">
                                     Shop the featured product
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>

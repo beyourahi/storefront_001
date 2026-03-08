@@ -147,7 +147,7 @@ function CartLineImage({
     const size = small ? 48 : 64;
     return (
         <div className="shrink-0">
-            <Link viewTransition to={`/products/${handle}`} prefetch="viewport" className="block" onClick={onNavigate}>
+            <Link to={`/products/${handle}`} prefetch="viewport" className="block" onClick={onNavigate}>
                 {image && (
                     <Image
                         alt={altText}
@@ -156,7 +156,10 @@ function CartLineImage({
                         height={size}
                         width={size}
                         loading="lazy"
-                        className={cn("motion-image rounded-sm object-cover hover:scale-[1.03]", small ? "size-12" : "size-16")}
+                        className={cn(
+                            "motion-image rounded-sm object-cover hover:scale-[1.03]",
+                            small ? "size-12" : "size-16"
+                        )}
                     />
                 )}
             </Link>
@@ -179,7 +182,7 @@ function CartLineDetails({
 }) {
     return (
         <div>
-            <Link viewTransition
+            <Link
                 to={`/products/${handle}`}
                 prefetch="viewport"
                 className="motion-link block hover:opacity-80"

@@ -232,7 +232,7 @@ const AccountWishlist = () => {
                     <HiShare className="text-muted-foreground/60 mb-4 h-16 w-16" />
                     <h3 className="mb-2 text-xl font-semibold">Your wishlist is empty</h3>
                     <p className="text-muted-foreground mb-6">Start adding products you love</p>
-                    <Link viewTransition
+                    <Link
                         to="/products"
                         className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 transition-colors"
                     >

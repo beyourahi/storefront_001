@@ -139,7 +139,7 @@ export const OrderHistorySection = ({orders, products}: OrderHistorySectionProps
                     Order History
                 </h2>
                 <Button variant="link" asChild className="group hidden text-primary sm:inline-flex">
-                    <Link viewTransition to="/account/orders" className="flex items-center gap-1.5">
+                    <Link to="/account/orders" className="flex items-center gap-1.5">
                         View All Orders
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </Link>
@@ -169,7 +169,7 @@ export const OrderHistorySection = ({orders, products}: OrderHistorySectionProps
 
             <div className="flex justify-center sm:hidden">
                 <Button variant="outline" asChild>
-                    <Link viewTransition to="/account/orders">View All Orders</Link>
+                    <Link to="/account/orders">View All Orders</Link>
                 </Button>
             </div>
         </section>

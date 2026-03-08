@@ -26,9 +26,11 @@ interface BlogWithArticles {
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const shopName =
-        (matches.find(m => m?.id === "root") as
-            | {data?: {siteContent?: {siteSettings?: {brandName?: string}}}}
-            | undefined)?.data?.siteContent?.siteSettings?.brandName ?? "Store";
+        (
+            matches.find(m => m?.id === "root") as
+                | {data?: {siteContent?: {siteSettings?: {brandName?: string}}}}
+                | undefined
+        )?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const featuredArticle = data?.featuredArticle;
 
     const rootMatch = matches.find(m => m?.id === "root");
@@ -49,29 +51,29 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       width: featuredArticle.image.width,
                       height: featuredArticle.image.height,
                       altText: featuredArticle.image.altText || `${shopName} ${pageTitle}`,
-                      type: "image" as const,
+                      type: "image" as const
                   }
-                : undefined,
+                : undefined
         }) ?? []
     );
 };
 
 export async function loader({context, request}: Route.LoaderArgs) {
     const paginationVariables = getPaginationVariables(request, {
-        pageBy: 10,
+        pageBy: 10
     });
 
     const [{blogs}, {articles: latestArticles}] = await Promise.all([
         context.dataAdapter.query(BLOGS_WITH_ARTICLES_QUERY, {
             variables: {
-                ...paginationVariables,
-            },
+                ...paginationVariables
+            }
         }),
         context.dataAdapter.query(LATEST_ARTICLES_QUERY, {
             variables: {
-                first: 1,
-            },
-        }),
+                first: 1
+            }
+        })
     ]);
 
     const featuredArticle = latestArticles?.nodes?.[0] || null;
@@ -86,7 +88,7 @@ export async function loader({context, request}: Route.LoaderArgs) {
 
     return {
         blogs,
-        featuredArticle,
+        featuredArticle
     };
 }
 
@@ -120,59 +122,65 @@ export default function Blogs() {
             </AnimatedSection>
 
             <div className="mx-auto max-w-[2000px] px-2 md:px-4 pb-12 md:pb-20">
-            {featuredArticle && (
-                <AnimatedSection animation="slide-up" threshold={0.1}>
-                    <ArticleHero article={featuredArticle} variant="listing" />
-                </AnimatedSection>
-            )}
+                {featuredArticle && (
+                    <AnimatedSection animation="slide-up" threshold={0.1}>
+                        <ArticleHero article={featuredArticle} variant="listing" />
+                    </AnimatedSection>
+                )}
 
-            {hasMultipleCategories && blogNodes.some(b => b.articles?.nodes?.length > 0) && (
-                <AnimatedSection animation="slide-up" threshold={0.12}>
-                    <div className="mt-10 md:mt-16 space-y-8">
-                        <Tabs defaultValue={blogNodes[0]?.handle}>
-                            <TabsList className="flex flex-wrap h-auto gap-2 bg-transparent p-0 mb-6">
+                {hasMultipleCategories && blogNodes.some(b => b.articles?.nodes?.length > 0) && (
+                    <AnimatedSection animation="slide-up" threshold={0.12}>
+                        <div className="mt-10 md:mt-16 space-y-8">
+                            <Tabs defaultValue={blogNodes[0]?.handle}>
+                                <TabsList className="flex flex-wrap h-auto gap-2 bg-transparent p-0 mb-6">
+                                    {blogNodes.map((blog: BlogWithArticles) => (
+                                        <TabsTrigger
+                                            key={blog.handle}
+                                            value={blog.handle}
+                                            className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                                        >
+                                            {blog.title} ({blog.articles?.nodes?.length || 0})
+                                        </TabsTrigger>
+                                    ))}
+                                </TabsList>
                                 {blogNodes.map((blog: BlogWithArticles) => (
-                                    <TabsTrigger
-                                        key={blog.handle}
-                                        value={blog.handle}
-                                        className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                                    >
-                                        {blog.title} ({blog.articles?.nodes?.length || 0})
-                                    </TabsTrigger>
+                                    <TabsContent key={blog.handle} value={blog.handle} className="space-y-8">
+                                        <ArticleCarousel
+                                            articles={blog.articles?.nodes || []}
+                                            categoryHandle={blog.handle}
+                                        />
+                                        <div className="flex justify-center">
+                                            <Button variant="outline" asChild>
+                                                <Link to={`/blogs/${blog.handle}`} prefetch="viewport">
+                                                    View all {blog.title} articles
+                                                </Link>
+                                            </Button>
+                                        </div>
+                                    </TabsContent>
                                 ))}
-                            </TabsList>
-                            {blogNodes.map((blog: BlogWithArticles) => (
-                                <TabsContent key={blog.handle} value={blog.handle} className="space-y-8">
-                                    <ArticleCarousel articles={blog.articles?.nodes || []} categoryHandle={blog.handle} />
-                                    <div className="flex justify-center">
-                                        <Button variant="outline" asChild>
-                                            <Link viewTransition to={`/blogs/${blog.handle}`} prefetch="viewport">
-                                                View all {blog.title} articles
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                </TabsContent>
-                            ))}
-                        </Tabs>
-                    </div>
-                </AnimatedSection>
-            )}
+                            </Tabs>
+                        </div>
+                    </AnimatedSection>
+                )}
 
-            {!hasMultipleCategories && blogNodes[0]?.articles?.nodes?.length > 0 && (
-                <AnimatedSection animation="slide-up" threshold={0.12}>
-                    <div className="mt-10 md:mt-16">
-                        <ArticleCarousel articles={blogNodes[0].articles.nodes} categoryHandle={blogNodes[0].handle} />
-                    </div>
-                </AnimatedSection>
-            )}
+                {!hasMultipleCategories && blogNodes[0]?.articles?.nodes?.length > 0 && (
+                    <AnimatedSection animation="slide-up" threshold={0.12}>
+                        <div className="mt-10 md:mt-16">
+                            <ArticleCarousel
+                                articles={blogNodes[0].articles.nodes}
+                                categoryHandle={blogNodes[0].handle}
+                            />
+                        </div>
+                    </AnimatedSection>
+                )}
 
-            {!featuredArticle && blogNodes.every(b => !b.articles?.nodes?.length) && (
-                <AnimatedSection animation="fade" threshold={0.1}>
-                    <div className="text-center py-12">
-                        <p className="text-sm text-muted-foreground">No articles published yet.</p>
-                    </div>
-                </AnimatedSection>
-            )}
+                {!featuredArticle && blogNodes.every(b => !b.articles?.nodes?.length) && (
+                    <AnimatedSection animation="fade" threshold={0.1}>
+                        <div className="text-center py-12">
+                            <p className="text-sm text-muted-foreground">No articles published yet.</p>
+                        </div>
+                    </AnimatedSection>
+                )}
             </div>
         </>
     );
@@ -184,7 +192,7 @@ const ArticleCarousel = ({articles, categoryHandle}: {articles: ArticleCardData[
             <Carousel
                 opts={{
                     align: "start",
-                    loop: true,
+                    loop: true
                 }}
                 className="w-full"
             >

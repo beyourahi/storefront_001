@@ -83,7 +83,7 @@ export const HomepageBlogSection = ({articles, loading = false}: HomepageBlogSec
 
                 <div className="flex justify-center">
                     <Button size="lg" asChild className="w-[80vw] sm:w-auto">
-                        <Link viewTransition
+                        <Link
                             to="/blogs"
                             aria-label="View all blog posts"
                             className="flex items-center gap-2 px-10 leading-none"

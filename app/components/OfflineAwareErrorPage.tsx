@@ -102,18 +102,22 @@ const NotFoundErrorUI = ({title, message}: NotFoundErrorUIProps) => {
                         </Badge>
                     </div>
                     <div className="space-y-4">
-                        <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">{displayTitle}</h1>
-                        <p className="mx-auto max-w-lg text-lg leading-relaxed text-muted-foreground">{displayMessage}</p>
+                        <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+                            {displayTitle}
+                        </h1>
+                        <p className="mx-auto max-w-lg text-lg leading-relaxed text-muted-foreground">
+                            {displayMessage}
+                        </p>
                         <p className="text-sm font-medium text-primary/80">
                             But our collection is still here, waiting for you
                         </p>
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                         <Button asChild>
-                            <Link viewTransition to="/">Back to Home</Link>
+                            <Link to="/">Back to Home</Link>
                         </Button>
                         <Button variant="outline" asChild>
-                            <Link viewTransition to="/collections/all-products">Browse All Products</Link>
+                            <Link to="/collections/all-products">Browse All Products</Link>
                         </Button>
                     </div>
                     <div className="sr-only">
@@ -147,8 +151,12 @@ const GenericErrorUI = ({statusCode, title, message}: GenericErrorUIProps) => {
                         </Badge>
                     </div>
                     <div className="space-y-4">
-                        <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">{displayTitle}</h1>
-                        <p className="mx-auto max-w-lg text-lg leading-relaxed text-muted-foreground">{displayMessage}</p>
+                        <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+                            {displayTitle}
+                        </h1>
+                        <p className="mx-auto max-w-lg text-lg leading-relaxed text-muted-foreground">
+                            {displayMessage}
+                        </p>
                         <p className="text-sm font-medium text-primary/80">
                             {statusCode >= 500 ? "We're working to fix this issue" : "Let's get you back on track"}
                         </p>
@@ -156,7 +164,7 @@ const GenericErrorUI = ({statusCode, title, message}: GenericErrorUIProps) => {
                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                         <Button onClick={() => window.location.reload()}>Try Again</Button>
                         <Button variant="outline" asChild>
-                            <Link viewTransition to="/">Back to Home</Link>
+                            <Link to="/">Back to Home</Link>
                         </Button>
                     </div>
                     <div className="bg-muted/50 border-border mt-6 inline-block rounded-full border px-4 py-2">

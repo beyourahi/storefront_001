@@ -123,9 +123,7 @@ export default function Cart() {
                 </h1>
 
                 <Suspense fallback={<CartPageLoadingSkeleton />}>
-                    <Await resolve={cartPromise}>
-                        {cart => <CartPageContent cart={cart} />}
-                    </Await>
+                    <Await resolve={cartPromise}>{cart => <CartPageContent cart={cart} />}</Await>
                 </Suspense>
             </div>
         </div>
@@ -182,10 +180,10 @@ function EmptyCartPage() {
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <Button asChild size="lg">
-                    <Link viewTransition to="/collections/all-products">Browse All Products</Link>
+                    <Link to="/collections/all-products">Browse All Products</Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                    <Link viewTransition to="/">Back to Home</Link>
+                    <Link to="/">Back to Home</Link>
                 </Button>
             </div>
         </div>

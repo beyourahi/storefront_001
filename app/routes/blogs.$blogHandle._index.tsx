@@ -13,9 +13,11 @@ import {cn} from "~/lib/utils";
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const shopName =
-        (matches.find(m => m?.id === "root") as
-            | {data?: {siteContent?: {siteSettings?: {brandName?: string}}}}
-            | undefined)?.data?.siteContent?.siteSettings?.brandName ?? "Store";
+        (
+            matches.find(m => m?.id === "root") as
+                | {data?: {siteContent?: {siteSettings?: {brandName?: string}}}}
+                | undefined
+        )?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const blog = data?.blog;
     const featuredArticle = data?.featuredArticle;
 
@@ -34,16 +36,16 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       width: featuredArticle.image.width,
                       height: featuredArticle.image.height,
                       altText: featuredArticle.image.altText || blog.title,
-                      type: "image" as const,
+                      type: "image" as const
                   }
-                : undefined,
+                : undefined
         }) ?? []
     );
 };
 
 export async function loader({context, request, params}: Route.LoaderArgs) {
     const paginationVariables = getPaginationVariables(request, {
-        pageBy: 10,
+        pageBy: 10
     });
 
     if (!params.blogHandle) {
@@ -58,9 +60,9 @@ export async function loader({context, request, params}: Route.LoaderArgs) {
             variables: {
                 blogHandle: params.blogHandle,
                 tagQuery: tagFilter ? `tag:${tagFilter}` : null,
-                ...paginationVariables,
-            },
-        }),
+                ...paginationVariables
+            }
+        })
     ]);
 
     if (!blog?.articles?.nodes || blog.articles.nodes.length === 0) {
@@ -75,7 +77,7 @@ export async function loader({context, request, params}: Route.LoaderArgs) {
 
     const remainingArticles = {
         ...blog.articles,
-        nodes: tagFilter ? allArticles : allArticles.slice(1),
+        nodes: tagFilter ? allArticles : allArticles.slice(1)
     };
 
     const allTags = [...new Set(allArticles.flatMap(a => a.tags || []))].sort();
@@ -85,7 +87,7 @@ export async function loader({context, request, params}: Route.LoaderArgs) {
         featuredArticle,
         articles: remainingArticles,
         allTags,
-        activeTag: tagFilter,
+        activeTag: tagFilter
     };
 }
 
@@ -101,10 +103,7 @@ export default function Blog() {
                     <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
                         <GiantText
                             text={blog.title}
-                            className={cn(
-                                "w-full font-black",
-                                blog.title.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]",
-                            )}
+                            className={cn("w-full font-black", blog.title.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]")}
                         />
                         {blog.seo?.description && (
                             <p className="text-muted-foreground w-full text-xs lg:w-[60%] lg:text-sm 2xl:text-base">
@@ -116,82 +115,82 @@ export default function Blog() {
             </section>
 
             <div className="mx-auto max-w-[2000px] px-2 md:px-4 pb-12 md:pb-20">
-            {featuredArticle && <ArticleHero article={featuredArticle} variant="listing" />}
+                {featuredArticle && <ArticleHero article={featuredArticle} variant="listing" />}
 
-            {allTags.length > 0 && (
-                <nav className="flex flex-wrap items-center gap-2 mt-8 md:mt-12" aria-label="Filter by topic">
-                    <Badge variant={!activeTag ? "default" : "outline"} asChild>
-                        <Link viewTransition to={`/blogs/${blog.handle}`} prefetch="viewport" className="cursor-pointer">
-                            All
-                        </Link>
-                    </Badge>
-                    {allTags.map(tag => (
-                        <Badge key={tag} variant={activeTag === tag ? "default" : "outline"} asChild>
-                            <Link viewTransition
-                                to={`/blogs/${blog.handle}?tag=${encodeURIComponent(tag)}`}
-                                prefetch="viewport"
-                                className="cursor-pointer"
-                            >
-                                {tag}
+                {allTags.length > 0 && (
+                    <nav className="flex flex-wrap items-center gap-2 mt-8 md:mt-12" aria-label="Filter by topic">
+                        <Badge variant={!activeTag ? "default" : "outline"} asChild>
+                            <Link to={`/blogs/${blog.handle}`} prefetch="viewport" className="cursor-pointer">
+                                All
                             </Link>
                         </Badge>
-                    ))}
-                </nav>
-            )}
+                        {allTags.map(tag => (
+                            <Badge key={tag} variant={activeTag === tag ? "default" : "outline"} asChild>
+                                <Link
+                                    to={`/blogs/${blog.handle}?tag=${encodeURIComponent(tag)}`}
+                                    prefetch="viewport"
+                                    className="cursor-pointer"
+                                >
+                                    {tag}
+                                </Link>
+                            </Badge>
+                        ))}
+                    </nav>
+                )}
 
-            {articles.nodes.length > 0 && (
-                <section className="mt-8 md:mt-12 space-y-8">
-                    <h2 className="font-serif text-xl font-bold uppercase text-foreground md:text-3xl">
-                        {activeTag ? `Tagged: ${activeTag}` : "More Articles"}
-                    </h2>
+                {articles.nodes.length > 0 && (
+                    <section className="mt-8 md:mt-12 space-y-8">
+                        <h2 className="font-serif text-xl font-bold uppercase text-foreground md:text-3xl">
+                            {activeTag ? `Tagged: ${activeTag}` : "More Articles"}
+                        </h2>
 
-                    <Pagination connection={articles}>
-                        {({nodes, NextLink, PreviousLink, hasNextPage, hasPreviousPage}) => (
-                            <>
-                                {hasPreviousPage && (
-                                    <div className="mb-6 flex justify-center">
-                                        <Button variant="outline" asChild>
-                                            <PreviousLink>
-                                                <ChevronLeft className="mr-2 h-4 w-4" /> Previous
-                                            </PreviousLink>
-                                        </Button>
+                        <Pagination connection={articles}>
+                            {({nodes, NextLink, PreviousLink, hasNextPage, hasPreviousPage}) => (
+                                <>
+                                    {hasPreviousPage && (
+                                        <div className="mb-6 flex justify-center">
+                                            <Button variant="outline" asChild>
+                                                <PreviousLink>
+                                                    <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+                                                </PreviousLink>
+                                            </Button>
+                                        </div>
+                                    )}
+
+                                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                                        {(nodes as ArticleCardData[]).map((article: ArticleCardData, index: number) => (
+                                            <ArticleCard
+                                                key={article.handle}
+                                                article={article}
+                                                index={index}
+                                                loading={index < 6 ? "eager" : "lazy"}
+                                                variant="default"
+                                                showTags={true}
+                                                showReadingTime={true}
+                                            />
+                                        ))}
                                     </div>
-                                )}
 
-                                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                                    {(nodes as ArticleCardData[]).map((article: ArticleCardData, index: number) => (
-                                        <ArticleCard
-                                            key={article.handle}
-                                            article={article}
-                                            index={index}
-                                            loading={index < 6 ? "eager" : "lazy"}
-                                            variant="default"
-                                            showTags={true}
-                                            showReadingTime={true}
-                                        />
-                                    ))}
-                                </div>
+                                    {hasNextPage && (
+                                        <div className="mt-8 flex justify-center">
+                                            <Button variant="outline" asChild>
+                                                <NextLink>
+                                                    Next <ChevronRight className="ml-2 h-4 w-4" />
+                                                </NextLink>
+                                            </Button>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </Pagination>
+                    </section>
+                )}
 
-                                {hasNextPage && (
-                                    <div className="mt-8 flex justify-center">
-                                        <Button variant="outline" asChild>
-                                            <NextLink>
-                                                Next <ChevronRight className="ml-2 h-4 w-4" />
-                                            </NextLink>
-                                        </Button>
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </Pagination>
-                </section>
-            )}
-
-            {!featuredArticle && articles.nodes.length === 0 && (
-                <div className="text-center py-12">
-                    <p className="text-sm text-muted-foreground">No articles published yet.</p>
-                </div>
-            )}
+                {!featuredArticle && articles.nodes.length === 0 && (
+                    <div className="text-center py-12">
+                        <p className="text-sm text-muted-foreground">No articles published yet.</p>
+                    </div>
+                )}
             </div>
         </>
     );

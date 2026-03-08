@@ -180,7 +180,7 @@ const QuickActionsGrid = () => (
         <h2 className="mb-4 text-xl font-semibold">Quick Actions</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {QUICK_ACTIONS.map(action => (
-                <Link viewTransition key={action.to} to={action.to} className="group">
+                <Link key={action.to} to={action.to} className="group">
                     <Card className="h-full p-4 transition-colors group-hover:bg-accent">
                         <CardContent className="flex items-start gap-4 p-0">
                             <div className="rounded-lg bg-primary/10 p-2">
@@ -204,7 +204,7 @@ const RecentOrdersSection = ({orders}: {orders: NonNullable<Awaited<ReturnType<t
         <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold">Recent Orders</h2>
             <Button variant="ghost" size="sm" asChild>
-                <Link viewTransition to="/account/orders" className="gap-1">
+                <Link to="/account/orders" className="gap-1">
                     View All
                     <ArrowRightIcon className="size-4" />
                 </Link>
@@ -221,7 +221,7 @@ const RecentOrdersSection = ({orders}: {orders: NonNullable<Awaited<ReturnType<t
                 <PackageSearchIcon className="mx-auto mb-3 size-10 text-muted-foreground" />
                 <p className="text-muted-foreground">No orders yet</p>
                 <Button asChild className="mt-4" variant="outline">
-                    <Link viewTransition to="/collections">Start Shopping</Link>
+                    <Link to="/collections">Start Shopping</Link>
                 </Button>
             </Card>
         )}

@@ -24,7 +24,7 @@ export const CollectionSidebar: FC<CollectionSidebarProps> = ({
         <h2 className="mb-3 text-sm font-semibold text-foreground">Collections</h2>
         <nav className="flex flex-col gap-1">
             {showAllProducts && (
-                <Link viewTransition
+                <Link
                     to="/collections/all-products"
                     className={`rounded-md px-2 py-1.5 text-sm transition-colors ${
                         activeHandle === "all-products"
@@ -37,7 +37,7 @@ export const CollectionSidebar: FC<CollectionSidebarProps> = ({
                 </Link>
             )}
             {collections.map(collection => (
-                <Link viewTransition
+                <Link
                     key={collection.handle}
                     to={`/collections/${collection.handle}`}
                     className={`rounded-md px-2 py-1.5 text-sm transition-colors ${

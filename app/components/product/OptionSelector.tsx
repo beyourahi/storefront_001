@@ -44,7 +44,7 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                             className="min-w-20"
                                             asChild
                                         >
-                                            <Link viewTransition
+                                            <Link
                                                 prefetch="viewport"
                                                 preventScrollReset
                                                 replace

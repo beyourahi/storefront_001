@@ -25,12 +25,12 @@ export const TagBadge = ({tag, href, variant = "outline", size = "default", clas
         variant === "outline" && "border-2 border-primary/40 text-primary bg-transparent hover:bg-primary/10",
         variant === "muted" && "bg-muted/60 text-muted-foreground",
         linkHref && "cursor-pointer",
-        className,
+        className
     );
 
     if (linkHref) {
         return (
-            <Link viewTransition to={linkHref} prefetch="viewport" className="no-underline cursor-pointer">
+            <Link to={linkHref} prefetch="viewport" className="no-underline cursor-pointer">
                 <Badge variant="outline" className={badgeClassName}>
                     {tag}
                 </Badge>

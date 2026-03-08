@@ -22,7 +22,11 @@ export const Breadcrumbs = ({items, className}: BreadcrumbsProps) => {
         >
             <ol className="flex items-center space-x-1">
                 <li className="flex items-center">
-                    <Link viewTransition to="/" className="hover:text-foreground flex items-center sleek focus:outline-none" aria-label="Go to homepage">
+                    <Link
+                        to="/"
+                        className="hover:text-foreground flex items-center sleek focus:outline-none"
+                        aria-label="Go to homepage"
+                    >
                         <Home className="pointer-events-none h-4 w-4" />
                         <span className="sr-only">Home</span>
                     </Link>
@@ -38,11 +42,14 @@ export const Breadcrumbs = ({items, className}: BreadcrumbsProps) => {
                             </span>
 
                             {isLast || !item.href ? (
-                                <span className="text-foreground font-medium" aria-current={isLast ? "page" : undefined}>
+                                <span
+                                    className="text-foreground font-medium"
+                                    aria-current={isLast ? "page" : undefined}
+                                >
                                     {item.label}
                                 </span>
                             ) : (
-                                <Link viewTransition to={item.href} className="sleek hover:text-foreground focus:outline-none">
+                                <Link to={item.href} className="sleek hover:text-foreground focus:outline-none">
                                     {item.label}
                                 </Link>
                             )}

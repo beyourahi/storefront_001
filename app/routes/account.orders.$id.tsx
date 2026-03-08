@@ -51,7 +51,7 @@ const OrderDetailPage = () => {
         <div className="mx-auto max-w-5xl space-y-8">
             <div>
                 <Button variant="ghost" size="sm" asChild className="mb-4 gap-2">
-                    <Link viewTransition to="/account/orders">
+                    <Link to="/account/orders">
                         <ArrowLeftIcon className="size-4" />
                         Back to Orders
                     </Link>

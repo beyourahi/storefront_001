@@ -36,7 +36,7 @@ export const MobileMenuNavigation = ({currentPath, onLinkClick}: MobileMenuNavig
                 const isActive = currentPath === link.href;
 
                 return (
-                    <Link viewTransition
+                    <Link
                         key={link.href}
                         to={link.href}
                         onClick={onLinkClick}
@@ -76,7 +76,7 @@ export const MobileMenuNavigation = ({currentPath, onLinkClick}: MobileMenuNavig
                 );
             })}
             {hasBlog && (
-                <Link viewTransition
+                <Link
                     to="/blogs"
                     onClick={onLinkClick}
                     aria-current={isBlogActive ? "page" : undefined}

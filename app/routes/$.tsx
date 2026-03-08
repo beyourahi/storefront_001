@@ -39,7 +39,13 @@ export function ErrorBoundary() {
 
     // Map menuCollections to CollectionCardData format
     const collections: CollectionCardData[] = (rootData.menuCollections ?? []).map(
-        (col: {id: string; handle: string; title: string; productsCount: number; image?: {url: string; altText?: string | null} | null}) => ({
+        (col: {
+            id: string;
+            handle: string;
+            title: string;
+            productsCount: number;
+            image?: {url: string; altText?: string | null} | null;
+        }) => ({
             id: col.id,
             title: col.title,
             handle: col.handle,
@@ -60,7 +66,9 @@ export function ErrorBoundary() {
                             </Badge>
                         </div>
                         <div className="space-y-4">
-                            <h2 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">Page Not Found</h2>
+                            <h2 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+                                Page Not Found
+                            </h2>
                             <p className="mx-auto max-w-lg text-lg leading-relaxed text-muted-foreground">
                                 The page you&apos;re looking for doesn&apos;t exist or has been moved.
                             </p>
@@ -70,7 +78,7 @@ export function ErrorBoundary() {
                         </div>
                         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                             <Button asChild>
-                                <Link viewTransition to="/">Back to Home</Link>
+                                <Link to="/">Back to Home</Link>
                             </Button>
                         </div>
                         <div className="sr-only">

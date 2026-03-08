@@ -107,7 +107,7 @@ export const CollectionsSection = ({collections, loading = false}: CollectionsSe
 
                 <div className="mt-12 text-center">
                     <Button size="lg" asChild className="w-[80vw] sm:w-auto">
-                        <Link viewTransition to="/collections" className="flex items-center gap-2">
+                        <Link to="/collections" className="flex items-center gap-2">
                             View All Collections
                             <ArrowRight className="h-4 w-4" />
                         </Link>

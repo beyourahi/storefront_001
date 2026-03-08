@@ -64,7 +64,7 @@ const OrdersPage = () => {
                 <p className="text-muted-foreground max-w-md text-sm">Track your purchases and view order details.</p>
                 <p className="text-sm font-medium text-primary/80">Let&apos;s get you back on track</p>
                 <Button asChild size="lg">
-                    <Link viewTransition to="/account/login">Sign In</Link>
+                    <Link to="/account/login">Sign In</Link>
                 </Button>
             </div>
         );
@@ -95,7 +95,7 @@ const OrdersPage = () => {
                         <div className="flex justify-center gap-4 pt-4">
                             {pageInfo.hasPreviousPage && (
                                 <Button variant="outline" asChild>
-                                    <Link viewTransition
+                                    <Link
                                         to={`/account/orders?direction=previous&cursor=${pageInfo.startCursor}`}
                                         preventScrollReset
                                     >
@@ -105,7 +105,7 @@ const OrdersPage = () => {
                             )}
                             {pageInfo.hasNextPage && (
                                 <Button variant="outline" asChild>
-                                    <Link viewTransition
+                                    <Link
                                         to={`/account/orders?direction=next&cursor=${pageInfo.endCursor}`}
                                         preventScrollReset
                                     >
@@ -124,7 +124,7 @@ const OrdersPage = () => {
                     <h2 className="text-lg font-semibold lg:text-xl">No orders yet</h2>
                     <p className="text-muted-foreground mt-2 text-sm">When you place an order, it will appear here.</p>
                     <Button asChild className="mt-4">
-                        <Link viewTransition to="/collections">Start Shopping</Link>
+                        <Link to="/collections">Start Shopping</Link>
                     </Button>
                 </Card>
             )}

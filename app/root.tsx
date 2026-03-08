@@ -6,7 +6,6 @@ import {
     Meta,
     Scripts,
     ScrollRestoration,
-    useLocation,
     useRouteLoaderData,
     useRouteError,
     isRouteErrorResponse,
@@ -48,7 +47,6 @@ import {NetworkStatusIndicator} from "~/components/NetworkStatusIndicator";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
 import {createWebSiteSchema, getSeoDefaults} from "~/lib/structured-data";
-import {usePageTransitionOrchestrator} from "~/lib/navigation-transitions";
 import appCss from "./styles/app.css?url";
 
 export type RootLoader = typeof loader;
@@ -120,11 +118,26 @@ export async function loader({context, request}: Route.LoaderArgs) {
         dataAdapter.query(HEADER_QUERY, {
             variables: {headerMenuHandle: "main-menu"}
         }),
-        dataAdapter.query(MENU_COLLECTIONS_QUERY).catch((error: unknown) => { console.error("Failed to load menu collections:", error); return null; }),
-        dataAdapter.query(SHOP_SHIPPING_CONFIG_QUERY).catch((error: unknown) => { console.error("Failed to load shipping config:", error); return null; }),
-        dataAdapter.query(THEME_SETTINGS_QUERY, {cache: dataAdapter.CacheNone()}).catch((error: unknown) => { console.error("Failed to load theme settings:", error); return null; }),
-        dataAdapter.query(SITE_CONTENT_QUERY, {cache: dataAdapter.CacheNone()}).catch((error: unknown) => { console.error("Failed to load site content:", error); return null; }),
-        dataAdapter.query(HAS_BLOG_QUERY).catch((error: unknown) => { console.error("Failed to check blog availability:", error); return null; })
+        dataAdapter.query(MENU_COLLECTIONS_QUERY).catch((error: unknown) => {
+            console.error("Failed to load menu collections:", error);
+            return null;
+        }),
+        dataAdapter.query(SHOP_SHIPPING_CONFIG_QUERY).catch((error: unknown) => {
+            console.error("Failed to load shipping config:", error);
+            return null;
+        }),
+        dataAdapter.query(THEME_SETTINGS_QUERY, {cache: dataAdapter.CacheNone()}).catch((error: unknown) => {
+            console.error("Failed to load theme settings:", error);
+            return null;
+        }),
+        dataAdapter.query(SITE_CONTENT_QUERY, {cache: dataAdapter.CacheNone()}).catch((error: unknown) => {
+            console.error("Failed to load site content:", error);
+            return null;
+        }),
+        dataAdapter.query(HAS_BLOG_QUERY).catch((error: unknown) => {
+            console.error("Failed to check blog availability:", error);
+            return null;
+        })
     ]);
 
     const siteContent = parseSiteContent(siteContentData, themeSettingsData);
@@ -189,8 +202,8 @@ export async function loader({context, request}: Route.LoaderArgs) {
             priceRange: {
                 minVariantPrice: {
                     amount: p.priceRange.minVariantPrice.amount,
-                    currencyCode: p.priceRange.minVariantPrice.currencyCode,
-                },
+                    currencyCode: p.priceRange.minVariantPrice.currencyCode
+                }
             },
             variants: {
                 nodes: (p.variants?.nodes ?? []).map((v: any) => ({
@@ -198,9 +211,9 @@ export async function loader({context, request}: Route.LoaderArgs) {
                     price: {amount: v.price.amount, currencyCode: v.price.currencyCode},
                     compareAtPrice: v.compareAtPrice
                         ? {amount: v.compareAtPrice.amount, currencyCode: v.compareAtPrice.currencyCode}
-                        : null,
-                })),
-            },
+                        : null
+                }))
+            }
         }));
 
     // Deferred data — streams in after initial render
@@ -222,7 +235,10 @@ export async function loader({context, request}: Route.LoaderArgs) {
                 return false;
             }
         })
-        .catch((error: unknown) => { console.error("Failed to check store credit balance:", error); return false; });
+        .catch((error: unknown) => {
+            console.error("Failed to check store credit balance:", error);
+            return false;
+        });
 
     const hasStoreCreditWithTimeout = withTimeoutAndFallback(hasStoreCredit, false, TIMEOUT_DEFAULTS.STORE_CREDIT);
 
@@ -230,12 +246,18 @@ export async function loader({context, request}: Route.LoaderArgs) {
         .query(FOOTER_QUERY, {
             variables: {footerMenuHandle: "footer"}
         })
-        .catch((error: unknown) => { console.error("Failed to load footer:", error); return null; });
+        .catch((error: unknown) => {
+            console.error("Failed to load footer:", error);
+            return null;
+        });
 
     const cartSuggestions = storefront
         .query(CART_SUGGESTIONS_QUERY)
         .then(data => data.products?.nodes?.filter((p: any) => p.availableForSale) ?? null)
-        .catch((error: unknown) => { console.error("Failed to load cart suggestions:", error); return null; });
+        .catch((error: unknown) => {
+            console.error("Failed to load cart suggestions:", error);
+            return null;
+        });
 
     return {
         header,
@@ -299,8 +321,6 @@ export function Layout({children}: {children?: React.ReactNode}) {
 
 export default function App() {
     const data = useRouteLoaderData<RootLoader>("root");
-    const location = useLocation();
-    const {shouldAnimateFallbackTransition} = usePageTransitionOrchestrator();
 
     useEffect(() => {
         if (data?.generatedTheme) {
@@ -356,16 +376,7 @@ export default function App() {
                                         popularProducts={data.popularProducts ?? []}
                                     />
                                     <main className="pt-[var(--total-header-height)] transition-[padding-top] duration-300 ease-in-out">
-                                        <div
-                                            key={location.key}
-                                            className={
-                                                shouldAnimateFallbackTransition
-                                                    ? "animate-page-fade-in will-change-[transform,opacity]"
-                                                    : undefined
-                                            }
-                                        >
-                                            <Outlet />
-                                        </div>
+                                        <Outlet />
                                     </main>
                                     <Footer shopName={shopName} />
                                     <Toaster position="top-center" />

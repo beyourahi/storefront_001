@@ -257,7 +257,7 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
                     </div>
 
                     <div className="mx-auto flex w-[70%] flex-col gap-4 sm:w-auto sm:flex-row sm:justify-center">
-                        <Link viewTransition to="/collections" className="w-full sm:w-auto">
+                        <Link to="/collections" className="w-full sm:w-auto">
                             <Button size="lg" className="h-12 w-full gap-2 !px-8 leading-none font-semibold sm:w-auto">
                                 Explore Collections
                                 <ArrowRight className="h-4 w-4" />

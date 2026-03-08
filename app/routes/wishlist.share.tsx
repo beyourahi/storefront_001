@@ -167,10 +167,8 @@ const WishlistShare = () => {
                 <div className="border-border/60 flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed">
                     <HiHeart className="text-muted-foreground/60 mb-4 h-16 w-16" />
                     <h2 className="mb-2 text-xl font-semibold">No products found</h2>
-                    <p className="text-muted-foreground mb-6">
-                        The products in this wishlist are no longer available
-                    </p>
-                    <Link viewTransition
+                    <p className="text-muted-foreground mb-6">The products in this wishlist are no longer available</p>
+                    <Link
                         to="/products"
                         className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 transition-colors"
                     >

@@ -1,12 +1,5 @@
 import * as React from "react";
-import {
-    Link,
-    useLoaderData,
-    useNavigate,
-    useRouteError,
-    isRouteErrorResponse,
-    useRouteLoaderData
-} from "react-router";
+import {Link, useLoaderData, useNavigate, useRouteError, isRouteErrorResponse, useRouteLoaderData} from "react-router";
 import type {Route} from "./+types/search";
 import {Analytics, Image, getSeoMeta} from "@shopify/hydrogen";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
@@ -26,26 +19,10 @@ import {sortWithPinnedFirst} from "~/lib/product-tags";
 import {ProductCardTitle} from "~/components/common/ProductCardTitle";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
-const FALLBACK_POPULAR_SEARCHES = [
-    "new arrivals",
-    "best sellers",
-    "gift ideas",
-    "on sale",
-    "trending now"
-];
+const FALLBACK_POPULAR_SEARCHES = ["new arrivals", "best sellers", "gift ideas", "on sale", "trending now"];
 import {cn} from "~/lib/utils";
 import type {RootLoader} from "~/root";
-import {
-    Search,
-    SearchX,
-    AlertCircle,
-    Package,
-    FolderOpen,
-    Newspaper,
-    Clock,
-    TrendingUp,
-    Calendar
-} from "lucide-react";
+import {Search, SearchX, AlertCircle, Package, FolderOpen, Newspaper, Clock, TrendingUp, Calendar} from "lucide-react";
 
 export const meta: Route.MetaFunction = ({data}) => {
     const term = data && "term" in data ? data.term : "";
@@ -324,8 +301,9 @@ export default function SearchPage() {
 
     const menuCollections = rootData?.menuCollections ?? [];
     const featuredCollections = menuCollections
-        .filter((collection: {id: string; handle: string; title: string; image?: unknown}) =>
-            !["all", "all-collections", "frontpage"].includes(collection.handle.toLowerCase())
+        .filter(
+            (collection: {id: string; handle: string; title: string; image?: unknown}) =>
+                !["all", "all-collections", "frontpage"].includes(collection.handle.toLowerCase())
         )
         .slice(0, 6);
     const popularSearches = rootData?.popularSearchTerms?.length
@@ -359,9 +337,17 @@ export default function SearchPage() {
     };
 
     const currentGridColumns =
-        activeTab === "products" ? productsGridColumns : activeTab === "collections" ? collectionsGridColumns : articlesGridColumns;
+        activeTab === "products"
+            ? productsGridColumns
+            : activeTab === "collections"
+              ? collectionsGridColumns
+              : articlesGridColumns;
     const currentLayoutMode =
-        activeTab === "products" ? productsLayoutMode : activeTab === "collections" ? collectionsLayoutMode : articlesLayoutMode;
+        activeTab === "products"
+            ? productsLayoutMode
+            : activeTab === "collections"
+              ? collectionsLayoutMode
+              : articlesLayoutMode;
 
     const handleSuggestionClick = (searchTerm: string) => {
         addSearch(searchTerm);
@@ -390,7 +376,10 @@ export default function SearchPage() {
             </AnimatedSection>
 
             <AnimatedSection animation="slide-up" threshold={0.1}>
-                <form onSubmit={handleSubmit} className="mb-6 max-w-4xl sm:mb-8 md:mb-10 lg:mb-12 xl:max-w-5xl 2xl:max-w-6xl">
+                <form
+                    onSubmit={handleSubmit}
+                    className="mb-6 max-w-4xl sm:mb-8 md:mb-10 lg:mb-12 xl:max-w-5xl 2xl:max-w-6xl"
+                >
                     <div className="relative flex items-center gap-3">
                         <input
                             ref={searchInputRef}
@@ -436,47 +425,47 @@ export default function SearchPage() {
                             <div className="mb-6 flex flex-col gap-4">
                                 <div className="flex items-center justify-between gap-4">
                                     <TabsList className="h-auto shrink-0 gap-1 overflow-x-auto bg-transparent p-0 sm:gap-1.5 md:gap-2">
-                                    <TabsTrigger
-                                        value="products"
-                                        className={cn(
-                                            "rounded-full border-2 border-primary",
-                                            "min-h-9 px-2 py-1 text-sm font-medium whitespace-nowrap transition-all sm:min-h-10 sm:px-3 sm:py-1.5 md:min-h-11 md:px-4 md:py-2 md:text-base",
-                                            "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
-                                            "data-[state=inactive]:bg-transparent data-[state=inactive]:text-primary"
-                                        )}
-                                    >
-                                        <Package className="mr-1.5 hidden size-4 sm:inline-block" />
-                                        <span>Products</span>
-                                        <span className="ml-1 text-sm opacity-80">({products.totalCount})</span>
-                                    </TabsTrigger>
+                                        <TabsTrigger
+                                            value="products"
+                                            className={cn(
+                                                "rounded-full border-2 border-primary",
+                                                "min-h-9 px-2 py-1 text-sm font-medium whitespace-nowrap transition-all sm:min-h-10 sm:px-3 sm:py-1.5 md:min-h-11 md:px-4 md:py-2 md:text-base",
+                                                "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
+                                                "data-[state=inactive]:bg-transparent data-[state=inactive]:text-primary"
+                                            )}
+                                        >
+                                            <Package className="mr-1.5 hidden size-4 sm:inline-block" />
+                                            <span>Products</span>
+                                            <span className="ml-1 text-sm opacity-80">({products.totalCount})</span>
+                                        </TabsTrigger>
 
-                                    <TabsTrigger
-                                        value="collections"
-                                        className={cn(
-                                            "rounded-full border-2 border-primary",
-                                            "min-h-9 px-2 py-1 text-sm font-medium whitespace-nowrap transition-all sm:min-h-10 sm:px-3 sm:py-1.5 md:min-h-11 md:px-4 md:py-2 md:text-base",
-                                            "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
-                                            "data-[state=inactive]:bg-transparent data-[state=inactive]:text-primary"
-                                        )}
-                                    >
-                                        <FolderOpen className="mr-1.5 hidden size-4 sm:inline-block" />
-                                        <span>Collections</span>
-                                        <span className="ml-1 text-sm opacity-80">({collections.totalCount})</span>
-                                    </TabsTrigger>
+                                        <TabsTrigger
+                                            value="collections"
+                                            className={cn(
+                                                "rounded-full border-2 border-primary",
+                                                "min-h-9 px-2 py-1 text-sm font-medium whitespace-nowrap transition-all sm:min-h-10 sm:px-3 sm:py-1.5 md:min-h-11 md:px-4 md:py-2 md:text-base",
+                                                "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
+                                                "data-[state=inactive]:bg-transparent data-[state=inactive]:text-primary"
+                                            )}
+                                        >
+                                            <FolderOpen className="mr-1.5 hidden size-4 sm:inline-block" />
+                                            <span>Collections</span>
+                                            <span className="ml-1 text-sm opacity-80">({collections.totalCount})</span>
+                                        </TabsTrigger>
 
-                                    <TabsTrigger
-                                        value="articles"
-                                        className={cn(
-                                            "rounded-full border-2 border-primary",
-                                            "min-h-9 px-2 py-1 text-sm font-medium whitespace-nowrap transition-all sm:min-h-10 sm:px-3 sm:py-1.5 md:min-h-11 md:px-4 md:py-2 md:text-base",
-                                            "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
-                                            "data-[state=inactive]:bg-transparent data-[state=inactive]:text-primary"
-                                        )}
-                                    >
-                                        <Newspaper className="mr-1.5 hidden size-4 sm:inline-block" />
-                                        <span>Articles</span>
-                                        <span className="ml-1 text-sm opacity-80">({articles.totalCount})</span>
-                                    </TabsTrigger>
+                                        <TabsTrigger
+                                            value="articles"
+                                            className={cn(
+                                                "rounded-full border-2 border-primary",
+                                                "min-h-9 px-2 py-1 text-sm font-medium whitespace-nowrap transition-all sm:min-h-10 sm:px-3 sm:py-1.5 md:min-h-11 md:px-4 md:py-2 md:text-base",
+                                                "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
+                                                "data-[state=inactive]:bg-transparent data-[state=inactive]:text-primary"
+                                            )}
+                                        >
+                                            <Newspaper className="mr-1.5 hidden size-4 sm:inline-block" />
+                                            <span>Articles</span>
+                                            <span className="ml-1 text-sm opacity-80">({articles.totalCount})</span>
+                                        </TabsTrigger>
                                     </TabsList>
 
                                     <div className="hidden shrink-0 md:block">
@@ -549,7 +538,13 @@ function SearchPageInitialState({
     onSuggestionClick
 }: {
     recentSearches: string[];
-    collections: Array<{id: string; handle: string; title: string; productsCount: number; image?: {url: string; altText?: string | null} | null}>;
+    collections: Array<{
+        id: string;
+        handle: string;
+        title: string;
+        productsCount: number;
+        image?: {url: string; altText?: string | null} | null;
+    }>;
     popularSearches: string[];
     onClearRecent: () => void;
     onSuggestionClick: (term: string) => void;
@@ -562,7 +557,9 @@ function SearchPageInitialState({
                 <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-muted/50 sm:mb-6 sm:h-16 sm:w-16">
                     <Search className="size-6 text-muted-foreground sm:size-8" />
                 </div>
-                <h2 className="mb-2 font-serif text-xl text-primary sm:mb-3 sm:text-2xl md:text-3xl">Start searching</h2>
+                <h2 className="mb-2 font-serif text-xl text-primary sm:mb-3 sm:text-2xl md:text-3xl">
+                    Start searching
+                </h2>
                 <p className="mx-auto max-w-sm text-sm leading-relaxed text-muted-foreground sm:max-w-md sm:text-base">
                     Enter a search term to discover products, collections, and articles.
                 </p>
@@ -628,7 +625,7 @@ function SearchPageInitialState({
                     </h3>
                     <div className="grid grid-cols-2 gap-2 sm:gap-responsive sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                         {collections.map(collection => (
-                            <Link viewTransition key={collection.id} to={`/collections/${collection.handle}`} className="group">
+                            <Link key={collection.id} to={`/collections/${collection.handle}`} className="group">
                                 <div className="bg-muted/50 mb-2 aspect-square overflow-hidden rounded-xl sm:mb-3 sm:rounded-2xl">
                                     {collection.image ? (
                                         <img
@@ -701,9 +698,7 @@ function SearchProductsTab({
                 <div className="bg-[var(--brand-primary-subtle)] mx-auto mb-4 inline-flex rounded-full p-4 shadow-sm backdrop-blur-sm">
                     <Package className="text-primary size-6" />
                 </div>
-                <p className="text-sm text-muted-foreground sm:text-base">
-                    No products found for &ldquo;{term}&rdquo;
-                </p>
+                <p className="text-sm text-muted-foreground sm:text-base">No products found for &ldquo;{term}&rdquo;</p>
             </div>
         );
     }
@@ -781,7 +776,7 @@ function SearchProductItem({
 
     if (variant === "list") {
         return (
-            <Link viewTransition
+            <Link
                 to={productUrl}
                 prefetch="viewport"
                 className={cn(
@@ -791,7 +786,9 @@ function SearchProductItem({
                 style={{animationDelay: `${staggerDelay}ms`}}
             >
                 <div className="relative h-[100px] w-20 shrink-0 overflow-hidden rounded-2xl bg-muted/50 md:h-[120px] md:w-24">
-                    {hasDiscount && <DiscountBadge percentage={discountPercentage} className="top-1 left-1 px-1.5 py-0 text-xs" />}
+                    {hasDiscount && (
+                        <DiscountBadge percentage={discountPercentage} className="top-1 left-1 px-1.5 py-0 text-xs" />
+                    )}
                     {image ? (
                         <Image
                             alt={image.altText || product.title}
@@ -832,7 +829,7 @@ function SearchProductItem({
                         <DiscountBadge percentage={discountPercentage} position="inline" />
                     </div>
                 )}
-                <Link viewTransition to={productUrl} prefetch="viewport" className="block h-full w-full">
+                <Link to={productUrl} prefetch="viewport" className="block h-full w-full">
                     {image ? (
                         <Image
                             alt={image.altText || product.title}
@@ -859,7 +856,7 @@ function SearchProductItem({
                 </Link>
             </div>
 
-            <Link viewTransition
+            <Link
                 to={productUrl}
                 prefetch="viewport"
                 className={cn(
@@ -877,7 +874,12 @@ function SearchProductItem({
                         />
                     </span>
                     {hasDiscount && (
-                        <span className={cn("text-muted-foreground line-through opacity-75 text-sm md:text-base", priceStyles)}>
+                        <span
+                            className={cn(
+                                "text-muted-foreground line-through opacity-75 text-sm md:text-base",
+                                priceStyles
+                            )}
+                        >
                             {new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
                                 style: "currency",
                                 currency: product.compareAtPriceRange.minVariantPrice.currencyCode
@@ -937,7 +939,7 @@ function SearchCollectionCard({
 
     if (variant === "list") {
         return (
-            <Link viewTransition
+            <Link
                 to={`/collections/${collection.handle}`}
                 prefetch="viewport"
                 className={cn(
@@ -961,7 +963,9 @@ function SearchCollectionCard({
                     )}
                 </div>
                 <div className="min-w-0 flex-1">
-                    <h3 className="truncate font-serif text-base font-semibold text-foreground md:text-lg">{collection.title}</h3>
+                    <h3 className="truncate font-serif text-base font-semibold text-foreground md:text-lg">
+                        {collection.title}
+                    </h3>
                     {collection.description && (
                         <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{collection.description}</p>
                     )}
@@ -971,7 +975,7 @@ function SearchCollectionCard({
     }
 
     return (
-        <Link viewTransition
+        <Link
             to={`/collections/${collection.handle}`}
             prefetch="viewport"
             className="sleek group bg-card collection-card block overflow-hidden rounded-lg animate-product-fade-in"
@@ -1086,7 +1090,7 @@ function SearchArticleCard({
 
     if (variant === "list") {
         return (
-            <Link viewTransition
+            <Link
                 to={articleUrl}
                 prefetch="viewport"
                 className={cn(
@@ -1111,8 +1115,12 @@ function SearchArticleCard({
                 </div>
 
                 <div className="min-w-0 flex-1">
-                    <h3 className="truncate font-serif text-base font-semibold text-foreground md:text-lg">{article.title}</h3>
-                    {article.excerpt && <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">{article.excerpt}</p>}
+                    <h3 className="truncate font-serif text-base font-semibold text-foreground md:text-lg">
+                        {article.title}
+                    </h3>
+                    {article.excerpt && (
+                        <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">{article.excerpt}</p>
+                    )}
                     <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="size-3" />
                         <span>{publishDate}</span>
@@ -1130,7 +1138,7 @@ function SearchArticleCard({
             style={{animationDelay: `${staggerDelay}ms`}}
         >
             <div className="relative aspect-[4/3] overflow-hidden rounded-b-lg bg-muted/50">
-                <Link viewTransition to={articleUrl} prefetch="viewport" className="block h-full w-full">
+                <Link to={articleUrl} prefetch="viewport" className="block h-full w-full">
                     {article.image ? (
                         <Image
                             alt={article.image.altText || article.title}
@@ -1146,13 +1154,11 @@ function SearchArticleCard({
                 </Link>
             </div>
 
-            <Link viewTransition to={articleUrl} prefetch="viewport" className="block no-underline py-3 sm:py-4 space-y-1.5">
+            <Link to={articleUrl} prefetch="viewport" className="block no-underline py-3 sm:py-4 space-y-1.5">
                 <h3 className="line-clamp-2 font-serif font-semibold text-base leading-snug text-foreground">
                     {article.title}
                 </h3>
-                {article.excerpt && (
-                    <p className="line-clamp-2 text-sm text-muted-foreground">{article.excerpt}</p>
-                )}
+                {article.excerpt && <p className="line-clamp-2 text-sm text-muted-foreground">{article.excerpt}</p>}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="size-3" />
                     <span>{publishDate}</span>
@@ -1612,7 +1618,10 @@ async function fetchCollections(
     }
 }
 
-async function regularSearch({request, context}: Pick<Route.LoaderArgs, "request" | "context">): Promise<CategorizedSearchResult> {
+async function regularSearch({
+    request,
+    context
+}: Pick<Route.LoaderArgs, "request" | "context">): Promise<CategorizedSearchResult> {
     const {dataAdapter} = context;
     const url = new URL(request.url);
     const term = String(url.searchParams.get("q") || "");
@@ -1682,7 +1691,10 @@ async function regularSearch({request, context}: Pick<Route.LoaderArgs, "request
     };
 }
 
-async function fetchMoreProducts({request, context}: Pick<Route.LoaderArgs, "request" | "context">): Promise<FetcherResult> {
+async function fetchMoreProducts({
+    request,
+    context
+}: Pick<Route.LoaderArgs, "request" | "context">): Promise<FetcherResult> {
     const {dataAdapter} = context;
     const url = new URL(request.url);
     const term = String(url.searchParams.get("q") || "");
@@ -1712,7 +1724,10 @@ async function fetchMoreProducts({request, context}: Pick<Route.LoaderArgs, "req
     };
 }
 
-async function fetchMoreArticles({request, context}: Pick<Route.LoaderArgs, "request" | "context">): Promise<FetcherResult> {
+async function fetchMoreArticles({
+    request,
+    context
+}: Pick<Route.LoaderArgs, "request" | "context">): Promise<FetcherResult> {
     const {dataAdapter} = context;
     const url = new URL(request.url);
     const term = String(url.searchParams.get("q") || "");

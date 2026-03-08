@@ -18,14 +18,13 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
         currentPath === "/wishlist" ||
         currentPath.startsWith("/wishlist/");
 
-    const isAccountActive =
-        (currentPath === "/account" || currentPath.startsWith("/account/")) && !isWishlistActive;
+    const isAccountActive = (currentPath === "/account" || currentPath.startsWith("/account/")) && !isWishlistActive;
 
     return (
         <div className="border-border/40 mt-4 border-t pt-4">
             <nav className="space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                    <Link viewTransition
+                    <Link
                         to="/account/wishlist"
                         onClick={onLinkClick}
                         className={cn(
@@ -59,7 +58,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                             Wishlist
                         </span>
                     </Link>
-                    <Link viewTransition
+                    <Link
                         to="/account"
                         onClick={onLinkClick}
                         className={cn(
@@ -78,16 +77,13 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                             )}
                         />
                         <span
-                            className={cn(
-                                "sleek group-hover:translate-x-0.5",
-                                isAccountActive ? "drop-shadow-sm" : ""
-                            )}
+                            className={cn("sleek group-hover:translate-x-0.5", isAccountActive ? "drop-shadow-sm" : "")}
                         >
                             Account
                         </span>
                     </Link>
                 </div>
-                <Link viewTransition
+                <Link
                     to="/gallery"
                     onClick={onLinkClick}
                     className={cn(
@@ -114,7 +110,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                         Gallery
                     </span>
                 </Link>
-                <Link viewTransition
+                <Link
                     to="/contact"
                     onClick={onLinkClick}
                     className={cn(

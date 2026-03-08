@@ -80,7 +80,7 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
 
                     <nav className="hidden items-center lg:flex">
                         {NAVIGATION_LINKS.map(link => (
-                            <Link viewTransition
+                            <Link
                                 key={link.href}
                                 to={link.href}
                                 className={cn(
@@ -95,7 +95,7 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                             </Link>
                         ))}
                         {data?.hasBlog && (
-                            <Link viewTransition
+                            <Link
                                 to="/blogs"
                                 className={cn(
                                     "hover:text-primary sleek px-3 py-2 text-sm font-semibold",
@@ -111,7 +111,7 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                     </nav>
 
                     <div className="absolute left-1/2 -translate-x-1/2">
-                        <Link viewTransition
+                        <Link
                             to="/"
                             className="motion-link text-primary flex items-center space-x-2 px-2 py-2 hover:opacity-80 md:px-4"
                         >
@@ -158,7 +158,7 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                         </div>
 
                         <div className="hidden lg:block">
-                            <Link viewTransition to="/account">
+                            <Link to="/account">
                                 <Button
                                     variant="ghost"
                                     size="icon"

@@ -50,7 +50,7 @@ export const ArticleCard = ({
     className,
     showTags = true,
     showReadingTime = true,
-    showAuthor = false,
+    showAuthor = false
 }: ArticleCardProps) => {
     const {handle, title, excerpt, excerptHtml, content, contentHtml, publishedAt, tags, image, blog, author} = article;
 
@@ -63,14 +63,14 @@ export const ArticleCard = ({
 
     if (variant === "compact") {
         return (
-            <Link viewTransition
+            <Link
                 to={articleUrl}
                 prefetch="viewport"
                 className={cn(
                     "flex items-start gap-3 sm:gap-4 py-3 sm:py-4 no-underline group cursor-pointer",
                     "transition-colors hover:bg-muted/30 rounded-lg px-2 -mx-2",
                     "animate-in fade-in",
-                    className,
+                    className
                 )}
                 style={{animationDelay: `${staggerDelay}ms`}}
             >
@@ -102,7 +102,7 @@ export const ArticleCard = ({
 
     if (variant === "featured") {
         return (
-            <Link viewTransition
+            <Link
                 to={articleUrl}
                 prefetch="viewport"
                 className={cn("block no-underline group animate-in fade-in cursor-pointer", className)}
@@ -157,7 +157,7 @@ export const ArticleCard = ({
     }
 
     return (
-        <Link viewTransition
+        <Link
             to={articleUrl}
             prefetch="viewport"
             className={cn("group block no-underline animate-in fade-in cursor-pointer h-full", className)}

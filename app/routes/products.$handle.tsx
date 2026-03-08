@@ -1,5 +1,12 @@
 import {useState, useEffect, Suspense, useMemo} from "react";
-import {useLoaderData, useRouteError, isRouteErrorResponse, Await, Link, type ShouldRevalidateFunction} from "react-router";
+import {
+    useLoaderData,
+    useRouteError,
+    isRouteErrorResponse,
+    Await,
+    Link,
+    type ShouldRevalidateFunction
+} from "react-router";
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import type {Route} from "./+types/products.$handle";
@@ -169,7 +176,10 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
             cache: dataAdapter.CacheNone()
         })
         .then(data => data.productRecommendations ?? null)
-        .catch((error: unknown) => { console.error("Failed to load product recommendations:", error); return null; });
+        .catch((error: unknown) => {
+            console.error("Failed to load product recommendations:", error);
+            return null;
+        });
 
     return {recommendations};
 };
@@ -355,7 +365,7 @@ export const ErrorBoundary = () => {
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                         <Button asChild>
-                            <Link viewTransition to="/collections/all-products">Browse All Products</Link>
+                            <Link to="/collections/all-products">Browse All Products</Link>
                         </Button>
                     </div>
                     <div className="sr-only">

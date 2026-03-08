@@ -55,7 +55,12 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
     const priceStyles = "font-mono font-bold tabular-nums tracking-tight antialiased";
 
     return (
-        <div className={cn("motion-surface product-card overflow-hidden rounded-lg", canHover ? "group" : "motion-press")}>
+        <div
+            className={cn(
+                "motion-surface product-card overflow-hidden rounded-lg",
+                canHover ? "group" : "motion-press"
+            )}
+        >
             <div className={`relative ${aspectRatioClass} overflow-hidden rounded-b-lg`}>
                 {discountPercentage && (
                     <div className="absolute top-1 left-1 z-10 sm:top-1.5 sm:left-1.5">
@@ -72,7 +77,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     </div>
                 )}
 
-                <Link viewTransition to={`/products/${product.handle}`} prefetch="intent">
+                <Link to={`/products/${product.handle}`} prefetch="intent">
                     {productImage ? (
                         <Image
                             data={{url: productImage.url, altText: productImage.altText || product.title}}
@@ -114,7 +119,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
 
             <div className={`${hasSecondPart ? "space-y-2 sm:space-y-3" : "space-y-0.5 sm:space-y-1"} py-3 sm:py-4`}>
                 <div>
-                    <Link viewTransition
+                    <Link
                         to={`/products/${product.handle}`}
                         className={cn("motion-link", canHover && "group-hover:text-primary")}
                         prefetch="intent"

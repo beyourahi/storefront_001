@@ -39,7 +39,7 @@ export const OrderCard = ({order}: OrderCardProps) => {
                 <div className="flex items-center gap-4">
                     <span className="font-semibold">{formatShopifyMoney(order.totalPrice)}</span>
                     <Button variant="outline" size="sm" asChild>
-                        <Link viewTransition to={`/account/orders/${order.id.split("/").pop()}`}>View Details</Link>
+                        <Link to={`/account/orders/${order.id.split("/").pop()}`}>View Details</Link>
                     </Button>
                 </div>
             </div>

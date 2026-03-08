@@ -41,7 +41,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                                     const IconComponent = getPolicyIcon(link.policyKey);
                                     return (
                                         <li key={link.href} className="lg:list-item">
-                                            <Link viewTransition
+                                            <Link
                                                 to={link.href}
                                                 className={cn(
                                                     "hover:text-primary sleek inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold",

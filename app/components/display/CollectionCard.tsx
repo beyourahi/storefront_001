@@ -50,7 +50,7 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
           : `/collections/${collection.handle}`;
 
     return (
-        <Link viewTransition
+        <Link
             to={linkHref}
             prefetch="intent"
             className={cn(

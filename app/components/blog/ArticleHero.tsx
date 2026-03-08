@@ -68,11 +68,7 @@ export const ArticleHero = ({article, variant = "listing", showReadMore = true, 
                             {tags && tags.length > 0 && (
                                 <div className="flex flex-wrap gap-1.5">
                                     {tags.slice(0, 3).map(tag => (
-                                        <Badge
-                                            key={tag}
-                                            variant="secondary"
-                                            className="text-xs pointer-events-none"
-                                        >
+                                        <Badge key={tag} variant="secondary" className="text-xs pointer-events-none">
                                             {tag}
                                         </Badge>
                                     ))}
@@ -86,10 +82,8 @@ export const ArticleHero = ({article, variant = "listing", showReadMore = true, 
                             </p>
                             {showReadMore && (
                                 <div className="pt-2">
-                                    <Link viewTransition to={articleUrl} prefetch="viewport" className="no-underline">
-                                        <Button
-                                            size="lg"
-                                        >
+                                    <Link to={articleUrl} prefetch="viewport" className="no-underline">
+                                        <Button size="lg">
                                             Read Article <ArrowRight className="h-4 w-4 ml-2" />
                                         </Button>
                                     </Link>

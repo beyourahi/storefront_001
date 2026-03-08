@@ -18,15 +18,19 @@ import {AnimatedSection} from "~/components/sections/AnimatedSection";
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const shopName =
-        (matches.find(m => m?.id === "root") as
-            | {data?: {siteContent?: {siteSettings?: {brandName?: string; siteUrl?: string}}}}
-            | undefined)?.data?.siteContent?.siteSettings?.brandName ?? "Store";
+        (
+            matches.find(m => m?.id === "root") as
+                | {data?: {siteContent?: {siteSettings?: {brandName?: string; siteUrl?: string}}}}
+                | undefined
+        )?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const article = data?.article;
     const blogHandle = data?.blogHandle;
     const siteUrl =
-        (matches.find(m => m?.id === "root") as
-            | {data?: {siteContent?: {siteSettings?: {siteUrl?: string}}}}
-            | undefined)?.data?.siteContent?.siteSettings?.siteUrl ?? "";
+        (
+            matches.find(m => m?.id === "root") as
+                | {data?: {siteContent?: {siteSettings?: {siteUrl?: string}}}}
+                | undefined
+        )?.data?.siteContent?.siteSettings?.siteUrl ?? "";
 
     if (!article) return [{title: `Article Not Found | ${shopName}`}];
 
@@ -137,58 +141,62 @@ export default function Article() {
             <AnimatedSection animation="slide-up" threshold={0.1}>
                 <article className="mx-auto max-w-[2000px] px-2 md:px-4">
                     <header className="mx-auto max-w-3xl text-center space-y-5 md:space-y-6 pt-6 md:pt-8 mb-10 md:mb-14 lg:mb-16">
-                    {tags && tags.length > 0 && (
-                        <div className="flex justify-center">
-                            <TagList tags={tags} variant="outline" size="sm" blogHandle={blogHandle} />
+                        {tags && tags.length > 0 && (
+                            <div className="flex justify-center">
+                                <TagList tags={tags} variant="outline" size="sm" blogHandle={blogHandle} />
+                            </div>
+                        )}
+
+                        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium leading-[1.15] tracking-tight text-primary">
+                            {title}
+                        </h1>
+
+                        <div className="flex flex-wrap items-center justify-center gap-2">
+                            <Badge variant="secondary">
+                                <time dateTime={publishedAt}>{publishedDate}</time>
+                            </Badge>
+                            <Badge variant="secondary">{readingTime} min read</Badge>
+                            {author?.name && <Badge variant="outline">{author.name}</Badge>}
+                        </div>
+
+                        <div className="flex justify-center pt-2" aria-hidden="true">
+                            <div className="w-12 h-px bg-primary/30" />
+                        </div>
+                    </header>
+
+                    {/* Article HTML content from Shopify admin — trusted source */}
+                    <div
+                        ref={contentRef}
+                        dangerouslySetInnerHTML={{__html: contentHtml}}
+                        className="article-content mx-auto max-w-3xl py-8 md:py-10 lg:py-12"
+                    />
+
+                    <div className="mx-auto max-w-3xl pt-8 md:pt-10 pb-6 md:pb-8">
+                        <ShareButtons
+                            article={{
+                                title,
+                                excerpt: article.excerpt,
+                                image: article.image,
+                                blog: {handle: blogHandle},
+                                handle: article.handle
+                            }}
+                            variant="inline"
+                        />
+                    </div>
+
+                    {author?.bio && (
+                        <div className="mx-auto max-w-3xl pb-6 md:pb-8">
+                            <AuthorBio author={author} variant="card" />
                         </div>
                     )}
 
-                    <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium leading-[1.15] tracking-tight text-primary">
-                        {title}
-                    </h1>
-
-                    <div className="flex flex-wrap items-center justify-center gap-2">
-                        <Badge variant="secondary">
-                            <time dateTime={publishedAt}>{publishedDate}</time>
-                        </Badge>
-                        <Badge variant="secondary">{readingTime} min read</Badge>
-                        {author?.name && <Badge variant="outline">{author.name}</Badge>}
-                    </div>
-
-                    <div className="flex justify-center pt-2" aria-hidden="true">
-                        <div className="w-12 h-px bg-primary/30" />
-                    </div>
-                </header>
-
-                {/* Article HTML content from Shopify admin — trusted source */}
-                <div
-                    ref={contentRef}
-                    dangerouslySetInnerHTML={{__html: contentHtml}}
-                    className="article-content mx-auto max-w-3xl py-8 md:py-10 lg:py-12"
-                />
-
-                <div className="mx-auto max-w-3xl pt-8 md:pt-10 pb-6 md:pb-8">
-                    <ShareButtons
-                        article={{
-                            title,
-                            excerpt: article.excerpt,
-                            image: article.image,
-                            blog: {handle: blogHandle},
-                            handle: article.handle,
-                        }}
-                        variant="inline"
-                    />
-                </div>
-
-                {author?.bio && (
-                    <div className="mx-auto max-w-3xl pb-6 md:pb-8">
-                        <AuthorBio author={author} variant="card" />
-                    </div>
-                )}
-
                     <div className="mx-auto max-w-3xl pt-4 md:pt-6 pb-8 md:pb-12">
                         <Button variant="ghost" asChild>
-                            <Link viewTransition to={`/blogs/${blogHandle}`} prefetch="viewport" className="inline-flex items-center gap-2">
+                            <Link
+                                to={`/blogs/${blogHandle}`}
+                                prefetch="viewport"
+                                className="inline-flex items-center gap-2"
+                            >
                                 <ArrowLeft className="size-4" />
                                 Back to {blogTitle || "Blog"}
                             </Link>

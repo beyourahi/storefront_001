@@ -451,7 +451,7 @@ const AccountProfile = () => {
                     Access your profile, manage addresses, and update your account details.
                 </p>
                 <Button asChild size="lg">
-                    <Link viewTransition to="/account/login">Sign In</Link>
+                    <Link to="/account/login">Sign In</Link>
                 </Button>
             </div>
         );
