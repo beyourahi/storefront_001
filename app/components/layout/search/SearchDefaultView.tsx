@@ -160,7 +160,7 @@ export const SearchDefaultView = ({
                             <div className="px-2 pt-3 pb-2">
                                 <Link
                                     to="/collections/all"
-                                    className="bg-primary/10 hover:bg-primary/20 border-primary/30 hover:border-primary/50 text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
+                                    className="bg-[var(--brand-primary-subtle)] hover:bg-[var(--surface-interactive)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
                                     onClick={handleLinkClick}
                                 >
                                     View all products
@@ -202,7 +202,7 @@ export const SearchDefaultView = ({
                         <div className="px-2 pt-3 pb-2">
                             <Link
                                 to="/collections"
-                                className="bg-primary/10 hover:bg-primary/20 border-primary/30 hover:border-primary/50 text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
+                                className="bg-[var(--brand-primary-subtle)] hover:bg-[var(--surface-interactive)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
                                 onClick={handleLinkClick}
                             >
                                 View all collections

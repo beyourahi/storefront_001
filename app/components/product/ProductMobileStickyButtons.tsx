@@ -3,6 +3,7 @@ import {Badge} from "~/components/ui/badge";
 import {AddToCartButton} from "~/components/product/AddToCartButton";
 import {BuyNowButton} from "~/components/product/BuyNowButton";
 import type {SellingPlanFragment} from "~/components/product/SellingPlanSelector";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
 type ProductMobileStickyButtonsProps = {
     product: any;
@@ -14,7 +15,7 @@ type ProductMobileStickyButtonsProps = {
 };
 
 const formatMoney = (amount: number, currencyCode: string) => {
-    return new Intl.NumberFormat("en-US", {style: "currency", currency: currencyCode}).format(amount);
+    return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {style: "currency", currency: currencyCode}).format(amount);
 };
 
 export const ProductMobileStickyButtons = ({

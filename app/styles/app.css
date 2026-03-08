@@ -6,26 +6,52 @@
  */
 
 :root {
-    /* ── Base Colors (neutral: overridden at runtime by theme engine) ── */
-    --background: oklch(1 0 0);
-    --foreground: oklch(0 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0 0 0);
-    --primary: oklch(0 0 0);
-    --primary-foreground: oklch(1 0 0);
-    --secondary: oklch(1 0 0);
-    --secondary-foreground: oklch(0 0 0);
-    --muted: oklch(1 0 0);
-    --muted-foreground: oklch(0 0 0);
-    --accent: oklch(0 0 0);
-    --accent-foreground: oklch(1 0 0);
+    /* ── Canonical Semantic Tokens (neutral defaults, overridden at runtime) ── */
+    --surface-canvas: oklch(0.985 0.004 95);
+    --surface-default: oklch(0.992 0.004 95);
+    --surface-raised: oklch(0.998 0.006 95);
+    --surface-muted: oklch(0.93 0.01 95);
+    --surface-interactive: oklch(0.9 0.012 95);
+    --surface-overlay: oklch(0.18 0.006 95 / 0.34);
+    --text-primary: oklch(0.18 0.01 95);
+    --text-secondary: oklch(0.34 0.012 95);
+    --text-subtle: oklch(0.5 0.01 95);
+    --text-inverse: oklch(0.98 0 0);
+    --border-subtle: oklch(0.84 0.012 95);
+    --border-strong: oklch(0.68 0.014 95);
+    --input-border: oklch(0.62 0.016 95);
+    --focus-ring: oklch(0.46 0.12 250);
+    --brand-primary: oklch(0.46 0.18 250);
+    --brand-primary-foreground: oklch(0.98 0 0);
+    --brand-primary-hover: oklch(0.42 0.18 250);
+    --brand-primary-active: oklch(0.38 0.18 250);
+    --brand-primary-subtle: oklch(0.93 0.05 250);
+    --brand-primary-subtle-foreground: oklch(0.18 0.01 250);
+    --brand-secondary: oklch(0.56 0.12 215);
+    --brand-secondary-subtle: oklch(0.94 0.04 215);
+    --brand-accent: oklch(0.62 0.12 70);
+    --brand-accent-subtle: oklch(0.92 0.05 70);
+
+    /* ── Legacy Compatibility Aliases ── */
+    --background: var(--surface-canvas);
+    --foreground: var(--text-primary);
+    --card: var(--surface-raised);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface-default);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--brand-primary);
+    --primary-foreground: var(--brand-primary-foreground);
+    --secondary: var(--surface-interactive);
+    --secondary-foreground: var(--text-primary);
+    --muted: var(--surface-muted);
+    --muted-foreground: var(--text-secondary);
+    --accent: var(--brand-accent-subtle);
+    --accent-foreground: var(--brand-primary-subtle-foreground);
     --destructive: oklch(0.55 0.2 25);
     --destructive-foreground: oklch(1 0 0);
-    --border: oklch(0 0 0);
-    --input: oklch(0 0 0);
-    --ring: oklch(0 0 0);
+    --border: var(--border-subtle);
+    --input: var(--input-border);
+    --ring: var(--focus-ring);
 
     /* ── Typography ── */
     --font-sans: Inter, ui-sans-serif, sans-serif, system-ui;
@@ -86,12 +112,12 @@
     --info-foreground: oklch(1 0 0);
 
     /* ── Overlay Colors ── */
-    --overlay-dark: oklch(0 0 0 / 0.3);
-    --overlay-light: oklch(1 0 0 / 0.1);
-    --overlay-light-hover: oklch(1 0 0 / 0.2);
+    --overlay-dark: var(--surface-overlay);
+    --overlay-light: var(--brand-primary-subtle);
+    --overlay-light-hover: var(--brand-accent-subtle);
 
     /* ── Primary Button Active State ── */
-    --primary-active: oklch(0 0 0);
+    --primary-active: var(--brand-primary-active);
 
     /* ── Wishlist Active Colors ── */
     --wishlist-active: oklch(0.58 0.22 20);

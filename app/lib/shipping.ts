@@ -1,3 +1,5 @@
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+
 const FALLBACK_FREE_SHIPPING_THRESHOLD = 7500;
 const FALLBACK_CURRENCY_CODE = "USD";
 
@@ -38,7 +40,7 @@ export const parseShippingConfig = (
 };
 
 export const formatShippingThreshold = (amount: number, currencyCode: string = DEFAULT_CURRENCY_CODE): string => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
         style: "currency",
         currency: currencyCode,
         minimumFractionDigits: 0,

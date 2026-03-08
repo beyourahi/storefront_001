@@ -5,13 +5,14 @@ import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
 import {getOrderStatusVariant, formatOrderStatus} from "~/lib/order-status";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
 type OrderCardProps = {
     order: OrderListItemFragment;
 };
 
 const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString("en-US", {
+    new Date(dateString).toLocaleDateString(STORE_FORMAT_LOCALE, {
         year: "numeric",
         month: "long",
         day: "numeric"

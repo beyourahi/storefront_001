@@ -1,3 +1,5 @@
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+
 type ShopifyMoney = {
     amount: string;
     currencyCode: string;
@@ -38,7 +40,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 };
 
 const DEFAULT_CURRENCY = "USD";
-const DEFAULT_LOCALE = "en-US";
+const DEFAULT_LOCALE = STORE_FORMAT_LOCALE;
 
 export class CurrencyFormatter {
     private static instance: CurrencyFormatter;

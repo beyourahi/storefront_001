@@ -6,6 +6,7 @@ import {WalletIcon, ChevronDownIcon, InfoIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 import type {StoreCreditAccount, StoreCreditTransaction} from "~/graphql/customer-account/StoreCreditQueries";
 import {isCredit} from "~/graphql/customer-account/StoreCreditQueries";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
 interface StoreCreditWidgetProps {
     balance: {amount: string; currencyCode: string} | null;
@@ -33,7 +34,7 @@ export const StoreCreditWidget = ({balance, accounts}: StoreCreditWidgetProps) =
                                 </p>
                                 <p className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-foreground tracking-tight">
                                     {hasBalance
-                                        ? new Intl.NumberFormat("en-US", {
+                                        ? new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
                                               style: "currency",
                                               currency: balance.currencyCode
                                           }).format(parseFloat(balance.amount))
@@ -91,14 +92,14 @@ export const StoreCreditWidget = ({balance, accounts}: StoreCreditWidgetProps) =
 
 const TransactionItem = ({transaction}: {transaction: StoreCreditTransaction}) => {
     const credit = isCredit(transaction);
-    const formattedDate = new Date(transaction.createdAt).toLocaleDateString("en-US", {
+    const formattedDate = new Date(transaction.createdAt).toLocaleDateString(STORE_FORMAT_LOCALE, {
         month: "short",
         day: "numeric",
         year: "numeric"
     });
 
     const formatMoney = (amount: {amount: string; currencyCode: string}) => {
-        return new Intl.NumberFormat("en-US", {
+        return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
             style: "currency",
             currency: amount.currencyCode
         }).format(parseFloat(amount.amount));

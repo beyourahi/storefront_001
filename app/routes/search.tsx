@@ -23,6 +23,7 @@ import {getGridClassName, type GridColumns} from "~/lib/gridColumns";
 import {urlWithTrackingParams} from "~/lib/search/url-with-tracking";
 import {sortWithPinnedFirst} from "~/lib/product-tags";
 import {ProductCardTitle} from "~/components/common/ProductCardTitle";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 const FALLBACK_POPULAR_SEARCHES = [
     "new arrivals",
@@ -394,7 +395,7 @@ export default function SearchPage() {
                         type="search"
                         placeholder="Search..."
                         className={cn(
-                            "w-full border-0 border-b-2 border-primary/30 bg-transparent",
+                            "w-full border-0 border-b-2 border-[var(--border-strong)] bg-transparent",
                             "py-3 text-xl font-serif text-primary outline-none transition-colors duration-300 placeholder:text-primary/40",
                             "focus:border-primary sm:py-4 sm:text-2xl md:text-4xl lg:text-5xl"
                         )}
@@ -578,7 +579,7 @@ function SearchPageInitialState({
                                 variant="outline"
                                 size="sm"
                                 onClick={() => onSuggestionClick(searchTerm)}
-                                className="border-primary/30 text-sm"
+                                className="border-[var(--border-strong)] text-sm"
                             >
                                 {searchTerm}
                             </Button>
@@ -600,7 +601,7 @@ function SearchPageInitialState({
                                 variant="outline"
                                 size="sm"
                                 onClick={() => onSuggestionClick(searchTerm)}
-                                className="border-primary/30 text-sm"
+                                className="border-[var(--border-strong)] text-sm"
                             >
                                 {searchTerm}
                             </Button>
@@ -656,7 +657,7 @@ function SearchPageInitialState({
 function SearchEmptyState({term}: {term: string}) {
     return (
         <div className="px-4 py-10 text-center sm:py-16">
-            <div className="bg-primary/10 mb-4 inline-flex rounded-full p-4 shadow-sm backdrop-blur-sm">
+            <div className="bg-[var(--brand-primary-subtle)] mb-4 inline-flex rounded-full p-4 shadow-sm backdrop-blur-sm">
                 <SearchX className="text-primary size-6" />
             </div>
             <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground sm:mb-3 sm:text-3xl">
@@ -686,7 +687,7 @@ function SearchProductsTab({
     if (products.nodes.length === 0) {
         return (
             <div className="px-4 py-8 text-center sm:py-12">
-                <div className="bg-primary/10 mx-auto mb-4 inline-flex rounded-full p-4 shadow-sm backdrop-blur-sm">
+                <div className="bg-[var(--brand-primary-subtle)] mx-auto mb-4 inline-flex rounded-full p-4 shadow-sm backdrop-blur-sm">
                     <Package className="text-primary size-6" />
                 </div>
                 <p className="text-sm text-muted-foreground sm:text-base">
@@ -866,7 +867,7 @@ function SearchProductItem({
                     </span>
                     {hasDiscount && (
                         <span className={cn("text-muted-foreground line-through opacity-75 text-sm md:text-base", priceStyles)}>
-                            {new Intl.NumberFormat("en-US", {
+                            {new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
                                 style: "currency",
                                 currency: product.compareAtPriceRange.minVariantPrice.currencyCode
                             }).format(parseFloat(product.compareAtPriceRange.minVariantPrice.amount))}
@@ -1066,7 +1067,7 @@ function SearchArticleCard({
     });
 
     const staggerDelay = Math.min(index, 11) * 40;
-    const publishDate = new Date(article.publishedAt).toLocaleDateString("en-US", {
+    const publishDate = new Date(article.publishedAt).toLocaleDateString(STORE_FORMAT_LOCALE, {
         year: "numeric",
         month: "short",
         day: "numeric"
@@ -1168,7 +1169,7 @@ export function ErrorBoundary() {
     return (
         <div className="mb-4 min-h-dvh px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16 3xl:mx-auto 3xl:max-w-[1600px] 3xl:px-12">
             <div className="flex flex-col items-center justify-center py-24 text-center sm:py-32">
-                <div className="bg-primary/10 mb-4 rounded-full p-4 shadow-sm backdrop-blur-sm">
+                <div className="bg-[var(--brand-primary-subtle)] mb-4 rounded-full p-4 shadow-sm backdrop-blur-sm">
                     <AlertCircle className="text-primary size-8" />
                 </div>
                 <div className="mb-4 inline-flex items-center">

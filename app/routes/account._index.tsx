@@ -15,6 +15,7 @@ import {
     getTotalBalance,
     type StoreCreditAccount
 } from "~/graphql/customer-account/StoreCreditQueries";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
 export const meta: Route.MetaFunction = () => [{title: "Account Dashboard"}];
 
@@ -96,7 +97,7 @@ const getInitials = (customer: CustomerFragment | null) => {
 
 const formatMemberSince = (dateString: string | null | undefined) => {
     if (!dateString) return null;
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString(STORE_FORMAT_LOCALE, {
         year: "numeric",
         month: "long"
     });

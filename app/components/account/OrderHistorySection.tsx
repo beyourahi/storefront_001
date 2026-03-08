@@ -8,6 +8,7 @@ import {Carousel, CarouselContent, CarouselItem} from "~/components/ui/carousel"
 import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromOrderHistoryProduct} from "~/lib/product/product-card-normalizers";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
 type OrderLineItem = {
     id: string;
@@ -202,7 +203,7 @@ const OrderProductCard = ({product, index}: {product: OrderProduct; index: numbe
         const currencyCode = normalizedProduct.priceRange.minVariantPrice.currencyCode || "USD";
 
         try {
-            return new Intl.NumberFormat("en-US", {
+            return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
                 style: "currency",
                 currency: currencyCode
             }).format(amount);
@@ -211,7 +212,7 @@ const OrderProductCard = ({product, index}: {product: OrderProduct; index: numbe
         }
     }, [normalizedProduct]);
 
-    const formattedDate = new Date(product.orderDate).toLocaleDateString("en-US", {
+    const formattedDate = new Date(product.orderDate).toLocaleDateString(STORE_FORMAT_LOCALE, {
         month: "short",
         day: "numeric",
         year: "numeric"

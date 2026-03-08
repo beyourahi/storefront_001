@@ -22,6 +22,7 @@ import type {
     BreadcrumbList,
     CollectionPage
 } from "schema-dts";
+import {STORE_COUNTRY_NAME, STORE_LOCALE} from "~/lib/store-locale";
 
 // Re-export for consumers that want to reference these types
 export type {WithContext, Organization, WebSite, SchemaProduct, FAQPage, BlogPosting, BreadcrumbList, CollectionPage};
@@ -36,7 +37,7 @@ const FALLBACK_ADDRESS = {
     city: "New York",
     state: "NY",
     zip: "10001",
-    country: "United States"
+    country: STORE_COUNTRY_NAME
 };
 
 type MoneyV2 = {amount: string; currencyCode: string};
@@ -45,7 +46,7 @@ type ImageNode = {url: string; altText?: string | null; width?: number | null; h
 export const SEO_CONFIG = {
     siteName: FALLBACK_SLOGAN ? FALLBACK_SLOGAN : "Store",
     defaultDescription: FALLBACK_SLOGAN ?? "",
-    locale: "en_US",
+    locale: STORE_LOCALE,
     twitterCardType: "summary_large_image" as const
 } as const;
 

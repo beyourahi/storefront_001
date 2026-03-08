@@ -7,6 +7,7 @@ import {Card} from "~/components/ui/card";
 import {Separator} from "~/components/ui/separator";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
 import {getOrderStatusVariant, formatOrderStatus} from "~/lib/order-status";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 import {ArrowLeftIcon} from "lucide-react";
 
 export const meta: Route.MetaFunction = ({data}) => {
@@ -35,7 +36,7 @@ export const loader = async ({params, context}: Route.LoaderArgs) => {
 };
 
 const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString("en-US", {
+    new Date(dateString).toLocaleDateString(STORE_FORMAT_LOCALE, {
         year: "numeric",
         month: "long",
         day: "numeric",

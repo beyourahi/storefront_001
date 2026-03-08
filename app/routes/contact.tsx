@@ -11,6 +11,7 @@ import {SocialMediaSection} from "~/components/homepage/SocialMediaSection";
 import type {RootLoader} from "~/root";
 import {cn} from "~/lib/utils";
 import {useContactInfo, useFaqItems, useSocialLinks} from "~/lib/site-content-context";
+import {STORE_COUNTRY_NAME} from "~/lib/store-locale";
 
 type PolicyAvailability = {
     privacyPolicy: boolean;
@@ -117,7 +118,7 @@ export default function Contact() {
     const socialLinks = useSocialLinks();
 
     const cityStateZip = getAddressLine(contactInfo.address.city, contactInfo.address.state, contactInfo.address.zip);
-    const fullAddress = [contactInfo.address.street, cityStateZip, contactInfo.address.country]
+    const fullAddress = [contactInfo.address.street, cityStateZip, STORE_COUNTRY_NAME]
         .filter(isContactInfoValid)
         .join(", ");
 

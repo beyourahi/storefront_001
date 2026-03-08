@@ -77,7 +77,6 @@ export interface ContactInfo {
         city: string;
         state: string;
         zip: string;
-        country: string;
     };
 }
 
@@ -343,7 +342,6 @@ export interface SiteSettings {
         city: string;
         state: string;
         zip: string;
-        country: string;
     };
     blogSectionTitle: string;
     collectionsTitle: string;
@@ -711,7 +709,7 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     contactEmail: "",
     contactPhone: "",
     businessHours: "",
-    address: {street: "", city: "", state: "", zip: "", country: ""},
+    address: {street: "", city: "", state: "", zip: ""},
 
     blogSectionTitle: "From the Blog",
     collectionsTitle: "Featured Collections",
@@ -1057,8 +1055,7 @@ export const parseSiteSettings = (data: any): SiteSettings => {
             street: data.streetAddress?.value || FALLBACK_SITE_SETTINGS.address.street,
             city: data.city?.value || FALLBACK_SITE_SETTINGS.address.city,
             state: data.state?.value || FALLBACK_SITE_SETTINGS.address.state,
-            zip: data.zipCode?.value || FALLBACK_SITE_SETTINGS.address.zip,
-            country: data.country?.value || FALLBACK_SITE_SETTINGS.address.country
+            zip: data.zipCode?.value || FALLBACK_SITE_SETTINGS.address.zip
         },
 
         blogSectionTitle: data.blogSectionTitle?.value || FALLBACK_SITE_SETTINGS.blogSectionTitle,

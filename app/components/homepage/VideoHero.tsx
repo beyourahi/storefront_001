@@ -2,6 +2,7 @@ import {useState, useEffect, useCallback, useRef} from "react";
 import {Link} from "react-router";
 import {ArrowRight, Search as SearchIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 const FALLBACK_GREETINGS = {
     nightOwl: "Night owls find the best things",
     evening: "Wind down with something worth it",
@@ -40,14 +41,14 @@ interface VideoHeroProps {
 }
 
 const formatDate = (date: Date) =>
-    date.toLocaleDateString("en-US", {
+    date.toLocaleDateString(STORE_FORMAT_LOCALE, {
         weekday: "short",
         month: "short",
         day: "numeric"
     });
 
 const formatTime = (date: Date) =>
-    date.toLocaleTimeString("en-US", {
+    date.toLocaleTimeString(STORE_FORMAT_LOCALE, {
         hour12: true,
         hour: "numeric",
         minute: "numeric",

@@ -4,6 +4,7 @@ import {ShoppingCart} from "lucide-react";
 import {Skeleton} from "~/components/ui/skeleton";
 import {Spinner} from "~/components/ui/spinner";
 import type {RootLoader} from "~/root";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
 type ShoppingSummaryProps = {
     product: any;
@@ -14,7 +15,7 @@ type ShoppingSummaryProps = {
 };
 
 const formatMoney = (amount: number, currencyCode: string) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
         style: "currency",
         currency: currencyCode,
         minimumFractionDigits: 0,

@@ -1,3 +1,5 @@
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+
 export const formatPriceWithLocale = (amount: number, currencyCode: string): string => {
     try {
         if (typeof amount !== "number" || isNaN(amount)) {
@@ -8,7 +10,7 @@ export const formatPriceWithLocale = (amount: number, currencyCode: string): str
             return `${currencyCode || "USD"} ${amount.toFixed(2)}`;
         }
 
-        return new Intl.NumberFormat("en-US", {
+        return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
             style: "currency",
             currency: currencyCode,
             minimumFractionDigits: 0,

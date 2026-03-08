@@ -1,4 +1,5 @@
 import type {ShareData} from "~/lib/social-share";
+import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
 export const stripHtml = (html: string): string => {
     return html
@@ -19,7 +20,7 @@ export const calculateReadingTime = (content: string, wordsPerMinute: number = 2
 };
 
 export const formatArticleDate = (date: string, options?: Intl.DateTimeFormatOptions): string => {
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(STORE_FORMAT_LOCALE, {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -28,7 +29,7 @@ export const formatArticleDate = (date: string, options?: Intl.DateTimeFormatOpt
 };
 
 export const formatArticleDateShort = (date: string): string => {
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(STORE_FORMAT_LOCALE, {
         month: "short",
         day: "numeric",
         year: "numeric"

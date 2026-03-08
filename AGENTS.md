@@ -30,10 +30,11 @@ A **commercial Shopify Hydrogen template** built to be sold to multiple client b
 | Target                             | Purpose                         | Data Source                               |
 | ---------------------------------- | ------------------------------- | ----------------------------------------- |
 | **Shopify Oxygen**                 | Client production deployments   | Client's own Shopify store (no fallback)  |
-| **Cloudflare Workers + local dev** | Portfolio showcase + dev server | Fallback demo store + `fallback-data.ts`  |
+| **Cloudflare Workers + local dev** | Portfolio showcase + dev server | Demo Shopify store credentials + in-repo content defaults |
 
-- On **Oxygen**: NEVER use the fallback store or `fallback-data.ts` — all data comes from the client's Shopify store
-- On **Cloudflare Workers** and during **local development**: ALWAYS use the fallback demo store for products and `fallback-data.ts` for non-product content
+- On **Oxygen**: use the client's Shopify credentials only
+- On **Cloudflare Workers** portfolio deployments: `wrangler.jsonc` is preconfigured with the demo-store credentials
+- During **local development**: point `.env` at the desired Shopify store; UI and content defaults currently live in `app/lib/metaobject-parsers.ts`
 
 ## Tech Stack
 
@@ -170,7 +171,7 @@ PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopify.com/66049638586
 SHOP_ID=66049638586
 ```
 
-Non-product content falls back to `fallback-data.ts` in `app/lib/`.
+For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. UI and content defaults are currently embedded in `app/lib/metaobject-parsers.ts` rather than a separate fallback-data module.
 
 **Setup**: `bun install && bun run codegen && bun run dev`
 

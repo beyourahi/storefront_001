@@ -2,6 +2,7 @@ import {createHydrogenContext} from "@shopify/hydrogen";
 import {AppSession} from "~/lib/session";
 import {CART_QUERY_FRAGMENT} from "~/lib/fragments";
 import {createDataAdapter, type DataAdapter} from "~/lib/data-source";
+import {STORE_I18N} from "~/lib/store-locale";
 
 const additionalContext = {} as const;
 
@@ -32,7 +33,7 @@ export async function createHydrogenRouterContext(request: Request, env: Env, ex
             cache,
             waitUntil,
             session,
-            i18n: {language: "EN", country: "US"},
+            i18n: STORE_I18N,
             cart: {
                 queryFragment: CART_QUERY_FRAGMENT
             }
