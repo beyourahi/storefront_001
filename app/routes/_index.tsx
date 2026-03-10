@@ -138,7 +138,11 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 
     const exploreCollections = (exploreCollectionsResponse?.collections?.nodes ?? [])
         .filter((col: any) => col.products?.nodes?.some((p: any) => p.availableForSale))
-        .slice(0, 5);
+        .slice(0, 5)
+        .map((col: any) => ({
+            ...col,
+            productCount: col.products?.nodes?.filter((p: any) => p.availableForSale).length ?? 0
+        }));
 
     return {
         exploreCollections,
@@ -333,7 +337,7 @@ const EXPLORE_COLLECTIONS_QUERY = `#graphql
           width
           height
         }
-        products(first: 1) {
+        products(first: 250) {
           nodes {
             id
             availableForSale

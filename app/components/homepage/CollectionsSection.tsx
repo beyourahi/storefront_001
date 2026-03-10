@@ -11,6 +11,7 @@ type CollectionData = {
     title: string;
     handle: string;
     description?: string;
+    productCount?: number;
     image?: {
         url: string;
         altText?: string | null;
