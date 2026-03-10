@@ -162,7 +162,7 @@ export const ProductImageCarousel = ({
                                                 url: image.url,
                                                 altText: image.altText || `${productTitle} image ${index + 1}`
                                             }}
-                                            className="sleek h-full w-full hover:scale-105"
+                                            className="sleek h-full w-full object-cover hover:scale-105"
                                             sizes="(min-width: 1024px) 40vw, 100vw"
                                         />
                                     </button>
