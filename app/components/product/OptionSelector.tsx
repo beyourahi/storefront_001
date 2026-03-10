@@ -1,7 +1,8 @@
-import {useNavigate, Link} from "react-router";
+import {Link, useNavigate} from "react-router";
 import {AlertTriangle} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import type {MappedProductOptions} from "@shopify/hydrogen";
+import {ColorSwatch} from "~/components/ui/color-swatch";
 
 type OptionSelectorProps = {
     productOptions: MappedProductOptions[];
@@ -10,30 +11,64 @@ type OptionSelectorProps = {
 export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
     const navigate = useNavigate();
 
-    // Only show options that have more than one value
-    const visibleOptions = productOptions.filter(option => option.optionValues.length > 1);
+    const filteredOptions = productOptions
+        .map(option => ({
+            ...option,
+            optionValues: option.optionValues.filter(value => value.available)
+        }))
+        .filter(option => option.optionValues.length > 0);
+
+    const visibleOptions = filteredOptions.filter(option => option.optionValues.length > 1);
 
     if (visibleOptions.length === 0) return null;
 
     // Check if any selected option is unavailable
-    const hasUnavailableSelection = visibleOptions.some(option =>
+    const hasUnavailableSelection = productOptions.some(option =>
         option.optionValues.some(value => value.selected && !value.available)
     );
 
     return (
         <div className="space-y-6">
             {visibleOptions.map(option => {
-                // Filter to only show available option values
-                const availableValues = option.optionValues.filter(value => value.available || value.selected);
-
-                if (availableValues.length === 0) return null;
-
                 return (
                     <div key={option.name}>
                         <h3 className="text-foreground mb-3 text-sm font-semibold">{option.name}</h3>
                         <div className="flex flex-wrap items-center gap-2">
-                            {availableValues.map(value => {
-                                const {name, handle, variantUriQuery, selected, available, isDifferentProduct} = value;
+                            {option.optionValues.map(value => {
+                                const {
+                                    name,
+                                    handle,
+                                    variantUriQuery,
+                                    selected,
+                                    available,
+                                    exists,
+                                    isDifferentProduct,
+                                    swatch
+                                } = value;
+
+                                const swatchImageUrl =
+                                    swatch?.image && typeof swatch.image === "object" && "url" in swatch.image
+                                        ? (swatch.image as {url: string}).url
+                                        : typeof swatch?.image === "string"
+                                          ? swatch.image
+                                          : null;
+
+                                const hasSwatchData = Boolean(swatch?.color || swatchImageUrl);
+
+                                const optionContent = hasSwatchData ? (
+                                    <span className="inline-flex items-center gap-2">
+                                        <ColorSwatch
+                                            color={swatch?.color}
+                                            image={swatchImageUrl}
+                                            name={name}
+                                            size="sm"
+                                            selected={selected}
+                                        />
+                                        <span>{name}</span>
+                                    </span>
+                                ) : (
+                                    name
+                                );
 
                                 if (isDifferentProduct) {
                                     return (
@@ -50,7 +85,7 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                                 replace
                                                 to={`/products/${handle}?${variantUriQuery}`}
                                             >
-                                                {name}
+                                                {optionContent}
                                             </Link>
                                         </Button>
                                     );
@@ -62,7 +97,8 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                         variant={selected ? "default" : "secondary"}
                                         size="sm"
                                         className="min-w-20"
-                                        disabled={!available}
+                                        disabled={!exists || !available}
+                                        type="button"
                                         onClick={() => {
                                             if (!selected) {
                                                 void navigate(`?${variantUriQuery}`, {
@@ -72,7 +108,7 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                             }
                                         }}
                                     >
-                                        {name}
+                                        {optionContent}
                                     </Button>
                                 );
                             })}
