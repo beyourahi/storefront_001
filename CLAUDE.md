@@ -249,3 +249,9 @@ Read all comments before editing. Update comments when changing behavior. Add co
 | Touch targets                | 44x44px | 2.5.5 (A)   |
 
 **Color System**: OKLCH-based tokens live in `app/styles/app.css`, with theme derivation in `app/lib/theme-utils.ts`.
+
+---
+
+## Cleanup (MANDATORY)
+
+- **MANDATORY CLEANUP**: After every successful task implementation, if the `tmp_screenshots/` directory was created during the work, it must be deleted before the task is considered complete. Do not skip this step — it is a hard requirement.
