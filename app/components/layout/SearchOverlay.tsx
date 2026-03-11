@@ -9,7 +9,6 @@ import {SearchResults} from "~/components/layout/search/SearchResults";
 import {SearchDefaultView} from "~/components/layout/search/SearchDefaultView";
 import {useSearchController} from "~/hooks/useSearchController";
 import {useRecentSearches} from "~/hooks/useRecentSearches";
-import {useLockBodyScroll} from "~/lib/LenisProvider";
 import type {PopularProduct} from "~/root";
 
 type MenuCollection = {
@@ -78,8 +77,6 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
     // instance without being recreated every render (which would defeat debounce).
     const fetcherRef = useRef(fetcher);
     fetcherRef.current = fetcher;
-
-    useLockBodyScroll(open);
 
     const [query, setQuery] = useState("");
 

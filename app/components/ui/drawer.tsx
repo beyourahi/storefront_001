@@ -1,12 +1,35 @@
 "use client";
 
 import * as React from "react";
+import {useState, useCallback} from "react";
 import {Drawer as DrawerPrimitive} from "vaul";
 
 import {cn} from "~/lib/utils";
+import {useLockBodyScroll} from "~/lib/LenisProvider";
 
-function Drawer({...props}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
-    return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
+// Scroll-lock: Drawer is a bottom-sheet overlay that obscures the page.
+// Lock is baked in so consumers (e.g. MobileMenuWrapper) get it automatically.
+function Drawer({
+    open: controlledOpen,
+    onOpenChange,
+    defaultOpen,
+    ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
+    const isControlled = controlledOpen !== undefined;
+    const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
+
+    const handleOpenChange = useCallback(
+        (nextOpen: boolean) => {
+            if (!isControlled) setUncontrolledOpen(nextOpen);
+            onOpenChange?.(nextOpen);
+        },
+        [isControlled, onOpenChange]
+    );
+
+    useLockBodyScroll(isOpen);
+
+    return <DrawerPrimitive.Root data-slot="drawer" open={isOpen} onOpenChange={handleOpenChange} {...props} />;
 }
 
 function DrawerTrigger({...props}: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {

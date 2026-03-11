@@ -1,13 +1,43 @@
 "use client";
 
 import * as React from "react";
+import {useState, useCallback} from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 
 import {cn} from "~/lib/utils";
 import {buttonVariants} from "~/components/ui/button";
+import {useLockBodyScroll} from "~/lib/LenisProvider";
 
-function AlertDialog({...props}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
-    return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
+// Scroll-lock: AlertDialog is a modal confirmation overlay that blocks interaction.
+// Lock is baked in so consumers never need manual useLockBodyScroll calls.
+function AlertDialog({
+    open: controlledOpen,
+    onOpenChange,
+    defaultOpen,
+    ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
+    const isControlled = controlledOpen !== undefined;
+    const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
+
+    const handleOpenChange = useCallback(
+        (nextOpen: boolean) => {
+            if (!isControlled) setUncontrolledOpen(nextOpen);
+            onOpenChange?.(nextOpen);
+        },
+        [isControlled, onOpenChange]
+    );
+
+    useLockBodyScroll(isOpen);
+
+    return (
+        <AlertDialogPrimitive.Root
+            data-slot="alert-dialog"
+            open={isOpen}
+            onOpenChange={handleOpenChange}
+            {...props}
+        />
+    );
 }
 
 function AlertDialogTrigger({...props}: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) {

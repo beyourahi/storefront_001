@@ -1,13 +1,37 @@
 "use client";
 
 import * as React from "react";
+import {useState, useCallback} from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {XIcon} from "lucide-react";
 
 import {cn} from "~/lib/utils";
+import {useLockBodyScroll} from "~/lib/LenisProvider";
 
-function Dialog({...props}: React.ComponentProps<typeof DialogPrimitive.Root>) {
-    return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+// Scroll-lock: Dialog is a full-screen modal that obscures the page.
+// The lock is baked in here so every consumer gets it automatically
+// via Lenis stop/start — no manual useLockBodyScroll calls needed at call-sites.
+function Dialog({
+    open: controlledOpen,
+    onOpenChange,
+    defaultOpen,
+    ...props
+}: React.ComponentProps<typeof DialogPrimitive.Root>) {
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
+    const isControlled = controlledOpen !== undefined;
+    const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
+
+    const handleOpenChange = useCallback(
+        (nextOpen: boolean) => {
+            if (!isControlled) setUncontrolledOpen(nextOpen);
+            onOpenChange?.(nextOpen);
+        },
+        [isControlled, onOpenChange]
+    );
+
+    useLockBodyScroll(isOpen);
+
+    return <DialogPrimitive.Root data-slot="dialog" open={isOpen} onOpenChange={handleOpenChange} {...props} />;
 }
 
 function DialogTrigger({...props}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {

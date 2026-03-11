@@ -1,7 +1,6 @@
 import {useState, Fragment} from "react";
 import {Ruler, Info} from "lucide-react";
 import {cn} from "~/lib/utils";
-import {useLockBodyScroll} from "~/lib/LenisProvider";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody} from "~/components/ui/dialog";
 import {Tabs, TabsList, TabsTrigger, TabsContent} from "~/components/ui/tabs";
 import type {SizeChartData, MeasurementTable, MeasurementUnit, SizeConversion} from "~/lib/size-chart";
@@ -15,8 +14,6 @@ interface SizeChartDialogProps {
 
 export function SizeChartDialog({sizeChart, open, onOpenChange}: SizeChartDialogProps) {
     const [displayUnit, setDisplayUnit] = useState<MeasurementUnit>(sizeChart.unit);
-
-    useLockBodyScroll(open);
 
     const defaultTab = sizeChart.tables[0]?.type || "body";
 

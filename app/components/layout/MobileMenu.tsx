@@ -33,7 +33,9 @@ type MobileMenuProps = {
 export const MobileMenu = ({show, onClose, collections = [], shopName}: MobileMenuProps) => {
     const {pathname: currentPath} = useLocation();
     const isMobile = useIsMobile();
-    useLockBodyScroll(show);
+    // Mobile path: Drawer primitive handles scroll-lock automatically.
+    // Desktop path: uses a custom overlay (no Radix primitive), so lock manually.
+    useLockBodyScroll(show && !isMobile);
 
     const specialCollectionHandles = useMemo(
         () => Object.values(FALLBACK_SPECIAL_COLLECTIONS) as string[],

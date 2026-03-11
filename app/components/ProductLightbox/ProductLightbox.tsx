@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {cn} from "~/lib/utils";
-import {useLockBodyScroll} from "~/lib/LenisProvider";
+import {Dialog} from "~/components/ui/dialog";
 
 import {LightboxMedia} from "./LightboxMedia";
 import {LightboxThumbnails} from "./LightboxThumbnails";
@@ -27,8 +27,6 @@ export function ProductLightbox({media, initialIndex, isOpen, onClose}: ProductL
             setIsVideoPlaying(false);
         }
     }, [isOpen, initialIndex]);
-
-    useLockBodyScroll(isOpen);
 
     const goToNext = () => {
         if (videoRef.current && !videoRef.current.paused) {
@@ -82,7 +80,7 @@ export function ProductLightbox({media, initialIndex, isOpen, onClose}: ProductL
     }
 
     return (
-        <DialogPrimitive.Root open={isOpen} onOpenChange={open => !open && onClose()}>
+        <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
             <DialogPrimitive.Portal>
                 <DialogPrimitive.Close asChild>
                     <DialogPrimitive.Overlay
@@ -151,6 +149,6 @@ export function ProductLightbox({media, initialIndex, isOpen, onClose}: ProductL
                     <LightboxThumbnails media={media} currentIndex={currentIndex} onSelect={goToIndex} />
                 </DialogPrimitive.Content>
             </DialogPrimitive.Portal>
-        </DialogPrimitive.Root>
+        </Dialog>
     );
 }

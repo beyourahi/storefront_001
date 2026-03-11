@@ -1,11 +1,34 @@
 import * as React from "react";
+import {useState, useCallback} from "react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import {XIcon} from "lucide-react";
 
 import {cn} from "~/lib/utils";
+import {useLockBodyScroll} from "~/lib/LenisProvider";
 
-function Sheet({...props}: React.ComponentProps<typeof SheetPrimitive.Root>) {
-    return <SheetPrimitive.Root data-slot="sheet" {...props} />;
+// Scroll-lock: Sheet is a slide-over panel that obscures the page with an overlay.
+// Lock is baked in so consumers never need manual useLockBodyScroll calls.
+function Sheet({
+    open: controlledOpen,
+    onOpenChange,
+    defaultOpen,
+    ...props
+}: React.ComponentProps<typeof SheetPrimitive.Root>) {
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
+    const isControlled = controlledOpen !== undefined;
+    const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
+
+    const handleOpenChange = useCallback(
+        (nextOpen: boolean) => {
+            if (!isControlled) setUncontrolledOpen(nextOpen);
+            onOpenChange?.(nextOpen);
+        },
+        [isControlled, onOpenChange]
+    );
+
+    useLockBodyScroll(isOpen);
+
+    return <SheetPrimitive.Root data-slot="sheet" open={isOpen} onOpenChange={handleOpenChange} {...props} />;
 }
 
 function SheetTrigger({...props}: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
