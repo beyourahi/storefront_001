@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState, type ReactNode} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState, type ReactNode} from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {useFetcher} from "react-router";
 import {CartForm} from "@shopify/hydrogen";
@@ -311,13 +311,13 @@ function ProductVariantDialogContent({
     const addWasSubmittingRef = useRef(false);
     const buyNowWasSubmittingRef = useRef(false);
 
-    const allVariants = product.variants.edges.map(edge => edge.node);
-    const availableVariants = allVariants.filter(variant => variant.availableForSale);
-    const productImages = product.images.edges.map(edge => edge.node);
-    const hasRealVariants = hasProductMultipleVariants(allVariants);
-    const hasRealOptions = hasRealVariants && product.options.length > 0;
-    const titleParts = product.title.trim().split(" + ");
-    const isPreorder = isPreorderProduct(product);
+    const allVariants = useMemo(() => product.variants.edges.map(edge => edge.node), [product.variants.edges]);
+    const availableVariants = useMemo(() => allVariants.filter(variant => variant.availableForSale), [allVariants]);
+    const productImages = useMemo(() => product.images.edges.map(edge => edge.node), [product.images.edges]);
+    const hasRealVariants = useMemo(() => hasProductMultipleVariants(allVariants), [allVariants]);
+    const hasRealOptions = useMemo(() => hasRealVariants && product.options.length > 0, [hasRealVariants, product.options.length]);
+    const titleParts = useMemo(() => product.title.trim().split(" + "), [product.title]);
+    const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
 
     useEffect(() => {
         if (Object.keys(selectedOptions).length > 0 || allVariants.length === 0) {
@@ -435,7 +435,7 @@ function ProductVariantDialogContent({
     }, [buyNowFetcher.data, buyNowFetcher.state]);
 
     const activeVariant = selectedVariant ?? allVariants[0];
-    const currentPrice = (() => {
+    const currentPrice = useMemo(() => {
         if (!activeVariant) {
             return {price: getZeroPrice(product.priceRange.minVariantPrice.currencyCode), onSale: false};
         }
@@ -449,36 +449,36 @@ function ProductVariantDialogContent({
         );
 
         return {price, compareAtPrice, onSale};
-    })();
+    }, [activeVariant, product.priceRange.minVariantPrice.currencyCode]);
 
-    const discountPercentage =
-        selectedVariant?.compareAtPrice?.amount && selectedVariant?.price?.amount
-            ? (() => {
-                  const originalPrice = parseFloat(selectedVariant.compareAtPrice.amount);
-                  const salePrice = parseFloat(selectedVariant.price.amount);
+    const discountPercentage = useMemo(() => {
+        if (!selectedVariant?.compareAtPrice?.amount || !selectedVariant?.price?.amount) {
+            return 0;
+        }
+        const originalPrice = parseFloat(selectedVariant.compareAtPrice.amount);
+        const salePrice = parseFloat(selectedVariant.price.amount);
 
-                  if (originalPrice <= salePrice) {
-                      return 0;
-                  }
+        if (originalPrice <= salePrice) {
+            return 0;
+        }
 
-                  return Math.round(((originalPrice - salePrice) / originalPrice) * 100);
-              })()
-            : 0;
+        return Math.round(((originalPrice - salePrice) / originalPrice) * 100);
+    }, [selectedVariant]);
 
-    const findMatchingVariant = (options: Record<string, string>) => {
+    const findMatchingVariant = useCallback((options: Record<string, string>) => {
         return (
             allVariants.find(variant => variant.selectedOptions.every(option => options[option.name] === option.value)) ??
             null
         );
-    };
+    }, [allVariants]);
 
-    const selectOption = (optionName: string, value: string) => {
+    const selectOption = useCallback((optionName: string, value: string) => {
         const nextSelectedOptions = {...selectedOptions, [optionName]: value};
         setSelectedOptions(nextSelectedOptions);
         setSelectedVariant(findMatchingVariant(nextSelectedOptions));
-    };
+    }, [selectedOptions, findMatchingVariant]);
 
-    const getAvailableValuesForOption = (optionName: string) => {
+    const getAvailableValuesForOption = useCallback((optionName: string) => {
         const option = product.options.find(item => item.name === optionName);
 
         if (!option) {
@@ -490,22 +490,22 @@ function ProductVariantDialogContent({
             const matchingVariant = findMatchingVariant(nextOptions);
             return Boolean(matchingVariant?.availableForSale);
         });
-    };
+    }, [product.options, selectedOptions, findMatchingVariant]);
 
-    const selectVariant = (variant: ShopifyProductVariant) => {
+    const selectVariant = useCallback((variant: ShopifyProductVariant) => {
         setSelectedVariant(variant);
-    };
+    }, []);
 
-    const decreaseQuantity = () => {
+    const decreaseQuantity = useCallback(() => {
         setQuantity(currentQuantity => (currentQuantity > 1 ? currentQuantity - 1 : currentQuantity));
-    };
+    }, []);
 
-    const increaseQuantity = () => {
+    const increaseQuantity = useCallback(() => {
         const maxQuantity = selectedVariant?.quantityAvailable || 1;
         setQuantity(currentQuantity => (currentQuantity < maxQuantity ? currentQuantity + 1 : currentQuantity));
-    };
+    }, [selectedVariant?.quantityAvailable]);
 
-    const handleAddToCart = () => {
+    const handleAddToCart = useCallback(() => {
         if (!selectedVariant || isAddingToCart) {
             return;
         }
@@ -529,9 +529,9 @@ function ProductVariantDialogContent({
             },
             {method: "POST", action: "/cart"}
         );
-    };
+    }, [selectedVariant, isAddingToCart, quantity, addFetcher]);
 
-    const handleBuyNow = () => {
+    const handleBuyNow = useCallback(() => {
         if (!selectedVariant || isBuyingNow || isAddingToCart) {
             return;
         }
@@ -555,7 +555,7 @@ function ProductVariantDialogContent({
             },
             {method: "POST", action: "/cart"}
         );
-    };
+    }, [selectedVariant, isBuyingNow, isAddingToCart, quantity, buyNowFetcher]);
 
     return (
         <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>

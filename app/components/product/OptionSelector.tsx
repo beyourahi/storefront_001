@@ -1,3 +1,4 @@
+import {useMemo} from "react";
 import {Link, useNavigate} from "react-router";
 import {AlertTriangle} from "lucide-react";
 import {Button} from "~/components/ui/button";
@@ -11,14 +12,21 @@ type OptionSelectorProps = {
 export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
     const navigate = useNavigate();
 
-    const filteredOptions = productOptions
-        .map(option => ({
-            ...option,
-            optionValues: option.optionValues.filter(value => value.available)
-        }))
-        .filter(option => option.optionValues.length > 0);
+    const filteredOptions = useMemo(
+        () =>
+            productOptions
+                .map(option => ({
+                    ...option,
+                    optionValues: option.optionValues.filter(value => value.available)
+                }))
+                .filter(option => option.optionValues.length > 0),
+        [productOptions]
+    );
 
-    const visibleOptions = filteredOptions.filter(option => option.optionValues.length > 1);
+    const visibleOptions = useMemo(
+        () => filteredOptions.filter(option => option.optionValues.length > 1),
+        [filteredOptions]
+    );
 
     if (visibleOptions.length === 0) return null;
 

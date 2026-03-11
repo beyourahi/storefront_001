@@ -39,7 +39,7 @@ export const WishlistProvider = ({children}: WishlistProviderProps) => {
                 try {
                     const newIds = event.newValue ? JSON.parse(event.newValue) : [];
                     if (Array.isArray(newIds)) {
-                        setWishlistIdsState(newIds);
+                        setWishlistIdsState(newIds.filter((id): id is string => typeof id === "string"));
                     }
                 } catch (error) {
                     console.error("Error parsing storage event:", error);

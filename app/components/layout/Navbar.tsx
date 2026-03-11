@@ -1,4 +1,4 @@
-import {Suspense, useState} from "react";
+import {Suspense, useCallback, useState} from "react";
 import {Link, useLocation, useRouteLoaderData, Await} from "react-router";
 import {AlignLeft, Search as SearchIcon, ShoppingCart, User} from "lucide-react";
 import {Button} from "~/components/ui/button";
@@ -46,13 +46,9 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
         currentPath.startsWith("/wishlist/");
     const isAccountActive = (currentPath === "/account" || currentPath.startsWith("/account/")) && !isWishlistActive;
 
-    const toggleMobileMenu = () => {
-        setShowMobileMenu(prev => !prev);
-    };
+    const toggleMobileMenu = useCallback(() => setShowMobileMenu(prev => !prev), []);
 
-    const closeMobileMenu = () => {
-        setShowMobileMenu(false);
-    };
+    const closeMobileMenu = useCallback(() => setShowMobileMenu(false), []);
 
     return (
         <>

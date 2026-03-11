@@ -1,3 +1,4 @@
+import {useMemo} from "react";
 import type {MappedProductOptions} from "@shopify/hydrogen";
 import {PriceDisplay} from "~/components/product/PriceDisplay";
 import {OptionSelector} from "~/components/product/OptionSelector";
@@ -38,16 +39,20 @@ export const ProductPurchaseSection = ({
 
     const maxQuantity = selectedVariant?.quantityAvailable ? Math.min(999, selectedVariant.quantityAvailable) : 999;
 
-    const lines = selectedVariant
-        ? [
-              {
-                  merchandiseId: selectedVariant.id,
-                  quantity,
-                  selectedVariant,
-                  sellingPlanId: selectedSellingPlan?.id
-              }
-          ]
-        : [];
+    const lines = useMemo(
+        () =>
+            selectedVariant
+                ? [
+                      {
+                          merchandiseId: selectedVariant.id,
+                          quantity,
+                          selectedVariant,
+                          sellingPlanId: selectedSellingPlan?.id
+                      }
+                  ]
+                : [],
+        [selectedVariant, quantity, selectedSellingPlan?.id]
+    );
 
     const isDisabled = !selectedVariant || isVariantTransitioning || isLoading;
 

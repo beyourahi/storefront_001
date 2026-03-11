@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback, useMemo} from "react";
 
 export interface RecentlyViewedProduct {
     id: string;
@@ -112,7 +112,7 @@ export function useRecentlyViewed(config: RecentlyViewedConfig = DEFAULT_CONFIG)
         setIsHydrated(true);
     }, [config]);
 
-    const addProduct = (params: AddProductParams) => {
+    const addProduct = useCallback((params: AddProductParams) => {
         if (!isBrowser || !params.id || !params.handle) return;
 
         const currentProducts = loadFromStorage(config);
@@ -146,31 +146,34 @@ export function useRecentlyViewed(config: RecentlyViewedConfig = DEFAULT_CONFIG)
 
         persistToStorage(newProducts, config);
         setProducts(newProducts);
-    };
+    }, [config]);
 
-    const removeProduct = (id: string) => {
+    const removeProduct = useCallback((id: string) => {
         if (!isBrowser) return;
 
         const currentProducts = loadFromStorage(config);
         const newProducts = currentProducts.filter(p => p.id !== id);
         persistToStorage(newProducts, config);
         setProducts(newProducts);
-    };
+    }, [config]);
 
-    const clear = () => {
+    const clear = useCallback(() => {
         if (!isBrowser) return;
 
         setProducts([]);
         persistToStorage([], config);
         document.cookie = `${config.storageKey}=; path=/; max-age=0`;
-    };
+    }, [config]);
 
-    const hasProduct = (id: string) => products.some(p => p.id === id);
+    const hasProduct = useCallback((id: string) => products.some(p => p.id === id), [products]);
 
-    return {
+    const productIds = useMemo(() => products.map(p => p.id), [products]);
+    const productHandles = useMemo(() => products.map(p => p.handle), [products]);
+
+    return useMemo(() => ({
         products,
-        productIds: products.map(p => p.id),
-        productHandles: products.map(p => p.handle),
+        productIds,
+        productHandles,
         count: products.length,
         hasProducts: products.length > 0,
         isHydrated,
@@ -178,7 +181,7 @@ export function useRecentlyViewed(config: RecentlyViewedConfig = DEFAULT_CONFIG)
         removeProduct,
         clear,
         hasProduct
-    };
+    }), [products, productIds, productHandles, isHydrated, addProduct, removeProduct, clear, hasProduct]);
 }
 
 export function parseRecentlyViewedFromCookie(

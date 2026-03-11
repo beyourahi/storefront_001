@@ -33,14 +33,15 @@ import {ProductMobileStickyButtons} from "~/components/product/ProductMobileStic
 import {ProductRelatedSection} from "~/components/product/ProductRelatedSection";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 
+// Revalidate this route's loader whenever the URL search params change (e.g. variant selection).
+// Without this, React Router may skip re-running the loader on search-param-only navigations,
+// leaving adjacentVariants stale and producing wrong variant navigation URLs.
 export const shouldRevalidate: ShouldRevalidateFunction = ({
-    formMethod,
     currentUrl,
     nextUrl,
     defaultShouldRevalidate
 }) => {
-    if (formMethod && formMethod !== "GET") return true;
-    if (currentUrl.toString() === nextUrl.toString()) return true;
+    if (currentUrl.search !== nextUrl.search) return true;
     return defaultShouldRevalidate;
 };
 
@@ -222,20 +223,37 @@ const Product = () => {
     }, [selectedVariant]);
 
     useEffect(() => {
-        if (product) {
-            addProduct({
-                id: product.id,
-                handle: product.handle,
-                title: product.title,
-                imageUrl: product.images?.nodes?.[0]?.url ?? null,
-                imageAlt: product.images?.nodes?.[0]?.altText ?? null,
-                price: selectedVariant?.price ? formatShopifyMoney(selectedVariant.price) : "",
-                compareAtPrice: selectedVariant?.compareAtPrice
-                    ? formatShopifyMoney(selectedVariant.compareAtPrice)
-                    : undefined
-            });
+        if (product?.id && product?.handle && product?.title) {
+            const timeoutId = setTimeout(() => {
+                addProduct({
+                    id: product.id,
+                    handle: product.handle,
+                    title: product.title,
+                    imageUrl: product.images?.nodes?.[0]?.url ?? null,
+                    imageAlt: product.images?.nodes?.[0]?.altText ?? null,
+                    price: selectedVariant?.price ? formatShopifyMoney(selectedVariant.price) : "",
+                    compareAtPrice: selectedVariant?.compareAtPrice
+                        ? formatShopifyMoney(selectedVariant.compareAtPrice)
+                        : undefined
+                });
+            }, 1000);
+            return () => clearTimeout(timeoutId);
         }
-    }, [product, selectedVariant, addProduct]);
+    }, [product?.id, product?.handle, product?.title, product?.images, selectedVariant?.id, selectedVariant?.price, selectedVariant?.compareAtPrice, addProduct]);
+
+    const analyticsProductViewData = useMemo(() => ({
+        products: [
+            {
+                id: product.id,
+                title: product.title,
+                price: selectedVariant?.price?.amount || "0",
+                vendor: product.vendor,
+                variantId: selectedVariant?.id || "",
+                variantTitle: selectedVariant?.title || "",
+                quantity: 1
+            }
+        ]
+    }), [product.id, product.title, product.vendor, selectedVariant]);
 
     return (
         <div className="min-h-screen bg-background text-foreground">
@@ -313,21 +331,7 @@ const Product = () => {
                 onQuantityChange={setQuantity}
             />
 
-            <Analytics.ProductView
-                data={{
-                    products: [
-                        {
-                            id: product.id,
-                            title: product.title,
-                            price: selectedVariant?.price?.amount || "0",
-                            vendor: product.vendor,
-                            variantId: selectedVariant?.id || "",
-                            variantTitle: selectedVariant?.title || "",
-                            quantity: 1
-                        }
-                    ]
-                }}
-            />
+            <Analytics.ProductView data={analyticsProductViewData} />
         </div>
     );
 };

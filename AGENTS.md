@@ -23,7 +23,13 @@ Direct commits to `main` only. This keeps the repo aligned with the worktree-onl
 
 ## Project Overview
 
-A **commercial Shopify Hydrogen template** built to be sold to multiple client brands across different niches. High-performance storefront based on React Router 7, Shopify Oxygen, and Cloudflare Workers with PWA support, metaobject CMS, wishlist flows, blog surfaces, and offline/error handling. **Critical**: import from `react-router`, never `@remix-run/react`.
+Part of the **storefront family** (`storefront_001`, `storefront_002`, `storefront_003`, etc.) — a collection of commercial Shopify Hydrogen templates built to be sold to multiple client brands across different niches. High-performance storefront based on React Router 7, Shopify Oxygen, and Cloudflare Workers with PWA support, metaobject CMS, wishlist flows, blog surfaces, and offline/error handling. **Critical**: import from `react-router`, never `@remix-run/react`.
+
+Backend behavior, data flow, and Hydrogen conventions **must remain consistent** across all storefronts — the frontend layer (UI, presentation, visual identity) is where storefronts differentiate.
+
+### Hydrogen Implementation Reference
+
+`~/Desktop/projects/demo-store` is a **freshly scaffolded, unmodified Shopify Hydrogen codebase** — the **primary source of truth** for all non-frontend-visual-design patterns. Consult it first when uncertain about core Hydrogen conventions, data-fetching patterns, route/loader structure, or server-side implementation details.
 
 ### Dual Deployment Targets
 
@@ -40,7 +46,7 @@ A **commercial Shopify Hydrogen template** built to be sold to multiple client b
 
 | Category      | Tech             | Version    | Notes                               |
 | ------------- | ---------------- | ---------- | ----------------------------------- |
-| **Framework** | React            | 18.3.1     | React Compiler enabled              |
+| **Framework** | React            | 18.3.1     |                                     |
 |               | React Router     | 7.12.0     | Hydrogen preset, file-based routing |
 |               | Shopify Hydrogen | 2026.1.0   | Storefront + Customer Account APIs  |
 |               | Storefront API   | 2026-01    | GraphQL API version                 |
@@ -82,7 +88,7 @@ storefront_001/
 │   ├── hooks/                     # Shared hooks
 │   └── styles/app.css             # Tailwind v4 + theme tokens
 ├── public/                        # Static assets + manifest
-├── vite.config.ts                 # React Compiler + Vite config
+├── vite.config.ts                 # Vite build config
 └── react-router.config.ts         # Hydrogen preset
 ```
 
@@ -109,7 +115,7 @@ bun run codegen      # Regenerate GraphQL types
 
 **TypeScript**: Strict mode, ES2022 target, `~/` alias only
 
-**React**: No manual memoization by default because React Compiler is enabled. Import from `react-router`.
+**React**: Import from `react-router`.
 
 **Files**: Keep components in PascalCase, utilities in camelCase, and co-locate related feature code.
 
@@ -190,40 +196,42 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 - **Problem**: `@remix-run/react` causes runtime and compatibility issues
 - **Solution**: Always import from `react-router`
 
-**2. React Compiler Target**
-
-- **Problem**: Must target React 18 correctly
-- **Location**: `vite.config.ts`
-
-**3. GraphQL Codegen**
+**2. GraphQL Codegen**
 
 - **Problem**: Stale generated types after query or fragment changes
 - **Solution**: Run `bun run codegen` after ANY GraphQL modification
 
-**4. Theme and Contrast**
+**3. Theme and Contrast**
 
 - **Problem**: Hardcoded colors drift from semantic tokens and break contrast
 - **Solution**: Use semantic theme tokens from `app/styles/app.css` and `app/lib/theme-utils.ts`
 
-**5. Metaobject Fallbacks**
+**4. Metaobject Fallbacks**
 
 - **Problem**: Missing CMS data can break pages
 - **Solution**: Keep fallbacks aligned in `app/lib/metaobject-parsers.ts`
 
-**6. Offline/Cache Behavior**
+**5. Offline/Cache Behavior**
 
 - **Problem**: Cached UI can hold stale content after changes
 - **Solution**: Review service worker and offline flows when touching PWA behavior
 
-**7. Node Version**
+**6. Node Version**
 
 - **Problem**: Node < 20.19.0 causes build/runtime issues
 - **Solution**: Use the required version and confirm via `node --version`
 
-**8. Path Alias**
+**7. Path Alias**
 
 - **Problem**: Relative imports create churn and inconsistency
 - **Solution**: Always use `~/`
+
+## Execution Strategy
+
+- Use **multiple sub-agents** for independent tasks (research, implementation, review)
+- Use **git worktrees** for parallel implementation work
+- Provide agents with **context, constraints, and objectives** — not overly prescriptive step-by-step instructions
+- Quality priorities: **clarity > technical correctness > practical usefulness > context density > signal over noise**
 
 ## Code Comments (MANDATORY)
 

@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useFetcher, useNavigate} from "react-router";
 import {Dialog, DialogContent, DialogTitle} from "~/components/ui/dialog";
 import {Command, CommandList} from "~/components/ui/command";
@@ -74,6 +74,11 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
     const {open, openSearch, closeSearch, setOpen, restoreTriggerFocus} = useSearchController();
     const {recentSearches, addSearch, clearSearches} = useRecentSearches();
 
+    // Store fetcher in a ref so the debounced function always uses the latest
+    // instance without being recreated every render (which would defeat debounce).
+    const fetcherRef = useRef(fetcher);
+    fetcherRef.current = fetcher;
+
     useLockBodyScroll(open);
 
     const [query, setQuery] = useState("");
@@ -97,25 +102,27 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
         }
     }, [open]);
 
+    // Empty deps: debounce timer is shared across renders; fetcherRef ensures
+    // we always call the current fetcher instance without recreating the function.
     const debouncedFetch = useMemo(
         () =>
             debounce((searchQuery: string) => {
                 if (!searchQuery.trim()) return;
-                void fetcher.load(`/search?predictive=true&limit=10&q=${encodeURIComponent(searchQuery)}`);
+                void fetcherRef.current.load(`/search?predictive=true&limit=10&q=${encodeURIComponent(searchQuery)}`);
             }, 300),
-        [fetcher]
+        []
     );
 
-    const handleQueryChange = (value: string) => {
+    const handleQueryChange = useCallback((value: string) => {
         setQuery(value);
         if (value.trim()) {
             debouncedFetch(value);
         }
-    };
+    }, [debouncedFetch]);
 
     const predictiveItems = fetcher.data?.type === "predictive" ? fetcher.data.result.items : null;
 
-    const filteredProducts = (predictiveItems?.products ?? []).slice(0, 5).map(product => {
+    const filteredProducts = useMemo(() => (predictiveItems?.products ?? []).slice(0, 5).map(product => {
         const variant = product.selectedOrFirstAvailableVariant;
         const price = variant?.price;
 
@@ -151,52 +158,52 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
                     : []
             }
         };
-    });
+    }), [predictiveItems]);
 
-    const filteredCollections = (predictiveItems?.collections ?? []).slice(0, 5);
-    const filteredArticles = (predictiveItems?.articles ?? []).slice(0, 5);
-    const filteredPages = (predictiveItems?.pages ?? []).slice(0, 5);
-    const filteredSuggestions = (predictiveItems?.queries ?? []).slice(0, 5);
-    const filteredPolicies = filterPolicies(query);
+    const filteredCollections = useMemo(() => (predictiveItems?.collections ?? []).slice(0, 5), [predictiveItems]);
+    const filteredArticles = useMemo(() => (predictiveItems?.articles ?? []).slice(0, 5), [predictiveItems]);
+    const filteredPages = useMemo(() => (predictiveItems?.pages ?? []).slice(0, 5), [predictiveItems]);
+    const filteredSuggestions = useMemo(() => (predictiveItems?.queries ?? []).slice(0, 5), [predictiveItems]);
+    const filteredPolicies = useMemo(() => filterPolicies(query), [query]);
 
-    const featuredCollections = collections
+    const featuredCollections = useMemo(() => collections
         .filter(collection => !["all", "all-collections", "frontpage"].includes(collection.handle.toLowerCase()))
-        .slice(0, 6);
+        .slice(0, 6), [collections]);
 
     const isLoading = fetcher.state !== "idle";
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         closeSearch();
         restoreTriggerFocus();
-    };
+    }, [closeSearch, restoreTriggerFocus]);
 
-    const handleOpenChange = (nextOpen: boolean) => {
+    const handleOpenChange = useCallback((nextOpen: boolean) => {
         setOpen(nextOpen);
         if (!nextOpen) {
             handleClose();
         }
-    };
+    }, [setOpen, handleClose]);
 
-    const navigateTo = (path: string, termForHistory?: string) => {
+    const navigateTo = useCallback((path: string, termForHistory?: string) => {
         if (termForHistory) {
             addSearch(termForHistory);
         }
         void navigate(path);
         handleClose();
-    };
+    }, [addSearch, navigate, handleClose]);
 
-    const handleSubmit = () => {
+    const handleSubmit = useCallback(() => {
         const trimmed = query.trim();
         if (!trimmed) return;
         navigateTo(`/search?q=${encodeURIComponent(trimmed)}`, trimmed);
-    };
+    }, [query, navigateTo]);
 
-    const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleInputKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Escape") {
             event.preventDefault();
             handleClose();
         }
-    };
+    }, [handleClose]);
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>

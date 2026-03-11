@@ -3,6 +3,8 @@
 /// <reference types="@shopify/oxygen-workers-types" />
 /// <reference types="@shopify/hydrogen/react-router-types" />
 
+import "@total-typescript/ts-reset";
+
 declare global {
     interface Env {
         PUBLIC_GTM_CONTAINER_ID?: string;

@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useMemo} from "react";
 import {useNonce, Analytics, getSeoMeta, getShopAnalytics} from "@shopify/hydrogen";
 import {
     Outlet,
@@ -109,11 +109,16 @@ export const meta: Route.MetaFunction = ({data}) => {
     ];
 };
 
-export async function loader({context, request}: Route.LoaderArgs) {
-    const {storefront, dataAdapter, customerAccount, cart, env} = context;
+export async function loader(args: Route.LoaderArgs) {
+    const deferredData = loadDeferredData(args);
+    const criticalData = await loadCriticalData(args);
+    return {...deferredData, ...criticalData};
+}
+
+async function loadCriticalData({context, request}: Route.LoaderArgs) {
+    const {storefront, dataAdapter, env} = context;
     const requestUrl = new URL(request.url);
 
-    // Critical data — blocks render
     const [header, menuCollectionsData, shopData, themeSettingsData, siteContentData, blogData] = await Promise.all([
         dataAdapter.query(HEADER_QUERY, {
             variables: {headerMenuHandle: "main-menu"}
@@ -153,7 +158,6 @@ export async function loader({context, request}: Route.LoaderArgs) {
     );
     const shippingConfig = parseShippingConfig(shopData?.shop?.freeShippingThreshold?.value);
 
-    // Process collections for navigation (product counts, discounts)
     const menuCollections =
         menuCollectionsData?.collections?.nodes
             ?.map((collection: any) => ({
@@ -216,7 +220,34 @@ export async function loader({context, request}: Route.LoaderArgs) {
             }
         }));
 
-    // Deferred data — streams in after initial render
+    return {
+        header,
+        siteContent,
+        generatedTheme,
+        hasBlog,
+        menuCollections,
+        totalProductCount,
+        discountCount,
+        popularSearchTerms,
+        popularProducts,
+        shippingConfig,
+        publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
+        shop: getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID}),
+        consent: {
+            checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
+            storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+            withPrivacyBanner: false,
+            country: storefront.i18n.country,
+            language: storefront.i18n.language
+        },
+        gtmContainerId: env.PUBLIC_GTM_CONTAINER_ID || "",
+        websiteSchema
+    };
+}
+
+function loadDeferredData({context}: Route.LoaderArgs) {
+    const {storefront, customerAccount, cart} = context;
+
     const cartPromise = withTimeoutAndFallback(cart.get(), null, TIMEOUT_DEFAULTS.CART);
 
     const isLoggedIn = withTimeoutAndFallback(customerAccount.isLoggedIn(), false, TIMEOUT_DEFAULTS.AUTH);
@@ -260,29 +291,11 @@ export async function loader({context, request}: Route.LoaderArgs) {
         });
 
     return {
-        header,
-        siteContent,
-        generatedTheme,
-        hasBlog,
-        menuCollections,
-        totalProductCount,
-        discountCount,
-        popularSearchTerms,
-        popularProducts,
-        shippingConfig,
         cart: cartPromise,
         isLoggedIn,
         hasStoreCredit: hasStoreCreditWithTimeout,
         footer,
-        cartSuggestions,
-        publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
-        shop: getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID}),
-        consent: {
-            checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
-            storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN
-        },
-        gtmContainerId: env.PUBLIC_GTM_CONTAINER_ID || "",
-        websiteSchema
+        cartSuggestions
     };
 }
 
@@ -329,10 +342,9 @@ export default function App() {
         }
     }, [data?.generatedTheme]);
 
-    if (!data) return <Outlet />;
-
-    const shopName = data.siteContent.siteSettings.brandName?.trim() || "Store";
-    const mobileMenuCollections = (data.menuCollections ?? []).map((collection: any) => ({
+    // Memoized before the early return guard to satisfy the Rules of Hooks.
+    const menuCollections = useMemo(() => data?.menuCollections ?? [], [data?.menuCollections]);
+    const mobileMenuCollections = useMemo(() => menuCollections.map((collection: any) => ({
         id: collection.id,
         title: collection.title,
         handle: collection.handle,
@@ -344,8 +356,8 @@ export default function App() {
               }
             : null,
         productCount: collection.productsCount ?? 0
-    }));
-    const searchCollections = (data.menuCollections ?? []).map((collection: any) => ({
+    })), [menuCollections]);
+    const searchCollections = useMemo(() => menuCollections.map((collection: any) => ({
         id: collection.id,
         title: collection.title,
         handle: collection.handle,
@@ -355,7 +367,11 @@ export default function App() {
                   altText: collection.image.altText ?? null
               }
             : null
-    }));
+    })), [menuCollections]);
+
+    if (!data) return <Outlet />;
+
+    const shopName = data.siteContent.siteSettings.brandName?.trim() || "Store";
 
     return (
         <SiteContentProvider siteContent={data.siteContent}>

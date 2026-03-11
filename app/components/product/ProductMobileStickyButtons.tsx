@@ -1,3 +1,4 @@
+import {useMemo} from "react";
 import {useIsMobile} from "~/hooks/useIsMobile";
 import {Badge} from "~/components/ui/badge";
 import {AddToCartButton} from "~/components/product/AddToCartButton";
@@ -31,6 +32,19 @@ export const ProductMobileStickyButtons = ({
         product?.tags?.some((tag: string) => tag.toLowerCase() === "preorder" || tag.toLowerCase() === "pre-order") ??
         false;
 
+    // Must be declared before any early return to satisfy the Rules of Hooks.
+    const lines = useMemo(
+        () => [
+            {
+                merchandiseId: selectedVariant?.id,
+                quantity,
+                selectedVariant,
+                sellingPlanId: selectedSellingPlan?.id
+            }
+        ],
+        [selectedVariant, quantity, selectedSellingPlan?.id]
+    );
+
     if (!isMobile || !selectedVariant?.price) return null;
 
     const unitPrice = parseFloat(selectedVariant.price.amount);
@@ -45,14 +59,6 @@ export const ProductMobileStickyButtons = ({
     const isOnSale = totalComparePrice !== null && totalComparePrice > totalPrice;
     const savingsPercentage = isOnSale ? Math.round(((totalComparePrice - totalPrice) / totalComparePrice) * 100) : 0;
 
-    const lines = [
-        {
-            merchandiseId: selectedVariant.id,
-            quantity,
-            selectedVariant,
-            sellingPlanId: selectedSellingPlan?.id
-        }
-    ];
     const isDisabled = !selectedVariant || isVariantTransitioning;
 
     return (

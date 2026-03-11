@@ -1,4 +1,4 @@
-import {createContext, type ReactNode, useContext, useState, useCallback} from "react";
+import {createContext, type ReactNode, useContext, useState, useCallback, useMemo} from "react";
 
 type CartDrawerContextValue = {
     isOpen: boolean;
@@ -16,7 +16,9 @@ export function CartDrawerProvider({children}: {children: ReactNode}) {
     const close = useCallback(() => setIsOpen(false), []);
     const toggle = useCallback(() => setIsOpen(prev => !prev), []);
 
-    return <CartDrawerContext.Provider value={{isOpen, open, close, toggle}}>{children}</CartDrawerContext.Provider>;
+    const value = useMemo(() => ({isOpen, open, close, toggle}), [isOpen, open, close, toggle]);
+
+    return <CartDrawerContext.Provider value={value}>{children}</CartDrawerContext.Provider>;
 }
 
 export const useCartDrawer = () => {

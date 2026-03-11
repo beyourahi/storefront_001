@@ -1,4 +1,4 @@
-import {createContext, useContext, type ReactNode} from "react";
+import {createContext, useContext, useMemo, type ReactNode} from "react";
 import type {
     SiteContent,
     SiteSettings,
@@ -52,30 +52,30 @@ export const useSiteSettings = (): SiteSettings => useSiteContentSafe().siteSett
 
 export const useContactInfo = (): ContactInfo => {
     const settings = useSiteSettings();
-    return {
+    return useMemo(() => ({
         email: settings.contactEmail,
         phone: settings.contactPhone,
         businessHours: settings.businessHours,
         address: settings.address
-    };
+    }), [settings]);
 };
 
 export const useSocialLinks = (): SocialLink[] => useSiteSettings().socialLinks;
 
 export const useSectionHeadings = (): SectionHeadings => {
     const settings = useSiteSettings();
-    return {
+    return useMemo(() => ({
         blogSectionTitle: settings.blogSectionTitle,
         collectionsTitle: settings.collectionsTitle,
         relatedProductsTitle: settings.relatedProductsTitle,
         recommendedTitle: settings.recommendedTitle,
         instagramTitle: settings.instagramTitle
-    };
+    }), [settings]);
 };
 
 export const useBrandMarquee = (): {words: string[]} => {
     const {brandWords} = useSiteSettings();
-    return {words: brandWords};
+    return useMemo(() => ({words: brandWords}), [brandWords]);
 };
 
 export const usePromotionalBanners = (): {
@@ -84,11 +84,11 @@ export const usePromotionalBanners = (): {
     bannerTwoMedia?: HeroMedia;
 } => {
     const settings = useSiteSettings();
-    return {
+    return useMemo(() => ({
         announcement: settings.announcementBanner,
         bannerOneMedia: settings.promotionalBannerOneMedia,
         bannerTwoMedia: settings.promotionalBannerTwoMedia
-    };
+    }), [settings]);
 };
 
 export const useTestimonials = (): Testimonial[] => useSiteSettings().testimonials;

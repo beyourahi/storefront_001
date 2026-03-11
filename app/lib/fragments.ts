@@ -150,6 +150,9 @@ export const CART_QUERY_FRAGMENT = `#graphql
         }
       }
     }
+    lineComponents {
+      ...CartLine
+    }
   }
   fragment CartApiQuery on Cart {
     updatedAt
@@ -191,6 +194,12 @@ export const CART_QUERY_FRAGMENT = `#graphql
         ...Money
       }
       totalAmount {
+        ...Money
+      }
+      totalDutyAmount {
+        ...Money
+      }
+      totalTaxAmount {
         ...Money
       }
     }
