@@ -211,14 +211,19 @@ function CartLinePricing({cost, quantity}: {cost: CartLine["cost"]; quantity: nu
             >
                 <Money data={totalAmount} withoutTrailingZeros />
             </p>
-            <p className={cn("text-muted-foreground text-xs sm:text-sm", quantity > 1 ? "opacity-100" : "opacity-0")}>
+            <p
+                className={cn(
+                    "text-muted-foreground gap-2 text-xs sm:text-sm flex items-baseline justify-end",
+                    quantity > 1 ? "opacity-100" : "opacity-0"
+                )}
+            >
                 <span className="font-mono font-medium tracking-tight tabular-nums" aria-label="Price per item">
                     <Money
                         data={{amount: perItemAmount, currencyCode: totalAmount.currencyCode}}
                         withoutTrailingZeros
                     />
                 </span>
-                <span className=""> each</span>
+                <span>each</span>
             </p>
         </div>
     );
