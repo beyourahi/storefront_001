@@ -38,9 +38,7 @@ function AlertDialogContent({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Content> & {overlayClassName?: string}) {
     return (
         <AlertDialogPortal>
-            <AlertDialogPrimitive.Cancel asChild>
-                <AlertDialogOverlay className={overlayClassName} />
-            </AlertDialogPrimitive.Cancel>
+            <AlertDialogOverlay className={overlayClassName} />
             <AlertDialogPrimitive.Content
                 data-slot="alert-dialog-content"
                 data-lenis-prevent
