@@ -535,13 +535,14 @@ button:active {
 .motion-image,
 .sleek,
 [data-slot="button"],
+[data-slot="card"],
 button,
 a,
 .card,
 input:not([type="range"]),
 textarea,
 select {
-    transition-property: background-color, border-color, color, fill, stroke, opacity, transform;
+    transition-property: background-color, border-color, box-shadow, color, fill, stroke, opacity, transform;
     transition-timing-function: var(--motion-ease-standard);
     transition-duration: var(--motion-duration-standard);
 }
@@ -861,6 +862,12 @@ video,
 
 .article-content td {
     @apply text-left border-b border-border p-2;
+}
+
+.article-content tbody tr {
+    transition-property: background-color;
+    transition-duration: var(--motion-duration-fast);
+    transition-timing-function: var(--motion-ease-standard);
 }
 
 .article-content tbody tr:hover {

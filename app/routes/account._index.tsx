@@ -187,7 +187,7 @@ const QuickActionsGrid = () => (
                                 <action.icon className="size-5 text-primary" />
                             </div>
                             <div className="flex-1">
-                                <h3 className="font-medium group-hover:text-accent-foreground">{action.title}</h3>
+                                <h3 className="font-medium transition-colors group-hover:text-accent-foreground">{action.title}</h3>
                                 <p className="text-muted-foreground text-sm">{action.description}</p>
                             </div>
                             <ArrowRightIcon className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
