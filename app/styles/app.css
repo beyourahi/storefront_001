@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "lenis/dist/lenis.css";
@@ -620,8 +621,7 @@ html.cart-sheet-open body {
 }
 
 .sleek {
-    @apply transform-gpu;
-    will-change: transform, opacity;
+    @apply transform-gpu transition-all duration-200 ease-[var(--motion-ease-standard)];
 }
 
 .product-image,

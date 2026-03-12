@@ -110,17 +110,17 @@ export const ProductDescriptionAccordion = ({product, className = ""}: ProductDe
                         {accordionSections.map(section => (
                             <div
                                 key={section.id}
-                                className="bg-card border-border/50 hover:border-border/80 relative overflow-hidden rounded-xl border bg-gradient-to-br p-4 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md"
+                                className="group bg-card border-border/50 hover:border-border/80 relative overflow-hidden rounded-xl border bg-gradient-to-br p-4 shadow-sm backdrop-blur-sm sleek hover:shadow-md"
                             >
                                 <button
                                     className={cn(
-                                        "group flex w-full select-none items-start justify-between text-left focus:outline-none",
+                                        "flex w-full select-none items-start justify-between text-left focus:outline-none",
                                         "sleek text-foreground"
                                     )}
                                     onClick={() => handleAccordionClick(section.id)}
                                 >
                                     <div className="min-w-0 flex-1">
-                                        <h3 className="group-hover:text-primary mb-2 text-lg font-bold transition-colors">
+                                        <h3 className="group-hover:text-primary mb-2 text-lg font-bold sleek">
                                             {section.title}
                                         </h3>
                                         {descriptionPreview && !openItems.includes(section.id) && (
@@ -140,16 +140,16 @@ export const ProductDescriptionAccordion = ({product, className = ""}: ProductDe
                                     <div className="ml-4 shrink-0">
                                         <div
                                             className={cn(
-                                                "group-hover:bg-primary/10 rounded-full p-2 transition-all duration-300",
+                                                "group-hover:bg-primary/10 rounded-full p-2 sleek",
                                                 !hasInteracted && !openItems.includes(section.id)
                                                     ? "bg-primary/5 animate-pulse"
                                                     : ""
                                             )}
                                         >
                                             {openItems.includes(section.id) ? (
-                                                <Minus className="sleek text-foreground h-5 w-5 transition-transform duration-200" />
+                                                <Minus className="sleek text-foreground h-5 w-5" />
                                             ) : (
-                                                <Plus className="sleek text-foreground h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
+                                                <Plus className="sleek text-foreground h-5 w-5 group-hover:scale-110" />
                                             )}
                                         </div>
                                     </div>

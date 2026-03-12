@@ -82,7 +82,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                         <Image
                             data={{url: productImage.url, altText: productImage.altText || product.title}}
                             className={cn(
-                                "motion-image product-image h-full w-full rounded-lg object-cover",
+                                "sleek product-image h-full w-full rounded-lg object-cover",
                                 canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]"
                             )}
                             sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"

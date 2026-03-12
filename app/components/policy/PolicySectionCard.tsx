@@ -22,7 +22,7 @@ export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCar
             id={`policy-section-${section.index}`}
             className={cn(
                 "group bg-card/95 border-border/30 hover:border-primary/40 hover:bg-card/100 hover:shadow-primary/10",
-                "relative scroll-mt-8 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                "relative scroll-mt-8 overflow-hidden sleek hover:-translate-y-1 hover:shadow-lg"
             )}
         >
             {showHeader && (
@@ -31,13 +31,13 @@ export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCar
                         {showIndex && (
                             <Badge
                                 variant="secondary"
-                                className="group-hover:bg-primary/20 shrink-0 transition-colors duration-300"
+                                className="group-hover:bg-primary/20 shrink-0 sleek"
                             >
                                 {section.index}
                             </Badge>
                         )}
                         {hasTitle && (
-                            <CardTitle className="group-hover:text-primary text-base leading-tight font-semibold transition-colors duration-300 md:text-lg">
+                            <CardTitle className="group-hover:text-primary text-base leading-tight font-semibold sleek md:text-lg">
                                 {section.title}
                             </CardTitle>
                         )}
@@ -56,7 +56,7 @@ export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCar
                 )}
             </CardContent>
 
-            <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div className="pointer-events-none absolute inset-0 opacity-0 sleek group-hover:opacity-100">
                 <div className="from-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
             </div>
         </Card>

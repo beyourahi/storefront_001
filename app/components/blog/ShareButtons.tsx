@@ -110,16 +110,16 @@ export const ShareButtons = ({article, variant = "inline", className, shopName}:
                             key={platform.id}
                             variant="outline"
                             className={cn(
-                                "rounded-lg sm:rounded-xl gap-1.5 sm:gap-2 min-h-11 sm:min-h-12",
+                                "group rounded-lg sm:rounded-xl gap-1.5 sm:gap-2 min-h-11 sm:min-h-12",
                                 "hover:bg-primary hover:text-primary-foreground",
                                 "text-sm sm:text-sm md:text-base"
                             )}
                             onClick={() => void handleShare(platform, shareData)}
                         >
                             {platform.id === "copy" && copied ? (
-                                <Check className="size-3.5 sm:size-4" />
+                                <Check className="sleek size-3.5 sm:size-4 group-hover:scale-110" />
                             ) : (
-                                <platform.icon className="size-3.5 sm:size-4" />
+                                <platform.icon className="sleek size-3.5 sm:size-4 group-hover:scale-110" />
                             )}
                             {platform.name}
                         </Button>

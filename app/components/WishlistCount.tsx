@@ -30,7 +30,7 @@ export const WishlistCount = ({className, iconSize = 24}: WishlistCountProps) =>
             <HiOutlineHeart style={{width: iconSize, height: iconSize}} className="text-current" />
             {count > 0 && (
                 <span
-                    className="bg-wishlist-active text-wishlist-active-foreground animate-in fade-in zoom-in absolute right-0 top-0 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-xs font-semibold transition-all duration-200"
+                    className="sleek bg-wishlist-active text-wishlist-active-foreground animate-in fade-in zoom-in absolute right-0 top-0 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-xs font-semibold"
                     aria-hidden="true"
                 >
                     {count > 99 ? "99+" : count}

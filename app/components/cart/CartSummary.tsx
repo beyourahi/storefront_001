@@ -458,7 +458,7 @@ function CartClearConfirmation({
                     onTouchStart={startHolding}
                     onTouchEnd={stopHolding}
                     className={cn(
-                        "group relative shrink-0 overflow-hidden transition-all duration-200 hover:scale-105 active:scale-95",
+                        "group relative shrink-0 overflow-hidden sleek hover:scale-105 active:scale-95",
                         isMobile ? "h-14 px-4 py-6" : "h-12 px-4"
                     )}
                 >
@@ -470,11 +470,11 @@ function CartClearConfirmation({
                     )}
 
                     <div className="relative z-10 flex items-center justify-center">
-                        <Trash2 className="h-4 w-4 transition-transform group-hover:scale-110 group-active:rotate-12" />
+                        <Trash2 className="sleek h-4 w-4 group-hover:scale-110 group-active:rotate-12" />
                     </div>
 
                     {!isHolding && (
-                        <div className="bg-popover text-popover-foreground pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 transform rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-md transition-opacity group-hover:opacity-100">
+                        <div className="bg-popover text-popover-foreground pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 transform rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-md sleek group-hover:opacity-100">
                             Hold or click to clear
                         </div>
                     )}

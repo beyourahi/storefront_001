@@ -91,7 +91,7 @@ export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: Masonry
                         key={`${image.productHandle}-${image.url}`}
                         type="button"
                         onClick={() => handleImageClick(image)}
-                        className="group sleek bg-muted/20 hover:ring-primary/20 focus:ring-primary/40 relative block w-full overflow-hidden rounded-lg transition-all duration-300 hover:shadow-xl hover:ring-2 focus:ring-2 focus:outline-none"
+                        className="group sleek bg-muted/20 hover:ring-primary/20 focus:ring-primary/40 relative block w-full overflow-hidden rounded-lg hover:shadow-xl hover:ring-2 focus:ring-2 focus:outline-none"
                         aria-label={`View ${image.productTitle || "product"} - ${image.collectionTitle || "collection"}`}
                     >
                         <div className="relative w-full" style={{aspectRatio: image.aspectRatio || 1}}>

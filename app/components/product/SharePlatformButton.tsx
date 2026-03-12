@@ -76,12 +76,12 @@ export const SharePlatformButton = ({platform, shareData, loading = false, onSha
     return (
         <Button
             variant="outline"
-            className="sleek bg-background hover:bg-accent/50 border-border hover:border-primary/20 group relative h-14 w-full cursor-pointer justify-center gap-3 px-4 transition-all duration-200 hover:scale-[1.02] hover:shadow-sm disabled:opacity-50 disabled:hover:scale-100"
+            className="sleek bg-background hover:bg-accent/50 border-border hover:border-primary/20 group relative h-14 w-full cursor-pointer justify-center gap-3 px-4 hover:scale-[1.02] hover:shadow-sm disabled:opacity-50 disabled:hover:scale-100"
             onClick={() => void handleShare()}
             disabled={loading || isLoading}
         >
             <div
-                className="flex h-8 w-8 items-center justify-center rounded-md transition-colors duration-200"
+                className="flex h-8 w-8 items-center justify-center rounded-md sleek"
                 style={{
                     backgroundColor: showSuccess ? "rgb(34, 197, 94)" : showError ? "rgb(239, 68, 68)" : platform.color
                 }}

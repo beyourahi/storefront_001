@@ -96,7 +96,7 @@ export function ProductHeroMobile({
                                           : null;
 
                                 const pillClasses = cn(
-                                    "inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-[var(--radius-pill-raw)] px-4 py-2 text-base font-medium transition-all duration-200",
+                                    "inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-[var(--radius-pill-raw)] px-4 py-2 text-base font-medium sleek",
                                     "active:scale-95",
                                     selected
                                         ? "bg-primary-foreground text-primary"
@@ -180,7 +180,7 @@ export function ProductHeroMobile({
                                 type="submit"
                                 disabled={isDisabled}
                                 className={cn(
-                                    "w-full min-h-14 inline-flex select-none items-center justify-between gap-4 rounded-[var(--radius-pill-raw)] bg-primary-foreground px-4 py-3 text-base font-medium text-primary transition-all duration-200",
+                                    "w-full min-h-14 inline-flex select-none items-center justify-between gap-4 rounded-[var(--radius-pill-raw)] bg-primary-foreground px-4 py-3 text-base font-medium text-primary sleek",
                                     "hover:bg-primary-foreground/90 active:scale-[0.98]",
                                     isDisabled && "opacity-60 cursor-not-allowed"
                                 )}
@@ -229,7 +229,7 @@ function MobileQuantitySelector({
                 onClick={handleDecrement}
                 disabled={!canDecrement}
                 className={cn(
-                    "flex min-h-12 items-center justify-center px-4 py-2 text-primary rounded-l-full transition-colors active:bg-primary/10",
+                    "flex min-h-12 items-center justify-center px-4 py-2 text-primary rounded-l-full sleek active:bg-primary/10",
                     canDecrement ? "cursor-pointer" : "opacity-40 cursor-not-allowed"
                 )}
                 aria-label="Decrease quantity"
@@ -242,7 +242,7 @@ function MobileQuantitySelector({
                 onClick={handleIncrement}
                 disabled={!canIncrement}
                 className={cn(
-                    "flex min-h-12 items-center justify-center px-4 py-2 text-primary rounded-r-full transition-colors active:bg-primary/10",
+                    "flex min-h-12 items-center justify-center px-4 py-2 text-primary rounded-r-full sleek active:bg-primary/10",
                     canIncrement ? "cursor-pointer" : "opacity-40 cursor-not-allowed"
                 )}
                 aria-label="Increase quantity"

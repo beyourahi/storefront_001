@@ -24,7 +24,7 @@ export const ProductShareButton = ({
 
     const buttonClass = useMemo(() => {
         let baseClasses =
-            "sleek hover:bg-accent/80 hover:border-primary/30 transition-all duration-200 hover:scale-[1.02] hover:shadow-sm";
+            "sleek hover:bg-accent/80 hover:border-primary/30 hover:scale-[1.02] hover:shadow-sm";
 
         if (position === "floating") {
             baseClasses += " fixed bottom-6 right-6 z-50 shadow-lg hover:shadow-xl";

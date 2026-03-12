@@ -313,14 +313,14 @@ function CartLineRemoveButton({
                 variant="ghost"
                 size="sm"
                 className={cn(
-                    "group h-8 w-8 rounded-md p-0 transition-all duration-200",
+                    "group h-8 w-8 rounded-md p-0 sleek",
                     "text-destructive bg-destructive/10 hover:text-destructive hover:bg-destructive/20",
                     disabled && "cursor-wait opacity-50"
                 )}
                 disabled={disabled}
                 aria-label={`Remove ${productTitle} from cart`}
             >
-                <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                <Trash2 className="sleek h-4 w-4 group-hover:scale-110" />
             </Button>
         </CartForm>
     );

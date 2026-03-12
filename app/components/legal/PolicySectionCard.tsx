@@ -51,7 +51,6 @@ export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCar
                 "group sleek relative overflow-hidden scroll-mt-8",
                 "bg-card/95 border-border/30",
                 "hover:border-primary/40 hover:bg-card/100 hover:shadow-primary/10",
-                "transition-all duration-300",
                 "hover:-translate-y-1 hover:shadow-lg"
             )}
         >
@@ -61,13 +60,13 @@ export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCar
                         {showIndex && (
                             <Badge
                                 variant="secondary"
-                                className="shrink-0 transition-colors duration-300 group-hover:bg-primary/20"
+                                className="shrink-0 sleek group-hover:bg-primary/20"
                             >
                                 {section.index}
                             </Badge>
                         )}
                         {hasTitle && (
-                            <CardTitle className="text-base leading-tight font-semibold transition-colors duration-300 md:text-lg group-hover:text-primary">
+                            <CardTitle className="text-base leading-tight font-semibold sleek md:text-lg group-hover:text-primary">
                                 {section.title}
                             </CardTitle>
                         )}
@@ -88,7 +87,7 @@ export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCar
             </CardContent>
 
             {/* Subtle gradient overlay on hover */}
-            <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div className="pointer-events-none absolute inset-0 opacity-0 sleek group-hover:opacity-100">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
             </div>
         </Card>

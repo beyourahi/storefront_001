@@ -60,7 +60,7 @@ export const SearchDefaultView = ({
                             <button
                                 type="button"
                                 key={term}
-                                className="bg-muted hover:bg-accent rounded-full px-3 py-1.5 text-xs"
+                                className="sleek bg-muted hover:bg-accent rounded-full px-3 py-1.5 text-xs"
                                 onClick={() => onSuggestionClick(term)}
                             >
                                 {term}
@@ -81,7 +81,7 @@ export const SearchDefaultView = ({
                             <button
                                 type="button"
                                 key={term}
-                                className="bg-muted hover:bg-accent rounded-full px-3 py-1.5 text-xs"
+                                className="sleek bg-muted hover:bg-accent rounded-full px-3 py-1.5 text-xs"
                                 onClick={() => onSuggestionClick(term)}
                             >
                                 {term}
@@ -160,11 +160,11 @@ export const SearchDefaultView = ({
                             <div className="px-2 pt-3 pb-2">
                                 <Link
                                     to="/collections/all"
-                                    className="bg-[var(--brand-primary-subtle)] hover:bg-[var(--surface-interactive)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
+                                    className="sleek bg-[var(--brand-primary-subtle)] hover:bg-[var(--surface-interactive)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium hover:scale-[1.02]"
                                     onClick={handleLinkClick}
                                 >
                                     View all products
-                                    <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                                    <ChevronRight className="sleek h-4 w-4 group-hover:translate-x-0.5" />
                                 </Link>
                             </div>
                         )}
@@ -202,11 +202,11 @@ export const SearchDefaultView = ({
                         <div className="px-2 pt-3 pb-2">
                             <Link
                                 to="/collections"
-                                className="bg-[var(--brand-primary-subtle)] hover:bg-[var(--surface-interactive)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
+                                className="sleek bg-[var(--brand-primary-subtle)] hover:bg-[var(--surface-interactive)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-primary group flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium hover:scale-[1.02]"
                                 onClick={handleLinkClick}
                             >
                                 View all collections
-                                <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                                <ChevronRight className="sleek h-4 w-4 group-hover:translate-x-0.5" />
                             </Link>
                         </div>
                     </div>

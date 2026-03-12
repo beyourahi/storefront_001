@@ -61,7 +61,7 @@ export const SocialLinkGrid = ({socialLinks}: SocialLinkGridProps) => {
                         className="group bg-accent/25 border-accent/30 hover:border-primary/40 hover:bg-foreground/8 hover:shadow-primary/10 focus-visible:ring-primary/20 focus-visible:bg-primary/3 sleek flex w-full flex-col items-center justify-center rounded-lg border px-4 py-4 hover:-translate-y-1 hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none md:w-28 md:px-32"
                     >
                         <div
-                            className="sleek mb-2 flex h-12 w-12 items-center justify-center rounded-lg transition-all duration-200 group-hover:scale-110 group-hover:shadow-md"
+                            className="sleek mb-2 flex h-12 w-12 items-center justify-center rounded-lg group-hover:scale-110 group-hover:shadow-md"
                             style={{backgroundColor: getBrandColor(social.platform)}}
                         >
                             {isStringIcon ? (
