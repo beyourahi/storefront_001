@@ -56,9 +56,12 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 |               | shadcn/ui        | Latest     | Radix-backed components             |
 |               | Lucide React     | Latest     | Icons                               |
 |               | OKLCH colors     | -          | Theme + contrast pipeline           |
-| **Features**  | Workbox          | 7          | Service worker, offline support     |
+| **Features**  | Embla Carousel   | 8          | Product galleries, auto-scroll      |
+|               | Lenis            | 1.3        | Smooth scrolling                    |
+|               | Vaul             | 1.1        | Drawer primitives                   |
 |               | Wishlist         | Custom     | Account + share flows               |
 |               | Blog             | Custom     | Article + author surfaces           |
+|               | PWA              | Custom     | Custom service worker, offline      |
 |               | Metaobjects      | Shopify    | Theme + content CMS                 |
 | **Dev**       | ESLint           | 9          | Flat config                         |
 |               | Bun              | Latest     | Package manager + scripts           |
@@ -75,19 +78,39 @@ storefront_001/
 │   ├── routes/                    # Route modules
 │   ├── components/                # UI and feature components
 │   │   ├── ui/                    # shadcn/ui generated primitives
+│   │   ├── account/               # Account dashboard surfaces
 │   │   ├── blog/                  # Blog surfaces
-│   │   ├── cart/                  # Cart surfaces
-│   │   ├── layout/                # Navigation, footer, overlays
-│   │   └── pwa/                   # Offline/PWA helpers
+│   │   ├── cart/                  # Cart drawer + line items
+│   │   ├── common/                # Shared presentational (breadcrumbs, price, skeletons)
+│   │   ├── contact/               # Contact page components
+│   │   ├── display/               # Product/collection cards
+│   │   ├── gallery/               # Masonry grid
+│   │   ├── homepage/              # Hero, sections, promotions
+│   │   ├── icons/                 # Custom icon components
+│   │   ├── layout/                # Navbar, footer, mobile menu, search overlay
+│   │   ├── legal/                 # Policy/legal page layouts
+│   │   ├── motion/                # Animation primitives (parallax)
+│   │   ├── product/               # PDP components (gallery, options, purchase)
+│   │   ├── pwa/                   # Install prompts, SW update banner
+│   │   ├── search/                # Search results + controls
+│   │   ├── sections/              # Reusable page sections
+│   │   └── ProductLightbox/       # Fullscreen image lightbox
 │   ├── lib/                       # Shared utilities
 │   │   ├── color/                 # OKLCH + contrast helpers
+│   │   ├── performance/           # Image optimization helpers
+│   │   ├── product/               # Product parsing, pricing, variants
+│   │   ├── queries/               # Shared GraphQL queries
+│   │   ├── search/                # Search URL utilities
+│   │   ├── types/                 # Shared type definitions
+│   │   ├── validation/            # Custom validators (regex-based)
 │   │   ├── metaobject-*.ts        # CMS queries/parsers/fragments
-│   │   ├── product/               # Product utilities
-│   │   └── validation/            # Zod schemas
+│   │   ├── data-source.ts         # Data adapter abstraction
+│   │   └── site-content-context.tsx # Site-wide content React context
 │   ├── graphql/customer-account/  # Customer account queries
 │   ├── hooks/                     # Shared hooks
+│   ├── assets/icons/              # Static icon assets
 │   └── styles/app.css             # Tailwind v4 + theme tokens
-├── public/                        # Static assets + manifest
+├── public/                        # Static assets (sw.js, pwa-install-capture.js)
 ├── vite.config.ts                 # Vite build config
 └── react-router.config.ts         # Hydrogen preset
 ```
@@ -101,6 +124,8 @@ bun run preview      # Preview build
 bun run lint         # ESLint
 bun run typecheck    # TypeScript + route types
 bun run codegen      # Regenerate GraphQL types
+bun run deploy       # Build + deploy to Cloudflare Workers
+bun run dev:workers  # Build + run via Wrangler locally
 ```
 
 ## Code Style
@@ -183,11 +208,11 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 
 ## Key Files
 
-**Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/color/`, `app/components/pwa/`  
-**Config**: `vite.config.ts`, `react-router.config.ts`, `eslint.config.js`, `app/styles/app.css`  
-**GraphQL**: `storefrontapi.generated.d.ts`, `customer-accountapi.generated.d.ts`  
-**Theme System**: `app/lib/theme-utils.ts`, `app/root.tsx`, `app/styles/app.css`  
-**PWA/Offline**: `app/components/OfflineAwareErrorPage.tsx`, `public/manifest.webmanifest`
+**Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`
+**Config**: `vite.config.ts`, `react-router.config.ts`, `eslint.config.js`, `app/styles/app.css`, `wrangler.jsonc`
+**GraphQL**: `storefrontapi.generated.d.ts`, `customer-accountapi.generated.d.ts`
+**Theme System**: `app/lib/theme-utils.ts`, `app/root.tsx`, `app/styles/app.css`
+**PWA/Offline**: `app/components/OfflineAwareErrorPage.tsx`, `app/routes/manifest[.]webmanifest.tsx`, `public/sw.js`
 
 ## Critical Warnings
 

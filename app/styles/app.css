@@ -621,7 +621,7 @@ html.cart-sheet-open body {
 }
 
 .sleek {
-    @apply transform-gpu transition-all duration-200 ease-[var(--motion-ease-standard)];
+    @apply transform-gpu transition-all duration-200 ease-(--motion-ease-standard);
 }
 
 .product-image,
