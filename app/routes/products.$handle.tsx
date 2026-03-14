@@ -21,6 +21,7 @@ import {
 } from "@shopify/hydrogen";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateDiscount, formatShopifyMoney} from "~/lib/currency-formatter";
+import {formatProductTitleForMeta} from "~/lib/product";
 import {createProductSchema} from "~/lib/structured-data";
 import {parseSizeChart} from "~/lib/size-chart";
 import {SizeChartButton} from "~/components/product/SizeChartButton";
@@ -58,7 +59,8 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     if (!product) return [{title: `Product Not Found | ${shopName}`}];
 
     const variant = product.selectedOrFirstAvailableVariant;
-    const title = product.seo?.title || product.title;
+    const seoTitle = product.seo?.title;
+    const title = seoTitle || formatProductTitleForMeta(product.title);
     const description = product.seo?.description || product.description?.substring(0, 155) || "";
     const image = variant?.image || product.images?.nodes?.[0];
 

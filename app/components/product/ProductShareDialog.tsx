@@ -1,5 +1,6 @@
 import {useState, useEffect, useMemo} from "react";
 import {useLocation} from "react-router";
+import {parseProductTitle} from "~/lib/product";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from "~/components/ui/dialog";
 import {SharePlatformButton} from "~/components/product/SharePlatformButton";
 import {createShareData, getSocialSharePlatforms, createShareAnalytics, trackShareEvent} from "~/lib/social-share";
@@ -54,7 +55,7 @@ export const ProductShareDialog = ({product, open = false, onOpenChange, shopNam
     const shareData = useMemo(() => createShareData(product, currentUrl, shopName), [product, currentUrl, shopName]);
     const platforms = useMemo(() => getSocialSharePlatforms(), []);
     const firstImage = product.images?.edges?.[0]?.node;
-    const titleParts = useMemo(() => product.title.trim().split(" + "), [product.title]);
+    const {primary, secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
 
     const handleShare = (platformId: string) => {
         const analytics = createShareAnalytics(platformId, product);
@@ -91,11 +92,11 @@ export const ProductShareDialog = ({product, open = false, onOpenChange, shopNam
 
                             <div className="min-w-0 flex-1">
                                 <h3 className="text-foreground text-left text-sm leading-5 font-medium">
-                                    {titleParts[0]}
+                                    {primary}
                                 </h3>
-                                {titleParts[1] && (
+                                {secondary && (
                                     <p className="text-muted-foreground text-left text-xs font-medium">
-                                        {titleParts[1]}
+                                        {secondary}
                                     </p>
                                 )}
                                 <p className="text-muted-foreground mt-1 text-left text-xs">

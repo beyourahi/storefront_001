@@ -1,3 +1,4 @@
+export {parseProductTitle, formatProductTitleForMeta} from "./parse-product-title";
 export {formatPriceWithLocale, formatShopifyMoney, getZeroFallbackWithCurrency} from "./currency";
 export {isPreorderProduct} from "./preorder-utils";
 export {

@@ -1,5 +1,6 @@
 import {useState, useEffect, useMemo, useCallback} from "react";
 import {Minus, Plus} from "lucide-react";
+import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
 
 type ProductDescriptionAccordionProps = {
@@ -43,8 +44,7 @@ export const ProductDescriptionAccordion = ({product, className = ""}: ProductDe
 
     const productFirstPart = useMemo(() => {
         if (!product?.title) return "Product";
-        const parts = product.title.split(" + ")[0].trim();
-        return parts || "Product";
+        return parseProductTitle(product.title).primary || "Product";
     }, [product]);
 
     const descriptionPreview = useMemo(() => {

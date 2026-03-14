@@ -4,6 +4,7 @@ import {Link} from "react-router";
 import {Button} from "~/components/ui/button";
 import {ParallaxLayer} from "~/components/motion/ParallaxLayer";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
+import {parseProductTitle} from "~/lib/product";
 import type {FeaturedProductSection} from "~/lib/metaobject-parsers";
 
 type FeaturedProductSpotlightProps = {
@@ -39,6 +40,7 @@ const getDiscountPercentage = (
 export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProductSpotlightProps) {
     const displayImage = product.featuredImage;
     const discountPercentage = getDiscountPercentage(product.price, product.compareAtPrice);
+    const {primary, secondary} = parseProductTitle(product.title);
 
     return (
         <section className="bg-background py-16">
@@ -118,7 +120,10 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                             ) : null}
 
                             <div className="space-y-3">
-                                <h3 className="font-serif text-3xl uppercase md:text-5xl">{product.title}</h3>
+                                <h3 className="font-serif text-3xl uppercase md:text-5xl">{primary}</h3>
+                                {secondary && (
+                                    <h4 className="font-serif text-xl uppercase opacity-50 md:text-3xl">{secondary}</h4>
+                                )}
                                 <p className="text-muted-foreground max-w-xl text-sm leading-7 md:text-base">
                                     {getDescription(product.description)}
                                 </p>
@@ -147,9 +152,6 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>
                             </Button>
-                            <p className="text-muted-foreground text-xs uppercase tracking-[0.24em]">
-                                Merchant curated. Live only when a sellable product is configured.
-                            </p>
                         </div>
                     </div>
                 </div>

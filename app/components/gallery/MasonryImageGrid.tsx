@@ -1,6 +1,7 @@
 import {useState, useEffect, useRef, useCallback} from "react";
 import {useNavigate} from "react-router";
 import {cn} from "~/lib/utils";
+import {parseProductTitle} from "~/lib/product";
 import {createResponsiveSizes, getGridImageConfig} from "~/lib/performance";
 import type {GalleryImageData} from "~/lib/gallery";
 
@@ -121,20 +122,21 @@ export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: Masonry
                         </div>
 
                         <div className="sleek absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 backdrop-blur-[1px] group-hover:translate-y-0">
-                            {image.productTitle?.includes(" + ") ? (
-                                <>
-                                    <p className="line-clamp-1 text-sm font-bold tracking-wide text-white drop-shadow-sm">
-                                        {image.productTitle.split(" + ")[0]}
-                                    </p>
-                                    <p className="line-clamp-1 text-xs font-medium tracking-wide text-white/90 drop-shadow-sm">
-                                        {image.productTitle.split(" + ")[1]}
-                                    </p>
-                                </>
-                            ) : (
-                                <p className="line-clamp-1 text-sm font-bold tracking-wide text-white drop-shadow-sm">
-                                    {image.productTitle}
-                                </p>
-                            )}
+                            {(() => {
+                                const {primary, secondary} = parseProductTitle(image.productTitle ?? "");
+                                return (
+                                    <>
+                                        <p className="line-clamp-1 text-sm font-bold tracking-wide text-white drop-shadow-sm">
+                                            {primary}
+                                        </p>
+                                        {secondary && (
+                                            <p className="line-clamp-1 text-xs font-medium tracking-wide text-white/90 drop-shadow-sm">
+                                                {secondary}
+                                            </p>
+                                        )}
+                                    </>
+                                );
+                            })()}
                             {image.collectionTitle && (
                                 <p className="mt-0.5 line-clamp-1 text-xs font-medium text-white/75">
                                     {image.collectionTitle}

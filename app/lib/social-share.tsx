@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {Facebook, Link as LinkIcon, X} from "lucide-react";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
+import {parseProductTitle} from "~/lib/product";
 
 type ShopifyMoney = {
     amount: string;
@@ -142,9 +143,7 @@ const XIcon = (props: {className?: string}) => {
 export const createShareData = (product: ShopifyProduct, currentUrl: string, shopName?: string): ShareData => {
     const firstImage = product.images?.edges?.[0]?.node;
     const firstVariant = product.variants?.edges?.[0]?.node;
-    const titleParts = product.title.trim().split(" + ");
-    const mainTitle = titleParts[0];
-    const subtitle = titleParts[1];
+    const {primary: mainTitle, secondary: subtitle} = parseProductTitle(product.title);
 
     return {
         title: mainTitle,

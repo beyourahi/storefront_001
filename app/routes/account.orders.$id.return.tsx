@@ -20,6 +20,7 @@ import {Checkbox} from "~/components/ui/checkbox";
 import {Separator} from "~/components/ui/separator";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {Clock, CheckCircle, XCircle, Info} from "lucide-react";
+import {parseProductTitle} from "~/lib/product";
 
 export const meta: Route.MetaFunction = ({data}) => {
     return [{title: `Return Request - Order ${data?.order?.name}`}];
@@ -261,6 +262,7 @@ type ReturnableItem = {
 
 const ReturnableItemCard = ({item}: {item: ReturnableItem}) => {
     const {lineItem, quantity: maxQuantity} = item;
+    const {primary, secondary} = parseProductTitle(lineItem.title);
 
     return (
         <Card>
@@ -282,7 +284,8 @@ const ReturnableItemCard = ({item}: {item: ReturnableItem}) => {
                     <div className="flex-1">
                         <CardTitle className="text-base">
                             <label htmlFor={`selected_${lineItem.id}`} className="cursor-pointer">
-                                {lineItem.title}
+                                {primary}
+                                {secondary && <span className="font-normal opacity-50 text-sm ml-1">{secondary}</span>}
                             </label>
                         </CardTitle>
                         {lineItem.variantTitle && <CardDescription>{lineItem.variantTitle}</CardDescription>}

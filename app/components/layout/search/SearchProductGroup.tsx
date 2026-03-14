@@ -1,5 +1,6 @@
 import {CommandGroup, CommandGroupHeading, CommandItem} from "~/components/ui/command";
 import {formatShopifyMoney} from "~/lib/product/currency";
+import {parseProductTitle} from "~/lib/product";
 
 type ShopifyMoney = {
     amount: string;
@@ -67,12 +68,12 @@ export const SearchProductGroup = ({products, onProductClick}: SearchProductGrou
                                 )}
                                 <div className="min-w-0 flex-1">
                                     {(() => {
-                                        const titleParts = product.title.trim().split(" + ");
+                                        const {primary, secondary} = parseProductTitle(product.title);
                                         return (
                                             <div className="truncate text-left">
-                                                <p className="text-sm font-medium">{titleParts[0]}</p>
-                                                {titleParts[1] && (
-                                                    <p className="opacity-50 text-xs font-normal">{titleParts[1]}</p>
+                                                <p className="text-sm font-medium">{primary}</p>
+                                                {secondary && (
+                                                    <p className="opacity-50 text-xs font-normal">{secondary}</p>
                                                 )}
                                             </div>
                                         );

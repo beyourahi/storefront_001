@@ -8,6 +8,7 @@ import {Button} from "~/components/ui/button";
 import {Spinner} from "~/components/ui/spinner";
 import {Alert, AlertDescription} from "~/components/ui/alert";
 import {useCartDrawer} from "~/hooks/useCartDrawer";
+import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
@@ -28,7 +29,7 @@ export function CartLineItem({line}: {line: CartLine}) {
     const [errorMessage, setErrorMessage] = useState("");
     const [warningMessage, setWarningMessage] = useState("");
 
-    const titleParts = product.title.trim().split(" + ");
+    const {primary: titlePrimary, secondary: titleSecondary} = parseProductTitle(product.title);
     const maxQuantity = Math.min(999, quantityAvailable || 999);
 
     // Child lines have a parentRelationship pointing to their parent cart line
@@ -90,7 +91,8 @@ export function CartLineItem({line}: {line: CartLine}) {
                         <CartLineDetails
                             id={id}
                             handle={product.handle}
-                            titleParts={titleParts}
+                            titlePrimary={titlePrimary}
+                            titleSecondary={titleSecondary}
                             variantTitle={variantTitle}
                             onNavigate={close}
                         />
@@ -170,13 +172,15 @@ function CartLineImage({
 function CartLineDetails({
     id,
     handle,
-    titleParts,
+    titlePrimary,
+    titleSecondary,
     variantTitle,
     onNavigate
 }: {
     id: string;
     handle: string;
-    titleParts: string[];
+    titlePrimary: string;
+    titleSecondary: string | null;
     variantTitle: string;
     onNavigate: () => void;
 }) {
@@ -190,9 +194,9 @@ function CartLineDetails({
                 aria-describedby={`cart-item-details-${id}`}
             >
                 <h4 id={`cart-item-${id}`} className="text-foreground text-sm font-medium">
-                    {titleParts[0]}
+                    {titlePrimary}
                 </h4>
-                {titleParts[1] && <h4 className="opacity-50 text-xs font-normal">{titleParts[1]}</h4>}
+                {titleSecondary && <h4 className="opacity-50 text-xs font-normal">{titleSecondary}</h4>}
             </Link>
             {variantTitle !== "Default Title" && <p className="text-muted-foreground text-sm">{variantTitle}</p>}
         </div>

@@ -12,6 +12,7 @@ import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {ViewOptionsSelector, type LayoutMode} from "~/components/search/ViewOptionsSelector";
 import {ProductPrice} from "~/components/search/ProductPrice";
 import {DiscountBadge} from "~/components/DiscountBadge";
+import {parseProductTitle} from "~/lib/product";
 import {useRecentSearches} from "~/hooks/useRecentSearches";
 import {getGridClassName, type GridColumns} from "~/lib/gridColumns";
 import {urlWithTrackingParams} from "~/lib/search/url-with-tracking";
@@ -757,14 +758,14 @@ function SearchProductItem({
     });
 
     const image = product.featuredImage;
-    const titleParts = product.title.trim().split(" + ");
+    const {primary, secondary} = parseProductTitle(product.title);
     const staggerDelay = Math.min(index, 11) * 40;
 
     const currentPrice = parseFloat(product.priceRange.minVariantPrice.amount);
     const compareAtPrice = parseFloat(product.compareAtPriceRange.minVariantPrice.amount);
     const hasDiscount = Number.isFinite(compareAtPrice) && compareAtPrice > currentPrice;
     const discountPercentage = hasDiscount ? Math.round((1 - currentPrice / compareAtPrice) * 100) : 0;
-    const hasSecondPart = titleParts.length > 1 && titleParts[1] && titleParts[1].trim() !== "";
+    const hasSecondPart = !!secondary;
     const aspectRatioClass =
         FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO === "portrait"
             ? "aspect-[4/5]"
@@ -804,8 +805,8 @@ function SearchProductItem({
 
                 <div className="min-w-0 flex-1">
                     <h3 className="truncate font-serif text-base font-semibold leading-snug text-foreground md:text-lg">
-                        <span>{titleParts[0]}</span>
-                        {titleParts[1] && <span className="text-muted-foreground">, {titleParts[1]}</span>}
+                        <span>{primary}</span>
+                        {secondary && <span className="text-muted-foreground">, {secondary}</span>}
                     </h3>
                     <div className="mt-1 font-mono font-bold tabular-nums tracking-tight antialiased text-foreground text-sm md:text-base">
                         <ProductPrice

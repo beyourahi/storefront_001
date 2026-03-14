@@ -1,4 +1,5 @@
 import {useMemo} from "react";
+import {parseProductTitle} from "~/lib/product";
 
 type ProductCardTitleProps = {
     productTitle: string;
@@ -7,7 +8,7 @@ type ProductCardTitleProps = {
 };
 
 export const ProductCardTitle = ({productTitle, viewMode = "grid3", searchMode = false}: ProductCardTitleProps) => {
-    const parts = useMemo(() => productTitle.trim().split(" + "), [productTitle]);
+    const {primary, secondary} = useMemo(() => parseProductTitle(productTitle), [productTitle]);
 
     const titleFontSize = useMemo(() => {
         if (searchMode) {
@@ -71,8 +72,8 @@ export const ProductCardTitle = ({productTitle, viewMode = "grid3", searchMode =
 
     return (
         <div>
-            <h3 className={`text-foreground font-serif font-semibold ${titleFontSize.primary}`}>{parts[0]}</h3>
-            {parts[1] && <h3 className={`text-foreground opacity-50 font-serif font-normal ${titleFontSize.secondary}`}>{parts[1]}</h3>}
+            <h3 className={`text-foreground font-serif font-semibold ${titleFontSize.primary}`}>{primary}</h3>
+            {secondary && <h3 className={`text-foreground opacity-50 font-serif font-normal ${titleFontSize.secondary}`}>{secondary}</h3>}
         </div>
     );
 };

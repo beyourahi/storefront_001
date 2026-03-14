@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {formatShopifyMoney, getZeroPrice} from "~/lib/currency-formatter";
-import {selectBestVariant} from "~/lib/product";
+import {selectBestVariant, parseProductTitle} from "~/lib/product";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import type {ShopifyProduct, ShopifyProductVariant} from "~/lib/types/product-card";
 import {cn} from "~/lib/utils";
@@ -316,7 +316,7 @@ function ProductVariantDialogContent({
     const productImages = useMemo(() => product.images.edges.map(edge => edge.node), [product.images.edges]);
     const hasRealVariants = useMemo(() => hasProductMultipleVariants(allVariants), [allVariants]);
     const hasRealOptions = useMemo(() => hasRealVariants && product.options.length > 0, [hasRealVariants, product.options.length]);
-    const titleParts = useMemo(() => product.title.trim().split(" + "), [product.title]);
+    const {primary: titlePrimary, secondary: titleSecondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
 
     useEffect(() => {
@@ -634,11 +634,11 @@ function ProductVariantDialogContent({
                                         <div className="min-w-0 flex-1">
                                             <div className="mb-1 sm:mb-1.5">
                                                 <h2 className="text-foreground text-base leading-tight font-semibold tracking-tight 2xl:text-lg">
-                                                    {titleParts[0]}
+                                                    {titlePrimary}
                                                 </h2>
-                                                {titleParts[1] ? (
+                                                {titleSecondary ? (
                                                     <h3 className="text-muted-foreground mt-1 text-xs font-semibold 2xl:text-sm">
-                                                        {titleParts[1]}
+                                                        {titleSecondary}
                                                     </h3>
                                                 ) : null}
                                             </div>

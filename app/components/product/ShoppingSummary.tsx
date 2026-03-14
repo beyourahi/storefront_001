@@ -4,6 +4,7 @@ import {ShoppingCart} from "lucide-react";
 import {Skeleton} from "~/components/ui/skeleton";
 import {Spinner} from "~/components/ui/spinner";
 import type {RootLoader} from "~/root";
+import {parseProductTitle} from "~/lib/product";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
 type ShoppingSummaryProps = {
@@ -95,11 +96,11 @@ const SummaryContent = ({
                     <div className="flex items-center gap-1">
                         <div className="flex flex-col">
                             {(() => {
-                                const titleParts = product.title.trim().split(" + ");
+                                const {primary, secondary} = parseProductTitle(product.title);
                                 return (
                                     <>
-                                        <span className="text-foreground">Adding: {titleParts[0]}</span>
-                                        {titleParts[1] && <span className="opacity-50 text-xs">{titleParts[1]}</span>}
+                                        <span className="text-foreground">Adding: {primary}</span>
+                                        {secondary && <span className="opacity-50 text-xs">{secondary}</span>}
                                     </>
                                 );
                             })()}

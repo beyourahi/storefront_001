@@ -9,6 +9,7 @@ import {formatShopifyMoney} from "~/lib/currency-formatter";
 import {getOrderStatusVariant, formatOrderStatus} from "~/lib/order-status";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 import {ArrowLeftIcon} from "lucide-react";
+import {parseProductTitle} from "~/lib/product";
 
 export const meta: Route.MetaFunction = ({data}) => {
     const orderName = data?.order?.name ?? "Order";
@@ -82,12 +83,12 @@ const OrderDetailPage = () => {
                         )}
                         <div className="flex flex-1 flex-col justify-center gap-1">
                             {(() => {
-                                const titleParts = item.title.trim().split(" + ");
+                                const {primary, secondary} = parseProductTitle(item.title);
                                 return (
                                     <>
-                                        <p className="font-medium">{titleParts[0]}</p>
-                                        {titleParts[1] && (
-                                            <p className="opacity-50 text-sm font-normal">{titleParts[1]}</p>
+                                        <p className="font-medium">{primary}</p>
+                                        {secondary && (
+                                            <p className="opacity-50 text-sm font-normal">{secondary}</p>
                                         )}
                                     </>
                                 );

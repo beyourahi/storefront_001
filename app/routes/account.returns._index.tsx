@@ -17,6 +17,7 @@ import {
     ShoppingBagIcon
 } from "lucide-react";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+import {parseProductTitle} from "~/lib/product";
 
 export const meta: Route.MetaFunction = () => {
     return [{title: "Returns History"}];
@@ -215,6 +216,7 @@ const ReturnCard = ({returnItem, index: _index = 0}: {returnItem: ReturnWithOrde
     const statusConfig = getReturnStatusConfig(returnItem.status);
     const lineItems = returnItem.returnLineItems.nodes;
     const firstItem = lineItems[0];
+    const firstItemTitle = firstItem ? parseProductTitle(firstItem.lineItem.title) : null;
     const totalQuantity = lineItems.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
@@ -281,9 +283,12 @@ const ReturnCard = ({returnItem, index: _index = 0}: {returnItem: ReturnWithOrde
                             <PackageIcon className="size-3.5 shrink-0" />
                             Order {returnItem.order.name}
                         </p>
-                        {firstItem && (
+                        {firstItem && firstItemTitle && (
                             <p className="text-base font-semibold text-foreground truncate pt-1">
-                                {firstItem.lineItem.title}
+                                {firstItemTitle.primary}
+                                {firstItemTitle.secondary && (
+                                    <span className="font-normal opacity-50 text-sm"> {firstItemTitle.secondary}</span>
+                                )}
                                 {lineItems.length > 1 && (
                                     <span className="text-muted-foreground font-normal text-sm">
                                         {" "}

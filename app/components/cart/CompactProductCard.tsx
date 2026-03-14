@@ -7,6 +7,7 @@ import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {cn} from "~/lib/utils";
 import {getProductDataForCard} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
+import {parseProductTitle} from "~/lib/product";
 import type {CompactProductCardProps} from "~/lib/types/product-card";
 
 export function CompactProductCard({product, className = "", onCartAdd, onProductClick}: CompactProductCardProps) {
@@ -14,12 +15,11 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
     const {price, compareAtPrice, discountPercentage, image: productImage} = productData;
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
 
-    const titleParts = useMemo(() => product.title.trim().split(" + "), [product.title]);
+    const {primary, secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
     const truncatedFirstPart = useMemo(() => {
-        const firstPart = titleParts[0] ?? "";
-        if (firstPart.length > 20) return `${firstPart.substring(0, 20)}...`;
-        return firstPart;
-    }, [titleParts]);
+        if (primary.length > 20) return `${primary.substring(0, 20)}...`;
+        return primary;
+    }, [primary]);
 
     const handleProductClick = () => {
         onProductClick?.();
@@ -75,9 +75,9 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                             <div className="text-foreground font-serif text-xs leading-tight font-semibold">
                                 {truncatedFirstPart}
                             </div>
-                            {titleParts[1] && (
+                            {secondary && (
                                 <div className="opacity-50 font-serif text-[10px] leading-tight font-normal truncate mt-0.5">
-                                    {titleParts[1]}
+                                    {secondary}
                                 </div>
                             )}
                         </button>

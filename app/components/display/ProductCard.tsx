@@ -9,6 +9,7 @@ import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
 import {getProductDataForCard} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
+import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
 import type {UnifiedProductCardProps} from "~/lib/types/product-card";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
@@ -19,11 +20,8 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
     const {price, compareAtPrice, discountPercentage, image: productImage, priceRange} = productData;
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
 
-    const titleParts = useMemo(() => product.title.trim().split(" + "), [product.title]);
-    const hasSecondPart = useMemo(
-        () => titleParts.length > 1 && titleParts[1] && titleParts[1].trim() !== "",
-        [titleParts]
-    );
+    const {secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
+    const hasSecondPart = !!secondary;
 
     const aspectRatioClass = useMemo(() => {
         switch (FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO as string) {
