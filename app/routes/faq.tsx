@@ -3,7 +3,7 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {useFaqItems} from "~/lib/site-content-context";
-import {createFAQSchema} from "~/lib/structured-data";
+import {generateFAQPageSchema} from "~/lib/seo";
 
 export const meta: Route.MetaFunction = () => {
     return getSeoMeta({title: "FAQ"}) ?? [];
@@ -16,13 +16,12 @@ export default function FAQ() {
         throw new Response("Not Found", {status: 404});
     }
 
-    const faqSchema = createFAQSchema(faqItems);
+    const faqSchema = generateFAQPageSchema(faqItems);
 
     return (
         <div className="min-h-dvh bg-primary">
-            {faqSchema && (
-                <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(faqSchema)}} />
-            )}
+            {/* FAQ schema JSON-LD — content is from trusted Shopify metaobject data, safe to serialize */}
+            <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(faqSchema)}} />
 
             <AnimatedSection animation="fade" threshold={0.08}>
                 <section className="pt-32 pb-12 sm:pt-40 sm:pb-16 md:pb-24 lg:pb-32">

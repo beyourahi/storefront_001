@@ -22,7 +22,7 @@ import {
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateDiscount, formatShopifyMoney} from "~/lib/currency-formatter";
 import {formatProductTitleForMeta} from "~/lib/product";
-import {createProductSchema} from "~/lib/structured-data";
+import {generateProductSchema} from "~/lib/seo";
 import {parseSizeChart} from "~/lib/size-chart";
 import {SizeChartButton} from "~/components/product/SizeChartButton";
 import {useRecentlyViewedContext} from "~/components/RecentlyViewedProvider";
@@ -66,7 +66,7 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
 
     const url = siteUrl ? `${siteUrl}/products/${product.handle}` : `/products/${product.handle}`;
 
-    const seoMeta =
+    return (
         getSeoMeta({
             title: `${title} | ${shopName}`,
             description,
@@ -79,12 +79,10 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       altText: image.altText || product.title,
                       type: "image" as const
                   }
-                : undefined
-        }) ?? [];
-
-    const productSchema = createProductSchema(product, url);
-
-    return [...seoMeta, {"script:ld+json": JSON.stringify(productSchema)}];
+                : undefined,
+            jsonLd: generateProductSchema(product, variant) as any
+        }) ?? []
+    );
 };
 
 export const loader = async (args: Route.LoaderArgs) => {

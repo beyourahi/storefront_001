@@ -46,7 +46,7 @@ import {ServiceWorkerUpdateBanner} from "~/components/pwa/ServiceWorkerUpdateBan
 import {NetworkStatusIndicator} from "~/components/NetworkStatusIndicator";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
-import {createWebSiteSchema, getSeoDefaults} from "~/lib/structured-data";
+import {generateWebsiteSchema, getSeoDefaults} from "~/lib/seo";
 import appCss from "./styles/app.css?url";
 
 export type RootLoader = typeof loader;
@@ -152,10 +152,7 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
         siteContent.themeConfig.borderRadius
     );
     const hasBlog = (blogData as any)?.articles?.nodes?.length > 0;
-    const websiteSchema = createWebSiteSchema(
-        siteContent.siteSettings.brandName || "Store",
-        siteContent.siteSettings.siteUrl || requestUrl.origin
-    );
+    const websiteSchema = generateWebsiteSchema(siteContent.siteSettings);
     const shippingConfig = parseShippingConfig(shopData?.shop?.freeShippingThreshold?.value);
 
     const menuCollections =

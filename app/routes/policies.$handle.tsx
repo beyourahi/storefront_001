@@ -4,7 +4,7 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import type {Shop} from "@shopify/hydrogen/storefront-api-types";
 import {LegalPageLayout} from "~/components/legal";
 import {POLICY_CONTENT_QUERY} from "~/lib/queries/policy";
-import {getBrandNameFromMatches} from "~/lib/structured-data";
+import {getBrandNameFromMatches} from "~/lib/seo";
 import {kebabToCamelCase} from "~/lib/string-utils";
 
 type PolicyKey = keyof Pick<Shop, "privacyPolicy" | "shippingPolicy" | "termsOfService" | "refundPolicy">;

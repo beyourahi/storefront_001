@@ -4,7 +4,7 @@ import {Image, getSeoMeta} from "@shopify/hydrogen";
 import {ArrowLeft} from "lucide-react";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateReadingTime, formatArticleDate, filterRelatedArticles} from "~/lib/blog-utils";
-import {createBlogPostingSchema} from "~/lib/structured-data";
+import {generateBlogPostingSchema} from "~/lib/seo";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {TagList} from "~/components/blog/TagBadge";
 import {ShareButtons} from "~/components/blog/ShareButtons";
@@ -25,12 +25,6 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
         )?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const article = data?.article;
     const blogHandle = data?.blogHandle;
-    const siteUrl =
-        (
-            matches.find(m => m?.id === "root") as
-                | {data?: {siteContent?: {siteSettings?: {siteUrl?: string}}}}
-                | undefined
-        )?.data?.siteContent?.siteSettings?.siteUrl ?? "";
 
     if (!article) return [{title: `Article Not Found | ${shopName}`}];
 
@@ -50,7 +44,7 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       type: "image" as const
                   }
                 : undefined,
-            jsonLd: createBlogPostingSchema(article, blogHandle || "news", shopName, siteUrl) as any
+            jsonLd: generateBlogPostingSchema(article, blogHandle || "news", shopName) as any
         }) ?? []
     );
 };
