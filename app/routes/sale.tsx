@@ -15,6 +15,7 @@ import {
     getCanonicalRedirect
 } from "~/lib/collection-route-helpers";
 import {sortProductsByDiscount} from "~/lib/product-sorting";
+import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 
 export const meta: Route.MetaFunction = ({data}) => {
     const maxDiscount = data?.maxDiscount ?? 0;
@@ -85,6 +86,7 @@ export default function Sale() {
 
     return (
         <div className="min-h-dvh bg-background text-foreground">
+            <PageBreadcrumbs customTitle="Special Offers" />
             {/* Hero Section */}
             <AnimatedSection animation="fade" threshold={0.08}>
                 <div className="pt-24 sm:pt-32">
