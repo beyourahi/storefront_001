@@ -1,47 +1,20 @@
 import {useState, useEffect, useMemo} from "react";
 import {useLocation} from "react-router";
+import type {ProductFragment} from "storefrontapi.generated";
 import {parseProductTitle} from "~/lib/product";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from "~/components/ui/dialog";
 import {SharePlatformButton} from "~/components/product/SharePlatformButton";
 import {createShareData, getSocialSharePlatforms, createShareAnalytics, trackShareEvent} from "~/lib/social-share";
 
-type ShopifyMoney = {amount: string; currencyCode: string};
-
-type ShopifyProductImage = {
-    id: string;
-    url: string;
-    altText: string | null;
-    width: number;
-    height: number;
-};
-
-type ProductShareDialogProduct = {
-    id: string;
-    title: string;
-    handle: string;
-    description: string;
-    tags: string[];
-    vendor: string;
-    productType: string;
-    availableForSale: boolean;
-    options: Array<{id: string; name: string; values: string[]}>;
-    variants: {edges: Array<{node: any}>};
-    images: {edges: Array<{node: ShopifyProductImage}>};
-    priceRange: {
-        minVariantPrice: ShopifyMoney;
-        maxVariantPrice: ShopifyMoney;
-    };
-    seo: {title: string | null; description: string | null};
-};
-
 type ProductShareDialogProps = {
-    product: ProductShareDialogProduct;
+    product: Pick<ProductFragment, "id" | "title" | "handle" | "description" | "images">;
+    variant: ProductFragment["selectedOrFirstAvailableVariant"];
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     shopName?: string;
 };
 
-export const ProductShareDialog = ({product, open = false, onOpenChange, shopName}: ProductShareDialogProps) => {
+export const ProductShareDialog = ({product, variant, open = false, onOpenChange, shopName}: ProductShareDialogProps) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const location = useLocation();
 
@@ -52,13 +25,13 @@ export const ProductShareDialog = ({product, open = false, onOpenChange, shopNam
     }, [open]);
 
     const currentUrl = typeof window !== "undefined" ? window.location.href : `${location.pathname}`;
-    const shareData = useMemo(() => createShareData(product, currentUrl, shopName), [product, currentUrl, shopName]);
+    const shareData = useMemo(() => createShareData(product, variant, currentUrl, shopName), [product, variant, currentUrl, shopName]);
     const platforms = useMemo(() => getSocialSharePlatforms(), []);
-    const firstImage = product.images?.edges?.[0]?.node;
+    const firstImage = product.images?.nodes?.[0];
     const {primary, secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
 
     const handleShare = (platformId: string) => {
-        const analytics = createShareAnalytics(platformId, product);
+        const analytics = createShareAnalytics(platformId, product.id, product.handle);
         void trackShareEvent(analytics);
     };
 
@@ -99,9 +72,11 @@ export const ProductShareDialog = ({product, open = false, onOpenChange, shopNam
                                         {secondary}
                                     </p>
                                 )}
-                                <p className="text-muted-foreground mt-1 text-left text-xs">
-                                    {shareData.price} {shareData.currency}
-                                </p>
+                                {shareData.price && (
+                                    <p className="text-muted-foreground mt-1 text-left text-xs">
+                                        {shareData.price}
+                                    </p>
+                                )}
                                 {shopName && <p className="text-muted-foreground text-left text-xs">by {shopName}</p>}
                             </div>
                         </div>

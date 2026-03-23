@@ -1,27 +1,12 @@
 import {useState, useCallback} from "react";
 import {Loader2} from "lucide-react";
 import {Button} from "~/components/ui/button";
-import {openShareWindow} from "~/lib/social-share";
-
-type ShareData = {
-    title: string;
-    description: string;
-    url: string;
-    imageUrl?: string;
-    price?: string;
-    currency?: string;
-    shopName?: string;
-};
-
-type SocialSharePlatform = {
-    id: string;
-    name: string;
-    icon: React.ComponentType<{className?: string}>;
-    color: string;
-    url: (shareData: ShareData) => string;
-    isNative?: boolean;
-    customHandler?: (shareData: ShareData, onSuccess?: () => void, onError?: () => void) => Promise<void>;
-};
+import {
+    openShareWindow,
+    PLATFORM_COLORS,
+    type ShareData,
+    type SocialSharePlatform
+} from "~/lib/social-share";
 
 type SharePlatformButtonProps = {
     platform: SocialSharePlatform;
@@ -83,7 +68,7 @@ export const SharePlatformButton = ({platform, shareData, loading = false, onSha
             <div
                 className="flex h-8 w-8 items-center justify-center rounded-md sleek"
                 style={{
-                    backgroundColor: showSuccess ? "rgb(34, 197, 94)" : showError ? "rgb(239, 68, 68)" : platform.color
+                    backgroundColor: showSuccess ? "rgb(34, 197, 94)" : showError ? "rgb(239, 68, 68)" : PLATFORM_COLORS[platform.id as keyof typeof PLATFORM_COLORS] || "rgb(107, 114, 128)"
                 }}
             >
                 {loading || isLoading ? (

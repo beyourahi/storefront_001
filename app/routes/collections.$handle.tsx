@@ -1,7 +1,7 @@
 import {redirect, useLoaderData, useRouteError, isRouteErrorResponse} from "react-router";
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
-import type {Route} from "./+types/collections.$collectionHandle";
+import type {Route} from "./+types/collections.$handle";
 import {Analytics, getSeoMeta} from "@shopify/hydrogen";
 import {CollectionHero} from "~/components/sections/CollectionHero";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
@@ -60,7 +60,7 @@ export const meta: Route.MetaFunction = ({data}) => {
 };
 
 export const loader = async ({context, params, request}: Route.LoaderArgs) => {
-    const {collectionHandle: handle} = params;
+    const {handle} = params;
     const {dataAdapter} = context;
     const url = new URL(request.url);
 

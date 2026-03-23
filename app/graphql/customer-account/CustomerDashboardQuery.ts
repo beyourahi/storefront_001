@@ -17,6 +17,7 @@
  *
  * @related
  * - app/routes/account.tsx - Uses this query to load dashboard data in parent layout
+ * - app/components/OrderHistorySection.tsx - Displays the order preview cards
  *
  * @notes
  * Customer details (name, email, addresses) are already loaded by the parent account

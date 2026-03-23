@@ -2,12 +2,12 @@ import {useState, useEffect, useMemo, useRef} from "react";
 import {Link, useFetcher} from "react-router";
 import type {MetaFunction} from "react-router";
 import {useWishlist} from "~/lib/wishlist-context";
-import {reconstructGid} from "~/lib/wishlist-utils";
+import {reconstructGid, generateShareableWishlistUrl} from "~/lib/wishlist-utils";
 import {WishlistButton} from "~/components/WishlistButton";
 import {CartForm} from "@shopify/hydrogen";
 import type {CurrencyCode} from "@shopify/hydrogen/storefront-api-types";
 import {HiViewGrid, HiViewList, HiTrash, HiShare, HiShoppingCart} from "react-icons/hi";
-import {ShareDialog} from "~/lib/social-share";
+import {ShareDialog} from "~/components/ShareDialog";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
 
@@ -87,7 +87,7 @@ const ConfirmDialog = ({
 };
 
 const AccountWishlist = () => {
-    const {wishlistIds, count, clearAll} = useWishlist();
+    const {ids, count, clear} = useWishlist();
     const fetcher = useFetcher<{products: WishlistProduct[]}>();
     const requestedWishlistKeyRef = useRef<string | null>(null);
 
@@ -136,18 +136,18 @@ const AccountWishlist = () => {
     }, [columns]);
 
     useEffect(() => {
-        if (wishlistIds.length === 0) {
+        if (ids.length === 0) {
             requestedWishlistKeyRef.current = null;
             return;
         }
 
-        const wishlistKey = wishlistIds.join(",");
+        const wishlistKey = ids.join(",");
         if (requestedWishlistKeyRef.current === wishlistKey) {
             return;
         }
 
         requestedWishlistKeyRef.current = wishlistKey;
-        const gids = wishlistIds.map(id => reconstructGid(id));
+        const gids = ids.map(id => reconstructGid(id));
 
         void fetcher.submit(
             {ids: gids},
@@ -157,7 +157,7 @@ const AccountWishlist = () => {
                 encType: "application/json"
             }
         );
-    }, [wishlistIds, fetcher]);
+    }, [ids, fetcher]);
 
     const products = useMemo(() => {
         if (!fetcher.data?.products) return [];
@@ -166,8 +166,8 @@ const AccountWishlist = () => {
 
         if (sortBy === "date-added") {
             return productList.sort((a, b) => {
-                const aIndex = wishlistIds.indexOf(a.id.split("/").pop() || "");
-                const bIndex = wishlistIds.indexOf(b.id.split("/").pop() || "");
+                const aIndex = ids.indexOf(parseInt(a.id.split("/").pop() || "0", 10));
+                const bIndex = ids.indexOf(parseInt(b.id.split("/").pop() || "0", 10));
                 return aIndex - bIndex;
             });
         }
@@ -187,15 +187,15 @@ const AccountWishlist = () => {
         }
 
         return productList;
-    }, [fetcher, sortBy, wishlistIds]);
+    }, [fetcher, sortBy, ids]);
 
     const handleClearAll = () => {
-        clearAll();
+        clear();
         setShowClearDialog(false);
     };
 
     const shareUrl =
-        typeof window !== "undefined" ? `${window.location.origin}/wishlist/share?ids=${wishlistIds.join(",")}` : "";
+        typeof window !== "undefined" ? generateShareableWishlistUrl(window.location.origin, ids) : "";
 
     const isLoading = fetcher.state === "loading" || fetcher.state === "submitting";
 
@@ -336,7 +336,7 @@ const AccountWishlist = () => {
                         <div className={gridClass}>
                             {Array.from({length: count}).map((_, i) => (
                                 <div
-                                    key={wishlistIds[i] ?? `wishlist-loading-${i}`}
+                                    key={ids[i] ?? `wishlist-loading-${i}`}
                                     className="bg-muted aspect-square animate-pulse rounded-lg"
                                 />
                             ))}

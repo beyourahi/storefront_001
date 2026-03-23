@@ -9,10 +9,12 @@ import type {
     FAQItem,
     InstagramMedia,
     HeroMedia,
+    ThemeFonts,
+    ThemeCoreColors,
     ThemeConfig
-} from "~/lib/metaobject-parsers";
+} from "types";
+import type {GeneratedTheme} from "~/lib/theme-utils";
 import {DEFAULT_SITE_SETTINGS, DEFAULT_THEME_CONFIG} from "~/lib/metaobject-parsers";
-import type {ThemeFonts, ThemeCoreColors, GeneratedTheme} from "~/lib/theme-utils";
 import {generateTheme} from "~/lib/theme-utils";
 import {getSwatchBorderColor, getSmartSwatchBorderColor} from "~/lib/color";
 

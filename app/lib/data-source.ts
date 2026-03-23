@@ -29,20 +29,20 @@ export function createDataAdapter(storefront: StorefrontLike, env: EnvLike): Dat
 }
 
 function validateShopifyEnv(env: EnvLike): void {
-    if (!import.meta.env.DEV) {
-        return;
-    }
-
     const domain = env.PUBLIC_STORE_DOMAIN?.trim();
     const token = env.PUBLIC_STOREFRONT_API_TOKEN?.trim();
 
     if (!domain || !token) {
-        console.warn("[DataAdapter] Missing PUBLIC_STORE_DOMAIN or PUBLIC_STOREFRONT_API_TOKEN");
+        if (import.meta.env.DEV) {
+            console.warn("[DataAdapter] Missing PUBLIC_STORE_DOMAIN or PUBLIC_STOREFRONT_API_TOKEN");
+        }
         return;
     }
 
     if (!DOMAIN_PATTERN.test(domain) || !TOKEN_PATTERN.test(token)) {
-        console.warn("[DataAdapter] PUBLIC_STORE_DOMAIN or PUBLIC_STOREFRONT_API_TOKEN appear invalid");
+        if (import.meta.env.DEV) {
+            console.warn("[DataAdapter] Invalid PUBLIC_STORE_DOMAIN or PUBLIC_STOREFRONT_API_TOKEN format");
+        }
     }
 }
 

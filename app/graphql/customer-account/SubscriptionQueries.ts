@@ -1,3 +1,42 @@
+/**
+ * @fileoverview Subscription Contract Queries and Types
+ *
+ * @description
+ * Provides GraphQL queries and fragments for managing subscription contracts
+ * via the Customer Account API. Supports listing subscriptions, viewing details,
+ * and formatting billing information for display.
+ *
+ * @api Customer Account API (requires authentication)
+ *
+ * @subscription-features
+ * - List all customer subscriptions with pagination
+ * - Get single subscription with full details
+ * - Upcoming billing cycles
+ * - Order history for subscription
+ * - Billing and delivery policies
+ *
+ * @related
+ * - account.subscriptions._index.tsx - Subscription list page
+ * - account.subscriptions.$id.tsx - Subscription detail page
+ * - SubscriptionMutations.ts - Pause, resume, cancel actions
+ * - SellingPlanSelector.tsx - Subscribe option on product pages
+ *
+ * @see https://shopify.dev/docs/api/customer/latest/objects/SubscriptionContract
+ */
+
+// =============================================================================
+// FRAGMENTS
+// =============================================================================
+
+/**
+ * Subscription line item fragment.
+ *
+ * Contains product info for items in the subscription:
+ * - Product details (name, title, variant, SKU)
+ * - Quantity
+ * - Pricing (current and discounted)
+ * - Product image
+ */
 export const SUBSCRIPTION_LINE_FRAGMENT = `#graphql
   fragment SubscriptionLine on SubscriptionLine {
     id
@@ -23,6 +62,7 @@ export const SUBSCRIPTION_LINE_FRAGMENT = `#graphql
   }
 ` as const;
 
+// Fragment for subscription billing policy
 export const SUBSCRIPTION_BILLING_POLICY_FRAGMENT = `#graphql
   fragment SubscriptionBillingPolicy on SubscriptionBillingPolicy {
     interval
@@ -34,6 +74,7 @@ export const SUBSCRIPTION_BILLING_POLICY_FRAGMENT = `#graphql
   }
 ` as const;
 
+// Fragment for subscription delivery policy
 export const SUBSCRIPTION_DELIVERY_POLICY_FRAGMENT = `#graphql
   fragment SubscriptionDeliveryPolicy on SubscriptionDeliveryPolicy {
     interval
@@ -43,6 +84,7 @@ export const SUBSCRIPTION_DELIVERY_POLICY_FRAGMENT = `#graphql
   }
 ` as const;
 
+// Fragment for upcoming billing cycle
 export const SUBSCRIPTION_BILLING_CYCLE_FRAGMENT = `#graphql
   fragment SubscriptionBillingCycle on SubscriptionBillingCycle {
     cycleIndex
@@ -54,6 +96,7 @@ export const SUBSCRIPTION_BILLING_CYCLE_FRAGMENT = `#graphql
   }
 ` as const;
 
+// Fragment for full subscription contract
 export const SUBSCRIPTION_CONTRACT_FRAGMENT = `#graphql
   fragment SubscriptionContract on SubscriptionContract {
     id
@@ -92,6 +135,7 @@ export const SUBSCRIPTION_CONTRACT_FRAGMENT = `#graphql
   ${SUBSCRIPTION_BILLING_CYCLE_FRAGMENT}
 ` as const;
 
+// Query for listing customer's subscription contracts
 export const CUSTOMER_SUBSCRIPTIONS_QUERY = `#graphql
   query CustomerSubscriptions(
     $first: Int
@@ -151,6 +195,7 @@ export const CUSTOMER_SUBSCRIPTIONS_QUERY = `#graphql
   }
 ` as const;
 
+// Query for a single subscription contract by ID
 export const CUSTOMER_SUBSCRIPTION_QUERY = `#graphql
   query CustomerSubscription($id: ID!, $language: LanguageCode) @inContext(language: $language) {
     customer {
@@ -179,6 +224,16 @@ export const CUSTOMER_SUBSCRIPTION_QUERY = `#graphql
   ${SUBSCRIPTION_CONTRACT_FRAGMENT}
 ` as const;
 
+// =============================================================================
+// DISPLAY HELPERS
+// =============================================================================
+
+/**
+ * Subscription status configuration for UI display.
+ *
+ * Maps status codes to human-readable labels and UI variants
+ * for consistent badge/tag styling across the app.
+ */
 export const SUBSCRIPTION_STATUSES = {
     ACTIVE: {label: "Active", variant: "default" as const},
     PAUSED: {label: "Paused", variant: "secondary" as const},
@@ -189,6 +244,7 @@ export const SUBSCRIPTION_STATUSES = {
 
 export type SubscriptionStatus = keyof typeof SUBSCRIPTION_STATUSES;
 
+// Billing interval display names
 export const BILLING_INTERVALS = {
     DAY: "day",
     WEEK: "week",
@@ -198,10 +254,16 @@ export const BILLING_INTERVALS = {
 
 export type BillingInterval = keyof typeof BILLING_INTERVALS;
 
-export const formatBillingFrequency = (
+/**
+ * Format billing frequency for display
+ * e.g., "Every 2 weeks" or "Monthly"
+ * @param interval - The billing interval (DAY, WEEK, MONTH, YEAR)
+ * @param intervalCount - Either a number or { count: number } object from GraphQL
+ */
+export function formatBillingFrequency(
     interval: string,
     intervalCount: number | {count: number} | null | undefined
-): string => {
+): string {
     const intervalLower = interval.toLowerCase();
     const count = typeof intervalCount === "object" ? (intervalCount?.count ?? 1) : (intervalCount ?? 1);
 
@@ -221,4 +283,4 @@ export const formatBillingFrequency = (
     }
 
     return `Every ${count} ${intervalLower}s`;
-};
+}

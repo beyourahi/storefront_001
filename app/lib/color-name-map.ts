@@ -1,4 +1,53 @@
+/**
+ * @fileoverview Color Name to Hex Mapping Utility
+ *
+ * @description
+ * Provides a comprehensive mapping of common color names to their HEX values
+ * for use in product variant color swatches. This utility enables color swatch
+ * rendering when Shopify swatch data isn't available in the product fragment.
+ *
+ * @usage
+ * ```typescript
+ * import { getColorHex, isColorOption } from '~/lib/color-name-map';
+ *
+ * // Check if an option is a color type
+ * if (isColorOption(optionName)) {
+ *   const hex = getColorHex(optionValue);
+ *   // hex will be the color or undefined if not found
+ * }
+ * ```
+ *
+ * @architecture
+ * - Primary color map covers ~150 common color names
+ * - Supports case-insensitive matching
+ * - Handles common variations (Gray/Grey, etc.)
+ * - Includes brand-specific colors if needed
+ *
+ * @related
+ * - QuickAddDialog.tsx - Uses this for variant swatch display
+ * - QuickAddSheet.tsx - Uses this for variant swatch display
+ * - ColorSwatch.tsx - Unified swatch component
+ *
+ * @maintenance
+ * Add new color mappings as needed when new products are added.
+ * Color values should be in standard HEX format (#RRGGBB).
+ */
+
+// =============================================================================
+// COLOR NAME TO HEX MAPPING
+// =============================================================================
+
+/**
+ * Comprehensive mapping of color names to HEX values
+ *
+ * Organized by color family for easier maintenance.
+ * All keys are lowercase for case-insensitive matching.
+ * Uses standard web colors plus common fashion/retail color names.
+ */
 const COLOR_MAP: Record<string, string> = {
+    // -------------------------------------------------------------------------
+    // Neutrals
+    // -------------------------------------------------------------------------
     white: "#FFFFFF",
     "off-white": "#FAF9F6",
     "off white": "#FAF9F6",
@@ -13,6 +62,9 @@ const COLOR_MAP: Record<string, string> = {
     oatmeal: "#D3C7A6",
     bone: "#E3DAC9",
 
+    // -------------------------------------------------------------------------
+    // Blacks & Grays
+    // -------------------------------------------------------------------------
     black: "#000000",
     charcoal: "#36454F",
     graphite: "#383838",
@@ -35,6 +87,9 @@ const COLOR_MAP: Record<string, string> = {
     "heather gray": "#9EAEB0",
     "heather grey": "#9EAEB0",
 
+    // -------------------------------------------------------------------------
+    // Blues
+    // -------------------------------------------------------------------------
     blue: "#0000FF",
     navy: "#000080",
     "navy blue": "#000080",
@@ -70,6 +125,9 @@ const COLOR_MAP: Record<string, string> = {
     periwinkle: "#CCCCFF",
     cadet: "#5F9EA0",
 
+    // -------------------------------------------------------------------------
+    // Greens
+    // -------------------------------------------------------------------------
     green: "#008000",
     "dark green": "#006400",
     darkgreen: "#006400",
@@ -98,6 +156,7 @@ const COLOR_MAP: Record<string, string> = {
     armygreen: "#4B5320",
     seafoam: "#71EEB8",
     "sea foam": "#71EEB8",
+    // teal is already defined in Blues section
     chartreuse: "#7FFF00",
     avocado: "#568203",
     pistachio: "#93C572",
@@ -105,6 +164,9 @@ const COLOR_MAP: Record<string, string> = {
     "kelly green": "#4CBB17",
     kellygreen: "#4CBB17",
 
+    // -------------------------------------------------------------------------
+    // Reds
+    // -------------------------------------------------------------------------
     red: "#FF0000",
     "dark red": "#8B0000",
     darkred: "#8B0000",
@@ -131,6 +193,9 @@ const COLOR_MAP: Record<string, string> = {
     garnet: "#733635",
     merlot: "#730039",
 
+    // -------------------------------------------------------------------------
+    // Pinks
+    // -------------------------------------------------------------------------
     pink: "#FFC0CB",
     "light pink": "#FFB6C1",
     lightpink: "#FFB6C1",
@@ -156,6 +221,9 @@ const COLOR_MAP: Record<string, string> = {
     flamingo: "#FC8EAC",
     watermelon: "#FD4659",
 
+    // -------------------------------------------------------------------------
+    // Oranges
+    // -------------------------------------------------------------------------
     orange: "#FFA500",
     "dark orange": "#FF8C00",
     darkorange: "#FF8C00",
@@ -175,6 +243,9 @@ const COLOR_MAP: Record<string, string> = {
     carrot: "#ED9121",
     ginger: "#B06500",
 
+    // -------------------------------------------------------------------------
+    // Yellows
+    // -------------------------------------------------------------------------
     yellow: "#FFFF00",
     gold: "#FFD700",
     golden: "#DAA520",
@@ -194,6 +265,9 @@ const COLOR_MAP: Record<string, string> = {
     blonde: "#FAF0BE",
     sunshine: "#FFFD37",
 
+    // -------------------------------------------------------------------------
+    // Purples & Violets
+    // -------------------------------------------------------------------------
     purple: "#800080",
     violet: "#EE82EE",
     lavender: "#E6E6FA",
@@ -205,14 +279,20 @@ const COLOR_MAP: Record<string, string> = {
     aubergine: "#614051",
     amethyst: "#9966CC",
     wisteria: "#C9A0DC",
+    // wine is already defined in Reds section
     mulberry: "#C54B8C",
     heliotrope: "#DF73FF",
     iris: "#5A4FCF",
     thistle: "#D8BFD8",
+    // mauve is already defined in Pinks section
     byzantium: "#702963",
+    // royal is already defined in Blues section (royal blue)
     "royal purple": "#7851A9",
     royalpurple: "#7851A9",
 
+    // -------------------------------------------------------------------------
+    // Browns
+    // -------------------------------------------------------------------------
     brown: "#A52A2A",
     "dark brown": "#5C4033",
     darkbrown: "#5C4033",
@@ -239,6 +319,9 @@ const COLOR_MAP: Record<string, string> = {
     nutmeg: "#7E5D3B",
     saddle: "#8B4513",
 
+    // -------------------------------------------------------------------------
+    // Metallics
+    // -------------------------------------------------------------------------
     "rose gold": "#B76E79",
     rosegold: "#B76E79",
     bronze: "#CD7F32",
@@ -248,6 +331,9 @@ const COLOR_MAP: Record<string, string> = {
     titanium: "#878681",
     nickel: "#727472",
 
+    // -------------------------------------------------------------------------
+    // Multi/Special
+    // -------------------------------------------------------------------------
     rainbow: "#FF0000",
     multi: "#888888",
     multicolor: "#888888",
@@ -269,32 +355,97 @@ const COLOR_MAP: Record<string, string> = {
     nude: "#E3BC9A"
 };
 
-const COLOR_OPTION_NAMES = ["color", "colour", "shade", "finish", "hue", "tone"];
+// =============================================================================
+// OPTION NAME DETECTION
+// =============================================================================
 
-export const COLOR_NAME_MAP: Record<string, string> = COLOR_MAP;
+/**
+ * Common option names that indicate a color-type option
+ * Case-insensitive matching will be applied
+ */
+const COLOR_OPTION_NAMES = [
+    "color",
+    "colour",
+    "shade",
+    "finish",
+    "hue",
+    "tone"
+    // Add localized versions if needed
+];
 
-export const getColorHex = (colorName: string | undefined | null): string | undefined => {
+// =============================================================================
+// UTILITY FUNCTIONS
+// =============================================================================
+
+/**
+ * Get the HEX color value for a color name
+ *
+ * @param colorName - The color name to look up (case-insensitive)
+ * @returns HEX color string or undefined if not found
+ *
+ * @example
+ * ```typescript
+ * getColorHex("Navy Blue") // Returns "#000080"
+ * getColorHex("Unknown Color") // Returns undefined
+ * ```
+ */
+export function getColorHex(colorName: string | undefined | null): string | undefined {
     if (!colorName) return undefined;
 
+    // Normalize the color name: lowercase, trim whitespace
     const normalized = colorName.toLowerCase().trim();
 
     return COLOR_MAP[normalized];
-};
+}
 
-export const isColorOption = (optionName: string | undefined | null): boolean => {
+/**
+ * Check if an option name indicates a color-type option
+ *
+ * @param optionName - The option name to check
+ * @returns true if this is likely a color option
+ *
+ * @example
+ * ```typescript
+ * isColorOption("Color") // Returns true
+ * isColorOption("Size") // Returns false
+ * isColorOption("Colour") // Returns true
+ * ```
+ */
+export function isColorOption(optionName: string | undefined | null): boolean {
     if (!optionName) return false;
 
     const normalized = optionName.toLowerCase().trim();
     return COLOR_OPTION_NAMES.some(name => normalized.includes(name));
-};
+}
 
-export const getSwatchFromColorName = (colorName: string | undefined | null): {color: string} | undefined => {
+/**
+ * Get a swatch-compatible color object from a color name
+ *
+ * Returns an object that matches the Shopify swatch structure,
+ * allowing it to be used with the ColorSwatch component.
+ *
+ * @param colorName - The color name to convert
+ * @returns Object with color property, or undefined if not found
+ *
+ * @example
+ * ```typescript
+ * getSwatchFromColorName("Navy")
+ * // Returns: { color: "#000080" }
+ * ```
+ */
+export function getSwatchFromColorName(colorName: string | undefined | null): {color: string} | undefined {
     const hex = getColorHex(colorName);
     if (!hex) return undefined;
 
     return {color: hex};
-};
+}
 
-export const hasColorMapping = (colorName: string | undefined | null): boolean => {
+/**
+ * Check if a color name has a known mapping
+ *
+ * @param colorName - The color name to check
+ * @returns true if the color has a known HEX mapping
+ */
+export function hasColorMapping(colorName: string | undefined | null): boolean {
     return getColorHex(colorName) !== undefined;
-};
+}

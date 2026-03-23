@@ -1,5 +1,6 @@
 import shopifyConfig from "@shopify/prettier-config" with {type: "json"};
 
+/** @type {import('prettier').Config} */
 export default {
     ...shopifyConfig,
     tabWidth: 4,

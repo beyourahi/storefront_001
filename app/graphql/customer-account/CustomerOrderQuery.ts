@@ -1,3 +1,35 @@
+/**
+ * @fileoverview Customer Order Detail Query
+ *
+ * @description
+ * Comprehensive GraphQL query for fetching complete order details including line items,
+ * pricing, discounts, shipping address, returns, and return eligibility information.
+ * Used on the order detail page to display full order information and manage returns.
+ *
+ * @api
+ * Customer Account API - Authenticated GraphQL operations
+ *
+ * @queries
+ * - CUSTOMER_ORDER_QUERY - Fetches complete order details by order ID
+ *
+ * @fragments
+ * - Order - Complete order information including pricing, shipping, returns, and return eligibility
+ * - OrderLineItemFull - Line item with pricing, discounts, variant, and image
+ * - OrderMoney - Money value with amount and currency code
+ * - DiscountApplication - Discount details (fixed or percentage)
+ *
+ * @related
+ * - app/routes/account.orders.$id.tsx - Displays full order details
+ * - app/routes/account.orders.$id.return.tsx - Uses returnInformation for creating returns
+ * - app/components/CartMain.tsx - Similar pricing structure for cart display
+ *
+ * @notes
+ * This query includes return information to determine which items can be returned and
+ * displays existing returns. The returnInformation field checks up to 100 returnable
+ * line items to support large orders.
+ */
+
+// NOTE: https://shopify.dev/docs/api/customer/latest/queries/order
 export const CUSTOMER_ORDER_QUERY = `#graphql
   fragment OrderMoney on MoneyV2 {
     amount
@@ -77,6 +109,32 @@ export const CUSTOMER_ORDER_QUERY = `#graphql
         ...OrderLineItemFull
       }
     }
+    returns(first: 10) {
+      nodes {
+        id
+        name
+        status
+        createdAt
+        returnLineItems(first: 20) {
+          nodes {
+            id
+            quantity
+            returnReason
+            lineItem {
+              id
+              title
+              variantTitle
+              image {
+                altText
+                url
+                width
+                height
+              }
+            }
+          }
+        }
+      }
+    }
     returnInformation {
       returnableLineItems(first: 100) {
         nodes {
@@ -93,6 +151,9 @@ export const CUSTOMER_ORDER_QUERY = `#graphql
             }
           }
         }
+      }
+      nonReturnableSummary {
+        nonReturnableReasons
       }
     }
   }

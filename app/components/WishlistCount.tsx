@@ -4,8 +4,8 @@ import {HiOutlineHeart} from "react-icons/hi";
 import {cn} from "~/lib/utils";
 
 export const WishlistCountInline = ({className}: {className?: string}) => {
-    const {count} = useWishlist();
-    if (count === 0) return null;
+    const {count, isHydrated} = useWishlist();
+    if (!isHydrated || count === 0) return null;
     return (
         <span className={cn("tabular-nums text-[0.75em] opacity-70", className)}>({count > 99 ? "99+" : count})</span>
     );
@@ -17,7 +17,7 @@ interface WishlistCountProps {
 }
 
 export const WishlistCount = ({className, iconSize = 24}: WishlistCountProps) => {
-    const {count} = useWishlist();
+    const {count, isHydrated} = useWishlist();
 
     const ariaLabel = count > 0 ? `${count} items in wishlist` : "Wishlist";
 
@@ -28,7 +28,7 @@ export const WishlistCount = ({className, iconSize = 24}: WishlistCountProps) =>
             aria-label={ariaLabel}
         >
             <HiOutlineHeart style={{width: iconSize, height: iconSize}} className="text-current" />
-            {count > 0 && (
+            {isHydrated && count > 0 && (
                 <span
                     className="sleek bg-wishlist-active text-wishlist-active-foreground animate-in fade-in zoom-in absolute right-0 top-0 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-xs font-semibold"
                     aria-hidden="true"

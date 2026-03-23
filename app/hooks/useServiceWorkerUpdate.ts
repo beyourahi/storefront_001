@@ -1,21 +1,80 @@
+/**
+ * @fileoverview Service Worker Update Detection and Control Hook
+ *
+ * @description
+ * Manages the service worker update lifecycle for progressive web apps, providing
+ * user-friendly update notifications and controls. Listens for service worker updates,
+ * displays update prompts, and handles the skipWaiting/reload flow. Integrates with
+ * Google Tag Manager for analytics tracking.
+ *
+ * @architecture
+ * - Listens for custom 'sw-update-available' events dispatched by ServiceWorkerRegistration
+ * - Stores the ServiceWorkerRegistration for later activation
+ * - Sends SKIP_WAITING message to waiting service worker on user acceptance
+ * - Tracks user interactions (accepted/dismissed) via GTM dataLayer
+ * - Works in conjunction with ServiceWorkerRegistration component for auto-reload
+ *
+ * @dependencies
+ * - React hooks (useState, useEffect)
+ * - ServiceWorker API (registration.waiting, postMessage)
+ * - Custom events ('sw-update-available')
+ * - GTM dataLayer for analytics
+ *
+ * @related
+ * - ServiceWorkerRegistration.tsx - Dispatches sw-update-available event
+ * - ServiceWorkerUpdateBanner.tsx - UI component for update notification
+ * - GoogleTagManager.tsx - Provides window.dataLayer
+ * - entry.client.tsx - Registers service worker on app load
+ *
+ * @usage
+ * ```tsx
+ * const { updateAvailable, applyUpdate, dismissUpdate } = useServiceWorkerUpdate();
+ *
+ * if (updateAvailable) {
+ *   return (
+ *     <UpdateBanner
+ *       onUpdate={applyUpdate}
+ *       onDismiss={dismissUpdate}
+ *     />
+ *   );
+ * }
+ * ```
+ */
+
 import {useState, useEffect} from "react";
 
+// =============================================================================
+// TYPES
+// =============================================================================
+
 interface UseServiceWorkerUpdateReturn {
+    /** True when a new service worker is waiting to activate */
     updateAvailable: boolean;
+    /** Apply the update by sending SKIP_WAITING message to SW */
     applyUpdate: () => void;
+    /** Dismiss the update notification (will activate on next navigation) */
     dismissUpdate: () => void;
 }
 
-const trackEvent = (event: string, data?: Record<string, unknown>): void => {
+// =============================================================================
+// ANALYTICS HELPERS
+// =============================================================================
+
+function trackEvent(event: string, data?: Record<string, unknown>) {
     if (typeof window !== "undefined" && window.dataLayer) {
         window.dataLayer.push({event, ...data});
     }
-};
+}
 
-export const useServiceWorkerUpdate = (): UseServiceWorkerUpdateReturn => {
+// =============================================================================
+// HOOK
+// =============================================================================
+
+export function useServiceWorkerUpdate(): UseServiceWorkerUpdateReturn {
     const [updateAvailable, setUpdateAvailable] = useState(false);
     const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
 
+    // Listen for update available event from ServiceWorkerRegistration
     useEffect(() => {
         if (typeof window === "undefined") return;
 
@@ -32,16 +91,23 @@ export const useServiceWorkerUpdate = (): UseServiceWorkerUpdateReturn => {
         };
     }, []);
 
+    // Apply update by sending SKIP_WAITING message to waiting SW
     const applyUpdate = () => {
         if (!registration?.waiting) {
             console.warn("[SW Update] No waiting service worker to activate");
             return;
         }
 
+        // Send message to waiting SW to call skipWaiting()
         registration.waiting.postMessage({type: "SKIP_WAITING"});
+
         trackEvent("pwa_update_accepted");
+
+        // Note: Page reload happens automatically via controllerchange listener
+        // in ServiceWorkerRegistration component
     };
 
+    // Dismiss update notification (SW will activate on next navigation)
     const dismissUpdate = () => {
         setUpdateAvailable(false);
         trackEvent("pwa_update_dismissed");
@@ -52,4 +118,4 @@ export const useServiceWorkerUpdate = (): UseServiceWorkerUpdateReturn => {
         applyUpdate,
         dismissUpdate
     };
-};
+}

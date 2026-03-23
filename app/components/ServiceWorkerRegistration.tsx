@@ -53,7 +53,7 @@ export const ServiceWorkerRegistration = () => {
                 })
                 .catch(error => {
                     console.error("[SW] Service Worker registration failed:", error);
-                    trackServiceWorkerError(error instanceof Error ? error.message : "Unknown registration error");
+                    trackServiceWorkerError(error instanceof Error ? error.message : "Unknown registration error", "registration_failed");
                 });
         };
 

@@ -5,7 +5,7 @@ import {Button} from "~/components/ui/button";
 import {ParallaxLayer} from "~/components/motion/ParallaxLayer";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
 import {parseProductTitle} from "~/lib/product";
-import type {FeaturedProductSection} from "~/lib/metaobject-parsers";
+import type {FeaturedProductSection} from "types";
 
 type FeaturedProductSpotlightProps = {
     product: FeaturedProductSection;

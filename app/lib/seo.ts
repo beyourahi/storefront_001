@@ -57,7 +57,7 @@
  * return types can be restored (see storefront_002/app/lib/seo.ts for reference).
  */
 import type {WithContext, Organization, WebSite, Product, ItemList, BlogPosting, FAQPage} from "schema-dts";
-import type {SiteSettings, ThemeConfig} from "~/lib/metaobject-parsers";
+import type {SiteSettings, ThemeConfig} from "types";
 import {STORE_LOCALE} from "~/lib/store-locale";
 import {toHex} from "~/lib/color";
 

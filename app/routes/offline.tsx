@@ -92,7 +92,7 @@ export default function OfflinePage() {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            void trackOfflinePageView(window.location.href);
+            void trackOfflinePageView();
         }
     }, []);
 

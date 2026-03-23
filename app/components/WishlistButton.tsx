@@ -29,17 +29,17 @@ interface WishlistButtonProps
 }
 
 export const WishlistButton = ({productId, size, showLabel = false, className, ...props}: WishlistButtonProps) => {
-    const {isWishlisted, toggleItem} = useWishlist();
+    const {has, toggle} = useWishlist();
     const {canHover} = usePointerCapabilities();
     const [isAnimating, setIsAnimating] = useState(false);
 
-    const wishlisted = isWishlisted(productId);
+    const wishlisted = has(productId);
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
 
-        toggleItem(productId);
+        toggle(productId);
 
         setIsAnimating(true);
         setTimeout(() => setIsAnimating(false), 300);

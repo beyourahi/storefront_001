@@ -408,6 +408,12 @@ export function ensureContrastCompliance(
     const result = calculateContrast(merchantColor, background, "WCAG21");
 
     if (!result || result.ratio < minContrast) {
+        if (process.env.NODE_ENV === "development") {
+            console.warn(
+                `[WCAG] Color fails contrast check (${result?.ratioString ?? "invalid"} < ${minContrast}:1). Using fallback.`,
+                {merchantColor, background, fallbackColor}
+            );
+        }
         return fallbackColor;
     }
 

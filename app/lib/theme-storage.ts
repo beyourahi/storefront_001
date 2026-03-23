@@ -41,7 +41,7 @@
  * - public/service-worker.js - Handles UPDATE_OFFLINE_CACHE message
  */
 
-import type {GeneratedTheme} from "./theme-utils";
+import type {GeneratedTheme} from "~/lib/theme-utils";
 
 const STORAGE_KEY = "hydrogen-theme-cache";
 

@@ -1,4 +1,4 @@
-import type {SiteSettings, ThemeConfig} from "~/lib/metaobject-parsers";
+import type {SiteSettings, ThemeConfig} from "types";
 import {toHex} from "./color";
 
 export interface ManifestIcon {

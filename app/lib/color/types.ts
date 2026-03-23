@@ -130,6 +130,26 @@ export type ContrastAlgorithm = "WCAG21" | "APCA" | "both";
 // =============================================================================
 
 /**
+ * Options for swatch border color calculation
+ */
+export interface SwatchBorderOptions {
+    /** The swatch color (HEX or OKLCH) */
+    swatchColor: string | null | undefined;
+    /** The parent background color */
+    backgroundColor: string;
+    /** Whether the parent element is in selected state */
+    isSelected?: boolean;
+    /** Whether swatch is on a primary-colored background (e.g., hero section) */
+    onPrimaryBackground?: boolean;
+    /** Theme colors for context-aware calculations */
+    themeColors?: {
+        primary: string;
+        background: string;
+        foreground: string;
+    };
+}
+
+/**
  * Options for gamut mapping
  *
  * OKLCH can represent colors outside the sRGB gamut.
@@ -149,26 +169,6 @@ export interface GamutMapOptions {
      * - "p3": Display P3 (wider gamut, newer displays)
      */
     targetSpace?: "srgb" | "p3";
-}
-
-/**
- * Options for swatch border color calculation
- */
-export interface SwatchBorderOptions {
-    /** The swatch color (HEX or OKLCH) */
-    swatchColor: string | null | undefined;
-    /** The parent background color */
-    backgroundColor: string;
-    /** Whether the parent element is in selected state */
-    isSelected?: boolean;
-    /** Whether swatch is on a primary-colored background (e.g., hero section) */
-    onPrimaryBackground?: boolean;
-    /** Theme colors for context-aware calculations */
-    themeColors?: {
-        primary: string;
-        background: string;
-        foreground: string;
-    };
 }
 
 /**

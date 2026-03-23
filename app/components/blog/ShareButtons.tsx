@@ -3,7 +3,7 @@
 import {useState} from "react";
 import {cn} from "~/lib/utils";
 import {createArticleShareData, type ArticleShareInput} from "~/lib/blog-utils";
-import {getArticleSharePlatforms, copyToClipboard, openShareWindow, type ShareData} from "~/lib/social-share";
+import {getSocialSharePlatforms, copyToClipboard, openShareWindow, type ShareData} from "~/lib/social-share";
 import {Button} from "~/components/ui/button";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "~/components/ui/dialog";
 import {Check, Share2} from "lucide-react";
@@ -21,7 +21,7 @@ export const ShareButtons = ({article, variant = "inline", className, shopName}:
 
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
     const shareData = createArticleShareData(article, baseUrl, shopName);
-    const platforms = getArticleSharePlatforms();
+    const platforms = getSocialSharePlatforms();
 
     const handleShare = async (platform: (typeof platforms)[0], data: ShareData) => {
         if (platform.id === "copy") {

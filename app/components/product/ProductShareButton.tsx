@@ -1,10 +1,12 @@
 import {useState, useMemo} from "react";
 import {Share} from "lucide-react";
+import type {ProductFragment} from "storefrontapi.generated";
 import {Button} from "~/components/ui/button";
 import {ProductShareDialog} from "~/components/product/ProductShareDialog";
 
 type ProductShareButtonProps = {
-    product: any;
+    product: Pick<ProductFragment, "id" | "title" | "handle" | "description" | "images">;
+    selectedVariant: ProductFragment["selectedOrFirstAvailableVariant"];
     variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
     size?: "default" | "sm" | "lg" | "icon";
     showText?: boolean;
@@ -14,6 +16,7 @@ type ProductShareButtonProps = {
 
 export const ProductShareButton = ({
     product,
+    selectedVariant,
     variant = "outline",
     size = "default",
     showText = true,
@@ -61,6 +64,7 @@ export const ProductShareButton = ({
 
             <ProductShareDialog
                 product={product}
+                variant={selectedVariant}
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}
                 shopName={shopName}

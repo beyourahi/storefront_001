@@ -49,7 +49,7 @@ interface WishlistProduct {
 }
 
 export const HomepageWishlistSection = () => {
-    const {wishlistIds, count} = useWishlist();
+    const {ids, count} = useWishlist();
     const fetcher = useFetcher<{products: WishlistProduct[]}>();
     const normalizedProducts = useMemo(
         () => (fetcher.data?.products || []).map(product => fromWishlistProduct(product)),
@@ -58,11 +58,11 @@ export const HomepageWishlistSection = () => {
     const isLoading = fetcher.state === "loading" || fetcher.state === "submitting";
 
     useEffect(() => {
-        if (wishlistIds.length === 0) {
+        if (ids.length === 0) {
             return;
         }
 
-        const gids = wishlistIds.map(id => reconstructGid(id));
+        const gids = ids.map(id => reconstructGid(id));
 
         void fetcher.submit(
             {ids: gids},
@@ -72,7 +72,7 @@ export const HomepageWishlistSection = () => {
                 encType: "application/json"
             }
         );
-    }, [wishlistIds, fetcher]);
+    }, [ids, fetcher]);
 
     if (count === 0) {
         return null;
@@ -104,7 +104,7 @@ export const HomepageWishlistSection = () => {
                             <CarouselContent className="-ml-2 md:-ml-4">
                                 {Array.from({length: Math.min(count, 8)}).map((_, i) => (
                                     <CarouselItem
-                                        key={wishlistIds[i] ?? `wishlist-skeleton-${i}`}
+                                        key={ids[i] ?? `wishlist-skeleton-${i}`}
                                         className="basis-3/5 pl-2 md:basis-2/5 md:pl-4 lg:basis-1/3 xl:basis-1/4"
                                     >
                                         <SkeletonGrid layout="product-grid" count={1} />

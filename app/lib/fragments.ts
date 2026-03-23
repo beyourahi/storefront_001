@@ -1,3 +1,61 @@
+/**
+ * @fileoverview GraphQL Fragments for Storefront API Queries
+ *
+ * @description
+ * Contains reusable GraphQL fragments for the Shopify Storefront API.
+ * These fragments define the data structure for common entities like
+ * cart lines, menus, shop info, and collections. Using fragments ensures
+ * consistent data fetching across the application and makes queries more
+ * maintainable.
+ *
+ * @architecture
+ * Fragments are composed hierarchically:
+ * - Base fragments (Money, MenuItem) are small and focused
+ * - Complex fragments (CartLine, Menu) compose base fragments
+ * - Query fragments (HEADER_QUERY, FOOTER_QUERY) use all relevant fragments
+ *
+ * @usage
+ * Import fragments and interpolate into GraphQL queries:
+ * ```typescript
+ * const MY_QUERY = `#graphql
+ *   query MyQuery {
+ *     cart { ...CartApiQuery }
+ *   }
+ *   ${CART_QUERY_FRAGMENT}
+ * `;
+ * ```
+ *
+ * @dependencies
+ * - Shopify Storefront API (2026-01 version)
+ *
+ * @related
+ * - context.ts - Uses CART_QUERY_FRAGMENT for cart operations
+ * - root.tsx - Uses HEADER_QUERY, FOOTER_QUERY for layout data
+ * - metaobject-fragments.ts - Fragments for CMS metaobjects
+ *
+ * @api-docs
+ * https://shopify.dev/docs/api/storefront/latest/queries/cart
+ */
+
+// =============================================================================
+// CART FRAGMENTS
+// =============================================================================
+
+/**
+ * Complete cart query fragment with all cart data.
+ *
+ * Includes:
+ * - Money formatting (currency, amount)
+ * - Cart lines (regular and componentizable)
+ * - Product variant info (price, image, options)
+ * - Selling plan allocations (subscriptions)
+ * - Gift cards, discount codes
+ * - Buyer identity
+ * - Cost breakdown (subtotal, tax, duty)
+ *
+ * @note CartLine and CartLineComponent are nearly identical but represent
+ * different cart line types in the Storefront API.
+ */
 export const CART_QUERY_FRAGMENT = `#graphql
   fragment Money on MoneyV2 {
     currencyCode
@@ -215,6 +273,19 @@ export const CART_QUERY_FRAGMENT = `#graphql
   }
 ` as const;
 
+// =============================================================================
+// MENU FRAGMENTS
+// =============================================================================
+
+/**
+ * Menu fragment for navigation menus.
+ *
+ * Supports two-level menu hierarchy:
+ * - ParentMenuItem: Top-level menu items
+ * - ChildMenuItem: Nested items under a parent
+ *
+ * Used by header and footer navigation.
+ */
 const MENU_FRAGMENT = `#graphql
   fragment MenuItem on MenuItem {
     id
@@ -241,6 +312,19 @@ const MENU_FRAGMENT = `#graphql
   }
 ` as const;
 
+// =============================================================================
+// LAYOUT QUERIES
+// =============================================================================
+
+/**
+ * Header data query - fetches the main navigation menu.
+ *
+ * @param $headerMenuHandle - Handle of the header menu in Shopify admin
+ * @param $country - Country code for localized content
+ * @param $language - Language code for localized content
+ *
+ * Used in root.tsx loader to fetch layout data.
+ */
 export const HEADER_QUERY = `#graphql
   query Header(
     $country: CountryCode
@@ -254,6 +338,13 @@ export const HEADER_QUERY = `#graphql
   ${MENU_FRAGMENT}
 ` as const;
 
+/**
+ * Footer data query - fetches footer navigation menu.
+ *
+ * @param $footerMenuHandle - Handle of the footer menu in Shopify admin
+ * @param $country - Country code for localized content
+ * @param $language - Language code for localized content
+ */
 export const FOOTER_QUERY = `#graphql
   query Footer(
     $country: CountryCode
@@ -267,6 +358,21 @@ export const FOOTER_QUERY = `#graphql
   ${MENU_FRAGMENT}
 ` as const;
 
+// =============================================================================
+// CART SUGGESTION QUERIES
+// =============================================================================
+
+/**
+ * Cart suggestions query - fetches best-selling products for cart recommendations.
+ *
+ * Used to display product suggestions in the cart drawer when the cart is empty
+ * or as upsell recommendations alongside existing cart items.
+ *
+ * @param $country - Country code for localized pricing
+ * @param $language - Language code for localized content
+ *
+ * @note Fetches first 12 products sorted by BEST_SELLING.
+ */
 export const CART_SUGGESTIONS_QUERY = `#graphql
   query CartSuggestions(
     $country: CountryCode
@@ -322,6 +428,21 @@ export const CART_SUGGESTIONS_QUERY = `#graphql
   }
 ` as const;
 
+// =============================================================================
+// COLLECTION QUERIES
+// =============================================================================
+
+/**
+ * Menu collections query - fetches collections and products for navigation.
+ *
+ * Used to populate:
+ * - Collection dropdown in header menu
+ * - Product type filters
+ * - Availability indicators
+ *
+ * @note Fetches first 50 collections and 250 products per collection.
+ * May need pagination for stores with many collections.
+ */
 export const MENU_COLLECTIONS_QUERY = `#graphql
   query MenuCollections(
     $country: CountryCode
@@ -386,6 +507,10 @@ export const MENU_COLLECTIONS_QUERY = `#graphql
     }
   }
 ` as const;
+
+// =============================================================================
+// SHOP QUERIES
+// =============================================================================
 
 /**
  * Shop shipping configuration query.

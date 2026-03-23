@@ -2,9 +2,9 @@ import {useMemo, useState} from "react";
 import {Link, useLoaderData, data} from "react-router";
 import type {LoaderFunctionArgs, MetaFunction} from "react-router";
 import {useWishlist} from "~/lib/wishlist-context";
-import {reconstructGid} from "~/lib/wishlist-utils";
+import {reconstructGid, decodeWishlistIds} from "~/lib/wishlist-utils";
 import {HiHeart, HiShare} from "react-icons/hi";
-import {ShareDialog} from "~/lib/social-share";
+import {ShareDialog} from "~/components/ShareDialog";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
 
@@ -102,7 +102,7 @@ interface LoaderData {
         };
     }>;
     shareUrl: string;
-    productIds: string[];
+    productIds: number[];
 }
 
 export const meta: MetaFunction = () => {
@@ -117,10 +117,7 @@ export const loader = async ({request, context}: LoaderFunctionArgs) => {
         throw new Response("Missing wishlist IDs", {status: 400});
     }
 
-    const numericIds = idsParam
-        .split(",")
-        .map(id => id.trim())
-        .filter(id => /^\d+$/.test(id));
+    const numericIds = decodeWishlistIds(idsParam);
 
     if (numericIds.length === 0) {
         throw new Response("No valid product IDs provided", {status: 400});
@@ -148,14 +145,14 @@ export const loader = async ({request, context}: LoaderFunctionArgs) => {
 
 const WishlistShare = () => {
     const {products, shareUrl} = useLoaderData<LoaderData>();
-    const {addItem} = useWishlist();
+    const {add} = useWishlist();
     const [showShareDialog, setShowShareDialog] = useState(false);
     const [addedToWishlist, setAddedToWishlist] = useState(false);
     const normalizedProducts = useMemo(() => products.map(product => fromWishlistProduct(product)), [products]);
 
     const handleAddAllToWishlist = () => {
         products.forEach(product => {
-            addItem(product.id);
+            add(product.id);
         });
         setAddedToWishlist(true);
         setTimeout(() => setAddedToWishlist(false), 3000);

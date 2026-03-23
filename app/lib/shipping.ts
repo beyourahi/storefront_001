@@ -1,16 +1,52 @@
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
-const FALLBACK_FREE_SHIPPING_THRESHOLD = 7500;
-const FALLBACK_CURRENCY_CODE = "USD";
+/**
+ * @fileoverview Shipping Configuration and Free Shipping Utilities
+ *
+ * @description
+ * Provides utilities for managing free shipping thresholds and calculations.
+ * The free shipping threshold is configured via Shopify shop metafields,
+ * allowing merchants to change the value without code deployment.
+ *
+ * @architecture
+ * Data Source:
+ * - Shopify shop metafield: custom.free_shipping_threshold
+ * - Fetched in root.tsx loader via SHOP_SHIPPING_CONFIG_QUERY
+ * - Parsed and passed to components via context
+ *
+ * Configuration in Shopify Admin:
+ * 1. Go to Settings → Custom data → Shop
+ * 2. Add metafield: custom.free_shipping_threshold (Decimal type)
+ * 3. Set value (e.g., 5000 for ৳5,000 free shipping)
+ *
+ * @business-logic
+ * - Threshold is in the store's default currency (BDT)
+ * - Cart must reach or exceed threshold for free shipping
+ * - UI shows progress toward free shipping goal
+ *
+ * @dependencies
+ * - fallback-data.ts - Default threshold when metafield not set
+ *
+ * @related
+ * - root.tsx - Fetches shipping config in loader
+ * - CartSummary.tsx - Displays free shipping progress
+ * - AnnouncementBanner.tsx - May show free shipping promotion
+ */
 
 export interface ShippingConfig {
     freeShippingThreshold: number | null;
     currencyCode: string;
 }
 
+const FALLBACK_FREE_SHIPPING_THRESHOLD = 5000;
+const FALLBACK_CURRENCY_CODE = "USD";
+
 export const DEFAULT_FREE_SHIPPING_THRESHOLD = FALLBACK_FREE_SHIPPING_THRESHOLD;
 export const DEFAULT_CURRENCY_CODE = FALLBACK_CURRENCY_CODE;
 
+/**
+ * GraphQL fragment for fetching shop shipping metafields
+ */
 export const SHOP_SHIPPING_METAFIELD_FRAGMENT = `#graphql
   fragment ShopShippingMetafield on Shop {
     freeShippingThreshold: metafield(namespace: "custom", key: "free_shipping_threshold") {
@@ -20,10 +56,13 @@ export const SHOP_SHIPPING_METAFIELD_FRAGMENT = `#graphql
   }
 ` as const;
 
-export const parseShippingConfig = (
+/**
+ * Parse shipping config from shop metafields
+ */
+export function parseShippingConfig(
     metafieldValue: string | null | undefined,
     currencyCode: string = DEFAULT_CURRENCY_CODE
-): ShippingConfig => {
+): ShippingConfig {
     let threshold: number | null = null;
 
     if (metafieldValue) {
@@ -37,22 +76,37 @@ export const parseShippingConfig = (
         freeShippingThreshold: threshold,
         currencyCode
     };
-};
+}
 
-export const formatShippingThreshold = (amount: number, currencyCode: string = DEFAULT_CURRENCY_CODE): string => {
+/**
+ * Format currency amount for display
+ */
+export function formatShippingThreshold(amount: number, currencyCode: string = DEFAULT_CURRENCY_CODE): string {
+    // For BDT, use the Taka symbol
+    if (currencyCode === "BDT") {
+        return `৳${amount.toLocaleString(STORE_FORMAT_LOCALE)}`;
+    }
+
+    // For other currencies, use Intl formatter
     return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
         style: "currency",
         currency: currencyCode,
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
     }).format(amount);
-};
+}
 
-export const qualifiesForFreeShipping = (cartTotal: number, threshold: number): boolean => {
+/**
+ * Check if cart qualifies for free shipping
+ */
+export function qualifiesForFreeShipping(cartTotal: number, threshold: number): boolean {
     return cartTotal >= threshold;
-};
+}
 
-export const remainingForFreeShipping = (cartTotal: number, threshold: number): number => {
+/**
+ * Calculate remaining amount for free shipping
+ */
+export function remainingForFreeShipping(cartTotal: number, threshold: number): number {
     const remaining = threshold - cartTotal;
     return remaining > 0 ? remaining : 0;
-};
+}
