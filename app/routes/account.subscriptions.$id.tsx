@@ -569,6 +569,7 @@ export default function SubscriptionDetail() {
                                             name="intent"
                                             value={SUBSCRIPTION_ACTIONS.CANCEL}
                                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                            disabled={isSubmitting}
                                         >
                                             Yes, Cancel Subscription
                                         </AlertDialogAction>

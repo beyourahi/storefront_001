@@ -1,4 +1,4 @@
-import {data as remixData, Form, Link, useLoaderData, useOutletContext} from "react-router";
+import {data as remixData, Form, Link, useLoaderData, useNavigation, useOutletContext} from "react-router";
 import type {Route} from "./+types/account._index";
 import type {CustomerFragment} from "customer-accountapi.generated";
 import type {AccountOutletContext} from "~/routes/account";
@@ -125,33 +125,41 @@ const QUICK_ACTIONS = [
     }
 ] as const;
 
-const WelcomeBanner = ({customer}: {customer: CustomerFragment}) => (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-            <Avatar className="size-14 sm:size-16">
-                {customer.imageUrl ? (
-                    <img src={customer.imageUrl} alt={customer.displayName ?? ""} className="size-full object-cover" />
-                ) : (
-                    <AvatarFallback className="text-lg font-semibold">{getInitials(customer)}</AvatarFallback>
-                )}
-            </Avatar>
-            <div>
-                <h1 className="text-2xl font-bold sm:text-3xl">
-                    {getGreeting()}, {customer.firstName ?? "there"}
-                </h1>
-                {customer.emailAddress?.emailAddress && (
-                    <p className="text-muted-foreground text-sm">{customer.emailAddress.emailAddress}</p>
-                )}
+const WelcomeBanner = ({customer}: {customer: CustomerFragment}) => {
+    const navigation = useNavigation();
+
+    return (
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+                <Avatar className="size-14 sm:size-16">
+                    {customer.imageUrl ? (
+                        <img
+                            src={customer.imageUrl}
+                            alt={customer.displayName ?? ""}
+                            className="size-full object-cover"
+                        />
+                    ) : (
+                        <AvatarFallback className="text-lg font-semibold">{getInitials(customer)}</AvatarFallback>
+                    )}
+                </Avatar>
+                <div>
+                    <h1 className="text-2xl font-bold sm:text-3xl">
+                        {getGreeting()}, {customer.firstName ?? "there"}
+                    </h1>
+                    {customer.emailAddress?.emailAddress && (
+                        <p className="text-muted-foreground text-sm">{customer.emailAddress.emailAddress}</p>
+                    )}
+                </div>
             </div>
+            <Form method="post" action="/account/logout">
+                <Button variant="outline" type="submit" className="gap-2" disabled={navigation.state !== "idle"}>
+                    <LogOutIcon className="size-4" />
+                    Sign Out
+                </Button>
+            </Form>
         </div>
-        <Form method="post" action="/account/logout">
-            <Button variant="outline" type="submit" className="gap-2">
-                <LogOutIcon className="size-4" />
-                Sign Out
-            </Button>
-        </Form>
-    </div>
-);
+    );
+};
 
 const AccountStats = ({customer, orderCount}: {customer: CustomerFragment; orderCount: number}) => {
     const addressCount = customer.addresses?.nodes?.length ?? 0;

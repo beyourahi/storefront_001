@@ -285,11 +285,14 @@ function CartCheckoutActions({
         <a
             href={checkoutUrl}
             target="_self"
+            aria-disabled={isMutating || undefined}
+            onClick={isMutating ? e => e.preventDefault() : undefined}
             className={cn(
                 "cta-primary-emphasis inline-flex items-center justify-center gap-2 font-bold",
                 "bg-primary text-primary-foreground hover:bg-primary/90 rounded-md",
                 productCount > 1 ? "flex-1" : "w-full",
-                isMobile ? "h-14 py-6" : "h-12"
+                isMobile ? "h-14 py-6" : "h-12",
+                isMutating && "pointer-events-none opacity-50 cursor-not-allowed"
             )}
         >
             {isMutating ? <Spinner className="h-4 w-4" /> : <CreditCard className="h-4 w-4" />}
@@ -311,6 +314,7 @@ function CartClearConfirmation({
     cart: Cart;
 }) {
     const isMobile = useIsMobile();
+    const isMutating = useCartMutationPending();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
     const [holdProgress, setHoldProgress] = useState(0);
@@ -437,7 +441,7 @@ function CartClearConfirmation({
                                 action={CartForm.ACTIONS.LinesRemove}
                                 inputs={{lineIds}}
                             >
-                                <Button type="submit" variant="destructive" className="flex-1" onClick={confirmClear}>
+                                <Button type="submit" variant="destructive" className="flex-1" onClick={confirmClear} disabled={isMutating}>
                                     <Trash2 className="mr-2 h-4 w-4" />
                                     Clear All
                                 </Button>
