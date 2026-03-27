@@ -13,7 +13,7 @@ export const loader = async ({params, context}: Route.LoaderArgs) => {
 
     const {product} = await context.dataAdapter.query(QUICK_ADD_PRODUCT_QUERY, {
         variables: {handle},
-        cache: context.dataAdapter.CacheNone()
+        cache: context.dataAdapter.CacheShort()
     });
 
     if (!product) {

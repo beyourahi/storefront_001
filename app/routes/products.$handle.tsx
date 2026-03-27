@@ -99,43 +99,16 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
         throw new Error("Expected product handle to be defined");
     }
 
-    const [{product}, sidebarData] = await Promise.all([
-        dataAdapter.query(PRODUCT_QUERY, {
-            variables: {handle, selectedOptions: getSelectedProductOptions(request)},
-            cache: dataAdapter.CacheNone()
-        }),
-        dataAdapter.query(SIDEBAR_COLLECTIONS_QUERY, {
-            cache: dataAdapter.CacheNone()
-        })
-    ]);
+    const {product} = await dataAdapter.query(PRODUCT_QUERY, {
+        variables: {handle, selectedOptions: getSelectedProductOptions(request)},
+        cache: dataAdapter.CacheShort()
+    });
 
     if (!product?.id) {
         throw new Response(null, {status: 404});
     }
 
     redirectIfHandleIsLocalized(request, {handle, data: product});
-
-    const {collections, allProducts} = sidebarData;
-    const collectionsWithCounts: Array<{handle: string; title: string; productsCount: number}> = collections.nodes
-        .map((col: any) => ({
-            handle: col.handle,
-            title: col.title,
-            productsCount: col.products.nodes.filter((p: any) => p.availableForSale).length
-        }))
-        .filter((col: any) => col.productsCount > 0);
-
-    const totalProductCount = allProducts.nodes.filter(
-        (p: any) => p.availableForSale && p.variants.nodes.some((v: any) => v.availableForSale)
-    ).length;
-
-    const discountCount = allProducts.nodes.filter((p: any) =>
-        p.variants.nodes.some(
-            (v: any) =>
-                v.compareAtPrice &&
-                v.availableForSale &&
-                parseFloat(v.compareAtPrice.amount) > parseFloat(v.price.amount)
-        )
-    ).length;
 
     const productCollectionHandles = product.collections?.nodes?.map((c: any) => c.handle) ?? [];
     const activeCollectionHandle = productCollectionHandles[0] || "all-products";
@@ -160,9 +133,6 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
     return {
         product,
         selectedSellingPlan,
-        collectionsWithCounts,
-        totalProductCount,
-        discountCount,
         activeCollectionHandle,
         sizeChartData
     };
@@ -174,7 +144,7 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
     const recommendations = dataAdapter
         .query(RECOMMENDATIONS_QUERY, {
             variables: {productId},
-            cache: dataAdapter.CacheNone()
+            cache: dataAdapter.CacheShort()
         })
         .then(data => data.productRecommendations ?? null)
         .catch((error: unknown) => {
@@ -528,7 +498,7 @@ const PRODUCT_FRAGMENT = `#graphql
         }
       }
     }
-    variants(first: 100) {
+    variants(first: 10) {
       nodes {
         id
         availableForSale
@@ -630,53 +600,6 @@ const PRODUCT_QUERY = `#graphql
   ${PRODUCT_FRAGMENT}
 ` as const;
 
-const SIDEBAR_COLLECTIONS_QUERY = `#graphql
-  query SidebarCollectionsProduct(
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    collections(first: 50, sortKey: TITLE) {
-      nodes {
-        id
-        handle
-        title
-        image {
-          id
-          url
-          altText
-          width
-          height
-        }
-        products(first: 250) {
-          nodes {
-            id
-            availableForSale
-          }
-        }
-      }
-    }
-    allProducts: products(first: 250) {
-      nodes {
-        id
-        availableForSale
-        variants(first: 10) {
-          nodes {
-            availableForSale
-            price {
-              amount
-              currencyCode
-            }
-            compareAtPrice {
-              amount
-              currencyCode
-            }
-          }
-        }
-      }
-    }
-  }
-` as const;
-
 const RECOMMENDED_PRODUCT_FRAGMENT = `#graphql
   fragment RecommendedProduct on Product {
     id
@@ -691,7 +614,7 @@ const RECOMMENDED_PRODUCT_FRAGMENT = `#graphql
       width
       height
     }
-    images(first: 10) {
+    images(first: 2) {
       nodes {
         id
         url
@@ -716,7 +639,7 @@ const RECOMMENDED_PRODUCT_FRAGMENT = `#graphql
         currencyCode
       }
     }
-    variants(first: 100) {
+    variants(first: 3) {
       nodes {
         id
         title

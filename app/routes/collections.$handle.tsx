@@ -73,7 +73,7 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
     const pageParam = url.searchParams.get("page");
 
     // Build GraphQL variables for cursor-based pagination
-    const variables = buildPaginationVariables(cursor, direction, 250);
+    const variables = buildPaginationVariables(cursor, direction, 48);
 
     // Server-side filtering: only fetch available products
     const filters = [{available: true}];
@@ -89,7 +89,7 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
             filters,
             sortKey
         },
-        cache: dataAdapter.CacheNone()
+        cache: dataAdapter.CacheShort()
     });
 
     if (!collection) {
@@ -299,7 +299,7 @@ const COLLECTION_QUERY = `#graphql
               height
             }
           }
-          variants(first: 100) {
+          variants(first: 10) {
             nodes {
               id
               title

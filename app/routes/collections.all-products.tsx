@@ -38,14 +38,14 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     const pageParam = url.searchParams.get("page");
 
     // Build GraphQL variables for cursor-based pagination
-    const variables = buildPaginationVariables(cursor, direction, 250);
+    const variables = buildPaginationVariables(cursor, direction, 48);
 
     // Query all products with pagination
     // Note: QueryRoot.products doesn't support filters/sortKey like Collection.products,
     // so we filter and sort client-side
     const {products} = await dataAdapter.query(CATALOG_QUERY, {
         variables,
-        cache: dataAdapter.CacheNone()
+        cache: dataAdapter.CacheShort()
     });
 
     // Filter in-stock products client-side
@@ -183,7 +183,7 @@ const CATALOG_QUERY = `#graphql
             height
           }
         }
-        variants(first: 100) {
+        variants(first: 10) {
           nodes {
             id
             title

@@ -38,7 +38,7 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     const pageParam = url.searchParams.get("page");
 
     // Build GraphQL variables for cursor-based pagination
-    const variables = buildPaginationVariables(cursor, direction, 250);
+    const variables = buildPaginationVariables(cursor, direction, 48);
 
     // Single query for products with cursor pagination
     const {products} = await dataAdapter.query(SALE_PRODUCTS_QUERY, {
@@ -46,7 +46,7 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
             query: "available_for_sale:true",
             ...variables
         },
-        cache: dataAdapter.CacheNone()
+        cache: dataAdapter.CacheShort()
     });
 
     // Filter and sort discounted products
@@ -181,7 +181,7 @@ const SALE_PRODUCT_FRAGMENT = `#graphql
         currencyCode
       }
     }
-    variants(first: 250) {
+    variants(first: 20) {
       nodes {
         ...SaleVariant
         title

@@ -121,25 +121,26 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
 
     const [header, menuCollectionsData, shopData, themeSettingsData, siteContentData, blogData] = await Promise.all([
         dataAdapter.query(HEADER_QUERY, {
-            variables: {headerMenuHandle: "main-menu"}
+            variables: {headerMenuHandle: "main-menu"},
+            cache: dataAdapter.CacheLong()
         }),
-        dataAdapter.query(MENU_COLLECTIONS_QUERY).catch((error: unknown) => {
+        dataAdapter.query(MENU_COLLECTIONS_QUERY, {cache: dataAdapter.CacheShort()}).catch((error: unknown) => {
             console.error("Failed to load menu collections:", error);
             return null;
         }),
-        dataAdapter.query(SHOP_SHIPPING_CONFIG_QUERY).catch((error: unknown) => {
+        dataAdapter.query(SHOP_SHIPPING_CONFIG_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
             console.error("Failed to load shipping config:", error);
             return null;
         }),
-        dataAdapter.query(THEME_SETTINGS_QUERY, {cache: dataAdapter.CacheNone()}).catch((error: unknown) => {
+        dataAdapter.query(THEME_SETTINGS_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
             console.error("Failed to load theme settings:", error);
             return null;
         }),
-        dataAdapter.query(SITE_CONTENT_QUERY, {cache: dataAdapter.CacheNone()}).catch((error: unknown) => {
+        dataAdapter.query(SITE_CONTENT_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
             console.error("Failed to load site content:", error);
             return null;
         }),
-        dataAdapter.query(HAS_BLOG_QUERY).catch((error: unknown) => {
+        dataAdapter.query(HAS_BLOG_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
             console.error("Failed to check blog availability:", error);
             return null;
         })
@@ -161,7 +162,7 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
                 id: collection.id,
                 handle: collection.handle,
                 title: collection.title,
-                productsCount: collection.products?.nodes?.filter((p: any) => p.availableForSale).length ?? 0,
+                productsCount: (collection.products?.nodes?.length ?? 0) > 0 ? 1 : 0,
                 image: collection.image
             }))
             .filter((collection: any) => collection.productsCount > 0) ?? [];
@@ -247,10 +248,10 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
     const cartPromise = withTimeoutAndFallback(cart.get(), null, TIMEOUT_DEFAULTS.CART);
 
-    const isLoggedIn = withTimeoutAndFallback(customerAccount.isLoggedIn(), false, TIMEOUT_DEFAULTS.AUTH);
+    const isLoggedInPromise = customerAccount.isLoggedIn();
+    const isLoggedIn = withTimeoutAndFallback(isLoggedInPromise, false, TIMEOUT_DEFAULTS.AUTH);
 
-    const hasStoreCredit: Promise<boolean> = customerAccount
-        .isLoggedIn()
+    const hasStoreCredit: Promise<boolean> = isLoggedInPromise
         .then(async loggedIn => {
             if (!loggedIn) return false;
             try {

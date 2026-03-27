@@ -16,8 +16,7 @@ import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import type {CollectionCardData} from "~/lib/types/collections";
 
 type CollectionProductNode = {
-    availableForSale?: boolean;
-    variants?: {nodes?: Array<{availableForSale?: boolean}>};
+    id: string;
 };
 
 type CollectionNode = {
@@ -64,13 +63,8 @@ export const meta: Route.MetaFunction = () => {
 };
 
 const countInStockCollectionProducts = (collectionNode: CollectionNode): number => {
-    return (
-        collectionNode.products?.nodes?.filter(
-            product =>
-                product?.availableForSale &&
-                (product.variants?.nodes?.some(variant => variant.availableForSale) ?? false)
-        ).length ?? 0
-    );
+    // The query already filters by `available: true`, so every returned node is in-stock.
+    return collectionNode.products?.nodes?.length ?? 0;
 };
 
 const mapCollectionNodeToCard = (collectionNode: CollectionNode): CollectionCardData => ({
@@ -93,7 +87,7 @@ const mapCollectionNodeToCard = (collectionNode: CollectionNode): CollectionCard
 
 export const loader = async ({context}: Route.LoaderArgs) => {
     const data = (await context.dataAdapter.query(COLLECTIONS_PAGE_QUERY, {
-        cache: context.dataAdapter.CacheNone()
+        cache: context.dataAdapter.CacheShort()
     })) as CollectionsPageQueryResponse;
 
     const allCollectionNodes = data.collections?.nodes ?? [];
@@ -222,7 +216,7 @@ const COLLECTIONS_PAGE_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    collections(first: 250) {
+    collections(first: 50) {
       nodes {
         id
         handle
@@ -235,15 +229,9 @@ const COLLECTIONS_PAGE_QUERY = `#graphql
           width
           height
         }
-        products(first: 250) {
+        products(first: 1, filters: [{available: true}]) {
           nodes {
             id
-            availableForSale
-            variants(first: 10) {
-              nodes {
-                availableForSale
-              }
-            }
           }
         }
         seo {
@@ -255,62 +243,19 @@ const COLLECTIONS_PAGE_QUERY = `#graphql
     allProducts: products(first: 250) {
       nodes {
         id
-        title
-        handle
         availableForSale
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-          maxVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        variants(first: 10) {
+        variants(first: 3) {
           edges {
             node {
-              id
-              title
               availableForSale
-              selectedOptions {
-                name
-                value
-              }
               price {
                 amount
-                currencyCode
               }
               compareAtPrice {
                 amount
-                currencyCode
               }
-              image {
-                id
-                url
-                altText
-                width
-                height
-              }
-              quantityAvailable
             }
           }
-        }
-        images(first: 5) {
-          edges {
-            node {
-              id
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-        seo {
-          title
-          description
         }
       }
     }

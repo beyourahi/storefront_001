@@ -440,8 +440,8 @@ export const CART_SUGGESTIONS_QUERY = `#graphql
  * - Product type filters
  * - Availability indicators
  *
- * @note Fetches first 50 collections and 250 products per collection.
- * May need pagination for stores with many collections.
+ * @note Fetches first 50 collections with 1 available product each (existence check only).
+ * allProducts fetches 50 products with 3 variants for search terms, discount count, and popular products.
  */
 export const MENU_COLLECTIONS_QUERY = `#graphql
   query MenuCollections(
@@ -460,17 +460,14 @@ export const MENU_COLLECTIONS_QUERY = `#graphql
           width
           height
         }
-        products(first: 250) {
+        products(first: 1, filters: [{available: true}]) {
           nodes {
             id
-            title
-            productType
-            availableForSale
           }
         }
       }
     }
-    allProducts: products(first: 250) {
+    allProducts: products(first: 50) {
       nodes {
         id
         handle
@@ -490,7 +487,7 @@ export const MENU_COLLECTIONS_QUERY = `#graphql
             currencyCode
           }
         }
-        variants(first: 10) {
+        variants(first: 3) {
           nodes {
             availableForSale
             price {

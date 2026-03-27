@@ -21,8 +21,9 @@ export const meta: Route.MetaFunction = () => {
 export const loader = async ({context}: Route.LoaderArgs) => {
     const {products} = await context.dataAdapter.query(GALLERY_PRODUCTS_QUERY, {
         variables: {
-            first: 250
-        }
+            first: 100
+        },
+        cache: context.dataAdapter.CacheShort()
     });
 
     const productImages = transformToGalleryImages(products.nodes).map(image => ({
@@ -87,7 +88,7 @@ const GALLERY_PRODUCTS_QUERY = `#graphql
             title
           }
         }
-        images(first: 250) {
+        images(first: 10) {
           nodes {
             id
             url

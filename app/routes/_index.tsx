@@ -136,12 +136,14 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         console.error("Failed to load order history:", error);
     }
 
+    // The query already filters products by availability (filters: [{available: true}]),
+    // so any returned product node confirms at least one available product exists.
     const exploreCollections = (exploreCollectionsResponse?.collections?.nodes ?? [])
-        .filter((col: any) => col.products?.nodes?.some((p: any) => p.availableForSale))
+        .filter((col: any) => col.products?.nodes?.length > 0)
         .slice(0, 5)
         .map((col: any) => ({
             ...col,
-            productCount: col.products?.nodes?.filter((p: any) => p.availableForSale).length ?? 0
+            productCount: col.products?.nodes?.length ?? 0
         }));
 
     return {
@@ -337,10 +339,9 @@ const EXPLORE_COLLECTIONS_QUERY = `#graphql
           width
           height
         }
-        products(first: 250) {
+        products(first: 1, filters: [{available: true}]) {
           nodes {
             id
-            availableForSale
           }
         }
       }
@@ -404,7 +405,7 @@ const ALL_PRODUCTS_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    products(first: 250, query: "available_for_sale:true") {
+    products(first: 50, query: "available_for_sale:true") {
       nodes {
         id
         title
@@ -415,7 +416,7 @@ const ALL_PRODUCTS_QUERY = `#graphql
         productType
         availableForSale
         options { id name values }
-        variants(first: 10) {
+        variants(first: 3) {
           edges {
             node {
               id
@@ -428,7 +429,7 @@ const ALL_PRODUCTS_QUERY = `#graphql
             }
           }
         }
-        images(first: 5) {
+        images(first: 2) {
           edges {
             node { id url altText width height }
           }
