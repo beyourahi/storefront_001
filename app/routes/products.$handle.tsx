@@ -22,7 +22,7 @@ import {
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateDiscount, formatShopifyMoney} from "~/lib/currency-formatter";
 import {formatProductTitleForMeta} from "~/lib/product";
-import {generateProductSchema} from "~/lib/seo";
+import {generateProductSchema, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {parseSizeChart} from "~/lib/size-chart";
 import {SizeChartButton} from "~/components/product/SizeChartButton";
 import {useRecentlyViewedContext} from "~/components/RecentlyViewedProvider";
@@ -47,16 +47,10 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 };
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
-    const rootData = (
-        matches.find(m => m?.id === "root") as
-            | {data?: {siteContent?: {siteSettings?: {brandName?: string; siteUrl?: string}}}}
-            | undefined
-    )?.data;
-    const shopName = rootData?.siteContent?.siteSettings?.brandName ?? "Store";
-    const siteUrl = rootData?.siteContent?.siteSettings?.siteUrl ?? "";
+    const siteUrl = getSiteUrlFromMatches(matches);
 
     const product = data?.product;
-    if (!product) return [{title: `Product Not Found | ${shopName}`}];
+    if (!product) return [{title: "Product Not Found"}];
 
     const variant = product.selectedOrFirstAvailableVariant;
     const seoTitle = product.seo?.title;
@@ -64,11 +58,11 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const description = product.seo?.description || product.description?.substring(0, 155) || "";
     const image = variant?.image || product.images?.nodes?.[0];
 
-    const url = siteUrl ? `${siteUrl}/products/${product.handle}` : `/products/${product.handle}`;
+    const url = buildCanonicalUrl(`/products/${product.handle}`, siteUrl);
 
     return (
         getSeoMeta({
-            title: `${title} | ${shopName}`,
+            title,
             description,
             url,
             media: image?.url
@@ -226,7 +220,7 @@ const Product = () => {
     }), [product.id, product.title, product.vendor, selectedVariant]);
 
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="min-h-dvh bg-background text-foreground">
             <AnimatedSection animation="fade" threshold={0.08}>
                 <section className="pt-4 md:pt-6">
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4">
