@@ -1,4 +1,5 @@
-import {createContext, type ReactNode, useContext, useState, useCallback, useMemo} from "react";
+import {createContext, type ReactNode, useContext, useState, useCallback, useMemo, useEffect} from "react";
+import {useLocation} from "react-router";
 
 type CartDrawerContextValue = {
     isOpen: boolean;
@@ -11,10 +12,16 @@ const CartDrawerContext = createContext<CartDrawerContextValue | null>(null);
 
 export function CartDrawerProvider({children}: {children: ReactNode}) {
     const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
 
     const open = useCallback(() => setIsOpen(true), []);
     const close = useCallback(() => setIsOpen(false), []);
     const toggle = useCallback(() => setIsOpen(prev => !prev), []);
+
+    // Close the cart drawer on route changes to prevent stale fetcher opens
+    useEffect(() => {
+        setIsOpen(false);
+    }, [location.pathname]);
 
     const value = useMemo(() => ({isOpen, open, close, toggle}), [isOpen, open, close, toggle]);
 

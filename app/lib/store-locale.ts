@@ -1,3 +1,5 @@
+// TEMPLATE CONFIGURATION: Update these values per client deployment.
+// These constants define the store's locale for analytics, SEO, and i18n.
 export const STORE_COUNTRY_NAME = "Bangladesh" as const;
 export const STORE_COUNTRY_CODE = "BD" as const;
 export const STORE_LANGUAGE_CODE = "EN" as const;

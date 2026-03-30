@@ -1,6 +1,5 @@
 import {Link} from "react-router";
-import {Images, Mail, User} from "lucide-react";
-import {HiOutlineHeart} from "react-icons/hi";
+import {Heart, Images, Mail, User} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {useWishlist} from "~/lib/wishlist-context";
 
@@ -35,7 +34,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                         )}
                     >
                         <div className="relative">
-                            <HiOutlineHeart
+                            <Heart
                                 className={cn(
                                     "sleek h-4 w-4 group-hover:scale-110",
                                     isWishlistActive

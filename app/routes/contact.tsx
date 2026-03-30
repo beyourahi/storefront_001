@@ -1,6 +1,7 @@
 import {useMemo} from "react";
 import type {Route} from "./+types/contact";
 import {getSeoMeta} from "@shopify/hydrogen";
+import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {Mail, Phone, MapPin, Shield, FileCheck, Truck, RotateCcw, type LucideIcon} from "lucide-react";
 import {GiantText} from "~/components/common/GiantText";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
@@ -71,17 +72,13 @@ const legalCardClass =
     "hover:border-primary/40 bg-muted/95 hover:bg-foreground/10 group hover:shadow-primary/10 focus-visible:ring-primary/20 focus-visible:bg-primary/3 sleek block rounded-lg border p-6 hover:-translate-y-1 hover:shadow-md focus-visible:ring-2 focus-visible:outline-none";
 
 export const meta: Route.MetaFunction = ({matches}) => {
-    const rootMatch = matches.find((match): match is (typeof matches)[number] & {id: "root"} => match?.id === "root");
-    const rootData = rootMatch?.data as {siteContent?: {siteSettings?: {brandName?: string}}} | undefined;
-    const shopName = rootData?.siteContent?.siteSettings?.brandName?.trim();
-
-    const title = shopName ? `Contact Us - ${shopName}` : "Contact Us";
-
+    const siteUrl = getSiteUrlFromMatches(matches);
     return (
         getSeoMeta({
-            title,
+            title: "Contact Us",
             description:
-                "Get in touch with our team. We're here to help with any questions about our products, orders, or services."
+                "Get in touch with our team. We're here to help with any questions about our products, orders, or services.",
+            url: buildCanonicalUrl("/contact", siteUrl)
         }) ?? []
     );
 };
@@ -157,6 +154,7 @@ export default function Contact() {
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4">
                         <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
                             <GiantText
+                                as="h1"
                                 text={title}
                                 className={cn("w-full font-black", title.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]")}
                                 textClass="text-light drop-shadow-lg"

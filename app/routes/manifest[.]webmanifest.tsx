@@ -3,6 +3,13 @@ import {PWA_MANIFEST_QUERY} from "~/lib/pwa-queries";
 import {buildWebAppManifest, getThemeColor} from "~/lib/pwa-parsers";
 import {parseSiteSettings, parseThemeSettings} from "~/lib/metaobject-parsers";
 
+function truncateAtWordBoundary(text: string, maxLen: number): string {
+    if (text.length <= maxLen) return text;
+    const truncated = text.slice(0, maxLen);
+    const lastSpace = truncated.lastIndexOf(" ");
+    return lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated;
+}
+
 export const loader = async ({context, request}: Route.LoaderArgs) => {
     const {dataAdapter} = context;
 
@@ -25,7 +32,7 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
                 JSON.stringify(
                     {
                         name: siteSettings.brandName || "Store",
-                        short_name: (siteSettings.brandName || "Store").slice(0, 12),
+                        short_name: truncateAtWordBoundary(siteSettings.brandName || "Store", 12),
                         description: siteSettings.missionStatement || `Shop at ${siteSettings.brandName || "Store"}`,
                         start_url: "/",
                         scope: "/",
@@ -34,7 +41,10 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
                         theme_color: getThemeColor(themeConfig),
                         background_color: "#ffffff",
                         categories: ["shopping"],
-                        icons: [],
+                        icons: [
+                            {src: "/favicon.ico", sizes: "48x48", type: "image/x-icon"},
+                            {src: "/favicon.svg", sizes: "any", type: "image/svg+xml"}
+                        ],
                         related_applications: [
                             {
                                 platform: "webapp",

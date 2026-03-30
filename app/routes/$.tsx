@@ -4,6 +4,11 @@ import type {RootLoader} from "~/root";
 import type {CollectionCardData} from "~/lib/types/collections";
 import {CollectionCard} from "~/components/display/CollectionCard";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
+
+export const meta: Route.MetaFunction = () => [
+    {title: "Page Not Found"},
+    {name: "robots", content: "noindex"}
+];
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import {Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext} from "~/components/ui/carousel";
@@ -66,9 +71,9 @@ export function ErrorBoundary() {
                             </Badge>
                         </div>
                         <div className="space-y-4">
-                            <h2 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+                            <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
                                 Page Not Found
-                            </h2>
+                            </h1>
                             <p className="mx-auto max-w-lg text-lg leading-relaxed text-muted-foreground">
                                 The page you&apos;re looking for doesn&apos;t exist or has been moved.
                             </p>

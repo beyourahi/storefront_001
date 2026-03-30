@@ -3,7 +3,13 @@ import {useNavigate} from "react-router";
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import {WifiOff} from "lucide-react";
+import type {MetaFunction} from "react-router";
 import {trackOfflinePageView} from "~/hooks/usePwaAnalytics";
+
+export const meta: MetaFunction = () => [
+    {title: "Offline"},
+    {name: "robots", content: "noindex"}
+];
 import {getThemeFromStorage} from "~/lib/theme-storage";
 const FALLBACK_ERROR_CONTENT = {
     notFoundHeading: "Page Not Found",

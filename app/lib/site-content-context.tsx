@@ -105,7 +105,10 @@ export const useThemeColors = (): ThemeCoreColors => useThemeConfig().colors;
 
 export const useGeneratedTheme = (): GeneratedTheme | null => {
     const themeConfig = useThemeConfig();
-    return generateTheme(themeConfig.colors, themeConfig.fonts, themeConfig.borderRadius);
+    return useMemo(
+        () => generateTheme(themeConfig.colors, themeConfig.fonts, themeConfig.borderRadius),
+        [themeConfig.colors, themeConfig.fonts, themeConfig.borderRadius]
+    );
 };
 
 export const useSwatchBorderColor = (swatchColor: string | null | undefined, customBackground?: string): string => {

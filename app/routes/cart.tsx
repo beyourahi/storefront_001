@@ -1,14 +1,20 @@
 import {data, type HeadersFunction, useLoaderData, Await, Link} from "react-router";
 import {Suspense} from "react";
 import type {Route} from "./+types/cart";
-import type {CartQueryDataReturn} from "@shopify/hydrogen";
+import type {CartQueryDataReturn, OptimisticCart} from "@shopify/hydrogen";
 import {CartForm, useOptimisticCart} from "@shopify/hydrogen";
+import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {ShoppingCart} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {Skeleton} from "~/components/ui/skeleton";
 import {CartLineItem} from "~/components/cart/CartLineItem";
 import {CartSuggestions} from "~/components/cart/CartSuggestions";
 import {CartSummary} from "~/components/cart/CartSummary";
+
+export const meta: Route.MetaFunction = () => [
+    {title: "Cart"},
+    {name: "robots", content: "noindex"}
+];
 
 export const headers: HeadersFunction = ({actionHeaders}) => actionHeaders;
 
@@ -157,7 +163,7 @@ function CartPageContent({cart}: {cart: Awaited<ReturnType<typeof loader>>}) {
                             {optimisticCart.totalQuantity ?? 0} {optimisticCart.totalQuantity === 1 ? "item" : "items"}
                         </p>
                     </div>
-                    <CartSummary cart={optimisticCart as any} />
+                    <CartSummary cart={optimisticCart as OptimisticCart<CartApiQueryFragment>} />
                 </div>
 
                 <div className="mt-6">

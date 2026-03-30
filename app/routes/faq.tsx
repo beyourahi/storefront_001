@@ -5,8 +5,20 @@ import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {useFaqItems} from "~/lib/site-content-context";
 import {generateFAQPageSchema} from "~/lib/seo";
 
-export const meta: Route.MetaFunction = () => {
-    return getSeoMeta({title: "FAQ"}) ?? [];
+export const meta: Route.MetaFunction = ({matches}) => {
+    const rootData = (
+        matches.find(m => m?.id === "root") as
+            | {data?: {siteContent?: {siteSettings?: {faqItems?: Array<{question: string; answer: string}>}}}}
+            | undefined
+    )?.data;
+    const faqItems = rootData?.siteContent?.siteSettings?.faqItems;
+    const faqSchema = faqItems?.length ? generateFAQPageSchema(faqItems) : undefined;
+
+    return getSeoMeta({
+        title: "Frequently Asked Questions",
+        description: "Find answers to common questions about our products, shipping, and policies.",
+        jsonLd: faqSchema as any
+    }) ?? [];
 };
 
 export default function FAQ() {
@@ -16,12 +28,8 @@ export default function FAQ() {
         throw new Response("Not Found", {status: 404});
     }
 
-    const faqSchema = generateFAQPageSchema(faqItems);
-
     return (
         <div className="min-h-dvh bg-primary">
-            {/* FAQ schema JSON-LD — content is from trusted Shopify metaobject data, safe to serialize */}
-            <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(faqSchema)}} />
 
             <AnimatedSection animation="fade" threshold={0.08}>
                 <section className="pt-32 pb-12 sm:pt-40 sm:pb-16 md:pb-24 lg:pb-32">
@@ -41,8 +49,8 @@ export default function FAQ() {
 
                             <div>
                                 <Accordion
-                                    type="multiple"
-                                    defaultValue={faqItems.map((_, index) => `faq-${index}`)}
+                                    type="single"
+                                    collapsible
                                     className="w-full"
                                 >
                                     {faqItems.map((item, index) => {

@@ -1,5 +1,8 @@
 import type {ActionFunctionArgs, LoaderFunctionArgs} from "react-router";
 import {data} from "react-router";
+import {createRateLimiter, getClientIP, getRateLimitResponse} from "~/lib/rate-limit";
+
+const limiter = createRateLimiter({windowMs: 60_000, maxRequests: 20});
 
 const WISHLIST_PRODUCTS_QUERY = `#graphql
   query WishlistProducts($ids: [ID!]!) {
@@ -77,6 +80,9 @@ export const loader = async ({request: _request}: LoaderFunctionArgs) => {
 };
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
+    const rateLimitResponse = getRateLimitResponse(limiter.check(getClientIP(request)));
+    if (rateLimitResponse) return rateLimitResponse;
+
     if (request.method !== "POST") {
         return data({error: "Method not allowed"}, {status: 405});
     }

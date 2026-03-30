@@ -42,20 +42,23 @@ const DEFAULT_CONFIG: RecentlyViewedConfig = {
 
 const isBrowser = typeof window !== "undefined";
 
-function isLegacyProduct(product: any): product is LegacyRecentlyViewedProduct {
-    return product && typeof product.id === "string" && !("title" in product);
+function isLegacyProduct(product: unknown): product is LegacyRecentlyViewedProduct {
+    if (!product || typeof product !== "object") return false;
+    const p = product as Record<string, unknown>;
+    return typeof p.id === "string" && !("title" in p);
 }
 
-function isFullProduct(product: any): product is RecentlyViewedProduct {
+function isFullProduct(product: unknown): product is RecentlyViewedProduct {
+    if (!product || typeof product !== "object") return false;
+    const p = product as Record<string, unknown>;
     return (
-        product &&
-        typeof product.id === "string" &&
-        product.id.length > 0 &&
-        typeof product.handle === "string" &&
-        product.handle.length > 0 &&
-        typeof product.timestamp === "number" &&
-        typeof product.title === "string" &&
-        typeof product.price === "string"
+        typeof p.id === "string" &&
+        p.id.length > 0 &&
+        typeof p.handle === "string" &&
+        p.handle.length > 0 &&
+        typeof p.timestamp === "number" &&
+        typeof p.title === "string" &&
+        typeof p.price === "string"
     );
 }
 
@@ -65,7 +68,7 @@ function loadFromStorage(config: RecentlyViewedConfig): RecentlyViewedProduct[] 
     try {
         const stored = localStorage.getItem(config.storageKey);
         if (stored) {
-            const parsed = JSON.parse(stored) as any[];
+            const parsed = JSON.parse(stored) as unknown[];
             if (Array.isArray(parsed)) {
                 const expiryTime = config.expiryDays * 24 * 60 * 60 * 1000;
                 const now = Date.now();
@@ -205,7 +208,7 @@ export function parseRecentlyViewedFromCookie(
         const recentlyViewedData = cookies[config.storageKey];
         if (!recentlyViewedData) return [];
 
-        const parsed = JSON.parse(recentlyViewedData) as any[];
+        const parsed = JSON.parse(recentlyViewedData) as unknown[];
         if (!Array.isArray(parsed)) return [];
 
         const now = Date.now();

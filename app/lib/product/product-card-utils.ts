@@ -199,17 +199,20 @@ export const getCardProductPrice = (
     }
 
     const price = formatShopifyMoney(variant.price);
-    const compareAtPrice = variant.compareAtPrice ? formatShopifyMoney(variant.compareAtPrice) : undefined;
 
     const originalPrice = parseNumber(variant.compareAtPrice?.amount || "0");
     const salePrice = parseNumber(variant.price.amount);
     const discount = calculateDiscount(originalPrice, salePrice);
 
+    // Only show compareAtPrice when it's genuinely higher than the current price
+    const isOnSale = discount.percentage > 0 && originalPrice > salePrice;
+    const compareAtPrice = isOnSale && variant.compareAtPrice ? formatShopifyMoney(variant.compareAtPrice) : undefined;
+
     return {
         price,
         compareAtPrice,
-        onSale: discount.percentage > 0,
-        discountPercentage: discount.percentage || undefined
+        onSale: isOnSale,
+        discountPercentage: isOnSale ? discount.percentage : undefined
     };
 };
 
@@ -250,17 +253,21 @@ export const getProductPriceWithDiscount = (
     }
 
     const price = formatShopifyMoney(variantToUse.price);
-    const compareAtPrice = variantToUse.compareAtPrice ? formatShopifyMoney(variantToUse.compareAtPrice) : undefined;
 
     const originalPrice = parseNumber(variantToUse.compareAtPrice?.amount || "0");
     const salePrice = parseNumber(variantToUse.price.amount);
     const discount = calculateDiscount(originalPrice, salePrice);
 
+    // Only show compareAtPrice when it's genuinely higher than the current price
+    const isOnSale = discount.percentage > 0 && originalPrice > salePrice;
+    const compareAtPrice =
+        isOnSale && variantToUse.compareAtPrice ? formatShopifyMoney(variantToUse.compareAtPrice) : undefined;
+
     return {
         price,
         compareAtPrice,
-        onSale: discount.percentage > 0,
-        discountPercentage: discount.percentage || undefined
+        onSale: isOnSale,
+        discountPercentage: isOnSale ? discount.percentage : undefined
     };
 };
 

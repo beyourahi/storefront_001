@@ -63,7 +63,7 @@ export function AnimatedSection({
     staggerDelay: _staggerDelay = 100,
     className
 }: AnimatedSectionProps) {
-    const {ref, inView} = useInView({
+    const {ref, inView, mounted} = useInView({
         threshold,
         triggerOnce: once,
         delay
@@ -72,9 +72,10 @@ export function AnimatedSection({
     const baseClasses = animationClasses[animation];
     const transitionClasses = animationTransitions[animation];
 
+    // Only apply hidden/animation classes after client mount — SSR output is fully visible
     const finalClasses = cn(
-        baseClasses,
-        transitionClasses,
+        mounted && baseClasses,
+        mounted && transitionClasses,
         inView && "!translate-x-0 !translate-y-0 !scale-100 !rotate-0 !opacity-100 !blur-none",
         "motion-reduce:!transition-none motion-reduce:!translate-x-0 motion-reduce:!translate-y-0 motion-reduce:!scale-100 motion-reduce:!rotate-0 motion-reduce:!opacity-100 motion-reduce:!blur-none",
         className

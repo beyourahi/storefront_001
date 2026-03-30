@@ -1,6 +1,6 @@
 import {Link} from "react-router";
 import {useWishlist} from "~/lib/wishlist-context";
-import {HiOutlineHeart} from "react-icons/hi";
+import {Heart} from "lucide-react";
 import {cn} from "~/lib/utils";
 
 export const WishlistCountInline = ({className}: {className?: string}) => {
@@ -27,7 +27,7 @@ export const WishlistCount = ({className, iconSize = 24}: WishlistCountProps) =>
             className={cn("relative inline-flex items-center justify-center rounded-lg p-2", className)}
             aria-label={ariaLabel}
         >
-            <HiOutlineHeart style={{width: iconSize, height: iconSize}} className="text-current" />
+            <Heart style={{width: iconSize, height: iconSize}} className="text-current" />
             {isHydrated && count > 0 && (
                 <span
                     className="sleek bg-wishlist-active text-wishlist-active-foreground animate-in fade-in zoom-in absolute right-0 top-0 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-xs font-semibold"

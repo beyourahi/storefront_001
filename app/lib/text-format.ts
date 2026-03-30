@@ -29,7 +29,7 @@ export const parseMarkdownLinks = (text: string): string => {
 
         const safeLinkText = escapeHtml(linkText);
 
-        result += `<a href="${safeUrl}" class="text-primary underline hover:no-underline transition-all" target="_blank" rel="noopener noreferrer">${safeLinkText}</a>`;
+        result += `<a href="${escapeHtml(safeUrl)}" class="text-primary underline hover:no-underline transition-all" target="_blank" rel="noopener noreferrer">${safeLinkText}</a>`;
 
         lastIndex = matchIndex + fullMatch.length;
     }

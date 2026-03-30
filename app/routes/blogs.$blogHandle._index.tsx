@@ -1,6 +1,7 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/blogs.$blogHandle._index";
 import {getPaginationVariables, getSeoMeta, Pagination} from "@shopify/hydrogen";
+import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {ArticleCard, type ArticleCardData} from "~/components/blog/ArticleCard";
 import {ArticleHero} from "~/components/blog/ArticleHero";
@@ -21,8 +22,9 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const blog = data?.blog;
     const featuredArticle = data?.featuredArticle;
 
-    if (!blog) return [{title: `Blog | ${shopName}`}];
+    if (!blog) return [{title: "Blog"}];
 
+    const siteUrl = getSiteUrlFromMatches(matches);
     const title = blog.seo?.title || `${blog.title} | Blog`;
     const description = blog.seo?.description || `Explore articles from ${blog.title}.`;
 
@@ -30,6 +32,7 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
         getSeoMeta({
             title,
             description,
+            url: buildCanonicalUrl(`/blogs/${blog.handle}`, siteUrl),
             media: featuredArticle?.image?.url
                 ? {
                       url: featuredArticle.image.url,

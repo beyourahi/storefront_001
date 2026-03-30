@@ -1,6 +1,7 @@
 import type {Route} from "./+types/sale";
 import {useLoaderData, redirect} from "react-router";
 import {getSeoMeta} from "@shopify/hydrogen";
+import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {filterAndSortDiscountedProducts, type RawDiscountProduct} from "~/lib/discounts";
 import {fromSaleProduct} from "~/lib/product/product-card-normalizers";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
@@ -17,7 +18,8 @@ import {
 import {sortProductsByDiscount} from "~/lib/product-sorting";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 
-export const meta: Route.MetaFunction = ({data}) => {
+export const meta: Route.MetaFunction = ({data, matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
     const maxDiscount = data?.maxDiscount ?? 0;
     const totalCount = data?.totalCount ?? 0;
     const title = maxDiscount > 0 ? `Save Up to ${maxDiscount}% — Special Offers` : "Special Offers";
@@ -26,7 +28,7 @@ export const meta: Route.MetaFunction = ({data}) => {
             ? `Discover ${totalCount} discounted items with savings up to ${maxDiscount}% off.`
             : "Check back soon for sale items and deals.";
 
-    return getSeoMeta({title, description}) ?? [];
+    return getSeoMeta({title, description, url: buildCanonicalUrl("/sale", siteUrl)}) ?? [];
 };
 
 export const loader = async ({context, request}: Route.LoaderArgs) => {

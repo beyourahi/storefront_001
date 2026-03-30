@@ -1,4 +1,5 @@
 import {getSeoMeta} from "@shopify/hydrogen";
+import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {useLoaderData} from "react-router";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
@@ -9,11 +10,13 @@ import {transformToGalleryImages} from "~/lib/gallery";
 import {cn} from "~/lib/utils";
 import type {Route} from "./+types/gallery";
 
-export const meta: Route.MetaFunction = () => {
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
     return (
         getSeoMeta({
             title: "Gallery",
-            description: "Explore our complete collection through a visual gallery of all product images."
+            description: "Explore our complete collection through a visual gallery of all product images.",
+            url: buildCanonicalUrl("/gallery", siteUrl)
         }) ?? []
     );
 };

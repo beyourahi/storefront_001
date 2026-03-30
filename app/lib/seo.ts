@@ -67,7 +67,7 @@ type JsonLdSchema = Record<string, unknown>;
 type SeoSiteSettings = Partial<Pick<SiteSettings, "brandName" | "brandLogo" | "missionStatement" | "siteUrl">>;
 
 const FALLBACK_BRAND_NAME = "Store";
-const FALLBACK_SITE_URL = "https://example.com";
+const FALLBACK_SITE_URL = "";
 const FALLBACK_SEO_TITLE_SUFFIX = "Quality Products";
 const FALLBACK_SEO_TITLE = `${FALLBACK_BRAND_NAME} | ${FALLBACK_SEO_TITLE_SUFFIX}`;
 const FALLBACK_SEO_DESCRIPTION =
@@ -122,9 +122,10 @@ export function getSeoDefaults(
 /**
  * Build canonical URL from path
  */
-export function buildCanonicalUrl(path: string, siteUrl: string = SEO_CONFIG.siteUrl): string {
+export function buildCanonicalUrl(path: string, siteUrl?: string): string {
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
-    return `${siteUrl}${cleanPath}`;
+    const base = (siteUrl ?? SEO_CONFIG.siteUrl).replace(/\/$/, "");
+    return base ? `${base}${cleanPath}` : cleanPath;
 }
 
 /**
@@ -314,6 +315,8 @@ export function generateBlogPostingSchema(
         description: article.excerpt || undefined,
         image: article.image?.url || undefined,
         datePublished: article.publishedAt ? formatSchemaDate(article.publishedAt) : undefined,
+        // dateModified equals datePublished because the Shopify Storefront API Article type
+        // does not expose an updatedAt field. This is an API limitation, not a code bug.
         dateModified: article.publishedAt ? formatSchemaDate(article.publishedAt) : undefined,
         author: article.author?.name
             ? {

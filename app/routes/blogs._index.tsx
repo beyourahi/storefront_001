@@ -1,6 +1,7 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/blogs._index";
 import {getPaginationVariables, getSeoMeta} from "@shopify/hydrogen";
+import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {ArticleCard, type ArticleCardData} from "~/components/blog/ArticleCard";
 import {ArticleHero} from "~/components/blog/ArticleHero";
 import {Carousel, CarouselContent, CarouselItem} from "~/components/ui/carousel";
@@ -41,10 +42,13 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const pageDescription =
         rootData?.siteContent?.siteSettings?.blogPageDescription || "Explore stories, inspiration, and ideas.";
 
+    const siteUrl = getSiteUrlFromMatches(matches);
+
     return (
         getSeoMeta({
             title: pageTitle,
             description: pageDescription,
+            url: buildCanonicalUrl("/blogs", siteUrl),
             media: featuredArticle?.image?.url
                 ? {
                       url: featuredArticle.image.url,
@@ -82,22 +86,43 @@ export async function loader({context, request}: Route.LoaderArgs) {
         blogs?.nodes?.length > 0 &&
         blogs.nodes.some((blog: {articles?: {nodes?: unknown[]}}) => (blog.articles?.nodes?.length ?? 0) > 0);
 
-    if (!hasRealContent) {
-        throw new Response("Not found", {status: 404});
-    }
-
     return {
         blogs,
-        featuredArticle
+        featuredArticle,
+        hasContent: hasRealContent
     };
 }
 
 export default function Blogs() {
-    const {blogs, featuredArticle} = useLoaderData<typeof loader>();
+    const {blogs, featuredArticle, hasContent} = useLoaderData<typeof loader>();
     const {blogPageHeading, blogPageDescription} = useSiteSettings();
     const blogNodes = blogs.nodes as BlogWithArticles[];
     const hasMultipleCategories = blogNodes.length > 1;
     const blogTitle = blogPageHeading || "The Journal";
+
+    if (!hasContent) {
+        return (
+            <>
+                <PageBreadcrumbs />
+                <section className="py-8">
+                    <div className="mx-auto max-w-[2000px] px-2 md:px-4">
+                        <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
+                            <GiantText
+                                text={blogTitle}
+                                className={cn("w-full font-black", blogTitle.length <= 7 ? "lg:w-[30%]" : "lg:w-[60%]")}
+                            />
+                        </div>
+                    </div>
+                </section>
+                <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+                    <p className="text-muted-foreground mb-6 text-sm">No blog posts published yet. Check back soon!</p>
+                    <Button asChild variant="outline">
+                        <Link to="/">Back to Home</Link>
+                    </Button>
+                </div>
+            </>
+        );
+    }
 
     return (
         <>

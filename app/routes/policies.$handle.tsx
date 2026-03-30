@@ -4,7 +4,7 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import type {Shop} from "@shopify/hydrogen/storefront-api-types";
 import {LegalPageLayout} from "~/components/legal";
 import {POLICY_CONTENT_QUERY} from "~/lib/queries/policy";
-import {getBrandNameFromMatches} from "~/lib/seo";
+import {getBrandNameFromMatches, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {kebabToCamelCase} from "~/lib/string-utils";
 
 type PolicyKey = keyof Pick<Shop, "privacyPolicy" | "shippingPolicy" | "termsOfService" | "refundPolicy">;
@@ -22,7 +22,7 @@ const POLICY_DESCRIPTIONS: Record<PolicyKey, (brandName: string) => string> = {
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const brandName = getBrandNameFromMatches(matches);
     const policy = data?.policy;
-    if (!policy) return [{title: `Policy | ${brandName}`}];
+    if (!policy) return [{title: "Policy"}];
 
     const policyKey = kebabToCamelCase(policy.handle) as PolicyKey;
     const descriptionFn = POLICY_DESCRIPTIONS[policyKey];
@@ -30,7 +30,8 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
         ? descriptionFn(brandName)
         : `Read our ${policy.title.toLowerCase()} at ${brandName}.`;
 
-    return getSeoMeta({title: policy.title, description}) ?? [];
+    const siteUrl = getSiteUrlFromMatches(matches);
+    return getSeoMeta({title: policy.title, description, url: buildCanonicalUrl(`/policies/${policy.handle}`, siteUrl)}) ?? [];
 };
 
 export async function loader({params, context}: Route.LoaderArgs) {

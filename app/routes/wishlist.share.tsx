@@ -3,7 +3,7 @@ import {Link, useLoaderData, data} from "react-router";
 import type {LoaderFunctionArgs, MetaFunction} from "react-router";
 import {useWishlist} from "~/lib/wishlist-context";
 import {reconstructGid, decodeWishlistIds} from "~/lib/wishlist-utils";
-import {HiHeart, HiShare} from "react-icons/hi";
+import {Heart, Share2} from "lucide-react";
 import {ShareDialog} from "~/components/ShareDialog";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
@@ -105,8 +105,14 @@ interface LoaderData {
     productIds: number[];
 }
 
-export const meta: MetaFunction = () => {
-    return [{title: "Shared Wishlist | Your Store"}, {name: "robots", content: "noindex, nofollow"}];
+export const meta: MetaFunction = ({matches}) => {
+    const rootData = (
+        matches.find(m => m?.id === "root") as
+            | {data?: {siteContent?: {siteSettings?: {brandName?: string}}}}
+            | undefined
+    )?.data;
+    const brandName = rootData?.siteContent?.siteSettings?.brandName || "Store";
+    return [{title: `Shared Wishlist | ${brandName}`}, {name: "robots", content: "noindex, nofollow"}];
 };
 
 export const loader = async ({request, context}: LoaderFunctionArgs) => {
@@ -162,11 +168,11 @@ const WishlistShare = () => {
         return (
             <div className="mx-auto max-w-7xl px-4 py-16">
                 <div className="border-border/60 flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed">
-                    <HiHeart className="text-muted-foreground/60 mb-4 h-16 w-16" />
+                    <Heart fill="currentColor" className="text-muted-foreground/60 mb-4 h-16 w-16" />
                     <h2 className="mb-2 text-xl font-semibold">No products found</h2>
                     <p className="text-muted-foreground mb-6">The products in this wishlist are no longer available</p>
                     <Link
-                        to="/products"
+                        to="/collections/all-products"
                         className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 transition-colors"
                     >
                         Browse Products
@@ -191,7 +197,7 @@ const WishlistShare = () => {
                     disabled={addedToWishlist}
                     className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors disabled:opacity-50"
                 >
-                    <HiHeart className="h-5 w-5" />
+                    <Heart fill="currentColor" className="h-5 w-5" />
                     {addedToWishlist ? "Added to Your Wishlist!" : "Add All to My Wishlist"}
                 </button>
 
@@ -199,7 +205,7 @@ const WishlistShare = () => {
                     onClick={() => setShowShareDialog(true)}
                     className="border-border bg-background text-foreground hover:bg-muted flex items-center gap-2 rounded-lg border px-6 py-3 font-medium transition-colors"
                 >
-                    <HiShare className="h-5 w-5" />
+                    <Share2 className="h-5 w-5" />
                     Share This Wishlist
                 </button>
             </div>

@@ -12,9 +12,11 @@ type GiantTextProps = Omit<HTMLAttributes<HTMLDivElement>, "className" | "style"
     className?: string;
     textClass?: string;
     style?: CSSProperties;
+    /** Semantic HTML tag for the container (default: "div") */
+    as?: "div" | "h1" | "h2" | "h3" | "p";
 };
 
-export const GiantText = ({text, className, textClass, style, ...restProps}: GiantTextProps) => {
+export const GiantText = ({text, className, textClass, style, as: Tag = "div", ...restProps}: GiantTextProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const textRef = useRef<HTMLSpanElement>(null);
     const rafIdRef = useRef<number | null>(null);
@@ -128,13 +130,13 @@ export const GiantText = ({text, className, textClass, style, ...restProps}: Gia
     }, [text, scheduleResize]);
 
     return (
-        <div ref={containerRef} className={cn("sleek w-full overflow-hidden", className)} style={style} {...restProps}>
+        <Tag ref={containerRef as any} className={cn("sleek w-full overflow-hidden", className)} style={style} {...restProps}>
             <span
                 ref={textRef}
                 className={cn("text-center leading-none tracking-wider whitespace-nowrap uppercase", textClass)}
             >
                 {text}
             </span>
-        </div>
+        </Tag>
     );
 };

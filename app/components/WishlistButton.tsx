@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {useWishlist} from "~/lib/wishlist-context";
-import {HiHeart, HiOutlineHeart} from "react-icons/hi";
+import {Heart} from "lucide-react";
 import {cva, type VariantProps} from "class-variance-authority";
 import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
 import {cn} from "~/lib/utils";
@@ -59,7 +59,7 @@ export const WishlistButton = ({productId, size, showLabel = false, className, .
         >
             <span className={cn("motion-image", isAnimating && "scale-125")}>
                 {wishlisted ? (
-                    <HiHeart
+                    <Heart
                         className={cn(
                             "motion-interactive",
                             size === "sm" && "h-5 w-5",
@@ -69,7 +69,7 @@ export const WishlistButton = ({productId, size, showLabel = false, className, .
                         )}
                     />
                 ) : (
-                    <HiOutlineHeart
+                    <Heart
                         className={cn(
                             "motion-interactive",
                             size === "sm" && "h-5 w-5",

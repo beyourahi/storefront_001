@@ -1,6 +1,11 @@
 import {redirect} from "react-router";
 import type {Route} from "./+types/discount.$code";
 
+export const meta: Route.MetaFunction = () => [
+    {title: "Redirecting..."},
+    {name: "robots", content: "noindex"}
+];
+
 export const loader = async ({request, context, params}: Route.LoaderArgs) => {
     const {cart} = context;
     const {code} = params;
@@ -9,7 +14,13 @@ export const loader = async ({request, context, params}: Route.LoaderArgs) => {
     const searchParams = new URLSearchParams(url.search);
     let redirectParam = searchParams.get("redirect") || searchParams.get("return_to") || "/";
 
-    if (redirectParam.includes("//")) {
+    try {
+        const parsed = new URL(redirectParam, request.url);
+        const requestOrigin = new URL(request.url).origin;
+        if (parsed.origin !== requestOrigin) {
+            redirectParam = "/";
+        }
+    } catch {
         redirectParam = "/";
     }
 

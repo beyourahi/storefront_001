@@ -78,7 +78,11 @@ export default async function handleRequest(
         },
         // Script sources: Self, Shopify CDN, Google Tag Manager
         scriptSrc: ["'self'", "https://cdn.shopify.com", "https://*.googletagmanager.com"],
-        // Google Fonts require style-src
+        // Google Fonts require style-src.
+        // 'unsafe-inline' is required because Radix UI portals (Dialog, Popover, Select, Drawer)
+        // inject inline style attributes for positioning at runtime without nonce support.
+        // Removing it breaks all overlay components. Style-based XSS (CSS expression()) only
+        // affects IE < 10. Monitor Radix nonce support for future removal.
         styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.shopify.com", "https://fonts.googleapis.com"],
         // Font files from Google Fonts
         fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdn.shopify.com"],
@@ -93,9 +97,11 @@ export default async function handleRequest(
         // Allow video/audio from Shopify CDN (required for hero video metaobject)
         mediaSrc: ["'self'", "https://cdn.shopify.com", "https://*.shopify.com", "https://*.myshopify.com"],
         connectSrc: [
-            // ngrok domain for local development with Customer Account API
-            "wss://hermelinda-nonsegmentary-hettie.ngrok-free.dev:*",
-            "https://hermelinda-nonsegmentary-hettie.ngrok-free.dev",
+            // ngrok domain for local development with Customer Account API (dev-only, tree-shaken in production)
+            ...(import.meta.env.DEV
+                ? ["wss://hermelinda-nonsegmentary-hettie.ngrok-free.dev:*",
+                   "https://hermelinda-nonsegmentary-hettie.ngrok-free.dev"]
+                : []),
             // Shopify domains for Customer Account API
             "https://*.shopify.com",
             "https://*.myshopify.com",

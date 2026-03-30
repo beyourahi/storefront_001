@@ -209,13 +209,13 @@ function CartLinePricing({cost, quantity}: {cost: CartLine["cost"]; quantity: nu
 
     return (
         <div className="text-right">
-            <p
+            <div
                 className="text-foreground font-mono text-base font-bold tracking-tight tabular-nums antialiased sm:text-base"
                 aria-label="Line total"
             >
-                <Money data={totalAmount} withoutTrailingZeros />
-            </p>
-            <p
+                <Money as="span" data={totalAmount} withoutTrailingZeros />
+            </div>
+            <div
                 className={cn(
                     "text-muted-foreground gap-2 text-xs sm:text-sm flex items-baseline justify-end",
                     quantity > 1 ? "opacity-100" : "opacity-0"
@@ -223,12 +223,13 @@ function CartLinePricing({cost, quantity}: {cost: CartLine["cost"]; quantity: nu
             >
                 <span className="font-mono font-medium tracking-tight tabular-nums" aria-label="Price per item">
                     <Money
+                        as="span"
                         data={{amount: perItemAmount, currencyCode: totalAmount.currencyCode}}
                         withoutTrailingZeros
                     />
                 </span>
                 <span>each</span>
-            </p>
+            </div>
         </div>
     );
 }

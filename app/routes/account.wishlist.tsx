@@ -6,7 +6,7 @@ import {reconstructGid, generateShareableWishlistUrl} from "~/lib/wishlist-utils
 import {WishlistButton} from "~/components/WishlistButton";
 import {CartForm} from "@shopify/hydrogen";
 import type {CurrencyCode} from "@shopify/hydrogen/storefront-api-types";
-import {HiViewGrid, HiViewList, HiTrash, HiShare, HiShoppingCart} from "react-icons/hi";
+import {LayoutGrid, List, Trash2, Share2, ShoppingCart} from "lucide-react";
 import {ShareDialog} from "~/components/ShareDialog";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
@@ -229,11 +229,11 @@ const AccountWishlist = () => {
 
             {count === 0 ? (
                 <div className="border-border/60 flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed">
-                    <HiShare className="text-muted-foreground/60 mb-4 h-16 w-16" />
+                    <Share2 className="text-muted-foreground/60 mb-4 h-16 w-16" />
                     <h3 className="mb-2 text-xl font-semibold">Your wishlist is empty</h3>
                     <p className="text-muted-foreground mb-6">Start adding products you love</p>
                     <Link
-                        to="/products"
+                        to="/collections/all-products"
                         className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 transition-colors"
                     >
                         Start Browsing
@@ -250,7 +250,7 @@ const AccountWishlist = () => {
                                         disabled={cartLines.length === 0 || fetcher.state !== "idle"}
                                         className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                                     >
-                                        <HiShoppingCart className="h-5 w-5" />
+                                        <ShoppingCart className="h-5 w-5" />
                                         {fetcher.state !== "idle" ? "Adding..." : "Add All to Cart"}
                                     </button>
                                 )}
@@ -269,7 +269,7 @@ const AccountWishlist = () => {
                                 }`}
                                 aria-label="Grid view"
                             >
-                                <HiViewGrid className="h-5 w-5" />
+                                <LayoutGrid className="h-5 w-5" />
                             </button>
                             <button
                                 onClick={() => setViewMode("list")}
@@ -280,7 +280,7 @@ const AccountWishlist = () => {
                                 }`}
                                 aria-label="List view"
                             >
-                                <HiViewList className="h-5 w-5" />
+                                <List className="h-5 w-5" />
                             </button>
 
                             {viewMode === "grid" && (
@@ -318,7 +318,7 @@ const AccountWishlist = () => {
                                 onClick={() => setShowShareDialog(true)}
                                 className="bg-muted text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                             >
-                                <HiShare className="h-4 w-4" />
+                                <Share2 className="h-4 w-4" />
                                 Share
                             </button>
 
@@ -326,7 +326,7 @@ const AccountWishlist = () => {
                                 onClick={() => setShowClearDialog(true)}
                                 className="bg-destructive/10 text-destructive hover:bg-destructive/15 flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                             >
-                                <HiTrash className="h-4 w-4" />
+                                <Trash2 className="h-4 w-4" />
                                 Clear All
                             </button>
                         </div>

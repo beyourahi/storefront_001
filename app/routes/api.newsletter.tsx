@@ -1,5 +1,8 @@
 import {data} from "react-router";
 import type {Route} from "./+types/api.newsletter";
+import {createRateLimiter, getClientIP, getRateLimitResponse} from "~/lib/rate-limit";
+
+const limiter = createRateLimiter({windowMs: 60_000, maxRequests: 5});
 
 const CUSTOMER_CREATE_MUTATION = `#graphql
   mutation customerCreate($input: CustomerCreateInput!) {
@@ -19,14 +22,19 @@ const CUSTOMER_CREATE_MUTATION = `#graphql
 
 const generateSecurePassword = (): string => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+    const randomBytes = new Uint8Array(24);
+    crypto.getRandomValues(randomBytes);
     let password = "";
     for (let i = 0; i < 24; i++) {
-        password += chars.charAt(Math.floor(Math.random() * chars.length));
+        password += chars.charAt(randomBytes[i] % chars.length);
     }
     return password;
 };
 
 export const action = async ({request, context}: Route.ActionArgs) => {
+    const rateLimitResponse = getRateLimitResponse(limiter.check(getClientIP(request)));
+    if (rateLimitResponse) return rateLimitResponse;
+
     const formData = await request.formData();
     const email = formData.get("email");
 

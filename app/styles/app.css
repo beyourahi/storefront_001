@@ -5,6 +5,11 @@
 /*---break---
  */
 
+/* Prevent horizontal overflow on narrow viewports (375px etc.) */
+body {
+    overflow-x: clip;
+}
+
 :root {
     /* ── Canonical Semantic Tokens (neutral defaults, overridden at runtime) ── */
     --surface-canvas: oklch(0.985 0.004 95);

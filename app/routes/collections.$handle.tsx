@@ -3,6 +3,7 @@ import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import type {Route} from "./+types/collections.$handle";
 import {Analytics, getSeoMeta} from "@shopify/hydrogen";
+import {buildCanonicalUrl, getSiteUrlFromMatches, generateCollectionSchema} from "~/lib/seo";
 import {CollectionHero} from "~/components/sections/CollectionHero";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
 import {CollectionPagination} from "~/components/custom/CollectionPagination";
@@ -33,19 +34,26 @@ const redirectIfHandleIsLocalized = (
     if (shouldRedirect) throw redirect(url.toString());
 };
 
-export const meta: Route.MetaFunction = ({data}) => {
+export const meta: Route.MetaFunction = ({data, matches}) => {
     if (!data || !data.collection) {
         return [{title: "Collection"}];
     }
 
     const collection = data.collection;
+    const siteUrl = getSiteUrlFromMatches(matches);
     const title = collection.seo?.title || `${collection.title} Collection`;
     const description = collection.seo?.description || collection.description || "";
+
+    const collectionSchema = generateCollectionSchema(
+        collection,
+        data.products as unknown as Array<{title: string; handle: string}>
+    );
 
     return (
         getSeoMeta({
             title,
             description,
+            url: buildCanonicalUrl(`/collections/${collection.handle}`, siteUrl),
             media: collection.image?.url
                 ? {
                       url: collection.image.url,
@@ -54,7 +62,8 @@ export const meta: Route.MetaFunction = ({data}) => {
                       altText: collection.image.altText || collection.title,
                       type: "image" as const
                   }
-                : undefined
+                : undefined,
+            jsonLd: collectionSchema as any
         }) ?? []
     );
 };

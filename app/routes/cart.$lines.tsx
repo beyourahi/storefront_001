@@ -1,6 +1,11 @@
 import {redirect} from "react-router";
 import type {Route} from "./+types/cart.$lines";
 
+export const meta: Route.MetaFunction = () => [
+    {title: "Redirecting..."},
+    {name: "robots", content: "noindex"}
+];
+
 export const loader = async ({request, context, params}: Route.LoaderArgs) => {
     const {cart} = context;
     const {lines} = params;

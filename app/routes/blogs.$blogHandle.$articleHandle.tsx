@@ -4,7 +4,7 @@ import {Image, getSeoMeta} from "@shopify/hydrogen";
 import {ArrowLeft} from "lucide-react";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateReadingTime, formatArticleDate, filterRelatedArticles} from "~/lib/blog-utils";
-import {generateBlogPostingSchema} from "~/lib/seo";
+import {generateBlogPostingSchema, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {TagList} from "~/components/blog/TagBadge";
 import {ShareButtons} from "~/components/blog/ShareButtons";
@@ -26,15 +26,18 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const article = data?.article;
     const blogHandle = data?.blogHandle;
 
-    if (!article) return [{title: `Article Not Found | ${shopName}`}];
+    if (!article) return [{title: "Article Not Found"}];
 
+    const siteUrl = getSiteUrlFromMatches(matches);
     const title = article.seo?.title || article.title;
     const description = article.seo?.description || (article.excerpt ? article.excerpt.substring(0, 155) : "");
+    const articlePath = `/blogs/${blogHandle || "news"}/${article.handle}`;
 
     return (
         getSeoMeta({
             title,
             description,
+            url: buildCanonicalUrl(articlePath, siteUrl),
             media: article.image?.url
                 ? {
                       url: article.image.url,

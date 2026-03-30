@@ -3,6 +3,7 @@ import {useLoaderData, useRouteLoaderData, Await} from "react-router";
 import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
 import {getSeoMeta} from "@shopify/hydrogen";
+import {generateOrganizationSchema} from "~/lib/seo";
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
     bestSellers: "best-sellers",
@@ -31,13 +32,15 @@ import {
 
 export const meta: Route.MetaFunction = ({matches}) => {
     const rootMatch = matches.find((m): m is (typeof matches)[number] & {id: "root"} => m?.id === "root");
-    const rootData = rootMatch?.data as {siteContent?: {siteSettings?: {brandName?: string; missionStatement?: string}}} | undefined;
-    const shopName = rootData?.siteContent?.siteSettings?.brandName ?? "Store";
-    const description = rootData?.siteContent?.siteSettings?.missionStatement ?? "";
+    const rootData = rootMatch?.data as {siteContent?: {siteSettings?: {brandName?: string; missionStatement?: string; siteUrl?: string; brandLogo?: {url: string; width?: number; height?: number}}; socialLinks?: Array<{url: string}>}} | undefined;
+    const siteSettings = rootData?.siteContent?.siteSettings;
+    const shopName = siteSettings?.brandName ?? "Store";
+    const description = siteSettings?.missionStatement ?? "";
+    const socialLinks = rootData?.siteContent?.socialLinks;
 
-    // JSON-LD intentionally omitted from homepage to prevent React hydration
-    // mismatch. Structured data is provided on product, collection, and article pages.
-    return getSeoMeta({title: shopName, titleTemplate: null, description}) ?? [];
+    const organizationSchema = generateOrganizationSchema(siteSettings, socialLinks);
+
+    return getSeoMeta({title: shopName, titleTemplate: null, description, jsonLd: organizationSchema as any}) ?? [];
 };
 
 export const loader = async ({context}: Route.LoaderArgs) => {

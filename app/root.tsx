@@ -47,6 +47,7 @@ import {NetworkStatusIndicator} from "~/components/NetworkStatusIndicator";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
 import {generateWebsiteSchema, getSeoDefaults} from "~/lib/seo";
+import {STORE_LANGUAGE_CODE} from "~/lib/store-locale";
 import appCss from "./styles/app.css?url";
 
 export type RootLoader = typeof loader;
@@ -230,7 +231,7 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
         popularProducts,
         shippingConfig,
         publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
-        shop: getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID}),
+        shop: getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID || "0"}),
         consent: {
             checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
             storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
@@ -307,7 +308,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
     const generatedTheme = data?.generatedTheme;
 
     return (
-        <html lang="en">
+        <html lang={STORE_LANGUAGE_CODE.toLowerCase()}>
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -450,7 +451,7 @@ export function ErrorBoundary() {
     }
 
     return (
-        <html lang="en">
+        <html lang={STORE_LANGUAGE_CODE.toLowerCase()}>
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width,initial-scale=1" />

@@ -83,6 +83,7 @@ storefront_001/
 │   │   ├── cart/                  # Cart drawer + line items
 │   │   ├── common/                # Shared presentational (breadcrumbs, price, skeletons)
 │   │   ├── contact/               # Contact page components
+│   │   ├── custom/                # Custom overrides (collection pagination)
 │   │   ├── display/               # Product/collection cards
 │   │   ├── gallery/               # Masonry grid
 │   │   ├── homepage/              # Hero, sections, promotions

@@ -124,8 +124,8 @@ const AccountLayout = () => {
 
     return (
         <div className="px-container pt-8 sm:pt-10 md:pt-12 mb-4 pb-6 sm:pb-8 md:pb-12 lg:pb-16 xl:pb-20 min-h-[calc(100dvh-var(--total-header-height))]">
-            <AccountMenu />
-            <main className="mt-8 md:mt-10 lg:mt-12 xl:mt-14">
+            {isAuthenticated && <AccountMenu />}
+            <main className={cn(isAuthenticated ? "mt-8 md:mt-10 lg:mt-12 xl:mt-14" : "mt-4")}>
                 <Outlet context={{customer, isAuthenticated} satisfies AccountOutletContext} />
             </main>
         </div>
