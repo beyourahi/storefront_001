@@ -11,8 +11,12 @@ import {ShareDialog} from "~/components/ShareDialog";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
 
-export const meta: MetaFunction = () => {
-    return [{title: "Wishlist | Your Store"}];
+export const meta: MetaFunction = ({matches}) => {
+    const rootData = matches.find(m => m.id === "root")?.data as {
+        siteContent?: {siteSettings?: {brandName?: string}};
+    } | undefined;
+    const shopName = rootData?.siteContent?.siteSettings?.brandName?.trim() || "Store";
+    return [{title: `Wishlist | ${shopName}`}];
 };
 
 interface WishlistProduct {

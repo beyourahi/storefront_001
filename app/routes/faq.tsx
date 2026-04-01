@@ -29,7 +29,7 @@ export default function FAQ() {
     }
 
     return (
-        <div className="min-h-dvh bg-primary">
+        <div className="min-h-screen bg-primary">
 
             <AnimatedSection animation="fade" threshold={0.08}>
                 <section className="pt-32 pb-12 sm:pt-40 sm:pb-16 md:pb-24 lg:pb-32">

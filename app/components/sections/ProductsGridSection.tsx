@@ -36,6 +36,7 @@ type ProductsGridSectionProps = {
     className?: string;
     preserveOrder?: boolean;
     pagination?: PaginationInfo | null;
+    /** Active sort label displayed beside the desktop pagination. */
     sortLabel?: string;
 };
 
@@ -45,7 +46,7 @@ export const ProductsGridSection = ({
     className = "py-3",
     preserveOrder = false,
     pagination = null,
-    sortLabel = "Price: Low to High"
+    sortLabel
 }: ProductsGridSectionProps) => {
     // Products are pre-sorted by loader
     // preserveOrder kept for backwards compatibility but always treated as true
@@ -55,13 +56,12 @@ export const ProductsGridSection = ({
 
     return (
         <>
-            <div className={cn("mx-auto max-w-[2000px] px-2 md:px-4", className)}>
-                <div className="mb-4 flex items-center justify-between gap-4">
-                    <p className="text-muted-foreground text-sm">
-                        Showing {displayProducts.length} {displayProducts.length === 1 ? "product" : "products"}
-                    </p>
-
-                    {showPagination && pagination && (
+            {showPagination && pagination && (
+                <div className={cn("mx-auto max-w-[2000px] px-2 md:px-4", className)}>
+                    <div className="mb-4 flex items-center justify-end gap-4">
+                        {sortLabel && (
+                            <p className="text-muted-foreground mr-auto text-sm">{sortLabel}</p>
+                        )}
                         <div className="hidden lg:block">
                             <CollectionPagination
                                 currentPage={pagination.currentPage}
@@ -72,11 +72,9 @@ export const ProductsGridSection = ({
                                 inline={true}
                             />
                         </div>
-                    )}
-
-                    <p className="text-muted-foreground text-sm">{sortLabel}</p>
+                    </div>
                 </div>
-            </div>
+            )}
 
             <section className="bg-background pb-16">
                 <div className="mx-auto max-w-[2000px] px-2 md:px-4">

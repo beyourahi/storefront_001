@@ -111,7 +111,7 @@ export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: Masonry
                                     config.priority ? "opacity-100" : "opacity-0"
                                 )}
                                 loading={config.loading}
-                                fetchPriority={config.fetchPriority}
+                                {...(config.fetchPriority ? {fetchpriority: config.fetchPriority} : {})}
                                 onLoad={() => handleImageLoad(index)}
                                 data-index={index}
                             />

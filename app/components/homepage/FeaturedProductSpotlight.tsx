@@ -131,10 +131,12 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
 
                             <div className="flex flex-wrap items-end gap-3">
                                 <span className="font-mono text-2xl font-bold tracking-tight md:text-4xl">
+                                    <span className="sr-only">Current price: </span>
                                     {formatShopifyMoney(product.price)}
                                 </span>
                                 {product.compareAtPrice ? (
                                     <span className="text-muted-foreground font-mono text-base line-through md:text-lg">
+                                        <span className="sr-only">Original price: </span>
                                         {formatShopifyMoney(product.compareAtPrice)}
                                     </span>
                                 ) : null}

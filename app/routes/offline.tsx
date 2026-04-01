@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router";
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import {WifiOff} from "lucide-react";
@@ -32,21 +31,6 @@ const FALLBACK_ERROR_CONTENT = {
     maintenanceEstimated: "Estimated time: a few minutes"
 };
 import type {GeneratedTheme} from "~/lib/theme-utils";
-
-const useOnlineRedirect = () => {
-    const navigate = useNavigate();
-    const [isChecking, setIsChecking] = useState(true);
-
-    useEffect(() => {
-        if (typeof navigator !== "undefined" && navigator.onLine) {
-            void navigate("/", {replace: true});
-        } else {
-            setIsChecking(false);
-        }
-    }, [navigate]);
-
-    return isChecking;
-};
 
 const useOfflineTheme = () => {
     const [theme, setTheme] = useState<GeneratedTheme | null>(null);
@@ -90,8 +74,6 @@ const useOfflineTheme = () => {
 };
 
 export default function OfflinePage() {
-    const isChecking = useOnlineRedirect();
-
     useOfflineTheme();
 
     const errorContent = FALLBACK_ERROR_CONTENT;
@@ -101,10 +83,6 @@ export default function OfflinePage() {
             void trackOfflinePageView();
         }
     }, []);
-
-    if (isChecking) {
-        return null;
-    }
 
     return (
         <section className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 pt-6 pb-10">

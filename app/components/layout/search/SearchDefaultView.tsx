@@ -145,10 +145,12 @@ export const SearchDefaultView = ({
                                         </div>
                                         <div className="ml-2 shrink-0 text-right">
                                             <div className="text-primary font-mono text-xs font-medium lg:text-[11px]">
+                                                <span className="sr-only">Price: </span>
                                                 {formatShopifyMoney(product.priceRange.minVariantPrice)}
                                             </div>
                                             {hasDiscount && compareAtPrice && (
                                                 <div className="text-muted-foreground font-mono text-xs line-through lg:text-[11px]">
+                                                    <span className="sr-only">Was: </span>
                                                     {formatShopifyMoney(compareAtPrice)}
                                                 </div>
                                             )}

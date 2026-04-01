@@ -119,7 +119,7 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                                     height={brandLogo.height ?? undefined}
                                     className="h-8 w-auto object-contain lg:h-10"
                                     loading="eager"
-                                    fetchPriority="high"
+                                    {...{fetchpriority: "high"}}
                                     decoding="async"
                                 />
                             ) : (

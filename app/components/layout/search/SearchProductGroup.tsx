@@ -83,11 +83,13 @@ export const SearchProductGroup = ({products, onProductClick}: SearchProductGrou
                             {product.priceRange?.minVariantPrice && (
                                 <div className="ml-2 shrink-0 text-right">
                                     <div className="text-primary font-mono text-xs font-medium lg:text-[11px]">
+                                        <span className="sr-only">Price: </span>
                                         {formatShopifyMoney(product.priceRange.minVariantPrice)}
                                     </div>
                                     {product.priceRange?.maxVariantPrice &&
                                         product.variants?.edges?.[0]?.node?.compareAtPrice && (
                                             <div className="text-muted-foreground font-mono text-xs line-through lg:text-[11px]">
+                                                <span className="sr-only">Was: </span>
                                                 {formatShopifyMoney(product.variants.edges[0].node.compareAtPrice)}
                                             </div>
                                         )}

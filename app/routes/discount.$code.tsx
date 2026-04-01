@@ -36,7 +36,16 @@ export const loader = async ({request, context, params}: Route.LoaderArgs) => {
     const result = await cart.updateDiscountCodes([code]);
     const headers = cart.setCartId(result.cart.id);
 
-    return redirect(redirectUrl, {
+    // Append feedback param so the destination page can show a notification
+    const finalUrl = new URL(redirectUrl, request.url);
+    const appliedCodes = result.cart.discountCodes?.filter((d: {applicable: boolean}) => d.applicable);
+    if (appliedCodes && appliedCodes.length > 0) {
+        finalUrl.searchParams.set("discount_applied", code);
+    } else {
+        finalUrl.searchParams.set("discount_error", "invalid");
+    }
+
+    return redirect(finalUrl.pathname + finalUrl.search, {
         status: 303,
         headers
     });

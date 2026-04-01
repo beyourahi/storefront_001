@@ -87,7 +87,7 @@ export default function Sale() {
     const showPagination = pagination.hasNextPage || pagination.hasPreviousPage;
 
     return (
-        <div className="min-h-dvh bg-background text-foreground">
+        <div className="min-h-screen bg-background text-foreground">
             <PageBreadcrumbs customTitle="Special Offers" />
             {/* Hero Section */}
             <AnimatedSection animation="fade" threshold={0.08}>

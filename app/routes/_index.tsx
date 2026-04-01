@@ -24,6 +24,7 @@ import {FAQSection} from "~/components/homepage/FAQSection";
 import {OrderHistorySection} from "~/components/account/OrderHistorySection";
 import {HomepageBlogSection} from "~/components/homepage/HomepageBlogSection";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
+import {NewsletterSignup} from "~/components/common/NewsletterSignup";
 import {
     CUSTOMER_ORDER_HISTORY_QUERY,
     extractOrderHistoryProducts,
@@ -173,7 +174,7 @@ export default function Homepage() {
         : {bestSellers: "03", newArrivals: "04", trending: "05"};
 
     return (
-        <div className="-mt-[var(--total-header-height)] min-h-dvh bg-background text-foreground">
+        <div className="-mt-[var(--total-header-height)] min-h-screen bg-background text-foreground">
             <VideoHero shopName={shopName} />
 
             <AnimatedSection animation="slide-up" threshold={0.1}>
@@ -315,6 +316,12 @@ export default function Homepage() {
 
             <AnimatedSection animation="slide-up" threshold={0.1}>
                 <TestimonialsSection />
+            </AnimatedSection>
+
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <section className="mx-auto max-w-2xl px-4 py-16 text-center md:py-20">
+                    <NewsletterSignup variant="expanded" />
+                </section>
             </AnimatedSection>
 
             <AnimatedSection animation="fade" threshold={0.08}>

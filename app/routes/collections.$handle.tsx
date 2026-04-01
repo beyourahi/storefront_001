@@ -10,6 +10,7 @@ import {CollectionPagination} from "~/components/custom/CollectionPagination";
 import {MobileSearchBar} from "~/components/layout/MobileSearchBar";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
+import {SortFilterBar} from "~/components/collection/SortFilterBar";
 import {fromStorefrontNode} from "~/lib/product/product-card-normalizers";
 import {
     parsePaginationParams,
@@ -17,6 +18,7 @@ import {
     buildPaginationData,
     getCanonicalRedirect
 } from "~/lib/collection-route-helpers";
+import {parseSortFilterParams} from "~/lib/sort-filter-helpers";
 import {sortWithPinnedFirst} from "~/lib/product-tags";
 
 const redirectIfHandleIsLocalized = (
@@ -81,14 +83,14 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
     const {cursor, page, direction} = parsePaginationParams(url);
     const pageParam = url.searchParams.get("page");
 
+    // Parse sort and filter params from URL
+    const {sort, sortKey, reverse, sortLabel, showInStockOnly} = parseSortFilterParams(url);
+
     // Build GraphQL variables for cursor-based pagination
     const variables = buildPaginationVariables(cursor, direction, 48);
 
-    // Server-side filtering: only fetch available products
-    const filters = [{available: true}];
-
-    // Server-side sorting: price low to high (Shopify's PRICE sort key)
-    const sortKey = "PRICE";
+    // Server-side filtering: conditionally filter by availability
+    const filters = showInStockOnly ? [{available: true}] : [];
 
     // Query collection with server-side filters and sorting
     const {collection} = await dataAdapter.query(COLLECTION_QUERY, {
@@ -96,7 +98,8 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
             handle,
             ...variables,
             filters,
-            sortKey
+            sortKey,
+            reverse
         },
         cache: dataAdapter.CacheShort()
     });
@@ -122,12 +125,16 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
     return {
         collection,
         products,
-        pagination
+        pagination,
+        sort,
+        sortLabel,
+        showInStockOnly
     };
 };
 
 export default function CollectionPage() {
-    const {collection, products, pagination} = useLoaderData<typeof loader>();
+    const {collection, products, pagination, sort, sortLabel, showInStockOnly} =
+        useLoaderData<typeof loader>();
 
     // Normalize products for display
     const normalizedProducts = products.map(fromStorefrontNode);
@@ -135,7 +142,7 @@ export default function CollectionPage() {
     const showPagination = pagination.hasNextPage || pagination.hasPreviousPage;
 
     return (
-        <div className="min-h-dvh bg-background text-foreground">
+        <div className="min-h-screen bg-background text-foreground">
             {/* Breadcrumbs */}
             <PageBreadcrumbs customTitle={collection.title} />
 
@@ -149,6 +156,13 @@ export default function CollectionPage() {
                 </div>
             </AnimatedSection>
 
+            {/* Sort and Filter Controls */}
+            <SortFilterBar
+                currentSort={sort}
+                showInStockOnly={showInStockOnly}
+                totalProducts={normalizedProducts.length}
+            />
+
             {showPagination && (
                 <AnimatedSection animation="fade" threshold={0.12}>
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4 lg:hidden">
@@ -158,7 +172,12 @@ export default function CollectionPage() {
             )}
 
             <AnimatedSection animation="slide-up" threshold={0.12}>
-                <ProductsGridSection products={normalizedProducts} pagination={pagination} preserveOrder={true} />
+                <ProductsGridSection
+                    products={normalizedProducts}
+                    pagination={pagination}
+                    preserveOrder={true}
+                    sortLabel={sortLabel}
+                />
             </AnimatedSection>
 
             {showPagination && (
@@ -240,6 +259,7 @@ const COLLECTION_QUERY = `#graphql
     $before: String
     $filters: [ProductFilter!]
     $sortKey: ProductCollectionSortKeys
+    $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
@@ -265,6 +285,7 @@ const COLLECTION_QUERY = `#graphql
         before: $before
         filters: $filters
         sortKey: $sortKey
+        reverse: $reverse
       ) {
         nodes {
           id

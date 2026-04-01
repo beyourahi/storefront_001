@@ -83,7 +83,8 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                                 "sleek product-image h-full w-full rounded-lg object-cover",
                                 canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]"
                             )}
-                            sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
+                            sizes="(min-width: 1280px) 320px, (min-width: 1024px) 350px, (min-width: 768px) 280px, 200px"
+                            width={400}
                         />
                     ) : (
                         <div className="bg-background flex h-full w-full items-center justify-center rounded-lg">

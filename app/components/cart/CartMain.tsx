@@ -23,7 +23,7 @@ export function CartMain({
     if (isEmpty) {
         return (
             <div className="flex h-full flex-col">
-                <CartAsideHeader itemCount={0} />
+                <CartAsideHeader lineCount={0} totalQuantity={0} />
                 <CartEmpty />
             </div>
         );
@@ -31,7 +31,10 @@ export function CartMain({
 
     return (
         <div className="flex h-full flex-col">
-            <CartAsideHeader itemCount={cart?.totalQuantity ?? 0} />
+            <CartAsideHeader
+                lineCount={cart?.lines?.nodes?.length ?? 0}
+                totalQuantity={cart?.totalQuantity ?? 0}
+            />
 
             <div className="flex-1 overflow-y-auto px-4 md:px-6" data-lenis-prevent>
                 <div className="space-y-4 py-4">
@@ -50,14 +53,16 @@ export function CartMain({
     );
 }
 
-function CartAsideHeader({itemCount}: {itemCount: number}) {
+function CartAsideHeader({lineCount, totalQuantity}: {lineCount: number; totalQuantity: number}) {
+    const label = totalQuantity === lineCount
+        ? `${totalQuantity} ${totalQuantity === 1 ? "item" : "items"}`
+        : `${lineCount} ${lineCount === 1 ? "product" : "products"} (${totalQuantity} items)`;
+
     return (
         <div className="border-b px-4 py-2 md:px-6">
             <div className="flex items-center justify-between">
                 <h2 className="text-foreground text-lg font-semibold">Cart</h2>
-                <p className="text-muted-foreground text-sm">
-                    {itemCount} {itemCount === 1 ? "item" : "items"}
-                </p>
+                <p className="text-muted-foreground text-sm">{label}</p>
             </div>
         </div>
     );

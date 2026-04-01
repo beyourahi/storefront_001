@@ -39,6 +39,7 @@ import {SearchOverlay} from "~/components/layout/SearchOverlay";
 import {Footer} from "~/components/layout/Footer";
 import {AnnouncementBanner} from "~/components/layout/AnnouncementBanner";
 import {Toaster} from "~/components/ui/sonner";
+import {toast} from "sonner";
 import {GtmScript} from "~/components/GtmScript";
 import {GoogleTagManager} from "~/components/GoogleTagManager";
 import {ServiceWorkerRegistration} from "~/components/ServiceWorkerRegistration";
@@ -354,6 +355,34 @@ export default function App() {
         }
     }, [data?.generatedTheme]);
 
+    // Show toast notifications for discount code application results.
+    // The discount route appends ?discount_applied=CODE or ?discount_error=invalid.
+    // NOTE: sonner's Toaster may not hydrate in time for the initial mount toast —
+    // if toasts don't appear, investigate sonner SSR hydration with Hydrogen.
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const params = new URLSearchParams(window.location.search);
+        const applied = params.get("discount_applied");
+        const error = params.get("discount_error");
+        if (!applied && !error) return;
+
+        // Defer to allow sonner's Toaster to mount after hydration
+        const tid = setTimeout(() => {
+            if (applied) {
+                toast.success(`Discount code "${applied}" applied!`);
+            } else if (error) {
+                toast.error("That discount code is invalid or has expired.");
+            }
+        }, 300);
+
+        params.delete("discount_applied");
+        params.delete("discount_error");
+        const clean = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
+        window.history.replaceState({}, "", clean);
+
+        return () => clearTimeout(tid);
+    }, []);
+
     // Memoized before the early return guard to satisfy the Rules of Hooks.
     const menuCollections = useMemo(() => data?.menuCollections ?? [], [data?.menuCollections]);
     const mobileMenuCollections = useMemo(() => menuCollections.map((collection: any) => ({
@@ -381,7 +410,7 @@ export default function App() {
             : null
     })), [menuCollections]);
 
-    if (!data) return <Outlet />;
+    if (!data) return (<><Outlet /><Toaster position="top-center" /></>);
 
     const shopName = data.siteContent.siteSettings.brandName?.trim() || "Store";
 

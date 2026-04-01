@@ -4,63 +4,18 @@ type PolicySection = {
     index: number;
 };
 
+/** Collapse inter-tag whitespace so SSR and client produce identical HTML strings. */
+const normalizeHtml = (html: string): string =>
+    html.replace(/>\s+</g, "><").trim();
+
+/**
+ * Parse Shopify policy HTML into structured sections split on header elements.
+ *
+ * Uses a single regex-based parser that produces identical output on server and
+ * client, eliminating the hydration mismatch that a DOM-based client parser
+ * would introduce (browser innerHTML readback normalizes HTML differently).
+ */
 export const parsePolicySections = (htmlContent: string): PolicySection[] => {
-    if (!htmlContent?.trim()) {
-        return [];
-    }
-
-    if (typeof window === "undefined") {
-        return parsePolicySectionsSSR(htmlContent);
-    }
-
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = htmlContent;
-
-    const headers = tempDiv.querySelectorAll("h1, h2, h3, h4, h5, h6");
-
-    if (headers.length === 0) {
-        return [
-            {
-                title: "",
-                content: htmlContent,
-                index: 1
-            }
-        ];
-    }
-
-    const sections: PolicySection[] = [];
-
-    headers.forEach((header, index) => {
-        const title = header.textContent?.trim() || `Section ${index + 1}`;
-        let content = "";
-
-        let currentElement = header.nextElementSibling;
-        const contentElements: Element[] = [];
-
-        while (currentElement && !currentElement.matches("h1, h2, h3, h4, h5, h6")) {
-            contentElements.push(currentElement);
-            currentElement = currentElement.nextElementSibling;
-        }
-
-        if (contentElements.length > 0) {
-            const contentDiv = document.createElement("div");
-            contentElements.forEach(el => {
-                contentDiv.appendChild(el.cloneNode(true));
-            });
-            content = contentDiv.innerHTML;
-        }
-
-        sections.push({
-            title,
-            content: content || "",
-            index: index + 1
-        });
-    });
-
-    return sections;
-};
-
-export const parsePolicySectionsSSR = (htmlContent: string): PolicySection[] => {
     if (!htmlContent?.trim()) {
         return [];
     }
@@ -81,7 +36,7 @@ export const parsePolicySectionsSSR = (htmlContent: string): PolicySection[] => 
         return [
             {
                 title: "",
-                content: htmlContent,
+                content: normalizeHtml(htmlContent),
                 index: 1
             }
         ];
@@ -94,12 +49,11 @@ export const parsePolicySectionsSSR = (htmlContent: string): PolicySection[] => 
         const end = index < headers.length - 1 ? headers[index + 1].position : htmlContent.length;
 
         let sectionHtml = htmlContent.slice(start, end);
-
         sectionHtml = sectionHtml.replace(/<h[1-6](?:[^>]*)>.*?<\/h[1-6]>/i, "").trim();
 
         sections.push({
             title: header.title || `Section ${index + 1}`,
-            content: sectionHtml,
+            content: normalizeHtml(sectionHtml),
             index: index + 1
         });
     });

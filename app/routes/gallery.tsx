@@ -46,7 +46,7 @@ export default function Gallery() {
         "Explore our collection of stunning pieces, each telling its own unique story through craftsmanship and design.";
 
     return (
-        <div className="min-h-dvh bg-background text-foreground">
+        <div className="min-h-screen bg-background text-foreground">
             <div className="px-2 pt-4 pb-2 md:px-4">
                 <Breadcrumbs className="mx-auto max-w-[2000px]" items={[{label: "Gallery"}]} />
             </div>

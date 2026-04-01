@@ -196,7 +196,7 @@ export default function CollectionsIndex() {
     const shopName = rootData?.siteContent?.siteSettings?.brandName ?? "Store";
 
     return (
-        <div className="min-h-dvh bg-background text-foreground">
+        <div className="min-h-screen bg-background text-foreground">
             <PageBreadcrumbs customTitle="Collections" />
             <AnimatedSection animation="fade" threshold={0.08}>
                 <CollectionsPageHero />

@@ -2,10 +2,11 @@ import {useMemo} from "react";
 import type {Route} from "./+types/contact";
 import {getSeoMeta} from "@shopify/hydrogen";
 import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
-import {Mail, Phone, MapPin, Shield, FileCheck, Truck, RotateCcw, type LucideIcon} from "lucide-react";
+import {Mail, Phone, MapPin, Shield, FileCheck, Truck, RotateCcw, MessageSquarePlus, type LucideIcon} from "lucide-react";
 import {GiantText} from "~/components/common/GiantText";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {ContactMethodCard} from "~/components/contact/ContactMethodCard";
+import {ContactForm} from "~/components/contact/ContactForm";
 import {FAQSection} from "~/components/homepage/FAQSection";
 import {SocialMediaSection} from "~/components/homepage/SocialMediaSection";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
@@ -196,6 +197,28 @@ export default function Contact() {
                                 </div>
                             </div>
                         )}
+                    </div>
+                </section>
+            </AnimatedSection>
+
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <section className="bg-background py-16 md:py-20">
+                    <div className="mx-auto max-w-2xl px-6">
+                        <div className="mb-10 flex items-center gap-3">
+                            <div className="bg-secondary/90 flex h-10 w-10 items-center justify-center rounded-lg">
+                                <MessageSquarePlus className="text-secondary-foreground h-5 w-5" />
+                            </div>
+                            <div>
+                                <h2 className="text-foreground font-serif text-2xl font-bold">Send Us a Message</h2>
+                                <p className="text-muted-foreground text-sm">
+                                    Fill out the form below and we&apos;ll get back to you as soon as possible.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-muted/50 border-border/30 relative rounded-xl border p-6 sm:p-8">
+                            <ContactForm />
+                        </div>
                     </div>
                 </section>
             </AnimatedSection>

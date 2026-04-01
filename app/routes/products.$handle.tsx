@@ -33,6 +33,7 @@ import {ProductPurchaseSection} from "~/components/product/ProductPurchaseSectio
 import {ProductMobileStickyButtons} from "~/components/product/ProductMobileStickyButtons";
 import {ProductRelatedSection} from "~/components/product/ProductRelatedSection";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
+import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 
 // Revalidate this route's loader whenever the URL search params change (e.g. variant selection).
 // Without this, React Router may skip re-running the loader on search-param-only navigations,
@@ -55,7 +56,8 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const variant = product.selectedOrFirstAvailableVariant;
     const seoTitle = product.seo?.title;
     const title = seoTitle || formatProductTitleForMeta(product.title);
-    const description = product.seo?.description || product.description?.substring(0, 155) || "";
+    // Use the pre-truncated description from the loader to avoid server/client mismatch
+    const description = data?.seoDescription || "";
     const image = variant?.image || product.images?.nodes?.[0];
 
     const url = buildCanonicalUrl(`/products/${product.handle}`, siteUrl);
@@ -124,11 +126,19 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
     const sizeChartResult = parseSizeChart(product.sizeChart?.value);
     const sizeChartData = sizeChartResult.isValid && sizeChartResult.data ? sizeChartResult.data : null;
 
+    // Pre-compute truncated SEO description in the loader so the serialized value
+    // is identical on server and client, preventing hydration mismatches in the meta function.
+    const rawSeoDescription = product.seo?.description || product.description || "";
+    const seoDescription = rawSeoDescription.length > 155
+        ? rawSeoDescription.substring(0, 152).trimEnd() + "..."
+        : rawSeoDescription;
+
     return {
         product,
         selectedSellingPlan,
         activeCollectionHandle,
-        sizeChartData
+        sizeChartData,
+        seoDescription
     };
 };
 
@@ -150,7 +160,7 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
 };
 
 const Product = () => {
-    const {product, recommendations, selectedSellingPlan, sizeChartData} = useLoaderData<typeof loader>();
+    const {product, recommendations, selectedSellingPlan, sizeChartData, activeCollectionHandle} = useLoaderData<typeof loader>();
     const [quantity, setQuantity] = useState(1);
     const {addProduct} = useRecentlyViewedContext();
 
@@ -219,8 +229,28 @@ const Product = () => {
         ]
     }), [product.id, product.title, product.vendor, selectedVariant]);
 
+    // Build breadcrumb items based on the product's active collection
+    const breadcrumbItems = useMemo(() => {
+        const activeCollection = product.collections?.nodes?.find(
+            (c: {handle: string}) => c.handle === activeCollectionHandle
+        );
+        const items: Array<{label: string; href?: string}> = [];
+        if (activeCollection && activeCollection.handle !== "all-products") {
+            items.push({label: activeCollection.title, href: `/collections/${activeCollection.handle}`});
+        } else {
+            items.push({label: "Products", href: "/collections/all-products"});
+        }
+        items.push({label: product.title});
+        return items;
+    }, [product.collections?.nodes, activeCollectionHandle, product.title]);
+
     return (
-        <div className="min-h-dvh bg-background text-foreground">
+        <div className="min-h-screen bg-background text-foreground">
+            {/* Breadcrumbs */}
+            <div className="px-2 pt-4 pb-2 md:px-4">
+                <Breadcrumbs items={breadcrumbItems} className="mx-auto max-w-[2000px]" />
+            </div>
+
             <AnimatedSection animation="fade" threshold={0.08}>
                 <section className="pt-4 md:pt-6">
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4">

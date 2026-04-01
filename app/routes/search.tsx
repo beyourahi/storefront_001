@@ -367,7 +367,7 @@ export default function SearchPage() {
     };
 
     return (
-        <div className="mb-4 min-h-dvh px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16 3xl:mx-auto 3xl:max-w-[1600px] 3xl:px-12">
+        <div className="mb-4 min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16 3xl:mx-auto 3xl:max-w-[1600px] 3xl:px-12">
             <AnimatedSection animation="fade" threshold={0.08}>
                 <header className="pt-(--total-header-height) pb-6 sm:pb-8 md:pb-12 lg:pb-16">
                     <h1 className="m-0 font-serif text-3xl font-medium text-primary tracking-tight sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl">
@@ -1185,7 +1185,7 @@ export function ErrorBoundary() {
     }
 
     return (
-        <div className="mb-4 min-h-dvh px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16 3xl:mx-auto 3xl:max-w-[1600px] 3xl:px-12">
+        <div className="mb-4 min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16 3xl:mx-auto 3xl:max-w-[1600px] 3xl:px-12">
             <div className="flex flex-col items-center justify-center py-24 text-center sm:py-32">
                 <div className="bg-[var(--brand-primary-subtle)] mb-4 rounded-full p-4 shadow-sm backdrop-blur-sm">
                     <AlertCircle className="text-primary size-8" />

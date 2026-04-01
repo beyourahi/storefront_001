@@ -1,4 +1,13 @@
-import {data as remixData, NavLink, Outlet, useLoaderData, useRouteError, isRouteErrorResponse} from "react-router";
+import {Suspense} from "react";
+import {
+    data as remixData,
+    NavLink,
+    Outlet,
+    useLoaderData,
+    useRouteError,
+    isRouteErrorResponse
+} from "react-router";
+import type {ShouldRevalidateFunction} from "react-router";
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import {WishlistCountInline} from "~/components/WishlistCount";
@@ -17,7 +26,17 @@ export const meta: Route.MetaFunction = () => {
     );
 };
 
-export const shouldRevalidate = () => true;
+// Revalidate on pathname changes (sub-route navigation) but not during same-URL
+// hydration. The previous `() => true` caused a Suspense hydration race: the loader
+// re-ran before hydration completed, forcing React to abandon SSR and flash the page.
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+    currentUrl,
+    nextUrl,
+    defaultShouldRevalidate
+}) => {
+    if (currentUrl.pathname !== nextUrl.pathname) return true;
+    return defaultShouldRevalidate;
+};
 
 export const loader = async ({context}: Route.LoaderArgs) => {
     const {customerAccount} = context;
@@ -119,15 +138,24 @@ const AccountMenu = () => (
     </div>
 );
 
+const AccountContentSkeleton = () => (
+    <div className="animate-pulse space-y-4">
+        <div className="h-8 w-48 rounded bg-muted" />
+        <div className="h-64 rounded bg-muted/50" />
+    </div>
+);
+
 const AccountLayout = () => {
     const {customer, isAuthenticated} = useLoaderData<typeof loader>();
 
     return (
         <div className="px-container pt-8 sm:pt-10 md:pt-12 mb-4 pb-6 sm:pb-8 md:pb-12 lg:pb-16 xl:pb-20 min-h-[calc(100dvh-var(--total-header-height))]">
             {isAuthenticated && <AccountMenu />}
-            <main className={cn(isAuthenticated ? "mt-8 md:mt-10 lg:mt-12 xl:mt-14" : "mt-4")}>
-                <Outlet context={{customer, isAuthenticated} satisfies AccountOutletContext} />
-            </main>
+            <div className={cn(isAuthenticated ? "mt-8 md:mt-10 lg:mt-12 xl:mt-14" : "mt-4")}>
+                <Suspense fallback={<AccountContentSkeleton />}>
+                    <Outlet context={{customer, isAuthenticated} satisfies AccountOutletContext} />
+                </Suspense>
+            </div>
         </div>
     );
 };

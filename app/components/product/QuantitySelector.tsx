@@ -27,7 +27,7 @@ export const QuantitySelector = ({
                     <Button
                         onClick={() => canDecrease && onQuantityChange(quantity - 1)}
                         disabled={!canDecrease}
-                        className="rounded-r-none border-r-0"
+                        className="rounded-r-none border-r-0 disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                         <Minus className="h-4 w-4" />
                     </Button>

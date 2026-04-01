@@ -3,7 +3,6 @@ import {Link} from "react-router";
 import {ArrowRight, Search as SearchIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {ParallaxLayer} from "~/components/motion/ParallaxLayer";
-import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 const FALLBACK_GREETINGS = {
     nightOwl: "Night owls find the best things",
     evening: "Wind down with something worth it",
@@ -40,21 +39,6 @@ interface VideoHeroProps {
     heroDescription?: string;
     shopName?: string;
 }
-
-const formatDate = (date: Date) =>
-    date.toLocaleDateString(STORE_FORMAT_LOCALE, {
-        weekday: "short",
-        month: "short",
-        day: "numeric"
-    });
-
-const formatTime = (date: Date) =>
-    date.toLocaleTimeString(STORE_FORMAT_LOCALE, {
-        hour12: true,
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric"
-    });
 
 const getGreeting = (hours: number): string => {
     const greetings = FALLBACK_GREETINGS;
@@ -180,8 +164,6 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
     const mediaConfig = FALLBACK_HERO_MEDIA_CONFIG as {videoSrc?: string; imageSrc?: string; type?: string};
     const {openSearch} = useSearchController();
 
-    const [currentDate, setCurrentDate] = useState("");
-    const [currentTime, setCurrentTime] = useState("");
     const [greeting, setGreeting] = useState("");
 
     const fallbackVideoSrc = mediaConfig.videoSrc;
@@ -190,27 +172,15 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
     const heading = heroHeading || defaultHeading;
     const description = heroDescription || defaultDescription;
 
-    const updateDateTime = useCallback(() => {
-        const now = new Date();
-        setCurrentDate(formatDate(now));
-        setCurrentTime(formatTime(now));
-        setGreeting(getGreeting(now.getHours()));
-    }, []);
-
-    const updateTimeOnly = useCallback(() => {
-        setCurrentTime(formatTime(new Date()));
+    const updateGreeting = useCallback(() => {
+        setGreeting(getGreeting(new Date().getHours()));
     }, []);
 
     useEffect(() => {
-        updateDateTime();
-        const timeIntervalId = setInterval(updateTimeOnly, 1000);
-        const dateIntervalId = setInterval(updateDateTime, 60000);
-
-        return () => {
-            clearInterval(timeIntervalId);
-            clearInterval(dateIntervalId);
-        };
-    }, [updateDateTime, updateTimeOnly]);
+        updateGreeting();
+        const intervalId = setInterval(updateGreeting, 60000);
+        return () => clearInterval(intervalId);
+    }, [updateGreeting]);
 
     return (
         <section className="group relative flex h-full min-h-[calc(100dvh)] w-full items-center justify-center overflow-hidden">
@@ -233,21 +203,16 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
 
             <div className="relative z-10 flex h-full w-full items-center justify-center">
                 <div className="w-full">
-                    <div className="mx-auto max-w-[2000px] px-2 md:px-4">
-                        <div className="mb-3 flex items-center justify-center gap-3 text-white/90 drop-shadow-lg">
-                            <span className="text-sm font-medium uppercase">{currentDate}</span>
-                            <span className="animate-pulse text-white/90 drop-shadow-lg">&#8226;</span>
-                            <span className="font-mono text-sm font-medium uppercase">{currentTime}</span>
-                        </div>
-                    </div>
-
                     <div className="w-full px-4 sm:px-6 md:px-8">
                         <h1
                             className="pb-3 text-center font-serif font-semibold break-words text-white drop-shadow-lg"
                             style={{fontSize: "clamp(1.5rem, 3.5vw, 4.5rem)", lineHeight: 0.9}}
                         >
-                            {greeting || heading}
+                            {heading}
                         </h1>
+                        {greeting && (
+                            <p className="mt-2 text-center text-sm text-white/70">{greeting}</p>
+                        )}
                     </div>
 
                     <div className="mx-auto w-full max-w-[2000px] px-2 text-center md:px-4">

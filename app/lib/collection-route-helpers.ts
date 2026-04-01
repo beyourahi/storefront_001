@@ -109,10 +109,37 @@ export function buildPaginationData(
     };
 }
 
+/** Pagination-specific search param keys that get managed by redirect logic. */
+const PAGINATION_KEYS = new Set(["page", "cursor", "direction"]);
+
+/**
+ * Build a clean URL string preserving non-pagination search params (e.g. sort, available).
+ */
+function buildCleanUrl(url: URL, extraParams?: Record<string, string>): string {
+    const preserved = new URLSearchParams();
+
+    // Keep non-pagination params
+    for (const [key, value] of url.searchParams.entries()) {
+        if (!PAGINATION_KEYS.has(key)) {
+            preserved.set(key, value);
+        }
+    }
+
+    // Merge in any extra params (e.g. page=1)
+    if (extraParams) {
+        for (const [key, value] of Object.entries(extraParams)) {
+            preserved.set(key, value);
+        }
+    }
+
+    const qs = preserved.toString();
+    return qs ? `${url.pathname}?${qs}` : url.pathname;
+}
+
 /**
  * Determine if URL should redirect for canonical pagination
  * Redirect rules:
- * 1. Invalid page param (NaN, < 1) → redirect to clean pathname
+ * 1. Invalid page param (NaN, < 1) → redirect to clean pathname (preserve sort/filter)
  * 2. Page 1 with next page available but no page param → redirect to ?page=1
  * 3. Page 1 without next page but page param present → redirect to clean pathname
  *
@@ -128,11 +155,11 @@ export function getCanonicalRedirect(
     hasNextPage: boolean,
     pageParam: string | null
 ): string | null {
-    // Case 1: Invalid page param → redirect to clean URL
+    // Case 1: Invalid page param → redirect to clean URL (preserving sort/filter)
     if (pageParam) {
         const parsedPage = parseInt(pageParam, 10);
         if (isNaN(parsedPage) || parsedPage < 1) {
-            return url.pathname;
+            return buildCleanUrl(url);
         }
     }
 
@@ -140,12 +167,12 @@ export function getCanonicalRedirect(
     if (currentPage === 1) {
         // Case 2: First page with pagination available → canonicalize to ?page=1
         if (hasNextPage && !pageParam) {
-            return `${url.pathname}?page=1`;
+            return buildCleanUrl(url, {page: "1"});
         }
 
         // Case 3: First page without pagination → remove page param
         if (!hasNextPage && pageParam) {
-            return url.pathname;
+            return buildCleanUrl(url);
         }
     }
 

@@ -67,7 +67,7 @@ export const SocialLinkGrid = ({socialLinks}: SocialLinkGridProps) => {
                             {isStringIcon ? (
                                 <img
                                     src={social.icon as string}
-                                    alt={social.platform}
+                                    alt={social.platform || "Social media"}
                                     className="sleek h-6 w-6"
                                     style={{filter: "brightness(0) invert(1)"}}
                                 />

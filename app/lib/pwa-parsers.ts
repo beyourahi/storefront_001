@@ -46,8 +46,14 @@ const toHexColor = (color: string): string => {
 
 const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] => {
     const icons: ManifestIcon[] = [];
+    const logo = siteSettings.brandLogo?.url;
 
-    const icon192 = siteSettings.icon192Url ?? siteSettings.brandLogo?.url ?? null;
+    // Prefer explicit icon URLs from metaobjects, then resize brand logo via Shopify CDN
+    const icon192 = siteSettings.icon192Url
+        ?? (logo ? `${logo}&width=192&height=192` : null);
+    const icon512 = siteSettings.icon512Url
+        ?? (logo ? `${logo}&width=512&height=512` : null);
+
     if (icon192) {
         icons.push({
             src: icon192,
@@ -57,7 +63,6 @@ const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] => {
         });
     }
 
-    const icon512 = siteSettings.icon512Url ?? siteSettings.brandLogo?.url ?? null;
     if (icon512) {
         icons.push({
             src: icon512,
@@ -67,14 +72,16 @@ const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] => {
         });
     }
 
-    // Fallback to favicon when no brand icons are available, so the manifest always has at least one icon
-    if (icons.length === 0) {
-        icons.push({
-            src: "/favicon.ico",
-            sizes: "48x48",
-            type: "image/x-icon"
-        });
+    // Static fallbacks when no brand logo is available (PWA installability requires 192 + 512)
+    if (!icon192) {
+        icons.push({src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any"});
     }
+    if (!icon512) {
+        icons.push({src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable"});
+    }
+
+    // Always include favicon
+    icons.push({src: "/favicon.ico", sizes: "48x48", type: "image/x-icon"});
 
     return icons;
 };

@@ -48,6 +48,10 @@ export default defineConfig({
         // Allowed hosts for development server
         // - tryhydrogen.dev: Shopify's development environment
         // - ngrok: Required for Customer Account API OAuth flow
-        allowedHosts: [".tryhydrogen.dev", "hermelinda-nonsegmentary-hettie.ngrok-free.dev"]
+        allowedHosts: [".tryhydrogen.dev", "hermelinda-nonsegmentary-hettie.ngrok-free.dev"],
+        // Dedicated HMR port avoids WebSocket conflicts with Hydrogen's dev server proxy
+        hmr: {
+            port: 24678
+        }
     }
 });
