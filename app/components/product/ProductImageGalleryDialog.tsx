@@ -3,7 +3,7 @@ import {ChevronLeft, ChevronRight, X} from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import {Image} from "@shopify/hydrogen";
 import {Button} from "~/components/ui/button";
-import {Dialog, DialogContent} from "~/components/ui/dialog";
+import {Dialog, DialogContent, DialogTitle} from "~/components/ui/dialog";
 import {cn} from "~/lib/utils";
 
 type ProductImage = {
@@ -94,7 +94,13 @@ export const ProductImageGalleryDialog = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="!bg-popover/95 !fixed !inset-0 !z-[100] !h-[100dvh] !w-screen !max-w-none !translate-x-0 !translate-y-0 !transform-none !rounded-none !border-none !p-0 !shadow-none data-[state=closed]:!animate-none data-[state=open]:!animate-none">
+            <DialogContent
+                className="!bg-popover/95 !fixed !inset-0 !z-[100] !h-[100dvh] !w-screen !max-w-none !translate-x-0 !translate-y-0 !transform-none !rounded-none !border-none !p-0 !shadow-none data-[state=closed]:!animate-none data-[state=open]:!animate-none"
+                aria-describedby={undefined}
+            >
+                <DialogTitle className="sr-only">
+                    {productTitle} — Image Gallery
+                </DialogTitle>
                 <div className="relative flex h-[100dvh] w-screen items-center justify-center">
                     <Button
                         variant="ghost"

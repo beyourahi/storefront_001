@@ -40,6 +40,10 @@ type PolicySectionCardProps = {
     showIndex?: boolean;
 };
 
+/** Collapse inter-tag whitespace to prevent SSR/client hydration mismatches. */
+const normalizeHtml = (html: string): string =>
+    html.replace(/>\s+</g, "><").trim();
+
 export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCardProps) => {
     const hasTitle = section.title.trim().length > 0;
     const hasContent = section.content.trim().length > 0;
@@ -78,8 +82,8 @@ export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCar
                 {hasContent ? (
                     <div
                         className="prose prose-sm prose-slate max-w-none text-sm leading-relaxed"
-                        /* Shopify-provided HTML from trusted admin source */
-                        dangerouslySetInnerHTML={{__html: section.content}}
+                        /* Shopify-provided HTML from trusted admin source (see @security JSDoc) */
+                        dangerouslySetInnerHTML={{__html: normalizeHtml(section.content)}}
                     />
                 ) : (
                     <p className="text-muted-foreground text-sm italic">No content available for this section.</p>
