@@ -3,7 +3,7 @@ import type {OptimisticCart} from "@shopify/hydrogen";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {useEffect, useRef, useState, useCallback} from "react";
 import {useFetcher, useFetchers} from "react-router";
-import {FileText, Check, Cloud, CreditCard, Trash2, AlertTriangle, Tag, X} from "lucide-react";
+import {FileText, Check, Cloud, CreditCard, Trash2, AlertTriangle} from "lucide-react";
 import {toast} from "sonner";
 import {Button} from "~/components/ui/button";
 import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "~/components/ui/dialog";
@@ -29,15 +29,10 @@ export function CartSummary({cart}: {cart: Cart}) {
     const productCount = cart.lines?.nodes?.length ?? 0;
     const checkoutUrl = cart.checkoutUrl;
     const lineIds = (cart.lines?.nodes ?? []).map(line => line.id);
-    const appliedDiscountCodes = (cart.discountCodes ?? []).filter(
-        (d: {code: string; applicable: boolean}) => d.applicable
-    );
-
     return (
         <div className="bg-background rounded-l-2xl px-4 py-4 md:px-6">
             <div className="space-y-4">
                 <CartOrderNote noteValue={noteValue} />
-                <CartDiscountCode appliedCodes={appliedDiscountCodes} />
 
                 <div className="space-y-3">
                     <div className="flex gap-2">
@@ -55,104 +50,6 @@ export function CartSummary({cart}: {cart: Cart}) {
                     </div>
                 </div>
             </div>
-        </div>
-    );
-}
-
-function CartDiscountCode({appliedCodes}: {appliedCodes: Array<{code: string; applicable: boolean}>}) {
-    const [expanded, setExpanded] = useState(false);
-    const [code, setCode] = useState("");
-    const discountFetcher = useFetcher({key: "discount-update"});
-    const isSubmitting = discountFetcher.state !== "idle";
-
-    useEffect(() => {
-        if (discountFetcher.state === "idle" && discountFetcher.data) {
-            const {errors} = discountFetcher.data;
-            if (errors?.length) {
-                toast.error(`Discount: ${errors[0].message}`);
-            } else {
-                setCode("");
-                setExpanded(false);
-            }
-        }
-    }, [discountFetcher.state, discountFetcher.data]);
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!code.trim()) return;
-
-        const formData = new FormData();
-        formData.append(
-            "cartFormInput",
-            JSON.stringify({
-                action: CartForm.ACTIONS.DiscountCodesUpdate,
-                inputs: {discountCode: code.trim(), discountCodes: []}
-            })
-        );
-        void discountFetcher.submit(formData, {method: "POST", action: "/cart"});
-    };
-
-    const handleRemove = (codeToRemove: string) => {
-        const remaining = appliedCodes.filter(c => c.code !== codeToRemove).map(c => c.code);
-        const formData = new FormData();
-        formData.append(
-            "cartFormInput",
-            JSON.stringify({
-                action: CartForm.ACTIONS.DiscountCodesUpdate,
-                inputs: {discountCodes: remaining}
-            })
-        );
-        void discountFetcher.submit(formData, {method: "POST", action: "/cart"});
-    };
-
-    return (
-        <div>
-            {appliedCodes.length > 0 && (
-                <div className="mb-2 flex flex-wrap gap-2">
-                    {appliedCodes.map(d => (
-                        <span
-                            key={d.code}
-                            className="bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-                        >
-                            <Tag className="h-3 w-3" />
-                            {d.code}
-                            <button
-                                type="button"
-                                onClick={() => handleRemove(d.code)}
-                                className="hover:text-destructive -mr-1 rounded-full p-0.5"
-                                aria-label={`Remove discount ${d.code}`}
-                            >
-                                <X className="h-3 w-3" />
-                            </button>
-                        </span>
-                    ))}
-                </div>
-            )}
-
-            {!expanded ? (
-                <button
-                    type="button"
-                    onClick={() => setExpanded(true)}
-                    className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-sm transition-colors"
-                >
-                    <Tag className="h-3.5 w-3.5" />
-                    Add discount code
-                </button>
-            ) : (
-                <form onSubmit={handleSubmit} className="flex gap-2">
-                    <input
-                        type="text"
-                        value={code}
-                        onChange={e => setCode(e.target.value)}
-                        placeholder="Discount code"
-                        className="border-input bg-background placeholder:text-muted-foreground flex-1 rounded-md border px-3 py-2 text-sm"
-                        disabled={isSubmitting}
-                    />
-                    <Button type="submit" size="sm" disabled={!code.trim() || isSubmitting} className="shrink-0">
-                        {isSubmitting ? <Spinner className="h-4 w-4" /> : "Apply"}
-                    </Button>
-                </form>
-            )}
         </div>
     );
 }
