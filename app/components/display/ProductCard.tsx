@@ -137,7 +137,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                         <span className={`text-foreground ${priceStyles} ${priceFontSize}`} aria-label="Current price">
                             {priceRange?.displayPrice || price}
                         </span>
-                        {compareAtPrice && (
+                        {compareAtPrice && discountPercentage && discountPercentage > 0 && (
                             <span
                                 className={`text-muted-foreground ${priceStyles} line-through opacity-75 ${priceFontSize}`}
                                 aria-label="Original price"

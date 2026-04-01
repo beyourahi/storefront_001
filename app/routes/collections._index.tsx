@@ -240,7 +240,7 @@ const COLLECTIONS_PAGE_QUERY = `#graphql
         }
       }
     }
-    allProducts: products(first: 250) {
+    allProducts: products(first: 50) {
       nodes {
         id
         availableForSale
