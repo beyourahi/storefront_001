@@ -1,5 +1,6 @@
 import {Link, useRouteError, isRouteErrorResponse, useRouteLoaderData} from "react-router";
 import type {Route} from "./+types/$";
+import {redirectLegacyProductUrl} from "~/lib/legacy-redirect";
 import type {RootLoader} from "~/root";
 import type {CollectionCardData} from "~/lib/types/collections";
 import {CollectionCard} from "~/components/display/CollectionCard";
@@ -13,7 +14,8 @@ import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import {Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext} from "~/components/ui/carousel";
 
-export const loader = async ({request}: Route.LoaderArgs) => {
+export const loader = async ({request, context}: Route.LoaderArgs) => {
+    await redirectLegacyProductUrl(request, context.dataAdapter);
     throw new Response(`${new URL(request.url).pathname} not found`, {
         status: 404
     });
