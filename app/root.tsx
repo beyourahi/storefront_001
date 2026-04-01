@@ -155,7 +155,10 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
     );
     const hasBlog = (blogData as any)?.articles?.nodes?.length > 0;
     const websiteSchema = generateWebsiteSchema(siteContent.siteSettings);
-    const shippingConfig = parseShippingConfig(shopData?.shop?.freeShippingThreshold?.value);
+    const shippingConfig = parseShippingConfig(
+        shopData?.shop?.freeShippingThreshold?.value,
+        shopData?.shop?.paymentSettings?.currencyCode
+    );
 
     const menuCollections =
         menuCollectionsData?.collections?.nodes
@@ -272,22 +275,32 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
     const hasStoreCreditWithTimeout = withTimeoutAndFallback(hasStoreCredit, false, TIMEOUT_DEFAULTS.STORE_CREDIT);
 
-    const footer = storefront
-        .query(FOOTER_QUERY, {
-            variables: {footerMenuHandle: "footer"}
-        })
-        .catch((error: unknown) => {
-            console.error("Failed to load footer:", error);
-            return null;
-        });
+    // Wrap footer and cartSuggestions in timeout to prevent indefinite loading
+    // states if Storefront API hangs. Falls back to null after 8 seconds.
+    const footer = withTimeoutAndFallback(
+        storefront
+            .query(FOOTER_QUERY, {
+                variables: {footerMenuHandle: "footer"}
+            })
+            .catch((error: unknown) => {
+                console.error("Failed to load footer:", error);
+                return null;
+            }),
+        null,
+        TIMEOUT_DEFAULTS.API
+    );
 
-    const cartSuggestions = storefront
-        .query(CART_SUGGESTIONS_QUERY)
-        .then(data => data.products?.nodes?.filter((p: any) => p.availableForSale) ?? null)
-        .catch((error: unknown) => {
-            console.error("Failed to load cart suggestions:", error);
-            return null;
-        });
+    const cartSuggestions = withTimeoutAndFallback(
+        storefront
+            .query(CART_SUGGESTIONS_QUERY)
+            .then(data => data.products?.nodes?.filter((p: any) => p.availableForSale) ?? null)
+            .catch((error: unknown) => {
+                console.error("Failed to load cart suggestions:", error);
+                return null;
+            }),
+        null,
+        TIMEOUT_DEFAULTS.API
+    );
 
     return {
         cart: cartPromise,
@@ -438,7 +451,6 @@ function CachedThemeInjector() {
 
 export function ErrorBoundary() {
     const error = useRouteError();
-    const nonce = useNonce();
 
     let status = 500;
     let message: string | undefined;
@@ -450,21 +462,13 @@ export function ErrorBoundary() {
         message = error.message;
     }
 
+    // Content only — React Router 7's Layout export wraps ErrorBoundary
+    // with the full <html> document shell, so we must NOT render one here.
     return (
-        <html lang={STORE_LANGUAGE_CODE.toLowerCase()}>
-            <head>
-                <meta charSet="utf-8" />
-                <meta name="viewport" content="width=device-width,initial-scale=1" />
-                <title>{`${status} Error`}</title>
-                <Meta />
-                <Links />
-            </head>
-            <body>
-                <CachedThemeInjector />
-                <OfflineAwareErrorPage statusCode={status} title={undefined} message={message} />
-                <Scripts nonce={nonce} />
-            </body>
-        </html>
+        <>
+            <CachedThemeInjector />
+            <OfflineAwareErrorPage statusCode={status} title={undefined} message={message} />
+        </>
     );
 }
 

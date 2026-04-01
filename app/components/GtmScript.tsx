@@ -13,7 +13,8 @@ export const GtmScript = ({gtmContainerId}: GtmScriptProps) => {
         setIsClient(true);
     }, []);
 
-    if (!gtmContainerId || !isClient) return null;
+    // Validate container ID format to prevent script injection via malicious env values
+    if (!gtmContainerId || !isClient || !/^GTM-[A-Z0-9]+$/.test(gtmContainerId)) return null;
 
     return (
         <>

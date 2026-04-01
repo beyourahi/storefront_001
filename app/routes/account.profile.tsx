@@ -640,3 +640,5 @@ const AccountProfile = () => {
 };
 
 export default AccountProfile;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

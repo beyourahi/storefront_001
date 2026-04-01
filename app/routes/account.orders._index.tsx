@@ -133,3 +133,5 @@ const OrdersPage = () => {
 };
 
 export default OrdersPage;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

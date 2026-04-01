@@ -139,3 +139,5 @@ export default function OfflinePage() {
         </section>
     );
 }
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

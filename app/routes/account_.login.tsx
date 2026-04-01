@@ -11,3 +11,5 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         countryCode: STORE_COUNTRY_CODE
     });
 };
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

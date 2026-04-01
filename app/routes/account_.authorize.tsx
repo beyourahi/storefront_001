@@ -8,3 +8,5 @@ export const meta: Route.MetaFunction = () => [
 export const loader = async ({context}: Route.LoaderArgs) => {
     return context.customerAccount.authorize();
 };
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

@@ -20,7 +20,7 @@ import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
  * 3. Set value (e.g., 5000 for ৳5,000 free shipping)
  *
  * @business-logic
- * - Threshold is in the store's default currency (BDT)
+ * - Threshold is in the store's configured currency (fetched via paymentSettings.currencyCode)
  * - Cart must reach or exceed threshold for free shipping
  * - UI shows progress toward free shipping goal
  *

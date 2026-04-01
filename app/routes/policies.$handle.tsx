@@ -70,3 +70,5 @@ export default function PolicyRoute() {
 
     return <LegalPageLayout title={policy.title} description={description} content={policy.body} />;
 }
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

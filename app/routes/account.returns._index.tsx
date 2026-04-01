@@ -319,3 +319,5 @@ const ReturnCard = ({returnItem, index: _index = 0}: {returnItem: ReturnWithOrde
 };
 
 export default ReturnsHistoryRoute;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

@@ -374,3 +374,5 @@ const AccountWishlist = () => {
 };
 
 export default AccountWishlist;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

@@ -1648,48 +1648,64 @@ async function regularSearch({
         };
     }
 
-    const [searchResult, collectionsResult] = await Promise.all([
-        dataAdapter.query(SEARCH_QUERY, {
-            variables: {
-                term,
-                productFirst: 24,
-                articleFirst: 12
-            }
-        }),
-        fetchCollections(dataAdapter, term)
-    ]);
-
-    const {products, articles, errors} = searchResult as {
-        products: CategorizedSearchResult["products"];
-        articles: CategorizedSearchResult["articles"];
-        errors?: Array<{message: string}>;
-    };
-
-    const error = errors ? errors.map(({message}) => message).join(", ") : undefined;
-    const sortedProducts = sortWithPinnedFirst(products.nodes as SearchProduct[]);
-
-    return {
+    const emptyFallback: CategorizedSearchResult = {
         type: "categorized",
         term,
-        error,
-        products: {
-            nodes: sortedProducts,
-            pageInfo: {
-                hasNextPage: products.pageInfo.hasNextPage,
-                endCursor: products.pageInfo.endCursor ?? null
-            },
-            totalCount: Number(products.totalCount || 0)
-        },
-        collections: collectionsResult,
-        articles: {
-            nodes: articles.nodes as SearchArticle[],
-            pageInfo: {
-                hasNextPage: articles.pageInfo.hasNextPage,
-                endCursor: articles.pageInfo.endCursor ?? null
-            },
-            totalCount: Number(articles.totalCount || 0)
-        }
+        products: {nodes: [], pageInfo: {hasNextPage: false, endCursor: null}, totalCount: 0},
+        collections: {nodes: [], totalCount: 0},
+        articles: {nodes: [], pageInfo: {hasNextPage: false, endCursor: null}, totalCount: 0}
     };
+
+    try {
+        const [searchResult, collectionsResult] = await Promise.all([
+            dataAdapter.query(SEARCH_QUERY, {
+                variables: {
+                    term,
+                    productFirst: 24,
+                    articleFirst: 12
+                }
+            }),
+            fetchCollections(dataAdapter, term)
+        ]);
+
+        const {products, articles, errors} = searchResult as {
+            products: CategorizedSearchResult["products"];
+            articles: CategorizedSearchResult["articles"];
+            errors?: Array<{message: string}>;
+        };
+
+        const error = errors ? errors.map(({message}) => message).join(", ") : undefined;
+        const sortedProducts = sortWithPinnedFirst(products.nodes as SearchProduct[]);
+
+        return {
+            type: "categorized",
+            term,
+            error,
+            products: {
+                nodes: sortedProducts,
+                pageInfo: {
+                    hasNextPage: products.pageInfo.hasNextPage,
+                    endCursor: products.pageInfo.endCursor ?? null
+                },
+                totalCount: Number(products.totalCount || 0)
+            },
+            collections: collectionsResult,
+            articles: {
+                nodes: articles.nodes as SearchArticle[],
+                pageInfo: {
+                    hasNextPage: articles.pageInfo.hasNextPage,
+                    endCursor: articles.pageInfo.endCursor ?? null
+                },
+                totalCount: Number(articles.totalCount || 0)
+            }
+        };
+    } catch (error) {
+        console.error("Search query failed:", error);
+        return {
+            ...emptyFallback,
+            error: "Search is temporarily unavailable. Please try again."
+        };
+    }
 }
 
 async function fetchMoreProducts({
@@ -1786,41 +1802,51 @@ async function predictiveSearch({
         } as PredictiveSearchResult;
     }
 
-    const {predictiveSearch: items, errors} = (await dataAdapter.query(PREDICTIVE_SEARCH_QUERY, {
-        variables: {
-            limit,
-            limitScope: "EACH",
-            term
+    try {
+        const {predictiveSearch: items, errors} = (await dataAdapter.query(PREDICTIVE_SEARCH_QUERY, {
+            variables: {
+                limit,
+                limitScope: "EACH",
+                term
+            }
+        })) as {
+            predictiveSearch: PredictiveSearchResult["result"]["items"] | null;
+            errors?: Array<{message: string}>;
+        };
+
+        if (errors || !items) {
+            console.error("Predictive search failed:", errors?.map(e => e.message).join(", ") ?? "No data returned");
+            return {
+                type: "predictive",
+                term,
+                result: getEmptyPredictiveSearchResult()
+            } as PredictiveSearchResult;
         }
-    })) as {
-        predictiveSearch: PredictiveSearchResult["result"]["items"] | null;
-        errors?: Array<{message: string}>;
-    };
 
-    if (errors) {
-        throw new Error(`Shopify API errors: ${errors.map(({message}) => message).join(", ")}`);
+        const filteredItems = {
+            ...items,
+            products: items.products.filter(product => product.availableForSale),
+            collections: items.collections.filter(collection =>
+                collection.products?.nodes?.some(product => product.availableForSale)
+            )
+        };
+
+        const total = Object.values(filteredItems).reduce((acc, item) => acc + item.length, 0);
+
+        return {
+            type: "predictive",
+            term,
+            result: {
+                items: filteredItems,
+                total
+            }
+        };
+    } catch (error) {
+        console.error("Predictive search query failed:", error);
+        return {
+            type: "predictive",
+            term,
+            result: getEmptyPredictiveSearchResult()
+        } as PredictiveSearchResult;
     }
-
-    if (!items) {
-        throw new Error("No predictive search data returned from Shopify API");
-    }
-
-    const filteredItems = {
-        ...items,
-        products: items.products.filter(product => product.availableForSale),
-        collections: items.collections.filter(collection =>
-            collection.products?.nodes?.some(product => product.availableForSale)
-        )
-    };
-
-    const total = Object.values(filteredItems).reduce((acc, item) => acc + item.length, 0);
-
-    return {
-        type: "predictive",
-        term,
-        result: {
-            items: filteredItems,
-            total
-        }
-    };
 }

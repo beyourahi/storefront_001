@@ -9,3 +9,5 @@ export const meta: MetaFunction = () => [
 export const loader = async () => {
     return redirect("/account/profile");
 };
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

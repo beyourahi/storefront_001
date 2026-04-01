@@ -415,3 +415,5 @@ const ReturnPolicySection = () => (
 );
 
 export default OrderReturnRoute;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

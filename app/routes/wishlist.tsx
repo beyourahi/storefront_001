@@ -15,3 +15,5 @@ const WishlistRedirect = () => {
 };
 
 export default WishlistRedirect;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

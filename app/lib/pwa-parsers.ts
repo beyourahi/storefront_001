@@ -31,12 +31,20 @@ export interface WebAppManifest {
     id: string;
 }
 
+/** Truncate text at a word boundary to avoid cutting words mid-way (e.g. for PWA home-screen labels). */
+function truncateToWordBoundary(text: string, maxLength: number): string {
+    if (text.length <= maxLength) return text;
+    const truncated = text.slice(0, maxLength);
+    const lastSpace = truncated.lastIndexOf(" ");
+    return lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated;
+}
+
 const toHexColor = (color: string): string => {
     const hex = toHex(color);
     return hex ?? "#000000";
 };
 
-const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] | null => {
+const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] => {
     const icons: ManifestIcon[] = [];
 
     const icon192 = siteSettings.icon192Url ?? siteSettings.brandLogo?.url ?? null;
@@ -59,8 +67,13 @@ const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] | null => {
         });
     }
 
+    // Fallback to favicon when no brand icons are available, so the manifest always has at least one icon
     if (icons.length === 0) {
-        return null;
+        icons.push({
+            src: "/favicon.ico",
+            sizes: "48x48",
+            type: "image/x-icon"
+        });
     }
 
     return icons;
@@ -70,18 +83,14 @@ export const buildWebAppManifest = (
     siteSettings: SiteSettings,
     themeConfig: ThemeConfig,
     manifestUrl: string
-): WebAppManifest | null => {
+): WebAppManifest => {
     const icons = buildIconsArray(siteSettings);
-    if (!icons) {
-        return null;
-    }
-
     const themeColor = toHexColor(themeConfig.colors.primary);
     const backgroundColor = toHexColor(themeConfig.colors.background);
 
     return {
         name: siteSettings.brandName || "Store",
-        short_name: (siteSettings.brandName || "Store").slice(0, 12),
+        short_name: truncateToWordBoundary(siteSettings.brandName || "Store", 12),
         description: siteSettings.missionStatement || `Shop at ${siteSettings.brandName || "Store"}`,
         start_url: "/",
         scope: "/",

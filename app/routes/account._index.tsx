@@ -273,3 +273,5 @@ const AccountDashboard = () => {
 };
 
 export default AccountDashboard;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

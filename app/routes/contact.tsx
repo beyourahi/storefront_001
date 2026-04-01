@@ -245,3 +245,5 @@ export default function Contact() {
         </>
     );
 }
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

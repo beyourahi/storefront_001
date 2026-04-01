@@ -84,9 +84,10 @@ export default {
             // -----------------------------------------------------------------
             // SESSION COMMIT
             // -----------------------------------------------------------------
-            // If session data changed, commit it to the cookie
+            // If session data changed, commit it to the cookie.
+            // Use append (not set) to avoid clobbering other Set-Cookie headers.
             if (hydrogenContext.session.isPending) {
-                response.headers.set("Set-Cookie", await hydrogenContext.session.commit());
+                response.headers.append("Set-Cookie", await hydrogenContext.session.commit());
             }
 
             // -----------------------------------------------------------------
@@ -110,7 +111,10 @@ export default {
             // Log error and return generic 500 response
             // More detailed error handling could be added here
             console.error(error);
-            return new Response("An unexpected error occurred", {status: 500});
+            return new Response("An unexpected error occurred", {
+                status: 500,
+                headers: {"Content-Type": "text/plain; charset=utf-8"}
+            });
         }
     }
 };

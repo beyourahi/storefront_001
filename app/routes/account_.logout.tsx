@@ -13,3 +13,5 @@ export const loader = async () => {
 export const action = async ({context}: Route.ActionArgs) => {
     return context.customerAccount.logout();
 };
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

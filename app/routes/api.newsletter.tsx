@@ -4,6 +4,14 @@ import {createRateLimiter, getClientIP, getRateLimitResponse} from "~/lib/rate-l
 
 const limiter = createRateLimiter({windowMs: 60_000, maxRequests: 5});
 
+/** Only POST is allowed — return 405 for GET and other methods */
+export async function loader() {
+    return new Response("Method Not Allowed", {
+        status: 405,
+        headers: {Allow: "POST"}
+    });
+}
+
 const CUSTOMER_CREATE_MUTATION = `#graphql
   mutation customerCreate($input: CustomerCreateInput!) {
     customerCreate(input: $input) {

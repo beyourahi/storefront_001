@@ -68,9 +68,16 @@ export default function Gallery() {
                 </section>
             </AnimatedSection>
 
-            <AnimatedSection animation="slide-up" threshold={0.1}>
-                <GalleryMasonrySection productImages={productImages} />
-            </AnimatedSection>
+            {productImages.length > 0 ? (
+                <AnimatedSection animation="slide-up" threshold={0.1}>
+                    <GalleryMasonrySection productImages={productImages} />
+                </AnimatedSection>
+            ) : (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                    <h2 className="text-2xl font-semibold mb-4">No images yet</h2>
+                    <p className="text-muted-foreground">Check back soon for new visual content.</p>
+                </div>
+            )}
         </div>
     );
 }
@@ -104,3 +111,5 @@ const GALLERY_PRODUCTS_QUERY = `#graphql
     }
   }
 ` as const;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

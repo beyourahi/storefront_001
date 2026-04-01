@@ -41,3 +41,5 @@ export const loader = async ({request, context, params}: Route.LoaderArgs) => {
         headers
     });
 };
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

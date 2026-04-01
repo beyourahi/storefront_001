@@ -12,16 +12,28 @@ export const loader = async ({request, context, params}: Route.LoaderArgs) => {
 
     if (!lines) return redirect("/");
 
-    const linesMap = lines.split(",").map(line => {
-        const lineDetails = line.split(":");
-        const variantId = lineDetails[0];
-        const quantity = parseInt(lineDetails[1], 10);
+    // Validate and filter cart line entries — only allow numeric variant IDs and positive integer quantities
+    const linesMap = lines
+        .split(",")
+        .map(line => {
+            const lineDetails = line.split(":");
+            const variantId = lineDetails[0];
+            const quantity = parseInt(lineDetails[1], 10);
 
-        return {
-            merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
-            quantity
-        };
-    });
+            // Variant ID must be numeric only, quantity must be a positive integer
+            if (!/^\d+$/.test(variantId) || !Number.isInteger(quantity) || quantity < 1) {
+                return null;
+            }
+
+            return {
+                merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
+                quantity
+            };
+        })
+        .filter((line): line is NonNullable<typeof line> => line !== null);
+
+    // If all lines were invalid, redirect to homepage
+    if (linesMap.length === 0) return redirect("/");
 
     const url = new URL(request.url);
     const searchParams = new URLSearchParams(url.search);
@@ -54,3 +66,5 @@ export const loader = async ({request, context, params}: Route.LoaderArgs) => {
 export default function Component() {
     return null;
 }
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

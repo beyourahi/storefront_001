@@ -224,3 +224,5 @@ const WishlistShare = () => {
 };
 
 export default WishlistShare;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

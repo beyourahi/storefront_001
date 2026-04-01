@@ -242,8 +242,6 @@ export const CART_QUERY_FRAGMENT = `#graphql
     lines(first: $numCartLines) {
       nodes {
         ...CartLine
-      }
-      nodes {
         ...CartLineComponent
       }
     }
@@ -317,7 +315,29 @@ const MENU_FRAGMENT = `#graphql
 // =============================================================================
 
 /**
- * Header data query - fetches the main navigation menu.
+ * Shop identity fragment for header/layout use.
+ * Provides brand identity data (name, logo, domain) for the navbar and SEO.
+ */
+const SHOP_FRAGMENT = `#graphql
+  fragment ShopInfo on Shop {
+    id
+    name
+    description
+    primaryDomain {
+      url
+    }
+    brand {
+      logo {
+        image {
+          url
+        }
+      }
+    }
+  }
+` as const;
+
+/**
+ * Header data query - fetches shop identity and the main navigation menu.
  *
  * @param $headerMenuHandle - Handle of the header menu in Shopify admin
  * @param $country - Country code for localized content
@@ -331,10 +351,14 @@ export const HEADER_QUERY = `#graphql
     $headerMenuHandle: String!
     $language: LanguageCode
   ) @inContext(language: $language, country: $country) {
+    shop {
+      ...ShopInfo
+    }
     menu(handle: $headerMenuHandle) {
       ...Menu
     }
   }
+  ${SHOP_FRAGMENT}
   ${MENU_FRAGMENT}
 ` as const;
 
@@ -464,6 +488,9 @@ export const MENU_COLLECTIONS_QUERY = `#graphql
           nodes {
             id
           }
+          pageInfo {
+            hasNextPage
+          }
         }
       }
     }
@@ -501,6 +528,9 @@ export const MENU_COLLECTIONS_QUERY = `#graphql
           }
         }
       }
+      pageInfo {
+        hasNextPage
+      }
     }
   }
 ` as const;
@@ -519,11 +549,17 @@ export const MENU_COLLECTIONS_QUERY = `#graphql
  * @returns Shop metafield with free shipping threshold value
  */
 export const SHOP_SHIPPING_CONFIG_QUERY = `#graphql
-  query ShopShippingConfig {
+  query ShopShippingConfig(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
     shop {
       freeShippingThreshold: metafield(namespace: "custom", key: "free_shipping_threshold") {
         value
         type
+      }
+      paymentSettings {
+        currencyCode
       }
     }
   }

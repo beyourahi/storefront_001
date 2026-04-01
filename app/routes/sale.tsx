@@ -228,3 +228,5 @@ const SALE_PRODUCTS_QUERY = `#graphql
   }
   ${SALE_PRODUCT_FRAGMENT}
 ` as const;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

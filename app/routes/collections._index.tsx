@@ -261,3 +261,5 @@ const COLLECTIONS_PAGE_QUERY = `#graphql
     }
   }
 ` as const;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

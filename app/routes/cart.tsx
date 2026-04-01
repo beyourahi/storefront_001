@@ -91,9 +91,20 @@ export const action = async ({request, context}: Route.ActionArgs) => {
     const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();
     const {cart: cartResult, errors, warnings} = result;
 
+    // Validate redirectTo to prevent open redirect attacks.
+    // Only allow: the special "__checkout_url__" token, or relative paths starting with "/"
+    // (but not "//" which is a protocol-relative URL). Reject external URLs, javascript:, data:, etc.
     const redirectTo = formData.get("redirectTo") ?? null;
     if (typeof redirectTo === "string") {
-        const destination = redirectTo === "__checkout_url__" ? (cartResult?.checkoutUrl ?? null) : redirectTo;
+        let destination: string | null = null;
+
+        if (redirectTo === "__checkout_url__") {
+            destination = cartResult?.checkoutUrl ?? null;
+        } else if (redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
+            destination = redirectTo;
+        }
+        // All other values (external URLs, javascript:, data:, etc.) are silently ignored
+
         if (destination) {
             status = 303;
             headers.set("Location", destination);
@@ -227,3 +238,5 @@ function CartPageLoadingSkeleton() {
         </div>
     );
 }
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

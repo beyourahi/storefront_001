@@ -96,8 +96,9 @@ export async function loader({context, request}: Route.LoaderArgs) {
 export default function Blogs() {
     const {blogs, featuredArticle, hasContent} = useLoaderData<typeof loader>();
     const {blogPageHeading, blogPageDescription} = useSiteSettings();
-    const blogNodes = blogs.nodes as BlogWithArticles[];
+    const blogNodes = (blogs?.nodes ?? []) as BlogWithArticles[];
     const hasMultipleCategories = blogNodes.length > 1;
+    const hasAnyArticles = blogNodes.some(b => (b.articles?.nodes?.length ?? 0) > 0);
     const blogTitle = blogPageHeading || "The Journal";
 
     if (!hasContent) {
@@ -147,13 +148,21 @@ export default function Blogs() {
             </AnimatedSection>
 
             <div className="mx-auto max-w-[2000px] px-2 md:px-4 pb-12 md:pb-20">
+                {/* Empty state when no blogs or articles exist */}
+                {!hasAnyArticles && !featuredArticle && (
+                    <div className="flex flex-col items-center justify-center py-24 text-center">
+                        <h2 className="text-2xl font-semibold mb-4">No articles yet</h2>
+                        <p className="text-muted-foreground">Check back soon for new content.</p>
+                    </div>
+                )}
+
                 {featuredArticle && (
                     <AnimatedSection animation="slide-up" threshold={0.1}>
                         <ArticleHero article={featuredArticle} variant="listing" />
                     </AnimatedSection>
                 )}
 
-                {hasMultipleCategories && blogNodes.some(b => b.articles?.nodes?.length > 0) && (
+                {hasMultipleCategories && hasAnyArticles && (
                     <AnimatedSection animation="slide-up" threshold={0.12}>
                         <div className="mt-10 md:mt-16 space-y-8">
                             <Tabs defaultValue={blogNodes[0]?.handle}>
@@ -195,14 +204,6 @@ export default function Blogs() {
                                 articles={blogNodes[0].articles.nodes}
                                 categoryHandle={blogNodes[0].handle}
                             />
-                        </div>
-                    </AnimatedSection>
-                )}
-
-                {!featuredArticle && blogNodes.every(b => !b.articles?.nodes?.length) && (
-                    <AnimatedSection animation="fade" threshold={0.1}>
-                        <div className="text-center py-12">
-                            <p className="text-sm text-muted-foreground">No articles published yet.</p>
                         </div>
                     </AnimatedSection>
                 )}
@@ -350,3 +351,5 @@ const LATEST_ARTICLES_QUERY = `#graphql
     }
   }
 ` as const;
+
+export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";
