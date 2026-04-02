@@ -48,7 +48,7 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 | ------------- | ---------------- | ---------- | ----------------------------------- |
 | **Framework** | React            | 18.3.1     |                                     |
 |               | React Router     | 7.12.0     | Hydrogen preset, file-based routing |
-|               | Shopify Hydrogen | 2026.1.0   | Storefront + Customer Account APIs  |
+|               | Shopify Hydrogen | 2026.1.3   | Storefront + Customer Account APIs  |
 |               | Storefront API   | 2026-01    | GraphQL API version                 |
 |               | TypeScript       | 5.x        | Strict mode, ES2022 target          |
 |               | Vite             | 6          | Build tooling                       |
@@ -81,6 +81,7 @@ storefront_001/
 │   │   ├── account/               # Account dashboard surfaces
 │   │   ├── blog/                  # Blog surfaces
 │   │   ├── cart/                  # Cart drawer + line items
+│   │   ├── collection/            # Collection page components (sort/filter bar)
 │   │   ├── common/                # Shared presentational (breadcrumbs, price, skeletons)
 │   │   ├── contact/               # Contact page components
 │   │   ├── custom/                # Custom overrides (collection pagination)
@@ -210,7 +211,7 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 ## Key Files
 
 **Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`
-**Config**: `vite.config.ts`, `react-router.config.ts`, `eslint.config.js`, `app/styles/app.css`, `wrangler.jsonc`
+**Config**: `vite.config.ts`, `react-router.config.ts`, `eslint.config.js`, `prettier.config.js`, `app/styles/app.css`, `wrangler.jsonc`
 **GraphQL**: `storefrontapi.generated.d.ts`, `customer-accountapi.generated.d.ts`
 **Theme System**: `app/lib/theme-utils.ts`, `app/root.tsx`, `app/styles/app.css`
 **PWA/Offline**: `app/components/OfflineAwareErrorPage.tsx`, `app/routes/manifest[.]webmanifest.tsx`, `public/sw.js`
