@@ -14,6 +14,7 @@ import {WishlistCountInline} from "~/components/WishlistCount";
 import type {Route} from "./+types/account";
 import {getSeoMeta} from "@shopify/hydrogen";
 import {CUSTOMER_DETAILS_QUERY} from "~/graphql/customer-account/customer";
+import {LayoutDashboard, Package, Heart, RotateCcw, User} from "lucide-react";
 import {cn} from "~/lib/utils";
 
 export const meta: Route.MetaFunction = () => {
@@ -90,12 +91,20 @@ export type AccountOutletContext = {
     isAuthenticated: boolean;
 };
 
-const AccountNavLink = ({to, end, children}: {to: string; end?: boolean; children: React.ReactNode}) => (
+type AccountNavLinkProps = {
+    to: string;
+    end?: boolean;
+    icon: React.ComponentType<{className?: string}>;
+    children: React.ReactNode;
+};
+
+const AccountNavLink = ({to, end, icon: Icon, children}: AccountNavLinkProps) => (
     <NavLink to={to} end={end} className="group shrink-0">
         {({isActive, isPending}) => (
             <span
                 className={cn(
-                    "relative inline-block pb-1 text-base sm:text-xl md:text-2xl lg:text-3xl font-medium transition-colors whitespace-nowrap",
+                    "relative inline-flex items-center justify-center gap-2 pb-1 text-sm font-semibold transition-colors whitespace-nowrap",
+                    "min-h-[40px] min-w-[40px] sm:min-h-0 sm:min-w-0",
                     isPending
                         ? "text-muted-foreground"
                         : isActive
@@ -103,7 +112,8 @@ const AccountNavLink = ({to, end, children}: {to: string; end?: boolean; childre
                           : "text-muted-foreground group-hover:text-primary"
                 )}
             >
-                {children}
+                <Icon className="size-5" />
+                <span className="sr-only sm:not-sr-only">{children}</span>
                 <span
                     className={cn(
                         "absolute bottom-0 left-0 w-full h-0.5 bg-primary transition-transform duration-300 ease-out origin-left",
@@ -122,26 +132,40 @@ const AccountMenu = () => (
             aria-label="Account navigation"
             className={cn(
                 "flex items-center justify-start sm:justify-center min-w-max mx-auto",
-                "gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12"
+                "gap-2 sm:gap-4 md:gap-6 lg:gap-8"
             )}
         >
-            <AccountNavLink to="/account" end>
+            <AccountNavLink to="/account" end icon={LayoutDashboard}>
                 Dashboard
             </AccountNavLink>
-            <AccountNavLink to="/account/orders">Orders</AccountNavLink>
-            <AccountNavLink to="/account/wishlist">
+            <AccountNavLink to="/account/orders" icon={Package}>
+                Orders
+            </AccountNavLink>
+            <AccountNavLink to="/account/wishlist" icon={Heart}>
                 Wishlist <WishlistCountInline />
             </AccountNavLink>
-            <AccountNavLink to="/account/returns">Returns</AccountNavLink>
-            <AccountNavLink to="/account/profile">Account Details</AccountNavLink>
+            <AccountNavLink to="/account/returns" icon={RotateCcw}>
+                Returns
+            </AccountNavLink>
+            <AccountNavLink to="/account/profile" icon={User}>
+                Account Details
+            </AccountNavLink>
         </nav>
     </div>
 );
 
 const AccountContentSkeleton = () => (
-    <div className="animate-pulse space-y-4">
-        <div className="h-8 w-48 rounded bg-muted" />
-        <div className="h-64 rounded bg-muted/50" />
+    <div className="animate-pulse space-y-6">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <div className="h-7 w-40 rounded-lg bg-muted" />
+            <div className="hidden h-9 w-24 rounded-lg bg-muted sm:block" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="h-24 rounded-xl bg-muted/50" />
+            <div className="h-24 rounded-xl bg-muted/50" />
+            <div className="h-24 rounded-xl bg-muted/50" />
+        </div>
+        <div className="h-48 rounded-xl bg-muted/30" />
     </div>
 );
 
@@ -149,9 +173,9 @@ const AccountLayout = () => {
     const {customer, isAuthenticated} = useLoaderData<typeof loader>();
 
     return (
-        <div className="px-container pt-8 sm:pt-10 md:pt-12 mb-4 pb-6 sm:pb-8 md:pb-12 lg:pb-16 xl:pb-20 min-h-[calc(100dvh-var(--total-header-height))]">
+        <div className="mx-auto max-w-[2000px] px-2 md:px-4 pt-8 sm:pt-10 md:pt-12 mb-4 pb-6 sm:pb-8 md:pb-12 lg:pb-16 xl:pb-20 min-h-[calc(100dvh-var(--total-header-height))]">
             {isAuthenticated && <AccountMenu />}
-            <div className={cn(isAuthenticated ? "mt-8 md:mt-10 lg:mt-12 xl:mt-14" : "mt-4")}>
+            <div className={cn("mx-auto max-w-5xl", isAuthenticated ? "mt-8 md:mt-10 lg:mt-12 xl:mt-14" : "mt-4")}>
                 <Suspense fallback={<AccountContentSkeleton />}>
                     <Outlet context={{customer, isAuthenticated} satisfies AccountOutletContext} />
                 </Suspense>

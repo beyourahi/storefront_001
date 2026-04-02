@@ -135,7 +135,7 @@ export const OrderHistorySection = ({orders, products}: OrderHistorySectionProps
     return (
         <section className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="mb-0 font-serif text-2xl font-medium text-foreground md:text-3xl lg:text-4xl">
+                <h2 className="mb-0 text-lg font-semibold text-foreground">
                     Order History
                 </h2>
                 <Button variant="link" asChild className="group hidden text-primary sm:inline-flex">
