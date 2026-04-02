@@ -157,7 +157,7 @@ const ReturnsHistoryRoute = () => {
                     <div className="flex items-center justify-center size-10 md:size-12 rounded-2xl bg-muted/50 shrink-0">
                         <RotateCcwIcon className="size-5 md:size-6 text-muted-foreground" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Returns History</h1>
                         <p className="text-muted-foreground text-sm md:text-base mt-1">
                             Track and manage your return requests
@@ -287,7 +287,7 @@ const ReturnCard = ({returnItem, index: _index = 0}: {returnItem: ReturnWithOrde
                             <p className="text-base font-semibold text-foreground truncate pt-1">
                                 {firstItemTitle.primary}
                                 {firstItemTitle.secondary && (
-                                    <span className="font-normal opacity-50 text-sm"> {firstItemTitle.secondary}</span>
+                                    <span className="font-normal text-muted-foreground text-sm"> {firstItemTitle.secondary}</span>
                                 )}
                                 {lineItems.length > 1 && (
                                     <span className="text-muted-foreground font-normal text-sm">

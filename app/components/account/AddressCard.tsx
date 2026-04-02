@@ -26,7 +26,7 @@ export const AddressCard = ({address, isDefault, onEdit, onDelete}: AddressCardP
                 </div>
                 {address.phoneNumber && <p className="text-muted-foreground text-sm">{address.phoneNumber}</p>}
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
                 <Button variant="outline" size="sm" onClick={onEdit}>
                     Edit
                 </Button>

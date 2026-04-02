@@ -232,7 +232,7 @@ const OrderReturnRoute = () => {
                     ))}
                 </div>
 
-                <div className="mt-6 flex gap-3">
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? "Submitting..." : "Submit Return Request"}
                     </Button>
@@ -281,11 +281,11 @@ const ReturnableItemCard = ({item}: {item: ReturnableItem}) => {
                             />
                         </div>
                     )}
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                         <CardTitle className="text-base">
                             <label htmlFor={`selected_${lineItem.id}`} className="cursor-pointer">
                                 {primary}
-                                {secondary && <span className="font-normal opacity-50 text-sm ml-1">{secondary}</span>}
+                                {secondary && <span className="font-normal text-muted-foreground text-sm ml-1">{secondary}</span>}
                             </label>
                         </CardTitle>
                         {lineItem.variantTitle && <CardDescription>{lineItem.variantTitle}</CardDescription>}
@@ -356,14 +356,14 @@ const ReturnPolicySection = () => (
                     </div>
                 </div>
                 <div className="flex items-start gap-3">
-                    <CheckCircle className="size-5 shrink-0 text-success" />
+                    <CheckCircle className="size-5 shrink-0 text-green-700" /> {/* text-success too light on --surface-canvas; darker variant for 3:1 icon contrast */}
                     <div>
                         <p className="font-medium text-sm">Free Returns</p>
                         <p className="text-sm text-muted-foreground">Prepaid shipping label</p>
                     </div>
                 </div>
                 <div className="flex items-start gap-3">
-                    <XCircle className="size-5 shrink-0 text-warning" />
+                    <XCircle className="size-5 shrink-0 text-amber-700" /> {/* text-warning too light on --surface-canvas; darker variant for 3:1 icon contrast */}
                     <div>
                         <p className="font-medium text-sm">Refund Method</p>
                         <p className="text-sm text-muted-foreground">Original payment or store credit</p>

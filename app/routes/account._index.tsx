@@ -152,7 +152,7 @@ const WelcomeBanner = ({customer}: {customer: CustomerFragment}) => {
                 </div>
             </div>
             <Form method="post" action="/account/logout">
-                <Button variant="outline" type="submit" className="gap-2" disabled={navigation.state !== "idle"}>
+                <Button variant="destructive" type="submit" className="gap-2" disabled={navigation.state !== "idle"}>
                     <LogOutIcon className="size-4" />
                     Sign Out
                 </Button>
@@ -172,10 +172,10 @@ const AccountStats = ({customer, orderCount}: {customer: CustomerFragment; order
     ];
 
     return (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3">
             {stats.map(stat => (
                 <Card key={stat.label} className="p-4 text-center">
-                    <p className="text-2xl font-bold">{stat.value}</p>
+                    <p className="text-2xl font-bold truncate">{stat.value}</p>
                     <p className="text-muted-foreground text-sm">{stat.label}</p>
                 </Card>
             ))}

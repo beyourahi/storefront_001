@@ -493,7 +493,7 @@ export default function SubscriptionDetail() {
                                 className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0"
                             >
                                 <div className="flex-1">
-                                    <Link to="/account/orders" className="font-medium hover:underline">
+                                    <Link to="/account/orders" className="font-medium underline">
                                         {order.name}
                                     </Link>
                                     <p className="text-sm text-muted-foreground">

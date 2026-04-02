@@ -254,7 +254,7 @@ const AddressFormDialog = ({
                     {!isEditing && <input type="hidden" name="addressId" value="new" />}
 
                     <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="firstName">First Name</Label>
                                 <Input id="firstName" name="firstName" defaultValue={address?.firstName ?? ""} />
@@ -276,7 +276,7 @@ const AddressFormDialog = ({
                             <Label htmlFor="address2">Address Line 2</Label>
                             <Input id="address2" name="address2" defaultValue={address?.address2 ?? ""} />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="city">City</Label>
                                 <Input id="city" name="city" defaultValue={address?.city ?? ""} required />
@@ -286,7 +286,7 @@ const AddressFormDialog = ({
                                 <Input id="zoneCode" name="zoneCode" defaultValue={address?.zoneCode ?? ""} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="zip">Postal Code</Label>
                                 <Input id="zip" name="zip" defaultValue={address?.zip ?? ""} required />

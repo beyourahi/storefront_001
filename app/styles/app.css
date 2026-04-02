@@ -10,6 +10,12 @@ body {
     overflow-x: clip;
 }
 
+/* Enforce accessible placeholder contrast — default 50% opacity fails WCAG AA */
+::placeholder {
+    color: var(--text-subtle);
+    opacity: 1;
+}
+
 :root {
     /* ── Canonical Semantic Tokens (neutral defaults, overridden at runtime) ── */
     --surface-canvas: oklch(0.985 0.004 95);

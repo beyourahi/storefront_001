@@ -62,7 +62,7 @@ const OrdersPage = () => {
             <div className="flex flex-col items-center justify-center gap-6 py-20 text-center">
                 <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Sign in to view your orders</h2>
                 <p className="text-muted-foreground max-w-md text-sm">Track your purchases and view order details.</p>
-                <p className="text-sm font-medium text-primary/80">Let&apos;s get you back on track</p>
+                <p className="text-sm font-medium text-muted-foreground">Let&apos;s get you back on track</p>
                 <Button asChild size="lg">
                     <Link to="/account/login">Sign In</Link>
                 </Button>
@@ -117,7 +117,7 @@ const OrdersPage = () => {
                     )}
                 </>
             ) : (
-                <Card className="p-12 text-center">
+                <Card className="p-6 sm:p-12 text-center">
                     <div className="bg-primary/10 mx-auto mb-4 inline-flex rounded-full p-4 shadow-sm backdrop-blur-sm">
                         <PackageSearchIcon className="text-primary size-6" />
                     </div>

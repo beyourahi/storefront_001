@@ -88,7 +88,7 @@ const OrderDetailPage = () => {
                                     <>
                                         <p className="font-medium">{primary}</p>
                                         {secondary && (
-                                            <p className="opacity-50 text-sm font-normal">{secondary}</p>
+                                            <p className="text-muted-foreground text-sm font-normal">{secondary}</p>
                                         )}
                                     </>
                                 );

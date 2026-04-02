@@ -97,10 +97,10 @@ const AccountNavLink = ({to, end, children}: {to: string; end?: boolean; childre
                 className={cn(
                     "relative inline-block pb-1 text-base sm:text-xl md:text-2xl lg:text-3xl font-medium transition-colors whitespace-nowrap",
                     isPending
-                        ? "text-primary/50"
+                        ? "text-muted-foreground"
                         : isActive
                           ? "text-primary"
-                          : "text-primary/70 group-hover:text-primary"
+                          : "text-muted-foreground group-hover:text-primary"
                 )}
             >
                 {children}
@@ -189,7 +189,7 @@ export const ErrorBoundary = () => {
                     <div className="space-y-4">
                         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">{title}</h1>
                         <p className="text-base leading-relaxed text-muted-foreground">{errorMessage}</p>
-                        <p className="text-sm font-medium text-primary/80">Let&apos;s get you back on track</p>
+                        <p className="text-sm font-medium text-muted-foreground">Let&apos;s get you back on track</p>
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                         <Button asChild>

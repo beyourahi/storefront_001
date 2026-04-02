@@ -113,7 +113,7 @@ const TransactionItem = ({transaction}: {transaction: StoreCreditTransaction}) =
                         "size-8 rounded-full flex items-center justify-center text-sm font-medium",
                         credit
                             ? "bg-green-500/20 text-green-600"
-                            : "bg-amber-500/20 text-amber-600"
+                            : "bg-amber-500/20 text-amber-700"
                     )}
                 >
                     {credit ? "+" : "-"}
@@ -127,7 +127,7 @@ const TransactionItem = ({transaction}: {transaction: StoreCreditTransaction}) =
                 <p
                     className={cn(
                         "text-sm font-medium",
-                        credit ? "text-green-600" : "text-amber-600"
+                        credit ? "text-green-600" : "text-amber-700"
                     )}
                 >
                     {credit ? "+" : "-"}
