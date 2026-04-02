@@ -223,22 +223,24 @@ const AccountWishlist = () => {
     }, [products]);
 
     return (
-        <div className="mx-auto max-w-7xl px-4 py-8">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold">My Wishlist</h1>
-                <p className="text-muted-foreground mt-2">
-                    {count} {count === 1 ? "item" : "items"} saved
-                </p>
+        <div className="space-y-6">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+                <div>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">My Wishlist</h1>
+                    <p className="text-sm text-muted-foreground mt-1">
+                        {count} {count === 1 ? "item" : "items"} saved
+                    </p>
+                </div>
             </div>
 
             {count === 0 ? (
-                <div className="border-border/60 flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed">
-                    <Share2 className="text-muted-foreground/60 mb-4 h-16 w-16" />
-                    <h3 className="mb-2 text-xl font-semibold">Your wishlist is empty</h3>
-                    <p className="text-muted-foreground mb-6">Start adding products you love</p>
+                <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
+                    <Share2 className="mx-auto mb-4 size-10 text-muted-foreground" />
+                    <h3 className="font-serif text-xl font-medium text-foreground">Your wishlist is empty</h3>
+                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">Start adding products you love</p>
                     <Link
                         to="/collections/all-products"
-                        className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 transition-colors"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 mt-6 inline-block rounded-lg px-6 py-3 transition-colors"
                     >
                         Start Browsing
                     </Link>

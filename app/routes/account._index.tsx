@@ -4,7 +4,6 @@ import type {CustomerFragment} from "customer-accountapi.generated";
 import type {AccountOutletContext} from "~/routes/account";
 import {CUSTOMER_ORDERS_LIST_QUERY} from "~/graphql/customer-account/CustomerOrdersQuery";
 import {Button} from "~/components/ui/button";
-import {Card, CardContent} from "~/components/ui/card";
 import {Avatar, AvatarFallback} from "~/components/ui/avatar";
 import {OrderCard} from "~/components/account/OrderCard";
 import {AuthRequiredFallback} from "~/components/account/AuthRequiredFallback";
@@ -143,7 +142,7 @@ const WelcomeBanner = ({customer}: {customer: CustomerFragment}) => {
                     )}
                 </Avatar>
                 <div>
-                    <h1 className="text-2xl font-bold sm:text-3xl">
+                    <h1 className="font-serif text-2xl font-medium text-foreground sm:text-3xl">
                         {getGreeting()}, {customer.firstName ?? "there"}
                     </h1>
                     {customer.emailAddress?.emailAddress && (
@@ -174,10 +173,10 @@ const AccountStats = ({customer, orderCount}: {customer: CustomerFragment; order
     return (
         <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3">
             {stats.map(stat => (
-                <Card key={stat.label} className="p-4 text-center">
-                    <p className="text-2xl font-bold truncate">{stat.value}</p>
-                    <p className="text-muted-foreground text-sm">{stat.label}</p>
-                </Card>
+                <div key={stat.label} className="rounded-xl bg-muted/50 p-5 text-center">
+                    <p className="font-mono text-3xl font-bold tabular-nums tracking-tight truncate">{stat.value}</p>
+                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{stat.label}</p>
+                </div>
             ))}
         </div>
     );
@@ -185,22 +184,20 @@ const AccountStats = ({customer, orderCount}: {customer: CustomerFragment; order
 
 const QuickActionsGrid = () => (
     <div>
-        <h2 className="mb-4 text-xl font-semibold">Quick Actions</h2>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">Quick Actions</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {QUICK_ACTIONS.map(action => (
                 <Link key={action.to} to={action.to} className="group">
-                    <Card className="h-full p-4 transition-colors group-hover:bg-accent">
-                        <CardContent className="flex items-start gap-4 p-0">
-                            <div className="rounded-lg bg-primary/10 p-2">
-                                <action.icon className="size-5 text-primary" />
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="font-medium transition-colors group-hover:text-accent-foreground">{action.title}</h3>
-                                <p className="text-muted-foreground text-sm">{action.description}</p>
-                            </div>
-                            <ArrowRightIcon className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                        </CardContent>
-                    </Card>
+                    <div className="group flex h-full items-start gap-4 rounded-xl border border-transparent p-4 transition-all hover:border-border hover:shadow-sm hover:-translate-y-[var(--motion-hover-lift)]">
+                        <div className="rounded-lg bg-primary/10 p-2">
+                            <action.icon className="size-5 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-sm font-semibold text-foreground">{action.title}</h3>
+                            <p className="text-sm text-muted-foreground">{action.description}</p>
+                        </div>
+                        <ArrowRightIcon className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                    </div>
                 </Link>
             ))}
         </div>
@@ -210,7 +207,7 @@ const QuickActionsGrid = () => (
 const RecentOrdersSection = ({orders}: {orders: NonNullable<Awaited<ReturnType<typeof loader>>["data"]["orders"]>}) => (
     <div>
         <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Recent Orders</h2>
+            <h2 className="text-lg font-semibold text-foreground">Recent Orders</h2>
             <Button variant="ghost" size="sm" asChild>
                 <Link to="/account/orders" className="gap-1">
                     View All
@@ -225,13 +222,13 @@ const RecentOrdersSection = ({orders}: {orders: NonNullable<Awaited<ReturnType<t
                 ))}
             </div>
         ) : (
-            <Card className="p-8 text-center">
+            <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
                 <PackageSearchIcon className="mx-auto mb-3 size-10 text-muted-foreground" />
-                <p className="text-muted-foreground">No orders yet</p>
+                <p className="text-sm text-muted-foreground">No orders yet</p>
                 <Button asChild className="mt-4" variant="outline">
                     <Link to="/collections">Start Shopping</Link>
                 </Button>
-            </Card>
+            </div>
         )}
     </div>
 );
@@ -249,22 +246,22 @@ const AccountDashboard = () => {
 
     return (
         <div className="space-y-8 sm:space-y-10 lg:space-y-12">
-            <AnimatedSection animation="fade" threshold={0.08}>
+            <AnimatedSection animation="fade" threshold={0.08} duration={500}>
                 <WelcomeBanner customer={customer} />
             </AnimatedSection>
             {hasStoreCredit && (
-                <AnimatedSection animation="slide-up" threshold={0.1}>
+                <AnimatedSection animation="slide-up" threshold={0.1} duration={500}>
                     <StoreCreditWidget balance={storeCreditBalance} accounts={storeCreditAccounts} />
                 </AnimatedSection>
             )}
-            <AnimatedSection animation="slide-up" threshold={0.1}>
+            <AnimatedSection animation="slide-up" threshold={0.1} duration={500}>
                 <AccountStats customer={customer} orderCount={orderCount} />
             </AnimatedSection>
-            <AnimatedSection animation="slide-up" threshold={0.1}>
+            <AnimatedSection animation="slide-up" threshold={0.1} duration={500}>
                 <QuickActionsGrid />
             </AnimatedSection>
             {orders && (
-                <AnimatedSection animation="fade" threshold={0.1}>
+                <AnimatedSection animation="fade" threshold={0.1} duration={500}>
                     <RecentOrdersSection orders={orders} />
                 </AnimatedSection>
             )}

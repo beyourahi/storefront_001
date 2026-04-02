@@ -19,7 +19,6 @@ import {AuthRequiredFallback} from "~/components/account/AuthRequiredFallback";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "~/components/ui/card";
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
-import {Separator} from "~/components/ui/separator";
 import {Alert, AlertDescription, AlertTitle} from "~/components/ui/alert";
 import {
     AlertDialog,
@@ -320,17 +319,17 @@ export default function SubscriptionDetail() {
 
     return (
         <div className="space-y-6">
-            <header className="space-y-2">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold tracking-tight">Subscription Details</h2>
-                    <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+                <div>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                        Subscription Details
+                        <Badge variant={statusConfig.variant} className="ml-3 align-middle">{statusConfig.label}</Badge>
+                    </h1>
+                    <p className="text-sm text-muted-foreground mt-1">
+                        {frequency} • Created {new Date(subscription.createdAt).toLocaleDateString()}
+                    </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                    {frequency} • Created {new Date(subscription.createdAt).toLocaleDateString()}
-                </p>
-            </header>
-
-            <Separator />
+            </div>
 
             {actionData?.success && (
                 <Alert>
@@ -356,14 +355,14 @@ export default function SubscriptionDetail() {
                 </Alert>
             )}
 
-            <Card>
+            <Card className="overflow-hidden p-0">
                 <CardHeader>
-                    <CardTitle className="text-base">Subscription Items</CardTitle>
+                    <CardTitle className="text-sm font-semibold text-foreground">Subscription Items</CardTitle>
                     <CardDescription>Products included in this subscription</CardDescription>
                 </CardHeader>
-                <CardContent className="divide-y">
+                <CardContent className="divide-y p-0">
                     {subscription.lines.nodes.map((line: SubscriptionLine) => (
-                        <div key={line.id} className="flex gap-4 py-4 first:pt-0 last:pb-0">
+                        <div key={line.id} className="flex gap-4 px-5 py-4 md:px-6">
                             {line.image && (
                                 <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md border sm:h-20 sm:w-20">
                                     <Image
@@ -394,11 +393,11 @@ export default function SubscriptionDetail() {
             </Card>
 
             <div className="grid gap-4 md:grid-cols-2">
-                <Card>
+                <Card className="overflow-hidden p-0">
                     <CardHeader>
-                        <CardTitle className="text-base">Next Billing</CardTitle>
+                        <CardTitle className="text-sm font-semibold text-foreground">Next Billing</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-2">
+                    <CardContent className="space-y-2 px-5 pb-5 pt-0 md:px-6 md:pb-6">
                         <p className="text-2xl font-semibold">
                             {subscription.nextBillingDate
                                 ? new Date(subscription.nextBillingDate).toLocaleDateString()
@@ -413,11 +412,11 @@ export default function SubscriptionDetail() {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="overflow-hidden p-0">
                     <CardHeader>
-                        <CardTitle className="text-base">Payment Status</CardTitle>
+                        <CardTitle className="text-sm font-semibold text-foreground">Payment Status</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="px-5 pb-5 pt-0 md:px-6 md:pb-6">
                         <Badge variant={subscription.lastPaymentStatus === "SUCCEEDED" ? "default" : "secondary"}>
                             {subscription.lastPaymentStatus ?? "N/A"}
                         </Badge>
@@ -426,13 +425,13 @@ export default function SubscriptionDetail() {
             </div>
 
             {subscription.upcomingBillingCycles.nodes.length > 0 && (
-                <Card>
+                <Card className="overflow-hidden p-0">
                     <CardHeader>
-                        <CardTitle className="text-base">Upcoming Billing Cycles</CardTitle>
+                        <CardTitle className="text-sm font-semibold text-foreground">Upcoming Billing Cycles</CardTitle>
                         <CardDescription>Skip or restore upcoming deliveries</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <div className="space-y-3">
+                    <CardContent className="px-5 pb-5 pt-0 md:px-6 md:pb-6">
+                        <div className="space-y-4">
                             {subscription.upcomingBillingCycles.nodes.map((cycle: BillingCycle) => (
                                 <div
                                     key={cycle.cycleIndex}
@@ -481,16 +480,16 @@ export default function SubscriptionDetail() {
             )}
 
             {subscription.orders.nodes.length > 0 && (
-                <Card>
+                <Card className="overflow-hidden p-0">
                     <CardHeader>
-                        <CardTitle className="text-base">Recent Orders</CardTitle>
+                        <CardTitle className="text-sm font-semibold text-foreground">Recent Orders</CardTitle>
                         <CardDescription>Orders generated from this subscription</CardDescription>
                     </CardHeader>
-                    <CardContent className="divide-y">
+                    <CardContent className="divide-y p-0">
                         {subscription.orders.nodes.map((order: SubscriptionOrder) => (
                             <div
                                 key={order.id}
-                                className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0"
+                                className="flex items-center justify-between gap-4 px-5 py-4 md:px-6"
                             >
                                 <div className="flex-1">
                                     <Link to="/account/orders" className="font-medium underline">
@@ -512,12 +511,12 @@ export default function SubscriptionDetail() {
                 </Card>
             )}
 
-            <Card>
+            <Card className="overflow-hidden p-0">
                 <CardHeader>
-                    <CardTitle className="text-base">Manage Subscription</CardTitle>
+                    <CardTitle className="text-sm font-semibold text-foreground">Manage Subscription</CardTitle>
                     <CardDescription>Pause, resume, or cancel your subscription</CardDescription>
                 </CardHeader>
-                <CardContent className="flex flex-wrap gap-3">
+                <CardContent className="flex flex-wrap gap-3 px-5 pb-5 pt-0 md:px-6 md:pb-6">
                     {canPause && (
                         <Form method="POST">
                             <Button
@@ -580,7 +579,7 @@ export default function SubscriptionDetail() {
                     )}
                 </CardContent>
                 <CardFooter>
-                    <Button variant="link" className="h-auto p-0" asChild>
+                    <Button variant="link" className="h-auto p-0 underline" asChild>
                         <Link to="/account/subscriptions">← Back to Subscriptions</Link>
                     </Button>
                 </CardFooter>

@@ -22,8 +22,6 @@ import {Input} from "~/components/ui/input";
 import {Label} from "~/components/ui/label";
 import {Button} from "~/components/ui/button";
 import {Avatar, AvatarFallback} from "~/components/ui/avatar";
-import {Separator} from "~/components/ui/separator";
-import {Card} from "~/components/ui/card";
 import {
     Dialog,
     DialogContent,
@@ -445,12 +443,12 @@ const AccountProfile = () => {
 
     if (!isAuthenticated || !customer) {
         return (
-            <div className="flex flex-col items-center justify-center gap-6 py-20 text-center">
-                <h2 className="text-2xl font-bold sm:text-3xl">Sign in to manage your account</h2>
-                <p className="text-muted-foreground max-w-md">
+            <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-20 text-center sm:px-12">
+                <h2 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Sign in to manage your account</h2>
+                <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
                     Access your profile, manage addresses, and update your account details.
                 </p>
-                <Button asChild size="lg">
+                <Button asChild size="lg" className="mt-6">
                     <Link to="/account/login">Sign In</Link>
                 </Button>
             </div>
@@ -505,7 +503,7 @@ const AccountProfile = () => {
                     )}
                 </Avatar>
                 <div>
-                    <h1 className="text-2xl font-bold sm:text-3xl">{customer.displayName || "Your Profile"}</h1>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">{customer.displayName || "Your Profile"}</h1>
                     <p className="text-muted-foreground text-sm">Manage your account details and preferences</p>
                 </div>
                 <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
@@ -524,10 +522,8 @@ const AccountProfile = () => {
                 </div>
             </div>
 
-            <Separator />
-
             <section className="space-y-6">
-                <h2 className="text-xl font-semibold">Personal Information</h2>
+                <h2 className="text-lg font-semibold text-foreground">Personal Information</h2>
                 {typeof profileFetcher.data?.error === "string" && (
                     <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
                         {profileFetcher.data.error}
@@ -555,39 +551,35 @@ const AccountProfile = () => {
                 </div>
             </section>
 
-            <Separator />
-
             <section className="space-y-6">
-                <h2 className="text-xl font-semibold">Contact Information</h2>
+                <h2 className="text-lg font-semibold text-foreground">Contact Information</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
-                    <Card className="p-4">
-                        <div className="flex items-center gap-3">
-                            <MailIcon className="size-5 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm text-muted-foreground">Email</p>
-                                <p className="text-sm font-medium">
-                                    {customer.emailAddress?.emailAddress ?? "Not set"}
-                                </p>
-                            </div>
+                    <div className="flex items-center gap-3 rounded-xl bg-muted/30 p-4">
+                        <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
+                            <MailIcon className="size-4 text-primary" />
                         </div>
-                    </Card>
-                    <Card className="p-4">
-                        <div className="flex items-center gap-3">
-                            <PhoneIcon className="size-5 text-muted-foreground" />
-                            <div>
-                                <p className="text-sm text-muted-foreground">Phone</p>
-                                <p className="text-sm font-medium">{customer.phoneNumber?.phoneNumber ?? "Not set"}</p>
-                            </div>
+                        <div>
+                            <p className="text-sm text-muted-foreground">Email</p>
+                            <p className="text-sm font-medium">
+                                {customer.emailAddress?.emailAddress ?? "Not set"}
+                            </p>
                         </div>
-                    </Card>
+                    </div>
+                    <div className="flex items-center gap-3 rounded-xl bg-muted/30 p-4">
+                        <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
+                            <PhoneIcon className="size-4 text-primary" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-muted-foreground">Phone</p>
+                            <p className="text-sm font-medium">{customer.phoneNumber?.phoneNumber ?? "Not set"}</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <Separator />
-
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">Saved Addresses</h2>
+                    <h2 className="text-lg font-semibold text-foreground">Saved Addresses</h2>
                     <Button variant="outline" size="sm" onClick={() => setIsAddDialogOpen(true)} className="gap-2">
                         <PlusIcon className="size-4" />
                         Add Address
@@ -607,12 +599,12 @@ const AccountProfile = () => {
                         ))}
                     </div>
                 ) : (
-                    <Card className="p-8 text-center">
-                        <p className="text-muted-foreground">No saved addresses yet</p>
+                    <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
+                        <p className="text-sm text-muted-foreground">No saved addresses yet</p>
                         <Button variant="outline" className="mt-4" onClick={() => setIsAddDialogOpen(true)}>
                             Add Your First Address
                         </Button>
-                    </Card>
+                    </div>
                 )}
             </section>
 

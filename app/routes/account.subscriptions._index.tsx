@@ -9,10 +9,9 @@ import {
     type SubscriptionStatus
 } from "~/graphql/customer-account/SubscriptionQueries";
 import {AuthRequiredFallback} from "~/components/account/AuthRequiredFallback";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "~/components/ui/card";
+import {Card, CardContent, CardDescription, CardFooter, CardTitle} from "~/components/ui/card";
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
-import {Separator} from "~/components/ui/separator";
 
 export const meta: Route.MetaFunction = () => [{title: "Subscriptions"}];
 
@@ -110,22 +109,21 @@ export default function SubscriptionsIndex() {
 
     return (
         <div className="space-y-6">
-            <header className="space-y-2">
-                <h2 className="text-2xl font-semibold tracking-tight">Subscriptions</h2>
-                <p className="text-sm text-muted-foreground">Manage your recurring orders and subscription plans.</p>
-            </header>
-
-            <Separator />
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+                <div>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Subscriptions</h1>
+                    <p className="text-sm text-muted-foreground mt-1">Manage your recurring orders and subscription plans.</p>
+                </div>
+            </div>
 
             {subscriptions.length === 0 ? (
-                <Card>
-                    <CardContent className="py-12 text-center">
-                        <p className="text-muted-foreground">You have no active subscriptions.</p>
-                        <Button asChild variant="link" className="mt-4">
-                            <Link to="/collections">Browse Products</Link>
-                        </Button>
-                    </CardContent>
-                </Card>
+                <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
+                    <h2 className="font-serif text-xl font-medium text-foreground">No active subscriptions</h2>
+                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">You have no active subscriptions.</p>
+                    <Button asChild variant="link" className="mt-4">
+                        <Link to="/collections">Browse Products</Link>
+                    </Button>
+                </div>
             ) : (
                 <div className="space-y-4">
                     {subscriptions.map(subscription => (
@@ -156,11 +154,11 @@ const SubscriptionCard = ({subscription}: {subscription: SubscriptionContract}) 
     }, 0);
 
     return (
-        <Card>
-            <CardHeader>
+        <Card className="group overflow-hidden p-0 transition-shadow hover:shadow-sm">
+            <div className="p-5 md:p-6">
                 <div className="flex items-start justify-between">
                     <div className="space-y-1">
-                        <CardTitle className="text-base">
+                        <CardTitle className="text-sm font-semibold text-foreground">
                             {firstLine?.title ?? "Subscription"}
                             {additionalItems > 0 && (
                                 <span className="text-muted-foreground font-normal">
@@ -173,10 +171,10 @@ const SubscriptionCard = ({subscription}: {subscription: SubscriptionContract}) 
                     </div>
                     <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
                 </div>
-            </CardHeader>
+            </div>
             <CardContent>
                 <div className="flex gap-4">
-                    <div className="flex -space-x-2">
+                    <div className="group flex -space-x-3 transition-all group-hover:-space-x-1">
                         {subscription.lines.nodes.slice(0, 3).map(line => (
                             <div
                                 key={line.id}
@@ -213,7 +211,7 @@ const SubscriptionCard = ({subscription}: {subscription: SubscriptionContract}) 
                 </div>
             </CardContent>
             <CardFooter>
-                <Button variant="link" className="h-auto p-0" asChild>
+                <Button variant="link" className="h-auto p-0 underline" asChild>
                     <Link to={`/account/subscriptions/${btoa(subscription.id)}`}>Manage Subscription →</Link>
                 </Button>
             </CardFooter>

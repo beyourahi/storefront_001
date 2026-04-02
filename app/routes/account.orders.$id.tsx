@@ -58,10 +58,10 @@ const OrderDetailPage = () => {
                     </Link>
                 </Button>
 
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
                     <div>
-                        <h1 className="text-2xl font-bold sm:text-3xl">Order {order.name}</h1>
-                        <p className="text-muted-foreground text-sm mt-1">{formatDate(order.processedAt)}</p>
+                        <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Order {order.name}</h1>
+                        <p className="text-sm text-muted-foreground mt-1">{formatDate(order.processedAt)}</p>
                     </div>
                     <Badge variant={getOrderStatusVariant(order.fulfillmentStatus)} className="w-fit">
                         {formatOrderStatus(order.fulfillmentStatus)}
@@ -69,9 +69,9 @@ const OrderDetailPage = () => {
                 </div>
             </div>
 
-            <Card className="divide-y">
+            <Card className="divide-y overflow-hidden p-0">
                 {order.lineItems?.nodes?.map(item => (
-                    <div key={item.id} className="flex gap-4 p-4">
+                    <div key={item.id} className="flex gap-4 p-4 md:p-5">
                         {item.image && (
                             <img
                                 src={item.image.url}
@@ -107,35 +107,39 @@ const OrderDetailPage = () => {
 
             <div className="grid gap-6 sm:grid-cols-2">
                 {order.shippingAddress && (
-                    <Card className="p-4 space-y-2">
-                        <h3 className="font-semibold">Shipping Address</h3>
-                        <div className="text-sm space-y-1">
-                            {order.shippingAddress.formatted?.map(line => (
-                                <p key={line}>{line}</p>
-                            ))}
+                    <Card className="overflow-hidden p-0">
+                        <div className="p-5 md:p-6 space-y-2">
+                            <h3 className="text-sm font-semibold text-foreground">Shipping Address</h3>
+                            <div className="text-sm text-foreground space-y-1">
+                                {order.shippingAddress.formatted?.map(line => (
+                                    <p key={line}>{line}</p>
+                                ))}
+                            </div>
                         </div>
                     </Card>
                 )}
 
-                <Card className="p-4 space-y-3">
-                    <h3 className="font-semibold">Order Summary</h3>
-                    <div className="space-y-2 text-sm">
-                        {order.subtotal && (
-                            <div className="flex justify-between">
-                                <span className="text-muted-foreground">Subtotal</span>
-                                <span>{formatShopifyMoney(order.subtotal)}</span>
+                <Card className="overflow-hidden p-0">
+                    <div className="p-5 md:p-6 space-y-3">
+                        <h3 className="text-sm font-semibold text-foreground">Order Summary</h3>
+                        <div className="space-y-2 text-sm">
+                            {order.subtotal && (
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Subtotal</span>
+                                    <span>{formatShopifyMoney(order.subtotal)}</span>
+                                </div>
+                            )}
+                            {order.totalTax && parseFloat(order.totalTax.amount) > 0 && (
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Tax</span>
+                                    <span>{formatShopifyMoney(order.totalTax)}</span>
+                                </div>
+                            )}
+                            <Separator />
+                            <div className="flex justify-between font-semibold">
+                                <span>Total</span>
+                                <span>{formatShopifyMoney(order.totalPrice)}</span>
                             </div>
-                        )}
-                        {order.totalTax && parseFloat(order.totalTax.amount) > 0 && (
-                            <div className="flex justify-between">
-                                <span className="text-muted-foreground">Tax</span>
-                                <span>{formatShopifyMoney(order.totalTax)}</span>
-                            </div>
-                        )}
-                        <Separator />
-                        <div className="flex justify-between font-semibold">
-                            <span>Total</span>
-                            <span>{formatShopifyMoney(order.totalPrice)}</span>
                         </div>
                     </div>
                 </Card>

@@ -5,7 +5,6 @@ import {getPaginationVariables} from "@shopify/hydrogen";
 import {CUSTOMER_ORDERS_LIST_QUERY} from "~/graphql/customer-account/CustomerOrdersQuery";
 import {OrderCard} from "~/components/account/OrderCard";
 import {Button} from "~/components/ui/button";
-import {Card} from "~/components/ui/card";
 import {PackageSearchIcon} from "lucide-react";
 
 export const meta: Route.MetaFunction = () => [{title: "Order History"}];
@@ -59,11 +58,10 @@ const OrdersPage = () => {
 
     if (!isAuthenticated || !customer) {
         return (
-            <div className="flex flex-col items-center justify-center gap-6 py-20 text-center">
-                <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Sign in to view your orders</h2>
-                <p className="text-muted-foreground max-w-md text-sm">Track your purchases and view order details.</p>
-                <p className="text-sm font-medium text-muted-foreground">Let&apos;s get you back on track</p>
-                <Button asChild size="lg">
+            <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
+                <h2 className="font-serif text-xl font-medium text-foreground md:text-2xl">Sign in to view your orders</h2>
+                <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">Track your purchases and view order details.</p>
+                <Button asChild size="lg" className="mt-6">
                     <Link to="/account/login">Sign In</Link>
                 </Button>
             </div>
@@ -73,14 +71,16 @@ const OrdersPage = () => {
     const orderCount = orders?.length ?? 0;
 
     return (
-        <div className="mx-auto max-w-5xl space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold sm:text-3xl">Order History</h1>
-                {orderCount > 0 && (
-                    <span className="text-muted-foreground text-sm">
-                        {orderCount} order{orderCount !== 1 ? "s" : ""}
-                    </span>
-                )}
+        <div className="space-y-6">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+                <div>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Order History</h1>
+                    {orderCount > 0 && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                            {orderCount} order{orderCount !== 1 ? "s" : ""}
+                        </p>
+                    )}
+                </div>
             </div>
 
             {orders && orders.length > 0 ? (
@@ -117,16 +117,16 @@ const OrdersPage = () => {
                     )}
                 </>
             ) : (
-                <Card className="p-6 sm:p-12 text-center">
-                    <div className="bg-primary/10 mx-auto mb-4 inline-flex rounded-full p-4 shadow-sm backdrop-blur-sm">
-                        <PackageSearchIcon className="text-primary size-6" />
+                <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary/10">
+                        <PackageSearchIcon className="size-7 text-primary" />
                     </div>
-                    <h2 className="text-lg font-semibold lg:text-xl">No orders yet</h2>
-                    <p className="text-muted-foreground mt-2 text-sm">When you place an order, it will appear here.</p>
-                    <Button asChild className="mt-4">
+                    <h2 className="font-serif text-xl font-medium text-foreground">No orders yet</h2>
+                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">When you place an order, it will appear here.</p>
+                    <Button asChild className="mt-6">
                         <Link to="/collections">Start Shopping</Link>
                     </Button>
-                </Card>
+                </div>
             )}
         </div>
     );

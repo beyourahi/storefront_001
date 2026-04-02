@@ -17,7 +17,7 @@ import {Textarea} from "~/components/ui/textarea";
 import {Alert, AlertDescription, AlertTitle} from "~/components/ui/alert";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
 import {Checkbox} from "~/components/ui/checkbox";
-import {Separator} from "~/components/ui/separator";
+
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {Clock, CheckCircle, XCircle, Info} from "lucide-react";
 import {parseProductTitle} from "~/lib/product";
@@ -207,14 +207,14 @@ const OrderReturnRoute = () => {
 
     return (
         <div className="space-y-6">
-            <header className="space-y-2">
-                <h2 className="text-2xl font-semibold tracking-tight">Request Return</h2>
-                <p className="text-sm text-muted-foreground">
-                    Order {order.name} - Select items you would like to return
-                </p>
-            </header>
-
-            <Separator />
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+                <div>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Request Return</h1>
+                    <p className="text-sm text-muted-foreground mt-1">
+                        Order {order.name} — Select items you would like to return
+                    </p>
+                </div>
+            </div>
 
             <ReturnPolicySection />
 
@@ -304,12 +304,13 @@ const ReturnableItemCard = ({item}: {item: ReturnableItem}) => {
                             min={1}
                             max={maxQuantity}
                             defaultValue={maxQuantity}
+                            className="h-10 rounded-lg bg-card"
                         />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`reason_${lineItem.id}`}>Reason for return</Label>
                         <Select name={`reason_${lineItem.id}`} defaultValue="UNWANTED">
-                            <SelectTrigger id={`reason_${lineItem.id}`}>
+                            <SelectTrigger id={`reason_${lineItem.id}`} className="h-10 rounded-lg bg-card">
                                 <SelectValue placeholder="Select a reason" />
                             </SelectTrigger>
                             <SelectContent>
