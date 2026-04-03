@@ -210,9 +210,9 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
                         >
                             {heading}
                         </h1>
-                        {greeting && (
-                            <p className="mt-2 text-center text-sm text-white/70">{greeting}</p>
-                        )}
+                        <p className="mt-3 text-center text-xs font-medium tracking-[0.2em] uppercase text-white/60 min-h-[1.25rem]">
+                            {greeting}
+                        </p>
                     </div>
 
                     <div className="mx-auto w-full max-w-[2000px] px-2 text-center md:px-4">
