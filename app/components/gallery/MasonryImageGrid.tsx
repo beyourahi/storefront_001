@@ -49,6 +49,17 @@ export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: Masonry
     useEffect(() => {
         setLoadedImages(new Set());
         setVisibleImages(new Set());
+        // Images cached in the browser fire onLoad before React attaches the handler.
+        // Check img.complete after reset to catch these already-loaded images.
+        imageRefs.current.forEach((img, index) => {
+            if (img?.complete && img.naturalWidth > 0) {
+                setLoadedImages(prev => {
+                    const next = new Set(prev);
+                    next.add(index);
+                    return next;
+                });
+            }
+        });
     }, [images]);
 
     useEffect(() => {
