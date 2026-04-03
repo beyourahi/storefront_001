@@ -1,3 +1,4 @@
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {ProductCard} from "~/components/display/ProductCard";
 import {SkeletonGrid} from "~/components/common/SkeletonGrid";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "~/components/ui/carousel";
@@ -33,7 +34,7 @@ export const ProductRelatedSection = ({
                 {isLoading ? (
                     <SkeletonGrid layout="product-grid" count={4} />
                 ) : (
-                    <Carousel opts={{align: "start", loop: false, dragFree: true}}>
+                    <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
                         <CarouselContent className="-ml-2 md:-ml-3">
                             {relatedProducts.map(relatedProduct => (
                                 <CarouselItem

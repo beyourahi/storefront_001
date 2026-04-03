@@ -108,7 +108,7 @@ function CartSuggestionsCarousel({suggestions}: {suggestions: any[]}) {
             dragFree: true,
             skipSnaps: false
         },
-        [WheelGesturesPlugin()]
+        [WheelGesturesPlugin({forceWheelAxis: "x"})]
     );
 
     const normalizedSuggestions = useMemo(() => {

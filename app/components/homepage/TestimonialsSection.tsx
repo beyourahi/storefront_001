@@ -1,6 +1,7 @@
 import {useMemo} from "react";
 import {Star} from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "~/components/ui/carousel";
 import type {Testimonial} from "types";
 
@@ -81,7 +82,7 @@ export const TestimonialsSection = ({testimonials: externalTestimonials}: Testim
 
                     <Carousel
                         opts={{align: "start", loop: true, dragFree: true}}
-                        plugins={[autoplayPlugin]}
+                        plugins={[autoplayPlugin, WheelGesturesPlugin()]}
                         className="w-full"
                     >
                         <div className="relative md:mx-12">

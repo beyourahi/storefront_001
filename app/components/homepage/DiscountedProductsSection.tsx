@@ -1,6 +1,7 @@
 import {useMemo} from "react";
 import {Link} from "react-router";
 import {ArrowRight} from "lucide-react";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {ProductCard} from "~/components/display/ProductCard";
 import {SkeletonGrid} from "~/components/common/SkeletonGrid";
 import {Button} from "~/components/ui/button";
@@ -121,7 +122,7 @@ export const DiscountedProductsSection = ({products, loading = false}: Discounte
 
                 {isLoadingState ? (
                     <div className="mb-12">
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}}>
+                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
                             <CarouselContent className="-ml-2 md:-ml-4">
                                 {Array.from({length: 8}, (_, i) => i).map(i => (
                                     <CarouselItem
@@ -138,7 +139,7 @@ export const DiscountedProductsSection = ({products, loading = false}: Discounte
                     </div>
                 ) : (
                     <div className="mb-12">
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}}>
+                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
                             <CarouselContent className="-ml-2 md:-ml-4">
                                 {discountedProducts.map(product => (
                                     <CarouselItem

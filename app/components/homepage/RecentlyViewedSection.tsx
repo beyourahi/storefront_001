@@ -1,5 +1,6 @@
 import {useState, useMemo} from "react";
 import {AlertTriangle, X} from "lucide-react";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {useRecentlyViewedContext} from "~/components/RecentlyViewedProvider";
 import {ProductCard} from "~/components/display/ProductCard";
 import {Button} from "~/components/ui/button";
@@ -92,7 +93,7 @@ export const RecentlyViewedSection = ({loading = false, allProducts = []}: Recen
 
                     {isLoadingState ? (
                         <div className="mb-12">
-                            <Carousel opts={{align: "start", loop: false, dragFree: true}}>
+                            <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
                                 <CarouselContent className="-ml-2 md:-ml-4">
                                     {Array.from({length: 6}, (_, i) => i).map(i => (
                                         <CarouselItem
@@ -110,7 +111,7 @@ export const RecentlyViewedSection = ({loading = false, allProducts = []}: Recen
                     ) : (
                         <>
                             <div>
-                                <Carousel opts={{align: "start", loop: false, dragFree: true}}>
+                                <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
                                     <CarouselContent className="-ml-2 md:-ml-4">
                                         {recentlyViewedProducts.map(product => (
                                             <CarouselItem

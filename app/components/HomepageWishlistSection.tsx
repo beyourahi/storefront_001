@@ -1,5 +1,6 @@
 import {useEffect, useMemo} from "react";
 import {Link, useFetcher} from "react-router";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {useWishlist} from "~/lib/wishlist-context";
 import {reconstructGid} from "~/lib/wishlist-utils";
 import {ProductCard} from "~/components/display/ProductCard";
@@ -100,7 +101,7 @@ export const HomepageWishlistSection = () => {
 
                 {isLoading ? (
                     <div className="mb-12">
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}}>
+                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
                             <CarouselContent className="-ml-2 md:-ml-4">
                                 {Array.from({length: Math.min(count, 8)}).map((_, i) => (
                                     <CarouselItem
@@ -117,7 +118,7 @@ export const HomepageWishlistSection = () => {
                     </div>
                 ) : (
                     <div className="mb-12">
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}}>
+                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
                             <CarouselContent className="-ml-2 md:-ml-4">
                                 {normalizedProducts.slice(0, 8).map(product => (
                                     <CarouselItem
