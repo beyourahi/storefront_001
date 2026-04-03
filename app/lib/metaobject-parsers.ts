@@ -384,7 +384,7 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     blogPageDescription:
         "Ideas, guides, and stories from our world\u2014exploring craft, design, and the things worth owning.",
 
-    announcementBanner: [],
+    announcementBanner: ["Free shipping on orders over $100 — Shop the collection"],
     promotionalBannerOneMedia: undefined,
     promotionalBannerTwoMedia: undefined,
 
@@ -479,17 +479,24 @@ const parseBrandWords = (brandWordsField: MetaobjectField | undefined): string[]
 const parseAnnouncementTexts = (announcementField: MetaobjectField | undefined): string[] => {
     if (!announcementField?.value) return [];
 
+    const raw = announcementField.value;
+
     try {
-        const parsed = JSON.parse(announcementField.value) as unknown;
-        if (
-            Array.isArray(parsed) &&
-            parsed.length > 0 &&
-            parsed.every((item): item is string => typeof item === "string")
-        ) {
+        const parsed = JSON.parse(raw) as unknown;
+        // JSON array — standard List of single line text field
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed.every((item): item is string => typeof item === "string")) {
             return parsed;
+        }
+        // JSON string (single item stored as quoted string)
+        if (typeof parsed === "string" && parsed.trim().length > 0) {
+            return [parsed.trim()];
         }
         return [];
     } catch {
+        // Non-JSON plain string — treat as single announcement
+        if (raw.trim().length > 0) {
+            return [raw.trim()];
+        }
         return [];
     }
 };
