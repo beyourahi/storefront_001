@@ -1,6 +1,7 @@
 import {useState, useEffect, useCallback} from "react";
 import {ChevronLeft, ChevronRight, X} from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {Image} from "@shopify/hydrogen";
 import {Button} from "~/components/ui/button";
 import {Dialog, DialogContent, DialogTitle} from "~/components/ui/dialog";
@@ -31,12 +32,15 @@ export const ProductImageGalleryDialog = ({
     const [canScrollPrev, setCanScrollPrev] = useState(false);
     const [canScrollNext, setCanScrollNext] = useState(false);
 
-    const [emblaRef, emblaApi] = useEmblaCarousel({
-        loop: true,
-        align: "center",
-        skipSnaps: false,
-        containScroll: "trimSnaps"
-    });
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+        {
+            loop: true,
+            align: "center",
+            skipSnaps: false,
+            containScroll: "trimSnaps"
+        },
+        [WheelGesturesPlugin({forceWheelAxis: "x"})]
+    );
 
     const onSelect = useCallback(() => {
         if (!emblaApi) return;

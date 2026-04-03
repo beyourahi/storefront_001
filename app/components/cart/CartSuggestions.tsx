@@ -2,6 +2,7 @@ import {Suspense, useMemo} from "react";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Await, useRouteLoaderData} from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {Skeleton} from "~/components/ui/skeleton";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {CompactProductCard} from "~/components/cart/CompactProductCard";
@@ -100,12 +101,15 @@ function CartSuggestionsContent({
 
 function CartSuggestionsCarousel({suggestions}: {suggestions: any[]}) {
     const {close} = useCartDrawer();
-    const [emblaRef] = useEmblaCarousel({
-        align: "start",
-        loop: false,
-        dragFree: true,
-        skipSnaps: false
-    });
+    const [emblaRef] = useEmblaCarousel(
+        {
+            align: "start",
+            loop: false,
+            dragFree: true,
+            skipSnaps: false
+        },
+        [WheelGesturesPlugin()]
+    );
 
     const normalizedSuggestions = useMemo(() => {
         return suggestions.map(product => fromCartSuggestionProduct(product));
