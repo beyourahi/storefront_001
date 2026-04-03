@@ -210,7 +210,10 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
                         >
                             {heading}
                         </h1>
-                        <p className="mt-3 text-center text-xs font-medium tracking-[0.2em] uppercase text-white/60 min-h-[1.25rem]">
+                        <p
+                            className="mt-3 text-center text-xs font-medium tracking-[0.2em] uppercase text-white/60 min-h-[1rem] overflow-hidden"
+                            aria-hidden={!greeting || undefined}
+                        >
                             {greeting}
                         </p>
                     </div>
