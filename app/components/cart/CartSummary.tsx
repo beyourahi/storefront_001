@@ -144,9 +144,9 @@ function CartOrderNote({noteValue}: {noteValue?: string | null}) {
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger
                     className={cn(
-                        "sleek border-input bg-secondary text-secondary-foreground ring-offset-background",
+                        "sleek bg-secondary text-secondary-foreground ring-offset-background",
                         "focus-visible:ring-ring inline-flex w-full items-center justify-start gap-2",
-                        "rounded-md border px-0 py-2 pl-4 text-sm font-normal",
+                        "rounded-md px-0 py-2 pl-4 text-sm font-normal",
                         "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
                         "disabled:pointer-events-none disabled:opacity-50"
                     )}
@@ -165,7 +165,7 @@ function CartOrderNote({noteValue}: {noteValue?: string | null}) {
 
                 <DialogContent
                     overlayClassName="bg-overlay-dark z-[var(--z-nested-overlay)] backdrop-blur-md"
-                    className="border-border/50 bg-background/95 z-[var(--z-nested-modal)] border shadow-2xl backdrop-blur-sm sm:max-w-[500px]"
+                    className="border-0 bg-background/95 z-[var(--z-nested-modal)] shadow-2xl backdrop-blur-sm sm:max-w-[500px]"
                     showCloseButton={true}
                 >
                     <DialogTitle>Order Note</DialogTitle>
@@ -220,7 +220,7 @@ function CartOrderNote({noteValue}: {noteValue?: string | null}) {
                                     className={cn(
                                         "w-full",
                                         (noteButtonState === "added" || noteButtonState === "updated") &&
-                                            "border-success bg-success text-success-foreground hover:border-success hover:bg-success/90"
+                                            "bg-success text-success-foreground hover:bg-success/90"
                                     )}
                                 >
                                     {noteButtonState === "adding" ? (
@@ -407,7 +407,7 @@ function CartClearConfirmation({
             <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <AlertDialogContent
                     overlayClassName="bg-overlay-dark backdrop-blur-md"
-                    className="border-border/50 bg-background/95 border shadow-2xl backdrop-blur-sm sm:max-w-[420px]"
+                    className="border-0 bg-background/95 shadow-2xl backdrop-blur-sm sm:max-w-[420px]"
                 >
                     <AlertDialogTitle className="flex items-center gap-2">
                         <div className="bg-destructive/20 flex h-10 w-10 items-center justify-center rounded-full">
@@ -431,7 +431,7 @@ function CartClearConfirmation({
                         </div>
 
                         <div className="flex gap-3 pt-2">
-                            <Button variant="outline" onClick={() => setDialogOpen(false)} className="flex-1">
+                            <Button variant="outline" onClick={() => setDialogOpen(false)} className="flex-1 border-0">
                                 Keep Items
                             </Button>
 

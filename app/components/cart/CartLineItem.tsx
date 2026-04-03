@@ -70,7 +70,7 @@ export function CartLineItem({line}: {line: CartLine}) {
 
     return (
         <div
-            className={cn("relative flex flex-col gap-4 py-4", isChildLine && "ml-6 border-l pl-4")}
+            className={cn("relative flex flex-col gap-4 py-4", isChildLine && "ml-6 pl-4")}
             role="group"
             aria-labelledby={`cart-item-${id}`}
         >
@@ -124,7 +124,7 @@ export function CartLineItem({line}: {line: CartLine}) {
             )}
 
             {showWarning && (
-                <Alert className="mt-2 border-[var(--cart-warning-icon)] bg-[var(--cart-warning-bg)] text-[var(--cart-warning-fg)]">
+                <Alert className="mt-2 border-0 bg-[var(--cart-warning-bg)] text-[var(--cart-warning-fg)]">
                     <AlertTriangle className="h-4 w-4 text-[var(--cart-warning-icon)]" />
                     <AlertDescription>{warningMessage}</AlertDescription>
                 </Alert>
@@ -258,7 +258,7 @@ function CartLineQuantity({
                 <Button
                     type="submit"
                     disabled={!canDecrease}
-                    className={cn("rounded-r-none border-r-0", !canDecrease && "cursor-not-allowed")}
+                    className={cn("rounded-r-none border-0", !canDecrease && "cursor-not-allowed")}
                     aria-label={`Decrease quantity to ${quantity - 1}`}
                 >
                     <Minus className="h-4 w-4" />
@@ -287,7 +287,7 @@ function CartLineQuantity({
                 <Button
                     type="submit"
                     disabled={!canIncrease}
-                    className={cn("rounded-l-none border-l-0", !canIncrease && "cursor-not-allowed")}
+                    className={cn("rounded-l-none border-0", !canIncrease && "cursor-not-allowed")}
                     aria-label={`Increase quantity to ${quantity + 1}`}
                 >
                     <Plus className="h-4 w-4" />

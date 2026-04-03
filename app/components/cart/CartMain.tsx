@@ -59,7 +59,7 @@ function CartAsideHeader({lineCount, totalQuantity}: {lineCount: number; totalQu
         : `${lineCount} ${lineCount === 1 ? "product" : "products"} (${totalQuantity} items)`;
 
     return (
-        <div className="border-b px-4 py-2 md:px-6">
+        <div className="px-4 py-2 md:px-6">
             <div className="flex items-center justify-between">
                 <h2 className="text-foreground text-lg font-semibold">Cart</h2>
                 <p className="text-muted-foreground text-sm">{label}</p>
@@ -101,7 +101,7 @@ export function CartLoadingSkeleton() {
                         <Skeleton className="h-4 w-16" />
                     </div>
                     {[0, 1, 2].map(i => (
-                        <div key={i} className="bg-card rounded-lg border p-4">
+                        <div key={i} className="bg-card rounded-lg p-4">
                             <div className="flex gap-3">
                                 <Skeleton className="aspect-square w-16" />
                                 <div className="flex-1 space-y-2">
@@ -115,7 +115,7 @@ export function CartLoadingSkeleton() {
                             </div>
                         </div>
                     ))}
-                    <div className="border-t pt-6">
+                    <div className="pt-6">
                         <Skeleton className="mb-4 h-6 w-32" />
                         <Skeleton className="mb-2 h-12 w-full" />
                         <Skeleton className="h-12 w-full" />

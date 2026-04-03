@@ -1,15 +1,7 @@
-import {data, type HeadersFunction, useLoaderData, Await, Link} from "react-router";
-import {Suspense} from "react";
+import {data, redirect, type HeadersFunction} from "react-router";
 import type {Route} from "./+types/cart";
-import type {CartQueryDataReturn, OptimisticCart} from "@shopify/hydrogen";
-import {CartForm, useOptimisticCart} from "@shopify/hydrogen";
-import type {CartApiQueryFragment} from "storefrontapi.generated";
-import {ShoppingCart} from "lucide-react";
-import {Button} from "~/components/ui/button";
-import {Skeleton} from "~/components/ui/skeleton";
-import {CartLineItem} from "~/components/cart/CartLineItem";
-import {CartSuggestions} from "~/components/cart/CartSuggestions";
-import {CartSummary} from "~/components/cart/CartSummary";
+import type {CartQueryDataReturn} from "@shopify/hydrogen";
+import {CartForm} from "@shopify/hydrogen";
 
 export const meta: Route.MetaFunction = () => [
     {title: "Cart"},
@@ -124,119 +116,8 @@ export const action = async ({request, context}: Route.ActionArgs) => {
     );
 };
 
-export const loader = async ({context}: Route.LoaderArgs) => {
-    const {cart} = context;
-    return await cart.get();
+export const loader = async () => {
+    return redirect("/");
 };
-
-export default function Cart() {
-    const cartPromise = useLoaderData<typeof loader>();
-
-    return (
-        <div className="min-h-[70dvh] bg-background">
-            <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 lg:px-8">
-                <h1 className="mb-8 font-serif text-3xl font-medium tracking-tight text-foreground md:text-4xl">
-                    Shopping Cart
-                </h1>
-
-                <Suspense fallback={<CartPageLoadingSkeleton />}>
-                    <Await resolve={cartPromise}>{cart => <CartPageContent cart={cart} />}</Await>
-                </Suspense>
-            </div>
-        </div>
-    );
-}
-
-function CartPageContent({cart}: {cart: Awaited<ReturnType<typeof loader>>}) {
-    const optimisticCart = useOptimisticCart(cart);
-    const linesCount = optimisticCart?.lines?.nodes?.length ?? 0;
-    const isEmpty = linesCount === 0;
-
-    if (isEmpty) {
-        return <EmptyCartPage />;
-    }
-
-    return (
-        <div className="grid gap-8 lg:grid-cols-[1fr_400px]">
-            {/* Cart Items */}
-            <div className="space-y-4">
-                {(optimisticCart?.lines?.nodes ?? []).map(line => (
-                    <CartLineItem key={line.id} line={line} />
-                ))}
-            </div>
-
-            {/* Cart Summary Sidebar */}
-            <div className="lg:sticky lg:top-[calc(var(--total-header-height)+2rem)] lg:self-start">
-                <div className="rounded-lg border bg-card overflow-hidden">
-                    <div className="px-6 py-4 border-b">
-                        <h3 className="text-lg font-semibold">Order Summary</h3>
-                        <p className="text-muted-foreground text-sm mt-1">
-                            {optimisticCart.totalQuantity ?? 0} {optimisticCart.totalQuantity === 1 ? "item" : "items"}
-                        </p>
-                    </div>
-                    <CartSummary cart={optimisticCart as OptimisticCart<CartApiQueryFragment>} />
-                </div>
-
-                <div className="mt-6">
-                    <CartSuggestions cartLines={optimisticCart?.lines?.nodes ?? []} />
-                </div>
-            </div>
-        </div>
-    );
-}
-
-function EmptyCartPage() {
-    return (
-        <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 py-12 text-center">
-            <div className="bg-primary/10 mb-4 rounded-full p-4 shadow-sm backdrop-blur-sm">
-                <ShoppingCart className="text-primary h-8 w-8" />
-            </div>
-            <h2 className="mb-3 text-xl font-semibold lg:text-2xl">Your cart is empty</h2>
-            <p className="text-muted-foreground mb-6 max-w-md text-sm">
-                Looks like you haven&apos;t added anything yet.
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-                <Button asChild size="lg">
-                    <Link to="/collections/all-products">Browse All Products</Link>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                    <Link to="/">Back to Home</Link>
-                </Button>
-            </div>
-        </div>
-    );
-}
-
-function CartPageLoadingSkeleton() {
-    return (
-        <div className="grid gap-8 lg:grid-cols-[1fr_400px]">
-            <div className="space-y-4">
-                {[0, 1, 2].map(i => (
-                    <div key={i} className="rounded-lg border bg-card p-4">
-                        <div className="flex gap-4">
-                            <Skeleton className="aspect-square w-24" />
-                            <div className="flex-1 space-y-2">
-                                <Skeleton className="h-5 w-3/4" />
-                                <Skeleton className="h-4 w-1/2" />
-                                <div className="flex items-center justify-between pt-2">
-                                    <Skeleton className="h-9 w-28" />
-                                    <Skeleton className="h-9 w-9" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-            <div className="rounded-lg border bg-card p-6">
-                <Skeleton className="mb-6 h-6 w-32" />
-                <div className="space-y-3">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-12 w-full" />
-                    <Skeleton className="h-12 w-full" />
-                </div>
-            </div>
-        </div>
-    );
-}
 
 export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

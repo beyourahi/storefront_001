@@ -62,7 +62,7 @@ function CartSuggestionsContent({
 
     if (isMobile) {
         return (
-            <div className={cn("border-t", className)}>
+            <div className={cn(className)}>
                 <Accordion type="single" defaultValue={hasCartItems ? undefined : "suggestions"} collapsible>
                     <AccordionItem value="suggestions" className="border-0">
                         <AccordionTrigger className="px-0 py-3 text-left hover:no-underline">
@@ -85,7 +85,7 @@ function CartSuggestionsContent({
     }
 
     return (
-        <div className={cn("space-y-3 border-t pt-4", className)}>
+        <div className={cn("space-y-3 pt-4", className)}>
             <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5">
                     <StarIcon />
