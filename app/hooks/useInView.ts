@@ -106,6 +106,7 @@ export const useInView = (options: UseInViewOptions = {}): UseInViewReturn => {
         const observer = new IntersectionObserver(
             entries => {
                 entries.forEach(entry => {
+                    console.log("[useInView] IO callback:", { threshold, isIntersecting: entry.isIntersecting, ratio: entry.intersectionRatio.toFixed(4) });
                     if (entry.isIntersecting) {
                         if (delay > 0) {
                             setTimeout(() => setInView(true), delay);

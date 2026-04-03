@@ -2,7 +2,7 @@ import {useState, useEffect, useRef, useCallback} from "react";
 import {useNavigate} from "react-router";
 import {cn} from "~/lib/utils";
 import {parseProductTitle} from "~/lib/product";
-import {createResponsiveSizes, getGridImageConfig} from "~/lib/performance";
+import {buildShopifyImageUrl, createResponsiveSizes, getGridImageConfig} from "~/lib/performance";
 import type {GalleryImageData} from "~/lib/gallery";
 
 type MasonryImageGridProps = {
@@ -14,6 +14,7 @@ type MasonryImageGridProps = {
 export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: MasonryImageGridProps) => {
     const navigate = useNavigate();
     const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+    const [visibleImages, setVisibleImages] = useState<Set<number>>(new Set());
     const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
     const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -47,6 +48,7 @@ export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: Masonry
 
     useEffect(() => {
         setLoadedImages(new Set());
+        setVisibleImages(new Set());
     }, [images]);
 
     useEffect(() => {
@@ -57,8 +59,12 @@ export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: Masonry
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const img = entry.target as HTMLImageElement;
-                        img.classList.add("opacity-100");
-                        img.classList.remove("opacity-0");
+                        const index = parseInt(img.dataset.index ?? "0", 10);
+                        setVisibleImages(prev => {
+                            const next = new Set(prev);
+                            next.add(index);
+                            return next;
+                        });
                         observerRef.current?.unobserve(img);
                     }
                 });
@@ -100,15 +106,17 @@ export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: Masonry
                                 ref={el => {
                                     imageRefs.current[index] = el;
                                 }}
-                                src={`${image.url}?format=avif&width=800&quality=85`}
-                                srcSet={`${image.url}?format=avif&width=400&quality=85 400w, ${image.url}?format=avif&width=600&quality=85 600w, ${image.url}?format=avif&width=800&quality=85 800w, ${image.url}?format=avif&width=1200&quality=85 1200w`}
+                                src={buildShopifyImageUrl(image.url, {format: "avif", width: 800, quality: 85})}
+                                srcSet={[400, 600, 800, 1200]
+                                    .map(w => `${buildShopifyImageUrl(image.url, {format: "avif", width: w, quality: 85})} ${w}w`)
+                                    .join(", ")}
                                 sizes={imageSizes}
                                 alt={image.altText || image.productTitle || `Gallery image ${index + 1}`}
                                 width={image.width}
                                 height={image.height}
                                 className={cn(
                                     "sleek absolute inset-0 h-full w-full object-cover xl:group-hover:scale-110",
-                                    config.priority ? "opacity-100" : "opacity-0"
+                                    config.priority || visibleImages.has(index) ? "opacity-100" : "opacity-0"
                                 )}
                                 loading={config.loading}
                                 {...(config.fetchPriority ? {fetchpriority: config.fetchPriority} : {})}

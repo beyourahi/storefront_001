@@ -29,12 +29,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         cache: context.dataAdapter.CacheShort()
     });
 
-    const productImages = transformToGalleryImages(products.nodes).map(image => ({
-        url: image.url,
-        altText: image.altText,
-        productHandle: image.productHandle,
-        productTitle: image.productTitle
-    }));
+    const productImages = transformToGalleryImages(products.nodes);
 
     return {productImages};
 };
@@ -69,7 +64,7 @@ export default function Gallery() {
             </AnimatedSection>
 
             {productImages.length > 0 ? (
-                <AnimatedSection animation="slide-up" threshold={0.1}>
+                <AnimatedSection animation="slide-up" threshold={0}>
                     <GalleryMasonrySection productImages={productImages} />
                 </AnimatedSection>
             ) : (
