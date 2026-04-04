@@ -29,9 +29,6 @@ export const SORT_OPTIONS: SortOption[] = [
 /** Default sort when no `?sort=` param is present */
 export const DEFAULT_SORT = "price-asc";
 
-/** Default availability filter — true means "show in-stock only" */
-export const DEFAULT_IN_STOCK_ONLY = true;
-
 /**
  * Look up a SortOption by its URL value, falling back to the default.
  */
@@ -45,18 +42,12 @@ export function getSortOption(sortParam: string | null): SortOption {
  */
 export function parseSortFilterParams(url: URL) {
     const sortParam = url.searchParams.get("sort");
-    const availableParam = url.searchParams.get("available");
-
     const sortOption = getSortOption(sortParam);
-
-    // "available" param: "true" or absent → in-stock only; "false" → show all
-    const showInStockOnly = availableParam !== "false";
 
     return {
         sort: sortOption.value,
         sortKey: sortOption.sortKey,
         reverse: sortOption.reverse,
-        sortLabel: sortOption.label,
-        showInStockOnly
+        sortLabel: sortOption.label
     };
 }

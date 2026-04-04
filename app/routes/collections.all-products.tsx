@@ -43,14 +43,14 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     const pageParam = url.searchParams.get("page");
 
     // Parse sort and filter params from URL
-    const {sort, sortKey, reverse, sortLabel, showInStockOnly} = parseSortFilterParams(url);
+    const {sort, sortKey, reverse, sortLabel} = parseSortFilterParams(url);
 
     // Build GraphQL variables for cursor-based pagination
     // Note: QueryRoot.products doesn't support filters/sortKey like Collection.products,
     // so we sort client-side. Availability filtering uses the `query` parameter at API level.
     const variables = {
         ...buildPaginationVariables(cursor, direction, 48),
-        query: showInStockOnly ? "available_for_sale:true" : null
+        query: "available_for_sale:true"
     };
 
     // Query all products with pagination
@@ -106,13 +106,12 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
         totalProductCount: sortedProducts.length,
         pagination,
         sort,
-        sortLabel,
-        showInStockOnly
+        sortLabel
     };
 };
 
 export default function AllProductsPage() {
-    const {products, totalProductCount, pagination, sort, sortLabel, showInStockOnly} =
+    const {products, totalProductCount, pagination, sort, sortLabel} =
         useLoaderData<typeof loader>();
 
     // Normalize products for display
@@ -143,7 +142,6 @@ export default function AllProductsPage() {
             {/* Sort and Filter Controls */}
             <SortFilterBar
                 currentSort={sort}
-                showInStockOnly={showInStockOnly}
                 totalProducts={totalProductCount}
             />
 

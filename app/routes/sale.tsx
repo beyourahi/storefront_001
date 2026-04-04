@@ -91,9 +91,7 @@ export default function Sale() {
             <PageBreadcrumbs customTitle="Special Offers" />
             {/* Hero Section */}
             <AnimatedSection animation="fade" threshold={0.08}>
-                <div className="pt-24 sm:pt-32">
-                    <SaleHero totalCount={totalCount} maxDiscount={maxDiscount} products={products} />
-                </div>
+                <SaleHero totalCount={totalCount} maxDiscount={maxDiscount} products={products} />
             </AnimatedSection>
 
             <AnimatedSection animation="slide-up" threshold={0.1}>
@@ -114,7 +112,12 @@ export default function Sale() {
                     )}
 
                     <AnimatedSection animation="slide-up" threshold={0.12}>
-                        <ProductsGridSection products={normalizedProducts} pagination={pagination} preserveOrder={true} sortLabel="Highest discount first" />
+                        <ProductsGridSection
+                            products={normalizedProducts}
+                            pagination={pagination}
+                            preserveOrder={true}
+                            sortLabel="Highest discount first"
+                        />
                     </AnimatedSection>
 
                     {showPagination && (

@@ -8,26 +8,22 @@ import {
     SelectTrigger,
     SelectValue
 } from "~/components/ui/select";
-import {Checkbox} from "~/components/ui/checkbox";
-import {Label} from "~/components/ui/label";
-import {SORT_OPTIONS, DEFAULT_SORT, DEFAULT_IN_STOCK_ONLY} from "~/lib/sort-filter-helpers";
+import {SORT_OPTIONS, DEFAULT_SORT} from "~/lib/sort-filter-helpers";
 
 type SortFilterBarProps = {
     /** Currently active sort value (URL param) */
     currentSort: string;
-    /** Whether the "In Stock Only" filter is active */
-    showInStockOnly: boolean;
     /** Total number of products displayed (optional) */
     totalProducts?: number;
 };
 
 /**
- * Sort dropdown + availability filter for collection pages.
+ * Sort dropdown for collection pages.
  *
  * State lives entirely in URL search params — changing a value navigates
  * to the same path with updated params (resetting pagination to page 1).
  */
-export function SortFilterBar({currentSort, showInStockOnly, totalProducts}: SortFilterBarProps) {
+export function SortFilterBar({currentSort, totalProducts}: SortFilterBarProps) {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -39,7 +35,7 @@ export function SortFilterBar({currentSort, showInStockOnly, totalProducts}: Sor
         (overrides: Record<string, string | null>) => {
             const params = new URLSearchParams(searchParams);
 
-            // Reset pagination when sort/filter changes
+            // Reset pagination when sort changes
             params.delete("page");
             params.delete("cursor");
             params.delete("direction");
@@ -52,12 +48,9 @@ export function SortFilterBar({currentSort, showInStockOnly, totalProducts}: Sor
                 }
             }
 
-            // Remove defaults to keep URLs clean
+            // Remove default to keep URLs clean
             if (params.get("sort") === DEFAULT_SORT) {
                 params.delete("sort");
-            }
-            if (params.get("available") === String(DEFAULT_IN_STOCK_ONLY)) {
-                params.delete("available");
             }
 
             const qs = params.toString();
@@ -69,14 +62,6 @@ export function SortFilterBar({currentSort, showInStockOnly, totalProducts}: Sor
     const handleSortChange = useCallback(
         (value: string) => {
             void navigate(buildUrl({sort: value}));
-        },
-        [navigate, buildUrl]
-    );
-
-    const handleAvailabilityChange = useCallback(
-        (checked: boolean | "indeterminate") => {
-            const isChecked = checked === true;
-            void navigate(buildUrl({available: String(isChecked)}));
         },
         [navigate, buildUrl]
     );
@@ -93,25 +78,8 @@ export function SortFilterBar({currentSort, showInStockOnly, totalProducts}: Sor
                     )}
                 </div>
 
-                {/* Right: sort + filter controls */}
+                {/* Right: sort control */}
                 <div className="flex flex-wrap items-center gap-4">
-                    {/* In Stock Only toggle */}
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            id="in-stock-filter"
-                            checked={showInStockOnly}
-                            onCheckedChange={handleAvailabilityChange}
-                            aria-label="Show in-stock products only"
-                        />
-                        <Label
-                            htmlFor="in-stock-filter"
-                            className="cursor-pointer select-none text-sm font-normal text-foreground"
-                        >
-                            In Stock Only
-                        </Label>
-                    </div>
-
-                    {/* Sort dropdown */}
                     <div className="flex items-center gap-2">
                         <ArrowUpDown className="text-muted-foreground hidden size-4 sm:block" aria-hidden="true" />
                         <Select value={currentSort} onValueChange={handleSortChange}>

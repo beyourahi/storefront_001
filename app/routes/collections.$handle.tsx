@@ -84,13 +84,13 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
     const pageParam = url.searchParams.get("page");
 
     // Parse sort and filter params from URL
-    const {sort, sortKey, reverse, sortLabel, showInStockOnly} = parseSortFilterParams(url);
+    const {sort, sortKey, reverse, sortLabel} = parseSortFilterParams(url);
 
     // Build GraphQL variables for cursor-based pagination
     const variables = buildPaginationVariables(cursor, direction, 48);
 
-    // Server-side filtering: conditionally filter by availability
-    const filters = showInStockOnly ? [{available: true}] : [];
+    // Always filter to available products only
+    const filters = [{available: true}];
 
     // Query collection with server-side filters and sorting
     const {collection} = await dataAdapter.query(COLLECTION_QUERY, {
@@ -127,13 +127,12 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
         products,
         pagination,
         sort,
-        sortLabel,
-        showInStockOnly
+        sortLabel
     };
 };
 
 export default function CollectionPage() {
-    const {collection, products, pagination, sort, sortLabel, showInStockOnly} =
+    const {collection, products, pagination, sort, sortLabel} =
         useLoaderData<typeof loader>();
 
     // Normalize products for display
@@ -159,7 +158,6 @@ export default function CollectionPage() {
             {/* Sort and Filter Controls */}
             <SortFilterBar
                 currentSort={sort}
-                showInStockOnly={showInStockOnly}
                 totalProducts={normalizedProducts.length}
             />
 
