@@ -24,7 +24,7 @@ export const WishlistCount = ({className, iconSize = 24}: WishlistCountProps) =>
     return (
         <Link
             to="/account/wishlist"
-            className={cn("relative inline-flex items-center justify-center rounded-lg p-2", className)}
+            className={cn("relative inline-flex h-10 w-10 items-center justify-center rounded-lg", className)}
             aria-label={ariaLabel}
         >
             <Heart style={{width: iconSize, height: iconSize}} className="text-current" />
