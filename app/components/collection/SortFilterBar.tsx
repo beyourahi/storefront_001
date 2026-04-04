@@ -8,13 +8,17 @@ import {
     SelectTrigger,
     SelectValue
 } from "~/components/ui/select";
-import {SORT_OPTIONS, DEFAULT_SORT} from "~/lib/sort-filter-helpers";
+import {SORT_OPTIONS, DEFAULT_SORT, type SortOption} from "~/lib/sort-filter-helpers";
 
 type SortFilterBarProps = {
     /** Currently active sort value (URL param) */
     currentSort: string;
     /** Total number of products displayed (optional) */
     totalProducts?: number;
+    /** Override sort options (defaults to SORT_OPTIONS for collections) */
+    options?: SortOption[];
+    /** Override the default sort value for URL-cleaning logic */
+    defaultSortValue?: string;
 };
 
 /**
@@ -23,7 +27,7 @@ type SortFilterBarProps = {
  * State lives entirely in URL search params — changing a value navigates
  * to the same path with updated params (resetting pagination to page 1).
  */
-export function SortFilterBar({currentSort, totalProducts}: SortFilterBarProps) {
+export function SortFilterBar({currentSort, totalProducts, options = SORT_OPTIONS, defaultSortValue = DEFAULT_SORT}: SortFilterBarProps) {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -49,7 +53,7 @@ export function SortFilterBar({currentSort, totalProducts}: SortFilterBarProps) 
             }
 
             // Remove default to keep URLs clean
-            if (params.get("sort") === DEFAULT_SORT) {
+            if (params.get("sort") === defaultSortValue) {
                 params.delete("sort");
             }
 
@@ -91,7 +95,7 @@ export function SortFilterBar({currentSort, totalProducts}: SortFilterBarProps) 
                                 <SelectValue placeholder="Sort by" />
                             </SelectTrigger>
                             <SelectContent>
-                                {SORT_OPTIONS.map(option => (
+                                {options.map(option => (
                                     <SelectItem key={option.value} value={option.value}>
                                         {option.label}
                                     </SelectItem>

@@ -1,8 +1,8 @@
 /**
- * Sort and filter helpers for collection routes.
+ * Sort and filter helpers for collection and search routes.
  *
- * Maps URL search params to Shopify ProductCollectionSortKeys + reverse flag,
- * and provides the canonical list of sort options shown in the SortFilterBar.
+ * Collection pages use ProductCollectionSortKeys; search uses SearchSortKeys
+ * (only PRICE and RELEVANCE are valid). Each surface has its own options set.
  */
 
 export type SortOption = {
@@ -10,7 +10,7 @@ export type SortOption = {
     value: string;
     /** Human-readable label */
     label: string;
-    /** Shopify ProductCollectionSortKeys enum value */
+    /** Shopify sort key enum value (varies by API surface) */
     sortKey: string;
     /** Whether results are reversed (descending) */
     reverse: boolean;
@@ -27,7 +27,7 @@ export const SORT_OPTIONS: SortOption[] = [
 ];
 
 /** Default sort when no `?sort=` param is present */
-export const DEFAULT_SORT = "price-asc";
+export const DEFAULT_SORT = "newest";
 
 /**
  * Look up a SortOption by its URL value, falling back to the default.
@@ -50,4 +50,26 @@ export function parseSortFilterParams(url: URL) {
         reverse: sortOption.reverse,
         sortLabel: sortOption.label
     };
+}
+
+/**
+ * Sort options for search pages.
+ * Shopify's SearchSortKeys enum only supports PRICE and RELEVANCE —
+ * no CREATED_AT, BEST_SELLING, or TITLE.
+ */
+export const SEARCH_SORT_OPTIONS: SortOption[] = [
+    {value: "relevance", label: "Relevance", sortKey: "RELEVANCE", reverse: false},
+    {value: "price-asc", label: "Price: Low to High", sortKey: "PRICE", reverse: false},
+    {value: "price-desc", label: "Price: High to Low", sortKey: "PRICE", reverse: true}
+];
+
+/** Default sort for search pages (no `?sort=` param = relevance). */
+export const SEARCH_DEFAULT_SORT = "relevance";
+
+/**
+ * Look up a search SortOption by its URL value, falling back to relevance.
+ */
+export function getSearchSortOption(sortParam: string | null): SortOption {
+    const match = SEARCH_SORT_OPTIONS.find(o => o.value === sortParam);
+    return match ?? SEARCH_SORT_OPTIONS.find(o => o.value === SEARCH_DEFAULT_SORT)!;
 }

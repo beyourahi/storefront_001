@@ -347,7 +347,7 @@ const EXPLORE_COLLECTIONS_QUERY = `#graphql
           width
           height
         }
-        products(first: 1, filters: [{available: true}]) {
+        products(first: 250, filters: [{available: true}]) {
           nodes {
             id
           }

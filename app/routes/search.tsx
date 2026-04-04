@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Link, useLoaderData, useNavigate, useRouteError, isRouteErrorResponse, useRouteLoaderData} from "react-router";
+import {Link, useLoaderData, useNavigate, useRouteError, isRouteErrorResponse, useRouteLoaderData, useSearchParams} from "react-router";
 import type {Route} from "./+types/search";
 import {Analytics, Image, getSeoMeta} from "@shopify/hydrogen";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
@@ -8,6 +8,8 @@ import {Alert, AlertDescription} from "~/components/ui/alert";
 import {Badge} from "~/components/ui/badge";
 import {Skeleton} from "~/components/ui/skeleton";
 import {InfiniteScrollGrid} from "~/components/sections/InfiniteScrollGrid";
+import {SortFilterBar} from "~/components/collection/SortFilterBar";
+import {SEARCH_SORT_OPTIONS, SEARCH_DEFAULT_SORT, getSearchSortOption} from "~/lib/sort-filter-helpers";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {ViewOptionsSelector, type LayoutMode} from "~/components/search/ViewOptionsSelector";
 import {ProductPrice} from "~/components/search/ProductPrice";
@@ -693,6 +695,9 @@ function SearchProductsTab({
     gridColumns: GridColumns;
     layoutMode: LayoutMode;
 }) {
+    const [searchParams] = useSearchParams();
+    const currentSort = searchParams.get("sort") ?? SEARCH_DEFAULT_SORT;
+
     if (products.nodes.length === 0) {
         return (
             <div className="px-4 py-8 text-center sm:py-12">
@@ -707,7 +712,14 @@ function SearchProductsTab({
     const resourcesClassName = getGridClassName(gridColumns, layoutMode);
 
     return (
-        <InfiniteScrollGrid<SearchProduct>
+        <>
+            <SortFilterBar
+                currentSort={currentSort}
+                totalProducts={products.totalCount}
+                options={SEARCH_SORT_OPTIONS}
+                defaultSortValue={SEARCH_DEFAULT_SORT}
+            />
+            <InfiniteScrollGrid<SearchProduct>
             key={`search-products-${layoutMode}-${gridColumns}`}
             initialProducts={products.nodes}
             pageInfo={{
@@ -733,6 +745,7 @@ function SearchProductsTab({
                 />
             )}
         </InfiniteScrollGrid>
+        </>
     );
 }
 
@@ -1339,13 +1352,16 @@ const SEARCH_QUERY = `#graphql
     $productAfter: String
     $articleFirst: Int!
     $articleAfter: String
+    $sortKey: SearchSortKeys
+    $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
     products: search(
       query: $term
       types: [PRODUCT]
       first: $productFirst
       after: $productAfter
-      sortKey: RELEVANCE
+      sortKey: $sortKey
+      reverse: $reverse
       unavailableProducts: HIDE
     ) {
       nodes {
@@ -1387,13 +1403,16 @@ const SEARCH_PRODUCTS_QUERY = `#graphql
     $term: String!
     $first: Int!
     $after: String
+    $sortKey: SearchSortKeys
+    $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
     products: search(
       query: $term
       types: [PRODUCT]
       first: $first
       after: $after
-      sortKey: RELEVANCE
+      sortKey: $sortKey
+      reverse: $reverse
       unavailableProducts: HIDE
     ) {
       nodes {
@@ -1657,13 +1676,18 @@ async function regularSearch({
         articles: {nodes: [], pageInfo: {hasNextPage: false, endCursor: null}, totalCount: 0}
     };
 
+    // SearchSortKeys only supports PRICE and RELEVANCE — use search-specific lookup
+    const searchSortOption = getSearchSortOption(url.searchParams.get("sort"));
+
     try {
         const [searchResult, collectionsResult] = await Promise.all([
             dataAdapter.query(SEARCH_QUERY, {
                 variables: {
                     term,
                     productFirst: 24,
-                    articleFirst: 12
+                    articleFirst: 12,
+                    sortKey: searchSortOption.sortKey,
+                    reverse: searchSortOption.reverse
                 }
             }),
             fetchCollections(dataAdapter, term)
@@ -1718,11 +1742,16 @@ async function fetchMoreProducts({
     const term = String(url.searchParams.get("q") || "");
     const cursor = url.searchParams.get("cursor");
 
+    // Sort param is preserved in fetch URL by InfiniteScrollGrid via useSearchParams
+    const searchSortOption = getSearchSortOption(url.searchParams.get("sort"));
+
     const {products} = (await dataAdapter.query(SEARCH_PRODUCTS_QUERY, {
         variables: {
             term,
             first: 24,
-            after: cursor
+            after: cursor,
+            sortKey: searchSortOption.sortKey,
+            reverse: searchSortOption.reverse
         }
     })) as {
         products: {

@@ -15,7 +15,8 @@ import {
     buildPaginationData,
     getCanonicalRedirect
 } from "~/lib/collection-route-helpers";
-import {sortProductsByDiscount} from "~/lib/product-sorting";
+import {parseSortFilterParams} from "~/lib/sort-filter-helpers";
+import {SortFilterBar} from "~/components/collection/SortFilterBar";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
@@ -39,6 +40,10 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     const {cursor, page, direction} = parsePaginationParams(url);
     const pageParam = url.searchParams.get("page");
 
+    // Parse sort param; map CREATED → CREATED_AT (ProductSortKeys vs ProductCollectionSortKeys)
+    const {sort, sortKey, reverse, sortLabel} = parseSortFilterParams(url);
+    const productSortKey = sortKey === "CREATED" ? "CREATED_AT" : sortKey;
+
     // Build GraphQL variables for cursor-based pagination
     const variables = buildPaginationVariables(cursor, direction, 48);
 
@@ -46,16 +51,16 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     const {products} = await dataAdapter.query(SALE_PRODUCTS_QUERY, {
         variables: {
             query: "available_for_sale:true",
+            sortKey: productSortKey,
+            reverse,
             ...variables
         },
         cache: dataAdapter.CacheShort()
     });
 
-    // Filter and sort discounted products
+    // Filter to discounted products only; Shopify handles sort order
     const discountedProducts = filterAndSortDiscountedProducts(products.nodes as RawDiscountProduct[]);
-
-    // Sort by discount percentage (highest first)
-    const sortedProducts = sortProductsByDiscount(discountedProducts);
+    const sortedProducts = discountedProducts;
 
     // Build pagination data
     const pagination = buildPaginationData(products.pageInfo, page);
@@ -74,12 +79,14 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
         products: sortedProducts,
         totalCount,
         maxDiscount,
-        pagination
+        pagination,
+        sort,
+        sortLabel
     };
 };
 
 export default function Sale() {
-    const {products, totalCount, maxDiscount, pagination} = useLoaderData<typeof loader>();
+    const {products, totalCount, maxDiscount, pagination, sort, sortLabel} = useLoaderData<typeof loader>();
 
     // Normalize products for display
     const normalizedProducts = products.map(fromSaleProduct);
@@ -102,6 +109,9 @@ export default function Sale() {
 
             {totalCount > 0 && (
                 <>
+                    {/* Sort and Filter Controls — outside AnimatedSection so it's always visible */}
+                    <SortFilterBar currentSort={sort} totalProducts={totalCount} />
+
                     {/* Mobile Pagination (Above Grid) */}
                     {showPagination && (
                         <AnimatedSection animation="fade" threshold={0.12}>
@@ -116,7 +126,7 @@ export default function Sale() {
                             products={normalizedProducts}
                             pagination={pagination}
                             preserveOrder={true}
-                            sortLabel="Highest discount first"
+                            sortLabel={sortLabel}
                         />
                     </AnimatedSection>
 
@@ -206,6 +216,8 @@ const SALE_PRODUCTS_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $query: String
+    $sortKey: ProductSortKeys
+    $reverse: Boolean
     $first: Int
     $last: Int
     $after: String
@@ -217,6 +229,8 @@ const SALE_PRODUCTS_QUERY = `#graphql
       after: $after
       before: $before
       query: $query
+      sortKey: $sortKey
+      reverse: $reverse
     ) {
       nodes {
         ...SaleProduct

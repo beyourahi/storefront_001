@@ -234,7 +234,7 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
                                         {collection.title}
                                     </h3>
                                     <span className="text-muted-foreground hidden shrink-0 text-xs sm:inline 2xl:text-sm">
-                                        {productCount} products
+                                        {productCount} {productCount === 1 ? "product" : "products"}
                                     </span>
                                 </div>
                                 <div className="sm:hidden">
