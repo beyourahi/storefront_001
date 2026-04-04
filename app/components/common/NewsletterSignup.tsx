@@ -56,7 +56,7 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                             disabled={isSubmitting}
                             aria-label="Email address for newsletter"
                             className={cn(
-                                "h-12 w-full rounded-lg border bg-background px-4 text-foreground",
+                                "h-12 w-full rounded-md border bg-background px-4 text-foreground",
                                 "placeholder:text-muted-foreground/60",
                                 "focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none",
                                 "disabled:opacity-60",
@@ -68,7 +68,7 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                         type="submit"
                         disabled={isSubmitting}
                         className={cn(
-                            "cta-enhanced inline-flex h-12 items-center justify-center gap-2 rounded-lg",
+                            "cta-enhanced inline-flex h-12 items-center justify-center gap-2 rounded-md",
                             "bg-primary px-6 text-primary-foreground",
                             "hover:bg-primary/90 active:scale-[0.97]",
                             "disabled:opacity-60 disabled:pointer-events-none"
