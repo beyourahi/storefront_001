@@ -1544,6 +1544,7 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
       limitScope: $limitScope
       query: $term
       types: $types
+      unavailableProducts: HIDE
     ) {
       articles {
         ...PredictiveArticle
@@ -1825,7 +1826,6 @@ async function predictiveSearch({
 
         const filteredItems = {
             ...items,
-            products: items.products.filter(product => product.availableForSale),
             collections: items.collections.filter(collection =>
                 collection.products?.nodes?.some(product => product.availableForSale)
             )

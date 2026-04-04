@@ -93,12 +93,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
     const allCollectionNodes = data.collections?.nodes ?? [];
     const allProducts = data.allProducts?.nodes ?? [];
 
-    const inStockProducts = allProducts.filter(
-        product =>
-            product?.availableForSale && (product.variants?.edges?.some(edge => edge?.node?.availableForSale) ?? false)
-    );
-
-    const discountedProducts = inStockProducts
+    const discountedProducts = allProducts
         .filter(
             product =>
                 product.variants?.edges?.some(edge => {
@@ -154,7 +149,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         handle: "all",
         description: SHOP_ALL_DESCRIPTION,
         image: null,
-        productCount: inStockProducts.length,
+        productCount: allProducts.length,
         seo: {
             title: "Shop All Products - Complete Collection",
             description: SHOP_ALL_DESCRIPTION
@@ -240,7 +235,7 @@ const COLLECTIONS_PAGE_QUERY = `#graphql
         }
       }
     }
-    allProducts: products(first: 50) {
+    allProducts: products(first: 50, query: "available_for_sale:true") {
       nodes {
         id
         availableForSale

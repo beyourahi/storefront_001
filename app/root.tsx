@@ -172,10 +172,7 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
             }))
             .filter((collection: any) => collection.productsCount > 0) ?? [];
 
-    const totalProductCount =
-        menuCollectionsData?.allProducts?.nodes?.filter(
-            (p: any) => p.availableForSale && p.variants?.nodes?.some((v: any) => v.availableForSale)
-        ).length ?? 0;
+    const totalProductCount = menuCollectionsData?.allProducts?.nodes?.length ?? 0;
 
     const discountCount = menuCollectionsData?.allProducts?.nodes
         ? countDiscountedProducts(menuCollectionsData.allProducts.nodes as LightweightProduct[])
@@ -196,7 +193,7 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
         : [];
 
     const popularProducts: PopularProduct[] = (menuCollectionsData?.allProducts?.nodes ?? [])
-        .filter((p: any) => p.availableForSale && p.featuredImage)
+        .filter((p: any) => p.featuredImage)
         .slice(0, 10)
         .map((p: any) => ({
             id: p.id,

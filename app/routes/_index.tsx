@@ -59,10 +59,8 @@ export const loader = async ({context}: Route.LoaderArgs) => {
     const allProducts = allProductsResponse?.products?.nodes ?? [];
 
     const filterCollectionProducts = (response: any) => {
-        if (!response?.collection) return null;
-        const availableProducts = response.collection.products.nodes.filter((p: any) => p.availableForSale);
-        if (availableProducts.length === 0) return null;
-        return {collection: {...response.collection, products: {nodes: availableProducts}}};
+        if (!response?.collection || response.collection.products.nodes.length === 0) return null;
+        return response;
     };
 
     const bestSellers = dataAdapter
@@ -370,7 +368,7 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
       title
       handle
       description
-      products(first: 20) {
+      products(first: 20, filters: [{available: true}]) {
         nodes {
           id
           title

@@ -46,26 +46,22 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     const {sort, sortKey, reverse, sortLabel, showInStockOnly} = parseSortFilterParams(url);
 
     // Build GraphQL variables for cursor-based pagination
-    const variables = buildPaginationVariables(cursor, direction, 48);
+    // Note: QueryRoot.products doesn't support filters/sortKey like Collection.products,
+    // so we sort client-side. Availability filtering uses the `query` parameter at API level.
+    const variables = {
+        ...buildPaginationVariables(cursor, direction, 48),
+        query: showInStockOnly ? "available_for_sale:true" : null
+    };
 
     // Query all products with pagination
-    // Note: QueryRoot.products doesn't support filters/sortKey like Collection.products,
-    // so we filter and sort client-side
     const {products} = await dataAdapter.query(CATALOG_QUERY, {
         variables,
         cache: dataAdapter.CacheShort()
     });
 
-    // Filter by availability client-side
-    const filteredProducts = showInStockOnly
-        ? products.nodes.filter(
-              (product: any) =>
-                  product.availableForSale && product.variants.nodes.some((v: any) => v.availableForSale)
-          )
-        : [...products.nodes];
-
     // Client-side sorting based on sort param
-    filteredProducts.sort((a: any, b: any) => {
+    const productsToSort = [...products.nodes];
+    productsToSort.sort((a: any, b: any) => {
         let cmp = 0;
         switch (sortKey) {
             case "PRICE": {
@@ -94,7 +90,7 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     });
 
     // Apply pin sorting on top of the chosen sort
-    const sortedProducts = sortWithPinnedFirst(filteredProducts);
+    const sortedProducts = sortWithPinnedFirst(productsToSort);
 
     // Build pagination data
     const pagination = buildPaginationData(products.pageInfo, page);
@@ -184,12 +180,14 @@ const CATALOG_QUERY = `#graphql
     $last: Int
     $after: String
     $before: String
+    $query: String
   ) @inContext(country: $country, language: $language) {
     products(
       first: $first
       last: $last
       after: $after
       before: $before
+      query: $query
     ) {
       nodes {
         id

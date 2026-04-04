@@ -402,7 +402,7 @@ export const CART_SUGGESTIONS_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    products(first: 12, sortKey: BEST_SELLING) {
+    products(first: 12, sortKey: BEST_SELLING, query: "available_for_sale:true") {
       nodes {
         id
         handle
@@ -494,7 +494,7 @@ export const MENU_COLLECTIONS_QUERY = `#graphql
         }
       }
     }
-    allProducts: products(first: 50) {
+    allProducts: products(first: 50, query: "available_for_sale:true") {
       nodes {
         id
         handle
