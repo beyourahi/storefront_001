@@ -23,7 +23,7 @@ Direct commits to `main` only. This keeps the repo aligned with the worktree-onl
 
 ## Project Overview
 
-Part of the **storefront family** (`storefront_001`, `storefront_002`, `storefront_003`, etc.) — a collection of commercial Shopify Hydrogen templates built to be sold to multiple client brands across different niches. High-performance storefront based on React Router 7, Shopify Oxygen, and Cloudflare Workers with PWA support, metaobject CMS, wishlist flows, blog surfaces, and offline/error handling. **Critical**: import from `react-router`, never `@remix-run/react`.
+Part of the **storefront family** (`storefront_001`, `storefront_002`, `storefront_003`, etc.) — a collection of commercial Shopify Hydrogen templates built to be sold to multiple client brands across different niches. High-performance storefront based on React Router 7, Shopify Oxygen, and Cloudflare Workers with PWA support, metaobject CMS, wishlist flows, recently viewed products, account returns, subscriptions, blog surfaces, and offline/error handling. **Critical**: import from `react-router`, never `@remix-run/react`.
 
 Backend behavior, data flow, and Hydrogen conventions **must remain consistent** across all storefronts — the frontend layer (UI, presentation, visual identity) is where storefronts differentiate.
 
@@ -60,6 +60,7 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 |               | Lenis            | 1.3        | Smooth scrolling                    |
 |               | Vaul             | 1.1        | Drawer primitives                   |
 |               | Wishlist         | Custom     | Account + share flows               |
+|               | Recently Viewed  | Custom     | History tracking + provider         |
 |               | Blog             | Custom     | Article + author surfaces           |
 |               | PWA              | Custom     | Custom service worker, offline      |
 |               | Metaobjects      | Shopify    | Theme + content CMS                 |
@@ -210,11 +211,11 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 
 ## Key Files
 
-**Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`
+**Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`, `app/lib/wishlist-context.tsx`, `app/lib/wishlist-utils.ts`, `app/lib/recently-viewed.ts`
 **Config**: `vite.config.ts`, `react-router.config.ts`, `eslint.config.js`, `prettier.config.js`, `app/styles/app.css`, `wrangler.jsonc`
 **GraphQL**: `storefrontapi.generated.d.ts`, `customer-accountapi.generated.d.ts`
 **Theme System**: `app/lib/theme-utils.ts`, `app/root.tsx`, `app/styles/app.css`
-**PWA/Offline**: `app/components/OfflineAwareErrorPage.tsx`, `app/routes/manifest[.]webmanifest.tsx`, `public/sw.js`
+**PWA/Offline**: `app/components/OfflineAwareErrorPage.tsx`, `app/routes/manifest[.]webmanifest.tsx`, `public/sw.js`, `app/lib/pwa-parsers.ts`, `app/lib/pwa-queries.ts`, `app/lib/pwa-storage.ts`
 
 ## Critical Warnings
 

@@ -17,6 +17,8 @@ export const ProductRelatedSection = ({
     title = "You're absolutely going to",
     subtitle = "love these too"
 }: ProductRelatedSectionProps) => {
+    if (!isLoading && (!relatedProducts || relatedProducts.length === 0)) return null;
+
     return (
         <section className="py-12 lg:py-24">
             <div className="mx-auto max-w-[2000px] px-2 md:px-4">

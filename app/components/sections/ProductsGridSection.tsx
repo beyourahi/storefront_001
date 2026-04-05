@@ -54,6 +54,8 @@ export const ProductsGridSection = ({
 
     const showPagination = pagination && (pagination.hasNextPage || pagination.hasPreviousPage);
 
+    if (!isLoading && products.length === 0) return null;
+
     return (
         <>
             {showPagination && pagination && (
