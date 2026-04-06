@@ -53,7 +53,7 @@ type ActionResponse = {
     error?: string | Record<string, string> | null;
 };
 
-export const meta: Route.MetaFunction = () => [{title: "Account Details"}];
+export const meta: Route.MetaFunction = () => [{title: "Account Details"}, {name: "robots", content: "noindex,nofollow"}];
 
 export const shouldRevalidate = () => true;
 

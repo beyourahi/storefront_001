@@ -13,7 +13,7 @@ import {parseProductTitle} from "~/lib/product";
 
 export const meta: Route.MetaFunction = ({data}) => {
     const orderName = data?.order?.name ?? "Order";
-    return [{title: `Order ${orderName}`}];
+    return [{title: `Order ${orderName}`}, {name: "robots", content: "noindex,nofollow"}];
 };
 
 export const loader = async ({params, context}: Route.LoaderArgs) => {

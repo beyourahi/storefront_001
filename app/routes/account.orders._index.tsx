@@ -7,7 +7,7 @@ import {OrderCard} from "~/components/account/OrderCard";
 import {Button} from "~/components/ui/button";
 import {PackageSearchIcon} from "lucide-react";
 
-export const meta: Route.MetaFunction = () => [{title: "Order History"}];
+export const meta: Route.MetaFunction = () => [{title: "Order History"}, {name: "robots", content: "noindex,nofollow"}];
 
 export const loader = async ({request, context}: Route.LoaderArgs) => {
     const {customerAccount} = context;

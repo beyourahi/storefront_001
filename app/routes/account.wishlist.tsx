@@ -16,7 +16,7 @@ export const meta: MetaFunction = ({matches}) => {
         siteContent?: {siteSettings?: {brandName?: string}};
     } | undefined;
     const shopName = rootData?.siteContent?.siteSettings?.brandName?.trim() || "Store";
-    return [{title: `Wishlist | ${shopName}`}];
+    return [{title: `Wishlist | ${shopName}`}, {name: "robots", content: "noindex,nofollow"}];
 };
 
 interface WishlistProduct {

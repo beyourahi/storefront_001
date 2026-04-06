@@ -3,7 +3,7 @@ import {useLoaderData, useRouteLoaderData, Await} from "react-router";
 import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {generateOrganizationSchema} from "~/lib/seo";
+import {generateOrganizationSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
     bestSellers: "best-sellers",
@@ -38,10 +38,34 @@ export const meta: Route.MetaFunction = ({matches}) => {
     const shopName = siteSettings?.brandName ?? "Store";
     const description = siteSettings?.missionStatement ?? "";
     const socialLinks = rootData?.siteContent?.socialLinks;
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    const logoUrl = siteSettings?.brandLogo?.url;
 
     const organizationSchema = generateOrganizationSchema(siteSettings, socialLinks);
+    // Enriched Organization schema with sameAs social links (separate from the thin @graph entry)
+    const enrichedOrgSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: shopName,
+        url: siteUrl || undefined,
+        logo: logoUrl,
+        description: description || undefined,
+        sameAs: socialLinks?.map(l => l.url).filter(Boolean) ?? []
+    };
 
-    return getSeoMeta({title: shopName, titleTemplate: null, description, jsonLd: organizationSchema as any}) ?? [];
+    return [
+        ...(getSeoMeta({
+            title: shopName,
+            titleTemplate: null,
+            description,
+            url: buildCanonicalUrl("/", siteUrl),
+            media: logoUrl ? {url: logoUrl, type: "image" as const} : undefined,
+            jsonLd: organizationSchema as any
+        }) ?? []),
+        ...getRequiredSocialMeta("website", brandName, logoUrl),
+        {"script:ld+json": enrichedOrgSchema as any}
+    ];
 };
 
 export const loader = async ({context}: Route.LoaderArgs) => {

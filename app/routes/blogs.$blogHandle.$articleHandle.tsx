@@ -4,7 +4,7 @@ import {Image, getSeoMeta} from "@shopify/hydrogen";
 import {ArrowLeft} from "lucide-react";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateReadingTime, formatArticleDate, filterRelatedArticles} from "~/lib/blog-utils";
-import {generateBlogPostingSchema, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
+import {generateBlogPostingSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {TagList} from "~/components/blog/TagBadge";
 import {ShareButtons} from "~/components/blog/ShareButtons";
@@ -33,8 +33,9 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const description = article.seo?.description || (article.excerpt ? article.excerpt.substring(0, 155) : "");
     const articlePath = `/blogs/${blogHandle || "news"}/${article.handle}`;
 
-    return (
-        getSeoMeta({
+    const brandName = getBrandNameFromMatches(matches);
+    return [
+        ...(getSeoMeta({
             title,
             description,
             url: buildCanonicalUrl(articlePath, siteUrl),
@@ -47,9 +48,10 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       type: "image" as const
                   }
                 : undefined,
-            jsonLd: generateBlogPostingSchema(article, blogHandle || "news", shopName) as any
-        }) ?? []
-    );
+            jsonLd: generateBlogPostingSchema(article, blogHandle || "news", shopName, siteUrl) as any
+        }) ?? []),
+        ...getRequiredSocialMeta("article", brandName, article.image?.url ?? undefined)
+    ];
 };
 
 export async function loader({context, request, params}: Route.LoaderArgs) {

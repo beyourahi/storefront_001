@@ -3,7 +3,7 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {useFaqItems} from "~/lib/site-content-context";
-import {generateFAQPageSchema} from "~/lib/seo";
+import {generateFAQPageSchema, getBrandNameFromMatches, getRequiredSocialMeta, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 
 export const meta: Route.MetaFunction = ({matches}) => {
     const rootData = (
@@ -13,12 +13,18 @@ export const meta: Route.MetaFunction = ({matches}) => {
     )?.data;
     const faqItems = rootData?.siteContent?.siteSettings?.faqItems;
     const faqSchema = faqItems?.length ? generateFAQPageSchema(faqItems) : undefined;
+    const brandName = getBrandNameFromMatches(matches);
+    const siteUrl = getSiteUrlFromMatches(matches);
 
-    return getSeoMeta({
-        title: "Frequently Asked Questions",
-        description: "Find answers to common questions about our products, shipping, and policies.",
-        jsonLd: faqSchema as any
-    }) ?? [];
+    return [
+        ...(getSeoMeta({
+            title: `Frequently Asked Questions | ${brandName}`,
+            description: "Find answers to common questions about our products, shipping, and policies.",
+            url: buildCanonicalUrl("/faq", siteUrl),
+            jsonLd: faqSchema as any
+        }) ?? []),
+        ...getRequiredSocialMeta("website", brandName)
+    ];
 };
 
 export default function FAQ() {

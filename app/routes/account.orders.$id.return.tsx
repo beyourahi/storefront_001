@@ -23,7 +23,7 @@ import {Clock, CheckCircle, XCircle, Info} from "lucide-react";
 import {parseProductTitle} from "~/lib/product";
 
 export const meta: Route.MetaFunction = ({data}) => {
-    return [{title: `Return Request - Order ${data?.order?.name}`}];
+    return [{title: `Return Request - Order ${data?.order?.name}`}, {name: "robots", content: "noindex,nofollow"}];
 };
 
 export const loader = async ({params, context}: Route.LoaderArgs) => {

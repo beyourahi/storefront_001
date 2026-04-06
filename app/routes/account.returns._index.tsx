@@ -19,7 +19,7 @@ import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 import {parseProductTitle} from "~/lib/product";
 
 export const meta: Route.MetaFunction = () => {
-    return [{title: "Returns History"}];
+    return [{title: "Returns History"}, {name: "robots", content: "noindex,nofollow"}];
 };
 
 export const loader = async ({context}: Route.LoaderArgs) => {

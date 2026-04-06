@@ -3,7 +3,7 @@ import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import type {Route} from "./+types/collections.$handle";
 import {Analytics, getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getSiteUrlFromMatches, generateCollectionSchema} from "~/lib/seo";
+import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateCollectionSchema} from "~/lib/seo";
 import {CollectionHero} from "~/components/sections/CollectionHero";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
 import {CollectionPagination} from "~/components/custom/CollectionPagination";
@@ -48,11 +48,13 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
 
     const collectionSchema = generateCollectionSchema(
         collection,
-        data.products as unknown as Array<{title: string; handle: string}>
+        data.products as unknown as Array<{title: string; handle: string}>,
+        siteUrl
     );
+    const brandName = getBrandNameFromMatches(matches);
 
-    return (
-        getSeoMeta({
+    return [
+        ...(getSeoMeta({
             title,
             description,
             url: buildCanonicalUrl(`/collections/${collection.handle}`, siteUrl),
@@ -66,8 +68,9 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                   }
                 : undefined,
             jsonLd: collectionSchema as any
-        }) ?? []
-    );
+        }) ?? []),
+        ...getRequiredSocialMeta("website", brandName, collection.image?.url ?? undefined)
+    ];
 };
 
 export const loader = async ({context, params, request}: Route.LoaderArgs) => {

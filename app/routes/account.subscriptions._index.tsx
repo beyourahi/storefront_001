@@ -13,7 +13,7 @@ import {Card, CardContent, CardDescription, CardFooter, CardTitle} from "~/compo
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 
-export const meta: Route.MetaFunction = () => [{title: "Subscriptions"}];
+export const meta: Route.MetaFunction = () => [{title: "Subscriptions"}, {name: "robots", content: "noindex,nofollow"}];
 
 export const loader = async ({context}: Route.LoaderArgs) => {
     const {customerAccount} = context;

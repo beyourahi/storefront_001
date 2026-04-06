@@ -1,7 +1,7 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/blogs._index";
 import {getPaginationVariables, getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
+import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 import {ArticleCard, type ArticleCardData} from "~/components/blog/ArticleCard";
 import {ArticleHero} from "~/components/blog/ArticleHero";
 import {Carousel, CarouselContent, CarouselItem} from "~/components/ui/carousel";
@@ -42,13 +42,17 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const pageDescription =
         rootData?.siteContent?.siteSettings?.blogPageDescription || "Explore stories, inspiration, and ideas.";
 
-    const siteUrl = getSiteUrlFromMatches(matches);
+    // getSiteUrlFromMatches reads from root loader data which is always present in matches
+    // (even when the child route's loader throws), so this is reliable for canonical URLs.
+    const siteUrl = getSiteUrlFromMatches(matches) || undefined;
+    const brandName = getBrandNameFromMatches(matches);
 
-    return (
-        getSeoMeta({
+    return [
+        ...(getSeoMeta({
             title: pageTitle,
             description: pageDescription,
-            url: buildCanonicalUrl("/blogs", siteUrl),
+            // Only emit og:url if siteUrl is non-empty to avoid relative URL in tag
+            url: siteUrl ? buildCanonicalUrl("/blogs", siteUrl) : undefined,
             media: featuredArticle?.image?.url
                 ? {
                       url: featuredArticle.image.url,
@@ -58,8 +62,9 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       type: "image" as const
                   }
                 : undefined
-        }) ?? []
-    );
+        }) ?? []),
+        ...getRequiredSocialMeta("website", brandName, featuredArticle?.image?.url ?? undefined)
+    ];
 };
 
 export async function loader({context, request}: Route.LoaderArgs) {

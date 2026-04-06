@@ -1,6 +1,7 @@
 import {useLoaderData, useRouteLoaderData} from "react-router";
 import type {Route} from "./+types/collections._index";
 import {getSeoMeta} from "@shopify/hydrogen";
+import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 import type {RootLoader} from "~/root";
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
@@ -52,14 +53,18 @@ const SHOP_ALL_DESCRIPTION =
     "Discover our complete collection of premium products, carefully curated for exceptional quality and design.";
 const SHOP_ALL_COLLECTION_ID = "shop-all-special-collection";
 
-export const meta: Route.MetaFunction = () => {
-    return (
-        getSeoMeta({
-            title: "Collections",
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return [
+        ...(getSeoMeta({
+            title: `Collections | ${brandName}`,
             description:
-                "Explore our curated collections of premium products. From luxury accessories to home essentials, discover quality craftsmanship in every piece."
-        }) ?? []
-    );
+                "Explore our curated collections of premium products. From luxury accessories to home essentials, discover quality craftsmanship in every piece.",
+            url: buildCanonicalUrl("/collections", siteUrl)
+        }) ?? []),
+        ...getRequiredSocialMeta("website", brandName)
+    ];
 };
 
 const countInStockCollectionProducts = (collectionNode: CollectionNode): number => {

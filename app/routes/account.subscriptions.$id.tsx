@@ -33,7 +33,7 @@ import {
 } from "~/components/ui/alert-dialog";
 
 export const meta: Route.MetaFunction = ({data}) => {
-    return [{title: data?.subscription ? "Subscription Details" : "Subscription Not Found"}];
+    return [{title: data?.subscription ? "Subscription Details" : "Subscription Not Found"}, {name: "robots", content: "noindex,nofollow"}];
 };
 
 export const loader = async ({params, context}: Route.LoaderArgs) => {

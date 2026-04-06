@@ -1,7 +1,7 @@
 import {useMemo} from "react";
 import type {Route} from "./+types/contact";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
+import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 import {Mail, Phone, MapPin, Shield, FileCheck, Truck, RotateCcw, MessageSquarePlus, type LucideIcon} from "lucide-react";
 import {GiantText} from "~/components/common/GiantText";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
@@ -74,14 +74,16 @@ const legalCardClass =
 
 export const meta: Route.MetaFunction = ({matches}) => {
     const siteUrl = getSiteUrlFromMatches(matches);
-    return (
-        getSeoMeta({
-            title: "Contact Us",
+    const brandName = getBrandNameFromMatches(matches);
+    return [
+        ...(getSeoMeta({
+            title: `Contact Us | ${brandName}`,
             description:
                 "Get in touch with our team. We're here to help with any questions about our products, orders, or services.",
             url: buildCanonicalUrl("/contact", siteUrl)
-        }) ?? []
-    );
+        }) ?? []),
+        ...getRequiredSocialMeta("website", brandName)
+    ];
 };
 
 export default function Contact() {

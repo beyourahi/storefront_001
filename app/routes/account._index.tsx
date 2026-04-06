@@ -17,7 +17,7 @@ import {
 } from "~/graphql/customer-account/StoreCreditQueries";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
-export const meta: Route.MetaFunction = () => [{title: "Account Dashboard"}];
+export const meta: Route.MetaFunction = () => [{title: "Account Dashboard"}, {name: "robots", content: "noindex,nofollow"}];
 
 export const loader = async ({context}: Route.LoaderArgs) => {
     const {customerAccount} = context;
