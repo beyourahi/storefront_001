@@ -41,7 +41,7 @@ export const ProductMobileTitlePrice = ({
                 {isLoading ? (
                     <Skeleton className="h-9 w-3/4" />
                 ) : product ? (
-                    <ProductPageTitle title={product.title} />
+                    <ProductPageTitle title={product.title} as="p" aria-hidden={true} />
                 ) : null}
             </div>
         </div>

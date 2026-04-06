@@ -16,9 +16,7 @@ import {Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext}
 
 export const loader = async ({request, context}: Route.LoaderArgs) => {
     await redirectLegacyProductUrl(request, context.dataAdapter);
-    throw new Response(`${new URL(request.url).pathname} not found`, {
-        status: 404
-    });
+    throw new Response("Not Found", {status: 404, statusText: "Not Found"});
 };
 
 export default function CatchAllPage() {

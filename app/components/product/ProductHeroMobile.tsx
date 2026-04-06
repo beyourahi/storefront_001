@@ -67,7 +67,7 @@ export function ProductHeroMobile({
             id={id}
             className="md:hidden flex flex-col bg-primary px-3 sm:px-4 pb-8 sm:pb-10 pt-6 sm:pt-8 overflow-y-auto"
         >
-            <h1 className="font-serif text-2xl sm:text-3xl text-primary-foreground mb-6">{title}</h1>
+            <p className="font-serif text-2xl sm:text-3xl text-primary-foreground mb-6" aria-hidden={true}>{title}</p>
 
             {sizeChartButton && <div className="mb-4">{sizeChartButton}</div>}
 
