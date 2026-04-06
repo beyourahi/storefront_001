@@ -172,6 +172,12 @@ export function formatSchemaDate(date: string | Date): string {
 
 /**
  * Generate Organization schema for the homepage
+ *
+ * NOTE: This emits a thin Organization @graph entry. To also emit a fully-enriched
+ * Organization schema (with sameAs social links, logo, description), the homepage
+ * route should add a SECOND script:ld+json block manually alongside this one.
+ * getSeoMeta() cannot include both — the route meta() must do it explicitly.
+ *
  * @param socialLinks - Array of social media URLs from site settings
  */
 export function generateOrganizationSchema(
@@ -229,14 +235,17 @@ export function generateProductSchema(
         price?: {amount: string; currencyCode: string};
         compareAtPrice?: {amount: string; currencyCode: string} | null;
         availableForSale?: boolean;
-    } | null
+    } | null,
+    siteUrl?: string
 ): JsonLdSchema {
     const images = product.images?.nodes?.map(img => img.url) || [];
+    // Strip " + Category" suffixes that Shopify sometimes appends to product titles
+    const cleanTitle = product.title.split(" + ")[0].trim();
 
     return {
         "@context": "https://schema.org",
         "@type": "Product",
-        name: product.title,
+        name: cleanTitle,
         description: stripHtml(product.description) || undefined,
         image: images.length > 0 ? images : undefined,
         sku: variant?.sku || undefined,
@@ -249,13 +258,13 @@ export function generateProductSchema(
         offers: variant?.price
             ? {
                   "@type": "Offer",
-                  url: buildCanonicalUrl(`/products/${product.handle}`),
+                  url: buildCanonicalUrl(`/products/${product.handle}`, siteUrl),
                   priceCurrency: variant.price.currencyCode,
                   price: formatSchemaPrice(variant.price.amount),
                   availability: variant.availableForSale
                       ? "https://schema.org/InStock"
                       : "https://schema.org/OutOfStock",
-                  priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0] // 30 days
+                  priceValidUntil: new Date(new Date().getFullYear(), 11, 31).toISOString().split("T")[0]
               }
             : undefined
     };
@@ -273,7 +282,8 @@ export function generateCollectionSchema(
     products?: Array<{
         title: string;
         handle: string;
-    }> | null
+    }> | null,
+    siteUrl?: string
 ): JsonLdSchema {
     return {
         "@context": "https://schema.org",
@@ -284,8 +294,9 @@ export function generateCollectionSchema(
         itemListElement: products?.slice(0, 20).map((product, index) => ({
             "@type": "ListItem" as const,
             position: index + 1,
-            url: buildCanonicalUrl(`/products/${product.handle}`),
-            name: product.title
+            url: buildCanonicalUrl(`/products/${product.handle}`, siteUrl),
+            // Strip " + Category" suffix that Shopify may append to product titles
+            name: product.title.split(" + ")[0].trim()
         }))
     };
 }
@@ -305,19 +316,21 @@ export function generateBlogPostingSchema(
         handle: string;
     },
     blogHandle: string,
-    brandName?: string
+    brandName?: string,
+    siteUrl?: string
 ): JsonLdSchema {
     const siteName = brandName || SEO_CONFIG.siteName;
+    const articleUrl = buildCanonicalUrl(`/blogs/${blogHandle}/${article.handle}`, siteUrl);
     return {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         headline: article.title,
+        url: articleUrl,
         description: article.excerpt || undefined,
         image: article.image?.url || undefined,
         datePublished: article.publishedAt ? formatSchemaDate(article.publishedAt) : undefined,
-        // dateModified equals datePublished because the Shopify Storefront API Article type
-        // does not expose an updatedAt field. This is an API limitation, not a code bug.
-        dateModified: article.publishedAt ? formatSchemaDate(article.publishedAt) : undefined,
+        // dateModified intentionally omitted — Shopify Storefront API does not expose
+        // Article.updatedAt, so we cannot provide an accurate value.
         author: article.author?.name
             ? {
                   "@type": "Person",
@@ -330,11 +343,11 @@ export function generateBlogPostingSchema(
         publisher: {
             "@type": "Organization",
             name: siteName,
-            url: SEO_CONFIG.siteUrl
+            url: siteUrl || SEO_CONFIG.siteUrl
         },
         mainEntityOfPage: {
             "@type": "WebPage",
-            "@id": buildCanonicalUrl(`/blogs/${blogHandle}/${article.handle}`)
+            "@id": articleUrl
         }
     };
 }
@@ -380,7 +393,8 @@ export function getSiteUrlFromMatches(matches: Array<{id: string; data?: unknown
 }
 
 /**
- * Get default OG image from site_settings
+ * Get default OG image from site_settings.
+ * Falls back to a static /og-default.jpg (1200×630) when no brand logo is configured.
  */
 export function getDefaultOgImage(
     siteSettings?: SeoSiteSettings | null
@@ -396,5 +410,32 @@ export function getDefaultOgImage(
         };
     }
 
-    return undefined;
+    return {url: "/og-default.jpg", width: 1200, height: 630, type: "image"};
+}
+
+/**
+ * Get required social meta tags for a page.
+ * Spread the result alongside getSeoMeta() in every route's meta() to ensure
+ * og:type, og:site_name, and twitter:card are always present.
+ *
+ * @example
+ * export const meta: Route.MetaFunction = ({matches, data}) => {
+ *   const brandName = getBrandNameFromMatches(matches);
+ *   return [
+ *     ...(getSeoMeta({title: "My Page"}) ?? []),
+ *     ...getRequiredSocialMeta("website", brandName),
+ *   ];
+ * };
+ */
+export function getRequiredSocialMeta(
+    type: "website" | "product" | "article",
+    brandName: string,
+    imageUrl?: string
+): Array<Record<string, string>> {
+    return [
+        {property: "og:type", content: type},
+        {property: "og:site_name", content: brandName},
+        {name: "twitter:card", content: imageUrl ? "summary_large_image" : "summary"},
+        ...(imageUrl ? [{name: "twitter:image", content: imageUrl}] : [])
+    ];
 }
