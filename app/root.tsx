@@ -79,8 +79,9 @@ export function links() {
     return [
         {rel: "preconnect", href: "https://cdn.shopify.com"},
         {rel: "preconnect", href: "https://shop.app"},
-        {rel: "preconnect", href: "https://fonts.googleapis.com"},
-        {rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" as const},
+        // Google Fonts preconnects are emitted dynamically in Layout's <head> alongside the
+        // actual stylesheet. Duplicating them here via links() caused them to appear twice
+        // because links() feeds <Links /> which renders on every navigation.
         {rel: "stylesheet", href: appCss},
         {rel: "manifest", href: "/manifest.webmanifest"},
         {rel: "apple-touch-icon", href: "/apple-touch-icon.png"},
@@ -99,14 +100,10 @@ export const meta: Route.MetaFunction = ({data}) => {
             media: seoDefaults.media
         }) ?? [];
 
+    // NOTE: theme-color, PWA, and mobile meta tags are emitted in Layout's static <head>
+    // so they persist across child route navigations (child meta() exports replace parent meta).
     return [
         ...seoMeta,
-        {name: "theme-color", content: seoDefaults.themeColor},
-        {name: "apple-mobile-web-app-capable", content: "yes"},
-        {name: "apple-mobile-web-app-status-bar-style", content: "default"},
-        {name: "apple-mobile-web-app-title", content: seoDefaults.brandName},
-        {name: "mobile-web-app-capable", content: "yes"},
-        {name: "format-detection", content: "telephone=no"},
         ...(data?.websiteSchema ? [{"script:ld+json": data.websiteSchema}] : [])
     ];
 };
@@ -317,17 +314,42 @@ export function Layout({children}: {children?: React.ReactNode}) {
     const nonce = useNonce();
     const data = useRouteLoaderData<RootLoader>("root");
     const generatedTheme = data?.generatedTheme;
+    // Derive theme-color and brand name for static head meta — must be computed here
+    // because child route meta() exports replace root meta() entirely (React Router 7).
+    const seoDefaults = getSeoDefaults(data?.siteContent?.siteSettings, data?.siteContent?.themeConfig);
 
     return (
         <html lang={STORE_LANGUAGE_CODE.toLowerCase()}>
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width,initial-scale=1" />
-                <script src="/pwa-install-capture.js" nonce={nonce} suppressHydrationWarning />
-                {generatedTheme?.googleFontsUrl && <link rel="stylesheet" href={generatedTheme.googleFontsUrl} />}
+                {/* Static PWA/mobile meta — placed here rather than in meta() so they persist
+                    on every page regardless of which child route overrides meta(). */}
+                <meta name="theme-color" content={seoDefaults.themeColor} />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+                <meta name="apple-mobile-web-app-title" content={seoDefaults.brandName} />
+                <meta name="mobile-web-app-capable" content="yes" />
+                <meta name="format-detection" content="telephone=no" />
+                {/* Font preload reduces FOUT by hinting the browser to fetch before the stylesheet parses */}
+                {generatedTheme?.googleFontsUrl && (
+                    <link rel="preconnect" href="https://fonts.googleapis.com" />
+                )}
+                {generatedTheme?.googleFontsUrl && (
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                )}
+                {generatedTheme?.googleFontsUrl && (
+                    <link rel="preload" as="style" href={generatedTheme.googleFontsUrl} />
+                )}
+                {generatedTheme?.googleFontsUrl && (
+                    <link rel="stylesheet" href={generatedTheme.googleFontsUrl} />
+                )}
                 <Meta />
                 <Links />
                 {generatedTheme?.cssVariables && <ThemeStyleTag css={generatedTheme.cssVariables} />}
+                {/* PWA install-capture script is non-critical — async prevents it from blocking
+                    HTML parsing. Placed after Links/Meta so it does not delay critical resources. */}
+                <script src="/pwa-install-capture.js" async nonce={nonce} suppressHydrationWarning />
             </head>
             <body>
                 <GtmScript gtmContainerId={data?.gtmContainerId || ""} />
