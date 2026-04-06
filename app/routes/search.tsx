@@ -392,8 +392,8 @@ export default function SearchPage() {
                             placeholder="Search..."
                             className={cn(
                                 "w-full border-0 border-b-2 border-[var(--border-strong)] bg-transparent",
-                                "py-3 text-xl font-serif text-primary outline-none transition-colors duration-300 placeholder:text-primary/40",
-                                "focus:border-primary sm:py-4 sm:text-2xl md:text-4xl lg:text-5xl"
+                                "py-3 text-base font-sans text-primary outline-none transition-colors duration-300 placeholder:text-primary/40",
+                                "focus:border-primary sm:py-4 sm:text-lg md:text-xl lg:text-2xl"
                             )}
                         />
                     </div>

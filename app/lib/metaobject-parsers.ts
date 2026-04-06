@@ -110,8 +110,8 @@ const FALLBACK_SOCIAL_LINKS: SocialLink[] = [
 
 const FALLBACK_THEME_FONTS: ThemeFonts = {
     sans: "Inter",
-    serif: "Inter",
-    mono: "Inter"
+    serif: "Georgia",
+    mono: "Courier New"
 };
 
 const FALLBACK_THEME_COLORS: ThemeCoreColors = {

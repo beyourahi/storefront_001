@@ -188,8 +188,8 @@ const DEFAULT_THEME_COLORS: ThemeCoreColors = {
 
 const DEFAULT_THEME_FONTS: ThemeFonts = {
     sans: "Inter",
-    serif: "Inter",
-    mono: "Inter"
+    serif: "Georgia",
+    mono: "Courier New"
 };
 
 // =============================================================================
