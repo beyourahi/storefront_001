@@ -783,8 +783,7 @@ video,
 }
 
 .article-content > p:first-of-type {
-    @apply text-lg md:text-xl;
-    opacity: 0.7;
+    @apply text-lg md:text-xl text-muted-foreground;
     line-height: 1.7;
 }
 
