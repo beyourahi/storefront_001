@@ -243,7 +243,10 @@ const Product = () => {
         } else {
             items.push({label: "Products", href: "/collections/all-products"});
         }
-        items.push({label: product.title});
+        const breadcrumbTitle = product.title.includes("+")
+            ? product.title.split("+")[0].trim()
+            : product.title;
+        items.push({label: breadcrumbTitle});
         return items;
     }, [product.collections?.nodes, activeCollectionHandle, product.title]);
 
