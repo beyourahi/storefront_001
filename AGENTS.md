@@ -59,6 +59,7 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 | **Features**  | Embla Carousel   | 8          | Product galleries, auto-scroll      |
 |               | Lenis            | 1.3        | Smooth scrolling                    |
 |               | Vaul             | 1.1        | Drawer primitives                   |
+|               | react-intersection-observer | ^10 | Scroll/viewport-triggered rendering |
 |               | Wishlist         | Custom     | Account + share flows               |
 |               | Recently Viewed  | Custom     | History tracking + provider         |
 |               | Blog             | Custom     | Article + author surfaces           |
@@ -78,6 +79,7 @@ storefront_001/
 ├── app/
 │   ├── routes/                    # Route modules
 │   ├── components/                # UI and feature components
+│   │   ├── *.tsx                  # Root-level shared components (QuantitySelector, WishlistButton, ShareDialog, DiscountBadge, etc.)
 │   │   ├── ui/                    # shadcn/ui generated primitives
 │   │   ├── account/               # Account dashboard surfaces
 │   │   ├── blog/                  # Blog surfaces
@@ -211,7 +213,7 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 
 ## Key Files
 
-**Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`, `app/lib/wishlist-context.tsx`, `app/lib/wishlist-utils.ts`, `app/lib/recently-viewed.ts`
+**Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`, `app/lib/wishlist-context.tsx`, `app/lib/wishlist-utils.ts`, `app/lib/recently-viewed.ts`, `app/lib/LenisProvider.tsx` (note: component in `lib/`, not `components/`)
 **Config**: `vite.config.ts`, `react-router.config.ts`, `eslint.config.js`, `prettier.config.js`, `app/styles/app.css`, `wrangler.jsonc`
 **GraphQL**: `storefrontapi.generated.d.ts`, `customer-accountapi.generated.d.ts`
 **Theme System**: `app/lib/theme-utils.ts`, `app/root.tsx`, `app/styles/app.css`
