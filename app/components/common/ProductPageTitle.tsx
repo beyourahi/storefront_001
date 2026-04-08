@@ -13,8 +13,8 @@ export const ProductPageTitle = ({title, as: Tag = "h1", "aria-hidden": ariaHidd
 
     return (
         <div className="lg:col-span-2">
-            <Tag className="font-serif text-2xl font-bold tracking-tight sm:text-2xl" aria-hidden={ariaHidden || undefined}>{primary}</Tag>
-            {secondary && <h3 className="opacity-50 3xl:text-base font-serif text-sm font-normal">{secondary}</h3>}
+            <Tag className="font-serif text-3xl font-bold tracking-tight sm:text-3xl" aria-hidden={ariaHidden || undefined}>{primary}</Tag>
+            {secondary && <h3 className="opacity-50 3xl:text-lg font-serif text-base font-normal">{secondary}</h3>}
         </div>
     );
 };
