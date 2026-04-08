@@ -1,5 +1,6 @@
 import type {CartLineUpdateInput} from "@shopify/hydrogen/storefront-api-types";
-import {CartForm, Image, Money, type OptimisticCartLine} from "@shopify/hydrogen";
+import {CartForm, Image, type OptimisticCartLine} from "@shopify/hydrogen";
+import {formatShopifyMoney} from "~/lib/currency-formatter";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Link, useFetcher} from "react-router";
 import {Trash2, Minus, Plus, AlertTriangle, XCircle} from "lucide-react";
@@ -213,7 +214,7 @@ function CartLinePricing({cost, quantity}: {cost: CartLine["cost"]; quantity: nu
                 className="text-foreground font-mono text-base font-bold tracking-tight tabular-nums antialiased sm:text-base"
                 aria-label="Line total"
             >
-                <Money as="span" data={totalAmount} withoutTrailingZeros />
+                {formatShopifyMoney(totalAmount)}
             </div>
             <div
                 className={cn(
@@ -222,11 +223,7 @@ function CartLinePricing({cost, quantity}: {cost: CartLine["cost"]; quantity: nu
                 )}
             >
                 <span className="font-mono font-medium tracking-tight tabular-nums" aria-label="Price per item">
-                    <Money
-                        as="span"
-                        data={{amount: perItemAmount, currencyCode: totalAmount.currencyCode}}
-                        withoutTrailingZeros
-                    />
+                    {formatShopifyMoney({amount: perItemAmount, currencyCode: totalAmount.currencyCode})}
                 </span>
                 <span>each</span>
             </div>

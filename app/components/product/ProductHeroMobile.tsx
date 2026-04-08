@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {Link, useNavigate, useLocation} from "react-router";
-import {CartForm, type MappedProductOptions, type OptimisticCartLineInput, Money} from "@shopify/hydrogen";
+import {CartForm, type MappedProductOptions, type OptimisticCartLineInput} from "@shopify/hydrogen";
+import {formatShopifyMoney} from "~/lib/currency-formatter";
 import type {FetcherWithComponents} from "react-router";
 import {cn} from "~/lib/utils";
 import type {ProductFragment} from "storefrontapi.generated";
@@ -185,7 +186,7 @@ export function ProductHeroMobile({
                                     isDisabled && "opacity-60 cursor-not-allowed"
                                 )}
                             >
-                                <span className="font-medium">{displayPrice && <Money data={displayPrice} />}</span>
+                                <span className="font-medium">{displayPrice && formatShopifyMoney(displayPrice)}</span>
                                 <span className="whitespace-nowrap">{getButtonText()}</span>
                             </button>
                         );

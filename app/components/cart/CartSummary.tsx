@@ -1,4 +1,4 @@
-import {CartForm, Money} from "@shopify/hydrogen";
+import {CartForm} from "@shopify/hydrogen";
 import type {OptimisticCart} from "@shopify/hydrogen";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {useEffect, useRef, useState, useCallback} from "react";
@@ -297,7 +297,7 @@ function CartCheckoutActions({
         >
             {isMutating ? <Spinner className="h-4 w-4" /> : <CreditCard className="h-4 w-4" />}
             Checkout{totalAmount ? " - " : ""}
-            {totalAmount && <Money as="span" data={totalAmount} withoutTrailingZeros />}
+            {totalAmount && formatShopifyMoney(totalAmount)}
         </a>
     );
 }
@@ -426,7 +426,7 @@ function CartClearConfirmation({
                             </div>
                             <div className="flex items-center justify-between text-sm">
                                 <span className="text-muted-foreground">Total value:</span>
-                                <span className="font-semibold">{totalAmount && <Money as="span" data={totalAmount} withoutTrailingZeros />}</span>
+                                <span className="font-semibold">{totalAmount && formatShopifyMoney(totalAmount)}</span>
                             </div>
                         </div>
 

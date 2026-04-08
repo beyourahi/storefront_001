@@ -3,21 +3,23 @@ import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 export const formatPriceWithLocale = (amount: number, currencyCode: string): string => {
     try {
         if (typeof amount !== "number" || isNaN(amount)) {
-            return `${currencyCode} 0.00`;
+            return `${currencyCode} 0`;
         }
 
         if (!currencyCode || typeof currencyCode !== "string" || currencyCode.length !== 3) {
-            return `${currencyCode || "USD"} ${amount.toFixed(2)}`;
+            const formattedAmount = Number.isInteger(amount) ? amount.toFixed(0) : amount.toFixed(2);
+            return `${currencyCode || "USD"} ${formattedAmount}`;
         }
 
+        const isInteger = Number.isInteger(amount);
         return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
             style: "currency",
             currency: currencyCode,
-            minimumFractionDigits: 0,
+            minimumFractionDigits: isInteger ? 0 : 2,
             maximumFractionDigits: 2
         }).format(amount);
     } catch {
-        const formattedAmount = amount.toFixed(2);
+        const formattedAmount = Number.isInteger(amount) ? amount.toFixed(0) : amount.toFixed(2);
 
         const currencySymbols: Record<string, string> = {
             USD: "$",

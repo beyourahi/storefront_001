@@ -5,7 +5,7 @@ import {Skeleton} from "~/components/ui/skeleton";
 import {Spinner} from "~/components/ui/spinner";
 import type {RootLoader} from "~/root";
 import {parseProductTitle} from "~/lib/product";
-import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+import {formatPrice} from "~/lib/currency-formatter";
 
 type ShoppingSummaryProps = {
     product: any;
@@ -13,15 +13,6 @@ type ShoppingSummaryProps = {
     quantity: number;
     isLoading?: boolean;
     isVariantTransitioning?: boolean;
-};
-
-const formatMoney = (amount: number, currencyCode: string) => {
-    return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
-        style: "currency",
-        currency: currencyCode,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-    }).format(amount);
 };
 
 const SummaryContent = ({
@@ -88,7 +79,7 @@ const SummaryContent = ({
                         <span className="text-muted-foreground">
                             Current cart ({cartItemCount} {cartItemCount === 1 ? "item" : "items"})
                         </span>
-                        <span className="font-mono font-medium">{formatMoney(cartTotalAmount, cartCurrencyCode)}</span>
+                        <span className="font-mono font-medium">{formatPrice(cartTotalAmount, cartCurrencyCode)}</span>
                     </div>
                 )}
 
@@ -110,10 +101,10 @@ const SummaryContent = ({
                     <div className="flex flex-col items-end">
                         {isOnSale && totalComparePrice && (
                             <span className="text-muted-foreground font-mono text-xs line-through">
-                                {formatMoney(totalComparePrice, currencyCode)}
+                                {formatPrice(totalComparePrice, currencyCode)}
                             </span>
                         )}
-                        <span className="font-mono font-medium">{formatMoney(totalPrice, currencyCode)}</span>
+                        <span className="font-mono font-medium">{formatPrice(totalPrice, currencyCode)}</span>
                     </div>
                 </div>
 
@@ -121,7 +112,7 @@ const SummaryContent = ({
                     <div className="text-sale-text flex items-center justify-between py-1">
                         <span className="text-xs">You save</span>
                         <span className="font-mono text-xs font-medium">
-                            -{formatMoney(totalSavings, currencyCode)} ({savingsPercentage}%)
+                            -{formatPrice(totalSavings, currencyCode)} ({savingsPercentage}%)
                         </span>
                     </div>
                 )}
@@ -132,7 +123,7 @@ const SummaryContent = ({
             <div className="flex items-center justify-between">
                 <span className="text-foreground font-medium">{hasExistingCart ? "New Total" : "Total"}</span>
                 <span className="text-foreground font-mono text-base font-bold">
-                    {formatMoney(hasExistingCart ? newCartTotal : totalPrice, currencyCode)}
+                    {formatPrice(hasExistingCart ? newCartTotal : totalPrice, currencyCode)}
                 </span>
             </div>
         </>

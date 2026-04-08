@@ -9,6 +9,7 @@ import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromOrderHistoryProduct} from "~/lib/product/product-card-normalizers";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+import {formatShopifyMoney} from "~/lib/currency-formatter";
 
 type OrderLineItem = {
     id: string;
@@ -198,19 +199,10 @@ type OrderProduct = {
 
 const OrderProductCard = ({product, index}: {product: OrderProduct; index: number}) => {
     const normalizedProduct = useMemo(() => fromOrderHistoryProduct(product), [product]);
-    const formattedPrice = useMemo(() => {
-        const amount = Number(normalizedProduct.priceRange.minVariantPrice.amount || 0);
-        const currencyCode = normalizedProduct.priceRange.minVariantPrice.currencyCode || "USD";
-
-        try {
-            return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
-                style: "currency",
-                currency: currencyCode
-            }).format(amount);
-        } catch {
-            return normalizedProduct.priceRange.minVariantPrice.amount;
-        }
-    }, [normalizedProduct]);
+    const formattedPrice = useMemo(
+        () => formatShopifyMoney(normalizedProduct.priceRange.minVariantPrice),
+        [normalizedProduct]
+    );
 
     const formattedDate = new Date(product.orderDate).toLocaleDateString(STORE_FORMAT_LOCALE, {
         month: "short",

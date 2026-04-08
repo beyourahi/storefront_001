@@ -64,10 +64,11 @@ export class CurrencyFormatter {
         }
 
         try {
+            const isInteger = Number.isInteger(amount);
             return new Intl.NumberFormat(DEFAULT_LOCALE, {
                 style: "currency",
                 currency: currencyCode,
-                minimumFractionDigits: 0,
+                minimumFractionDigits: isInteger ? 0 : 2,
                 maximumFractionDigits: 2
             }).format(amount);
         } catch {
@@ -157,7 +158,7 @@ export class CurrencyFormatter {
 
     private getFallbackFormat(amount: number, currencyCode: string): string {
         const symbol = CURRENCY_SYMBOLS[currencyCode] || currencyCode;
-        const formattedAmount = amount.toFixed(2);
+        const formattedAmount = Number.isInteger(amount) ? amount.toFixed(0) : amount.toFixed(2);
         return `${symbol}${formattedAmount}`;
     }
 }

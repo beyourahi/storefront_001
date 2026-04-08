@@ -4,7 +4,7 @@ import {Badge} from "~/components/ui/badge";
 import {AddToCartButton} from "~/components/product/AddToCartButton";
 import {BuyNowButton} from "~/components/product/BuyNowButton";
 import type {SellingPlanFragment} from "~/components/product/SellingPlanSelector";
-import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+import {formatPrice} from "~/lib/currency-formatter";
 
 type ProductMobileStickyButtonsProps = {
     product: any;
@@ -13,10 +13,6 @@ type ProductMobileStickyButtonsProps = {
     quantity: number;
     onQuantityChange: (qty: number) => void;
     isVariantTransitioning?: boolean;
-};
-
-const formatMoney = (amount: number, currencyCode: string) => {
-    return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {style: "currency", currency: currencyCode}).format(amount);
 };
 
 export const ProductMobileStickyButtons = ({
@@ -68,11 +64,11 @@ export const ProductMobileStickyButtons = ({
                     <div className="mb-2.5 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="text-foreground font-mono text-lg font-bold">
-                                {formatMoney(totalPrice, currencyCode)}
+                                {formatPrice(totalPrice, currencyCode)}
                             </span>
                             {isOnSale && totalComparePrice && (
                                 <span className="text-muted-foreground font-mono text-sm line-through">
-                                    {formatMoney(totalComparePrice, currencyCode)}
+                                    {formatPrice(totalComparePrice, currencyCode)}
                                 </span>
                             )}
                         </div>

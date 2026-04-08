@@ -7,6 +7,7 @@ import {cn} from "~/lib/utils";
 import type {StoreCreditAccount, StoreCreditTransaction} from "~/graphql/customer-account/StoreCreditQueries";
 import {isCredit} from "~/graphql/customer-account/StoreCreditQueries";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+import {formatShopifyMoney} from "~/lib/currency-formatter";
 
 interface StoreCreditWidgetProps {
     balance: {amount: string; currencyCode: string} | null;
@@ -33,12 +34,7 @@ export const StoreCreditWidget = ({balance, accounts}: StoreCreditWidgetProps) =
                                     Store Credit Balance
                                 </p>
                                 <p className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-foreground tracking-tight">
-                                    {hasBalance
-                                        ? new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
-                                              style: "currency",
-                                              currency: balance.currencyCode
-                                          }).format(parseFloat(balance.amount))
-                                        : "$0.00"}
+                                    {hasBalance ? formatShopifyMoney(balance) : "$0"}
                                 </p>
                                 {hasBalance && (
                                     <p className="text-sm text-green-600 font-medium">
@@ -98,13 +94,6 @@ const TransactionItem = ({transaction}: {transaction: StoreCreditTransaction}) =
         year: "numeric"
     });
 
-    const formatMoney = (amount: {amount: string; currencyCode: string}) => {
-        return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
-            style: "currency",
-            currency: amount.currencyCode
-        }).format(parseFloat(amount.amount));
-    };
-
     return (
         <div className="flex items-center justify-between py-2.5 last:pb-0 first:pt-0">
             <div className="flex items-center gap-3">
@@ -131,9 +120,9 @@ const TransactionItem = ({transaction}: {transaction: StoreCreditTransaction}) =
                     )}
                 >
                     {credit ? "+" : "-"}
-                    {formatMoney(transaction.amount)}
+                    {formatShopifyMoney(transaction.amount)}
                 </p>
-                <p className="text-sm text-muted-foreground">Bal: {formatMoney(transaction.balanceAfterTransaction)}</p>
+                <p className="text-sm text-muted-foreground">Bal: {formatShopifyMoney(transaction.balanceAfterTransaction)}</p>
             </div>
         </div>
     );
