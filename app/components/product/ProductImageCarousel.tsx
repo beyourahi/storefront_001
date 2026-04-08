@@ -150,12 +150,8 @@ export const ProductImageCarousel = ({
                                     <button
                                         type="button"
                                         className={`focus:ring-primary h-full w-full cursor-zoom-in select-none focus:ring-2 focus:outline-none focus:ring-inset lg:cursor-zoom-in ${aspectRatioClass}`}
-                                        onClick={() => {
-                                            if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-                                                openGallery(activeIndex);
-                                            }
-                                        }}
-                                        aria-label="Open image gallery (desktop only)"
+                                        onClick={() => openLightbox(index)}
+                                        aria-label="Open image in lightbox"
                                     >
                                         <Image
                                             data={{
@@ -219,16 +215,10 @@ export const ProductImageCarousel = ({
                                             onClick={() => onThumbClick(index)}
                                             onContextMenu={e => {
                                                 e.preventDefault();
-                                                if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-                                                    openLightbox(index);
-                                                }
+                                                openLightbox(index);
                                             }}
-                                            onDoubleClick={() => {
-                                                if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-                                                    openLightbox(index);
-                                                }
-                                            }}
-                                            aria-label={`Go to image ${index + 1}. Right-click or double-click to open gallery (desktop only).`}
+                                            onDoubleClick={() => openLightbox(index)}
+                                            aria-label={`Go to image ${index + 1}. Right-click or double-click to open lightbox.`}
                                         >
                                             <div
                                                 className={`relative h-full w-full ${aspectRatioClass} ${
