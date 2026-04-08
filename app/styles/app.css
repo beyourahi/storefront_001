@@ -475,6 +475,16 @@ body {
         line-height: clamp(1.1, 1.05 + 0.25vw, 1.2);
         letter-spacing: -0.02em;
     }
+
+    /* Focus management: remove browser default outline; visible indicator on keyboard/AT navigation only */
+    * {
+        outline: none;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--focus-ring);
+        outline-offset: 2px;
+    }
 }
 
 .cool-underline {

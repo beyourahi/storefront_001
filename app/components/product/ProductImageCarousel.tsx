@@ -149,7 +149,7 @@ export const ProductImageCarousel = ({
                                 <div key={image.id} className="min-w-0 shrink-0 grow-0 basis-full">
                                     <button
                                         type="button"
-                                        className={`focus:ring-primary h-full w-full cursor-zoom-in select-none focus:ring-2 focus:outline-none focus:ring-inset lg:cursor-zoom-in ${aspectRatioClass}`}
+                                        className={`focus-visible:ring-primary h-full w-full cursor-zoom-in select-none focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset lg:cursor-zoom-in ${aspectRatioClass}`}
                                         onClick={() => openLightbox(index)}
                                         aria-label="Open image in lightbox"
                                     >

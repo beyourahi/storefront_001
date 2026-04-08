@@ -58,9 +58,9 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                             className={cn(
                                 "h-12 w-full rounded-md border bg-background px-4 text-foreground",
                                 "placeholder:text-muted-foreground/60",
-                                "focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none",
+                                "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none",
                                 "disabled:opacity-60",
-                                isError && "border-destructive focus:border-destructive focus:ring-destructive/20"
+                                isError && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
                             )}
                         />
                     </div>
@@ -109,9 +109,9 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                         className={cn(
                             "h-10 w-full rounded-md border bg-background px-3 text-sm text-foreground",
                             "placeholder:text-muted-foreground/60",
-                            "focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none",
+                            "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none",
                             "disabled:opacity-60",
-                            isError && "border-destructive focus:border-destructive focus:ring-destructive/20"
+                            isError && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
                         )}
                     />
                 </div>

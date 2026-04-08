@@ -600,7 +600,7 @@ function ProductVariantDialogContent({
 
                     <div className="relative flex min-h-0 w-full flex-col lg:w-3/5">
                         <DialogPrimitive.Close
-                            className="sleek bg-background/90 hover:bg-background absolute top-6 right-6 z-20 rounded-full p-2 opacity-90 shadow-lg backdrop-blur-sm hover:scale-105 hover:opacity-100 focus:outline-none disabled:pointer-events-none"
+                            className="sleek bg-background/90 hover:bg-background absolute top-6 right-6 z-20 rounded-full p-2 opacity-90 shadow-lg backdrop-blur-sm hover:scale-105 hover:opacity-100 disabled:pointer-events-none"
                             aria-label="Close"
                         >
                             <X className="h-4 w-4" />
