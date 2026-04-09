@@ -99,22 +99,22 @@ export function FloatingChatWidget() {
         if (document.getElementById("fb-jssdk")) return;
 
         window.fbAsyncInit = function () {
-            window.FB?.CustomerChat &&
-                // Suppress Meta's default bubble after the plugin mounts
-                window.addEventListener(
-                    "message",
-                    function handler(e) {
-                        if (
-                            e.data &&
-                            typeof e.data === "string" &&
-                            e.data.includes("customerchat")
-                        ) {
-                            window.FB?.CustomerChat.hide();
-                            window.removeEventListener("message", handler);
-                        }
-                    },
-                    {once: false}
-                );
+            if (!window.FB?.CustomerChat) return;
+            // Suppress Meta's default bubble after the plugin mounts
+            window.addEventListener(
+                "message",
+                function handler(e) {
+                    if (
+                        e.data &&
+                        typeof e.data === "string" &&
+                        e.data.includes("customerchat")
+                    ) {
+                        window.FB?.CustomerChat.hide();
+                        window.removeEventListener("message", handler);
+                    }
+                },
+                {once: false}
+            );
         };
 
         const script = document.createElement("script");
@@ -138,14 +138,15 @@ export function FloatingChatWidget() {
             {/* Hidden FB Customer Chat mount point — Meta SDK targets this div */}
             {hasMessenger && (
                 <div id="fb-root" aria-hidden="true">
+                    {/* eslint-disable react/no-unknown-property */}
                     <div
                         className="fb-customerchat"
-                        // @ts-expect-error — non-standard FB SDK attribute
+                        // @ts-expect-error — non-standard FB SDK attributes read by Meta's script
                         attribution="biz_inbox"
                         page_id={messengerPageId}
-                        // Minimised by default; our button shows it
                         minimized="true"
                     />
+                    {/* eslint-enable react/no-unknown-property */}
                 </div>
             )}
 
