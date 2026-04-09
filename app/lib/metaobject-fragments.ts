@@ -240,6 +240,12 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
       }
     }
 
+    # Messenger Page ID for Facebook Customer Chat plugin
+    messengerId: field(key: "messenger_page_id") { value }
+
+    # WhatsApp phone number (digits only, or international format)
+    whatsappNumber: field(key: "whatsapp_number") { value }
+
     socialLinksData: field(key: "social_links_data") { value }
     testimonialsData: field(key: "testimonials_data") { value }
     faqItemsData: field(key: "faq_items_data") { value }

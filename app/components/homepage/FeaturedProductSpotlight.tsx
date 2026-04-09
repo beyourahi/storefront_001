@@ -44,9 +44,9 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
     const {primary, secondary} = parseProductTitle(product.title);
 
     return (
-        <section className="bg-background py-16">
+        <section className="bg-background py-10">
             <div className="mx-auto max-w-[2000px] px-2 md:px-4">
-                <div className="mb-8 md:mb-12">
+                <div className="mb-5 md:mb-8">
                     <div className="flex items-center gap-4 md:gap-6">
                         <div className="flex flex-col items-start gap-1">
                             <h2 className="text-foreground font-serif text-xl font-bold uppercase md:text-3xl lg:text-4xl">
@@ -89,7 +89,7 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                                         altText: displayImage.altText || product.title
                                     }}
                                     sizes="(min-width: 1280px) 60vw, (min-width: 1024px) 55vw, 100vw"
-                                    className="aspect-[4/5] h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                                    className="aspect-[4/5] lg:aspect-[5/4] h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                                 />
                             ) : (
                                 <div className="flex aspect-[4/5] h-full w-full items-center justify-center bg-gradient-to-br from-muted to-muted/30 px-10 text-center">
@@ -112,8 +112,8 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                         ) : null}
                     </Link>
 
-                    <div className="flex h-full flex-col justify-between rounded-[var(--radius-3xl-raw)] border border-border/60 bg-card/65 p-6 shadow-sm backdrop-blur md:p-8">
-                        <div className="space-y-5">
+                    <div className="flex h-full flex-col justify-between rounded-[var(--radius-3xl-raw)] border border-border/60 bg-card/65 p-5 shadow-sm backdrop-blur md:p-6">
+                        <div className="space-y-4">
                             <div className="space-y-3">
                                 <h3 className="font-serif text-2xl uppercase sm:text-3xl md:text-4xl">{primary}</h3>
                                 {secondary && (
@@ -140,7 +140,7 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                             </div>
                         </div>
 
-                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                        <div className="mt-5 flex flex-wrap items-center gap-3">
                             <QuickAddButton product={product} className="hover:scale-100" />
                             <Button
                                 asChild

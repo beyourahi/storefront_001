@@ -45,7 +45,8 @@ import {GoogleTagManager} from "~/components/GoogleTagManager";
 import {ServiceWorkerRegistration} from "~/components/ServiceWorkerRegistration";
 import {ServiceWorkerUpdateBanner} from "~/components/pwa/ServiceWorkerUpdateBanner";
 import {NetworkStatusIndicator} from "~/components/NetworkStatusIndicator";
-import {NativeAppBanner} from "~/components/NativeAppBanner";
+import {OpenInAppButton} from "~/components/pwa/OpenInAppButton";
+import {FloatingChatWidget} from "~/components/FloatingChatWidget";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
 import {generateWebsiteSchema, getSeoDefaults} from "~/lib/seo";
@@ -456,8 +457,9 @@ export default function App() {
                                         <Outlet />
                                     </main>
                                     <Footer shopName={shopName} />
-                                    {/* Persistent native-app deep-link button — mobile only, mounted once at shell level */}
-                                    <NativeAppBanner />
+                                    {/* Persistent PWA install banner — shown on mobile when install is available, mounted once at shell level */}
+                                    <OpenInAppButton variant="desktop-fixed" />
+                                    <FloatingChatWidget />
                                     <Toaster position="top-center" />
                                 </SearchControllerProvider>
                             </CartDrawerProvider>

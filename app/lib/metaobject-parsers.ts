@@ -368,6 +368,8 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
 
     contactEmail: "",
     contactPhone: "",
+    messengerPageId: "",
+    whatsappNumber: "",
     businessHours: "",
     address: {street: "", city: "", state: "", zip: ""},
 
@@ -830,6 +832,8 @@ export const parseSiteSettings = (rawData: unknown): SiteSettings => {
 
         contactEmail: data.contactEmail?.value || FALLBACK_SITE_SETTINGS.contactEmail,
         contactPhone: data.contactPhone?.value || FALLBACK_SITE_SETTINGS.contactPhone,
+        messengerPageId: data.messengerId?.value || FALLBACK_SITE_SETTINGS.messengerPageId,
+        whatsappNumber: data.whatsappNumber?.value || FALLBACK_SITE_SETTINGS.whatsappNumber,
         businessHours: data.businessHours?.value || FALLBACK_SITE_SETTINGS.businessHours,
         address: {
             street: data.streetAddress?.value || FALLBACK_SITE_SETTINGS.address.street,
