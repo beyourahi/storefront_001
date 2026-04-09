@@ -1,4 +1,4 @@
-import {useMemo} from "react";
+import {useMemo, useEffect, useRef} from "react";
 import {useIsMobile} from "~/hooks/useIsMobile";
 import {Badge} from "~/components/ui/badge";
 import {AddToCartButton} from "~/components/product/AddToCartButton";
@@ -23,6 +23,31 @@ export const ProductMobileStickyButtons = ({
     isVariantTransitioning = false
 }: ProductMobileStickyButtonsProps) => {
     const isMobile = useIsMobile();
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // Expose the bar's rendered height as a CSS variable on :root so that
+    // other fixed-position elements (e.g. NativeAppBanner) can offset above it
+    // without knowing about this component directly.
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+
+        const update = () => {
+            document.documentElement.style.setProperty(
+                "--product-sticky-bar-height",
+                `${el.offsetHeight}px`
+            );
+        };
+
+        const observer = new ResizeObserver(update);
+        observer.observe(el);
+        update();
+
+        return () => {
+            observer.disconnect();
+            document.documentElement.style.removeProperty("--product-sticky-bar-height");
+        };
+    }, [isMobile, selectedVariant?.price]);
 
     const isPreorder =
         product?.tags?.some((tag: string) => tag.toLowerCase() === "preorder" || tag.toLowerCase() === "pre-order") ??
@@ -58,7 +83,7 @@ export const ProductMobileStickyButtons = ({
     const isDisabled = !selectedVariant || isVariantTransitioning;
 
     return (
-        <div className="fixed right-0 bottom-0 left-0 z-[45] lg:hidden" style={{transform: "translateZ(0)"}}>
+        <div ref={containerRef} className="fixed right-0 bottom-0 left-0 z-[45] lg:hidden" style={{transform: "translateZ(0)"}}>
             <div className="bg-background/95 border-t shadow-lg backdrop-blur-md">
                 <div className="px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
                     <div className="mb-2.5 flex items-center justify-between">
