@@ -17,13 +17,16 @@
  *     on mobile and WhatsApp Web on desktop.
  *
  * WCAG 2.1 AA:
- *   - WhatsApp  : oklch(0.35 0.15 150)  on white → ≥ 3:1 (UI component)
- *   - Messenger : oklch(0.38 0.18 260)  on white → ≥ 3:1 (UI component)
+ *   - WhatsApp  : #25D366 (official brand green) on white → ≈ 2.2:1 (UI component, icon only)
+ *   - Messenger : #0099FF (official brand blue)  on white → ≈ 3.1:1 (UI component ✓)
  *   - Both touch targets: min 44 × 44 px
  *   - aria-label on every interactive element
  *
  * @positioning
- *   fixed bottom-6 right-4 z-50 — stacked column, WhatsApp above Messenger.
+ *   fixed right-4 z-50 — stacked column, WhatsApp above Messenger.
+ *   Bottom offset mirrors OpenInAppButton's base calculation and adds the
+ *   button height (h-11 = 2.75rem) + gap (0.75rem) so the two never overlap,
+ *   even on product pages where --product-sticky-bar-height is non-zero.
  */
 
 import {useEffect} from "react";
@@ -152,7 +155,13 @@ export function FloatingChatWidget() {
 
             {/* Floating button column */}
             <div
-                className="fixed bottom-6 right-4 z-50 flex flex-col items-end gap-3"
+                className="fixed right-4 z-50 flex flex-col items-end gap-3"
+                style={{
+                    // Clear the OpenInAppButton (h-11 = 2.75rem) plus a gap-3 (0.75rem),
+                    // using the same base formula as OpenInAppButton so product-page
+                    // sticky bars are accounted for automatically.
+                    bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), 1rem) + 2.75rem + 0.75rem)",
+                }}
                 aria-label="Chat support options"
             >
                 {/* WhatsApp — renders above Messenger */}
@@ -165,8 +174,8 @@ export function FloatingChatWidget() {
                         className={[
                             "group flex h-[52px] w-[52px] items-center justify-center",
                             "rounded-full shadow-lg transition-all duration-200",
-                            /* oklch(0.35 0.15 150) on white ≈ 5.1:1 — WCAG AA ✓ */
-                            "bg-[oklch(0.35_0.15_150)] text-white",
+                            /* #25D366 — official WhatsApp brand green */
+                            "bg-[#25D366] text-white",
                             "hover:scale-110 hover:shadow-xl",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
                         ].join(" ")}
@@ -184,8 +193,8 @@ export function FloatingChatWidget() {
                         className={[
                             "group flex h-[52px] w-[52px] items-center justify-center",
                             "rounded-full shadow-lg transition-all duration-200",
-                            /* oklch(0.38 0.18 260) on white ≈ 4.8:1 — WCAG AA ✓ */
-                            "bg-[oklch(0.38_0.18_260)] text-white",
+                            /* #0099FF — official Messenger brand blue */
+                            "bg-[#0099FF] text-white",
                             "hover:scale-110 hover:shadow-xl",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
                         ].join(" ")}
