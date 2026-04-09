@@ -3,14 +3,14 @@ import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {usePwaInstall} from "~/hooks/usePwaInstall";
 import {IosInstallInstructions} from "./IosInstallInstructions";
-import {Download, Smartphone} from "lucide-react";
+import {Download} from "lucide-react";
 
 interface OpenInAppButtonProps {
     variant?: "desktop-fixed" | "menu-item";
 }
 
 export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) => {
-    const {canInstall, isIOS, isStandalone, triggerInstall, appName, appIcon} = usePwaInstall();
+    const {canInstall, isIOS, triggerInstall, appName, appIcon} = usePwaInstall();
     const [showIosInstructions, setShowIosInstructions] = useState(false);
 
     const handleClick = async () => {
@@ -26,24 +26,6 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
 
         window.location.href = window.location.origin;
     };
-
-    // desktop-fixed: don't render on desktop browsers that can't install and aren't iOS
-    // (prevents the confusing window.location.origin fallback on Firefox/Safari)
-    if (variant === "desktop-fixed" && !canInstall && !isIOS) return null;
-
-    if (isStandalone) {
-        if (variant === "desktop-fixed") return null;
-
-        return (
-            <div
-                className={cn("flex items-center gap-3 text-primary/60", "animate-slide-up-fade opacity-0")}
-                style={{animationDelay: "400ms", animationFillMode: "both"}}
-            >
-                <Smartphone className="size-5" />
-                <span className="text-lg font-medium">You&apos;re in the app</span>
-            </div>
-        );
-    }
 
     const isFixed = variant === "desktop-fixed";
     const isMenuItem = variant === "menu-item";
