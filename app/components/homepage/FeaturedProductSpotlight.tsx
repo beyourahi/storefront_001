@@ -1,8 +1,9 @@
 import {Image} from "@shopify/hydrogen";
-import {ArrowRight} from "lucide-react";
+import {ArrowUpRight} from "lucide-react";
 import {Link} from "react-router";
 import {Button} from "~/components/ui/button";
 import {ParallaxLayer} from "~/components/motion/ParallaxLayer";
+import {QuickAddButton} from "~/components/QuickAddButton";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
 import {parseProductTitle} from "~/lib/product";
 import type {FeaturedProductSection} from "types";
@@ -113,16 +114,12 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
 
                     <div className="flex h-full flex-col justify-between rounded-[var(--radius-3xl-raw)] border border-border/60 bg-card/65 p-6 shadow-sm backdrop-blur md:p-8">
                         <div className="space-y-5">
-                            {product.vendor ? (
-                                <p className="text-muted-foreground text-xs uppercase tracking-[0.35em]">
-                                    {product.vendor}
-                                </p>
-                            ) : null}
-
                             <div className="space-y-3">
-                                <h3 className="font-serif text-3xl uppercase md:text-5xl">{primary}</h3>
+                                <h3 className="font-serif text-2xl uppercase sm:text-3xl md:text-4xl">{primary}</h3>
                                 {secondary && (
-                                    <h4 className="font-serif text-xl uppercase opacity-50 md:text-3xl">{secondary}</h4>
+                                    <h4 className="font-serif text-lg uppercase opacity-50 sm:text-xl md:text-2xl">
+                                        {secondary}
+                                    </h4>
                                 )}
                                 <p className="text-muted-foreground max-w-xl text-sm leading-7 md:text-base">
                                     {getDescription(product.description)}
@@ -143,15 +140,17 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                             </div>
                         </div>
 
-                        <div className="mt-8 space-y-3">
+                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                            <QuickAddButton product={product} className="hover:scale-100" />
                             <Button
                                 asChild
+                                variant="outline"
                                 size="lg"
-                                className="w-full justify-between rounded-[var(--radius-pill-raw)] px-6 py-6 text-sm uppercase tracking-[0.22em]"
+                                className="justify-between rounded-[var(--radius-pill-raw)] px-6 py-6 text-sm uppercase tracking-[0.22em] hover:translate-y-0"
                             >
                                 <Link to={`/products/${product.handle}`} prefetch="intent">
-                                    Shop the featured product
-                                    <ArrowRight className="h-4 w-4" />
+                                    View featured product
+                                    <ArrowUpRight className="h-4 w-4" />
                                 </Link>
                             </Button>
                         </div>

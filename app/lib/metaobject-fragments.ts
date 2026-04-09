@@ -93,6 +93,26 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
               height
             }
           }
+          tags
+          variants(first: 100) {
+            nodes {
+              id
+              title
+              availableForSale
+              selectedOptions {
+                name
+                value
+              }
+              price {
+                amount
+                currencyCode
+              }
+              compareAtPrice {
+                amount
+                currencyCode
+              }
+            }
+          }
         }
       }
     }

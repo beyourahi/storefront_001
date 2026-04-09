@@ -548,6 +548,14 @@ const parseFeaturedProductSection = (featuredProductField: MetaobjectField | und
           : null;
 
     const compareAtPrice = selectedVariant.compareAtPrice as Record<string, unknown> | undefined;
+
+    const rawPriceRange = reference.priceRange as Record<string, unknown> | undefined;
+    const minVariantPrice = rawPriceRange?.minVariantPrice as Record<string, unknown> | undefined;
+    const maxVariantPrice = rawPriceRange?.maxVariantPrice as Record<string, unknown> | undefined;
+
+    const rawVariants = (reference.variants as Record<string, unknown> | undefined)?.nodes;
+    const variantNodes = Array.isArray(rawVariants) ? rawVariants : [];
+
     return {
         id: reference.id as string,
         handle: reference.handle as string,
@@ -556,6 +564,35 @@ const parseFeaturedProductSection = (featuredProductField: MetaobjectField | und
         description: (reference.description as string | null) ?? "",
         availableForSale: true,
         featuredImage,
+        tags: (reference.tags as string[] | null) ?? [],
+        priceRange: {
+            minVariantPrice: {
+                amount: (minVariantPrice?.amount as string) ?? "0",
+                currencyCode: (minVariantPrice?.currencyCode as string) ?? "USD"
+            },
+            maxVariantPrice: {
+                amount: (maxVariantPrice?.amount as string) ?? "0",
+                currencyCode: (maxVariantPrice?.currencyCode as string) ?? "USD"
+            }
+        },
+        variants: {
+            nodes: variantNodes.map(v => {
+                const variant = v as Record<string, unknown>;
+                const vPrice = variant.price as Record<string, unknown>;
+                const vCompareAt = variant.compareAtPrice as Record<string, unknown> | undefined;
+                return {
+                    id: variant.id as string,
+                    availableForSale: variant.availableForSale as boolean,
+                    title: variant.title as string | undefined,
+                    selectedOptions: variant.selectedOptions as Array<{ name: string; value: string }> | undefined,
+                    price: { amount: vPrice.amount as string, currencyCode: vPrice.currencyCode as string },
+                    compareAtPrice:
+                        vCompareAt?.amount
+                            ? { amount: vCompareAt.amount as string, currencyCode: vCompareAt.currencyCode as string }
+                            : null
+                };
+            })
+        },
         price: {
             amount: variantPrice.amount as string,
             currencyCode: variantPrice.currencyCode as string
