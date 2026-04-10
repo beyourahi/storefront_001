@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-10",
+        headline: "Changelog link added to footer on all devices",
+        summary:
+            "The Changelog link now appears in the footer navigation on every device — mobile, tablet, and desktop. Previously it was only shown on desktop. The floating chat and install buttons have also been repositioned so they never cover the copyright row at the bottom of the page.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-10",
         headline: "App install button is now inside the mobile menu",
         summary:
             "Moved the \"Add to Home Screen\" button into the mobile navigation menu so it no longer clutters the navigation bar. The button still appears prominently when you open the menu, making the install flow easy to discover without getting in the way of everyday browsing.",

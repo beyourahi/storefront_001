@@ -81,10 +81,10 @@ export function FloatingChatWidget() {
         <div
             className="fixed right-4 z-50 flex flex-col items-end gap-3"
             style={{
-                // Clear the OpenInAppButton (h-11 = 2.75rem) plus a gap-3 (0.75rem),
-                // using the same base formula as OpenInAppButton so product-page
-                // sticky bars are accounted for automatically.
-                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), 1rem) + 2.75rem + 0.75rem)",
+                // Stack above OpenInAppButton (h-11 = 2.75rem) plus a gap-3 (0.75rem),
+                // using the same base formula so product-page sticky bars and footer
+                // copyright clearance (--floating-btn-min-bottom) apply automatically.
+                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), var(--floating-btn-min-bottom, 5.5rem)) + 2.75rem + 0.75rem)",
             }}
             aria-label="Chat support options"
         >

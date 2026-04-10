@@ -55,9 +55,9 @@ export const Footer = ({shopName}: {shopName: string}) => {
                 )}
             >
                 {/* ── Main Footer Grid ── */}
-                <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+                <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-12">
                     {/* Column 1: Newsletter */}
-                    <div className="sm:col-span-2 lg:col-span-1">
+                    <div className="sm:col-span-2 lg:col-span-2">
                         <h3 className="font-serif text-lg font-semibold text-foreground">Stay Connected</h3>
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                             {brandDescription
@@ -112,8 +112,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                                     </Link>
                                 </li>
                             ))}
-                            {/* Changelog — desktop only; mobile users see it in the mobile menu drawer */}
-                            <li className="hidden lg:block">
+                            <li>
                                 <Link
                                     to="/changelog"
                                     className={cn(

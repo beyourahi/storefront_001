@@ -47,10 +47,11 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                     aria-label="Install this page as an app"
                     className="flex fixed right-4 z-[var(--z-navbar)] animate-slide-up-fade"
                     style={{
-                        // Float above the product sticky action bar and device safe-area notch.
-                        // --product-sticky-bar-height is set by ProductMobileStickyButtons via
-                        // ResizeObserver when on a product page; falls back to 0px elsewhere.
-                        bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), 1rem))",
+                        // Float above the product sticky action bar, device safe-area notch,
+                        // and the footer copyright row. --product-sticky-bar-height is set by
+                        // ProductMobileStickyButtons via ResizeObserver when on a product page.
+                        // --floating-btn-min-bottom is responsive (5.5rem mobile / 3.5rem md+).
+                        bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), var(--floating-btn-min-bottom, 5.5rem)))",
                         animationDelay: "800ms",
                         animationFillMode: "both",
                     }}

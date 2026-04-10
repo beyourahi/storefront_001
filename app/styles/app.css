@@ -132,6 +132,10 @@ body {
     --total-header-height: calc(var(--announcement-height) + var(--navbar-height));
     --announcement-scroll-duration: 20s;
 
+    /* ── Floating Button Bottom Clearance ── */
+    /* mobile default: clears the 2-row (flex-col) footer copyright section (pb-8 + ~52px content) */
+    --floating-btn-min-bottom: 6rem;
+
     /* ── Status Colors ── */
     --success: oklch(0.72 0.17 142);
     --success-foreground: oklch(1 0 0);
@@ -182,6 +186,13 @@ body {
 @media (min-width: 1024px) {
     :root {
         --navbar-height: var(--navbar-height-desktop);
+    }
+}
+
+/* md+: clears the 1-row (flex-row) footer copyright section (pb-8 + ~20px content) */
+@media (min-width: 768px) {
+    :root {
+        --floating-btn-min-bottom: 4rem;
     }
 }
 
