@@ -44,7 +44,10 @@ const trackEvent = (event: string, data?: Record<string, unknown>): void => {
 const detectIOSDevice = (): boolean => {
     if (typeof window === "undefined") return false;
     const ua = navigator.userAgent;
-    return /iPad|iPhone|iPod/.test(ua) && !("MSStream" in window);
+    const isTraditionalIOS = /iPad|iPhone|iPod/.test(ua) && !("MSStream" in window);
+    // iPadOS 13+ reports a desktop Macintosh UA; detect via touch capability
+    const isiPadOS = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+    return isTraditionalIOS || isiPadOS;
 };
 
 const detectStandaloneMode = (): boolean => {
@@ -96,6 +99,11 @@ export const usePwaInstall = (): UsePwaInstallReturn => {
             setIsAppDetectedAsInstalled(true);
         }
 
+        // getInstalledRelatedApps() is Chromium-only (Android + Windows). It requires
+        // HTTPS, a matching 'webapp' entry in related_applications, and a stable manifest
+        // id. If the origin changes between install and check (e.g., Cloudflare vs Oxygen),
+        // results may be empty. The localStorage fallback covers most cases but won't
+        // survive device restores.
         if (navigator.getInstalledRelatedApps) {
             navigator
                 .getInstalledRelatedApps()
@@ -131,11 +139,13 @@ export const usePwaInstall = (): UsePwaInstallReturn => {
             e.preventDefault();
             deferredPromptRef.current = e as BeforeInstallPromptEvent;
             setCanInstall(true);
+            trackEvent("pwa_install_prompt_shown");
         };
 
         if (window.__pwaInstallPromptEvent) {
             deferredPromptRef.current = window.__pwaInstallPromptEvent;
             setCanInstall(true);
+            trackEvent("pwa_install_prompt_shown");
             delete window.__pwaInstallPromptEvent;
         }
 
@@ -145,7 +155,8 @@ export const usePwaInstall = (): UsePwaInstallReturn => {
             const platform = getPlatform();
             setAppInstalled();
             setCanInstall(false);
-            setIsStandalone(true);
+            // isStandalone means "currently running in standalone display mode",
+            // not "just installed". isAppDetectedAsInstalled is the correct post-install signal.
             setIsAppDetectedAsInstalled(true);
             trackEvent("pwa_app_installed", {
                 platform,
