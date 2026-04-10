@@ -1,13 +1,15 @@
 import {Suspense, useCallback, useState} from "react";
 import {Link, useLocation, useRouteLoaderData, Await} from "react-router";
-import {AlignLeft, Search as SearchIcon, ShoppingCart, User} from "lucide-react";
+import {AlignLeft, Download, Search as SearchIcon, ShoppingCart, User} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {NAVIGATION_LINKS} from "~/lib/navigation";
 import {useCartDrawer} from "~/hooks/useCartDrawer";
 import {useSearchController} from "~/hooks/useSearchController";
+import {usePwaInstall} from "~/hooks/usePwaInstall";
 import {WishlistCount} from "~/components/WishlistCount";
 import {MobileMenu} from "~/components/layout/MobileMenu";
+import {IosInstallInstructions} from "~/components/pwa/IosInstallInstructions";
 import {useSiteSettings} from "~/lib/site-content-context";
 import type {RootLoader} from "~/root";
 
@@ -50,6 +52,21 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
 
     const closeMobileMenu = useCallback(() => setShowMobileMenu(false), []);
 
+    const {canInstall, isIOS, isStandalone, triggerInstall, appName, appIcon} = usePwaInstall();
+    // Show the install button only when the prompt is available and the app isn't already running as a PWA
+    const showInstall = (canInstall || isIOS) && !isStandalone;
+    const [showIosInstructions, setShowIosInstructions] = useState(false);
+
+    const handleInstallClick = useCallback(async () => {
+        if (isIOS) {
+            setShowIosInstructions(true);
+            return;
+        }
+        if (canInstall) {
+            await triggerInstall();
+        }
+    }, [isIOS, canInstall, triggerInstall]);
+
     return (
         <>
             <header
@@ -59,11 +76,13 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                 )}
             >
                 <div className="relative mx-auto flex h-16 max-w-[2000px] items-center lg:h-20 lg:px-1">
-                    <div className="flex lg:hidden">
+                    <div className="flex lg:hidden items-center">
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 pr-16 pl-6"
+                            // Shrink right padding when the install button occupies that buffer zone;
+                            // keep pr-16 otherwise so the hamburger stays visually clear of the centered logo.
+                            className={cn("h-10 w-10 pl-6", showInstall ? "pr-3" : "pr-16")}
                             onClick={toggleMobileMenu}
                             aria-expanded={showMobileMenu}
                             aria-haspopup="dialog"
@@ -72,6 +91,18 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                             <AlignLeft size={22} />
                             <span className="sr-only">Toggle menu</span>
                         </Button>
+                        {showInstall && (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className={cn("h-10 w-10 text-foreground/80", NAVBAR_ICON_INTERACTION_CLASSES)}
+                                onClick={() => void handleInstallClick()}
+                                aria-label="Open in app"
+                            >
+                                <Download size={20} />
+                                <span className="sr-only">Open in app</span>
+                            </Button>
+                        )}
                     </div>
 
                     <nav className="hidden items-center lg:flex">
@@ -207,6 +238,13 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                 onClose={closeMobileMenu}
                 collections={collections}
                 shopName={displayBrandName}
+            />
+
+            <IosInstallInstructions
+                open={showIosInstructions}
+                onDismiss={() => setShowIosInstructions(false)}
+                appName={appName}
+                appIcon={appIcon}
             />
         </>
     );

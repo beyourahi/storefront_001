@@ -10,7 +10,7 @@ interface OpenInAppButtonProps {
 }
 
 export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) => {
-    const {canInstall, isIOS, triggerInstall, appName, appIcon} = usePwaInstall();
+    const {canInstall, isIOS, isStandalone, triggerInstall, appName, appIcon} = usePwaInstall();
     const [showIosInstructions, setShowIosInstructions] = useState(false);
 
     const handleClick = async () => {
@@ -30,13 +30,18 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
     const isFixed = variant === "desktop-fixed";
     const isMenuItem = variant === "menu-item";
 
+    // Don't render if there's nothing useful to do (no install prompt available and not iOS,
+    // or already running as a PWA in standalone mode)
+    if ((!canInstall && !isIOS) || isStandalone) return null;
+
     return (
         <>
             {isFixed ? (
                 <div
                     role="complementary"
                     aria-label="Install this page as an app"
-                    className="fixed right-4 z-[9999] animate-slide-up-fade"
+                    // hidden on mobile — the navbar provides the mobile install entry point
+                    className="hidden lg:flex fixed right-4 z-[9999] animate-slide-up-fade"
                     style={{
                         // Float above the product sticky action bar and device safe-area notch.
                         // --product-sticky-bar-height is set by ProductMobileStickyButtons via
