@@ -121,6 +121,8 @@ Browser fires beforeinstallprompt
 - **Expected:** Desktop pill should appear on desktop viewports when the install prompt is available.
 - **Severity:** CRITICAL — the desktop install CTA is completely broken.
 
+**RESOLUTION:** RESOLVED — already fixed by prior commits (Navbar no longer calls `usePwaInstall`; `IosInstallInstructions` exists only in `OpenInAppButton`)
+
 ---
 
 ### ISSUE-002 — HIGH
@@ -131,6 +133,8 @@ Browser fires beforeinstallprompt
 - **Root cause:** `<script src="/pwa-install-capture.js" async ...>` means the script downloads and executes in parallel with HTML parsing, not synchronously. If the browser fires `beforeinstallprompt` before the script executes, the event is lost entirely for that session — no hook can recover it afterward.
 - **Expected:** The capture script should either load without `async`/`defer`, or be inlined directly into the HTML `<head>` to eliminate the network round-trip entirely.
 - **Severity:** HIGH — intermittently silences the install feature with no error.
+
+**RESOLUTION:** RESOLVED — removed `async` attribute from capture script in `app/root.tsx`; script now loads synchronously to prevent the `beforeinstallprompt` race
 
 ---
 
@@ -143,6 +147,8 @@ Browser fires beforeinstallprompt
 - **Fix:** Bundle Workbox locally using `workbox-build` or the Vite Workbox plugin; serve from a `/` relative path.
 - **Severity:** HIGH — in affected environments, the SW is completely non-functional.
 
+**RESOLUTION:** RESOLVED — `workbox-cli` added to devDependencies; `prebuild` script copies Workbox to `public/workbox-v7/workbox-v7.4.0/`; `sw.js` updated with local path and `workbox.setConfig`
+
 ---
 
 ### ISSUE-004 — MEDIUM
@@ -152,6 +158,8 @@ Browser fires beforeinstallprompt
 - **Root cause:** `detectIOSDevice()` checks `/iPad|iPhone|iPod/.test(ua)`. iPadOS 13+ reports a desktop Safari user agent (`Macintosh; Intel Mac OS X`), so `isIOS = false`. The browser also has no `BeforeInstallPromptEvent`, so `canInstall = false`. Render condition `(!canInstall && !isIOS) → return null` hides the button. iPad users get no install affordance.
 - **Fix:** Add `navigator.maxTouchPoints > 1` as a secondary signal alongside the UA check.
 - **Severity:** MEDIUM — iPad users silently get no install path.
+
+**RESOLUTION:** RESOLVED — `detectIOSDevice()` updated with `navigator.maxTouchPoints > 1` check for iPadOS 13+ in `app/hooks/usePwaInstall.ts`
 
 ---
 
@@ -163,6 +171,8 @@ Browser fires beforeinstallprompt
 - **Expected:** When `isAppDetectedAsInstalled=true && !isStandalone`, the button should show with an appropriate CTA.
 - **Severity:** MEDIUM — returning installed users get no re-entry affordance.
 
+**RESOLUTION:** RESOLVED — `isAppDetectedAsInstalled` wired to render guard and click handler in `OpenInAppButton.tsx`; `AlreadyInstalledInstructions` sheet created and connected
+
 ---
 
 ### ISSUE-006 — MEDIUM
@@ -171,6 +181,8 @@ Browser fires beforeinstallprompt
 - **File:** `app/components/pwa/OpenInAppButton.tsx:27`
 - **Root cause:** The render guard at line 35 (`if ((!canInstall && !isIOS) || isStandalone) return null`) ensures the component only renders when `canInstall || isIOS`. The click handler handles `isIOS` at line 17 (return early) and `canInstall` at line 22 (return after triggerInstall). The `window.location.href` branch at line 27 can never execute. Additionally, navigating to `window.location.origin` in a browser tab does not open the standalone PWA — it just reloads the site in-browser.
 - **Severity:** MEDIUM — dead code obscures intent and the "open in installed app" problem remains unsolved.
+
+**RESOLUTION:** RESOLVED — dead `window.location.href = window.location.origin` branch removed from `OpenInAppButton.tsx`
 
 ---
 
@@ -181,6 +193,8 @@ Browser fires beforeinstallprompt
 - **Root cause:** `getInstalledRelatedApps()` is Chromium-only on Android and Windows. It requires: (1) the site be HTTPS, (2) `related_applications` in the manifest include a `webapp` entry whose `url` matches the manifest URL, and (3) the `id` in the manifest matches what the browser recorded on install. The `url` in `related_applications` is the dynamic manifest URL (includes origin), not a stable identifier. If the origin changes between install and check (e.g., Cloudflare Workers vs Oxygen domain), the check returns no results. The localStorage fallback covers this but only persists from the `appinstalled` event — it won't survive device restores.
 - **Severity:** MEDIUM — install detection may miss some installed users on certain platforms/configurations.
 
+**RESOLUTION:** RESOLVED — explanatory comment added above `getInstalledRelatedApps()` block in `app/hooks/usePwaInstall.ts`
+
 ---
 
 ### ISSUE-008 — LOW
@@ -189,6 +203,8 @@ Browser fires beforeinstallprompt
 - **Files:** `app/components/layout/Navbar.tsx:243`, `app/components/pwa/OpenInAppButton.tsx:101`
 - **Root cause:** Two separate Sheet instances exist in the DOM, each controlled by independent `showIosInstructions` state. Currently non-conflicting because `OpenInAppButton` is desktop-only (`hidden lg:flex`). If `menu-item` variant is ever used on mobile, both sheets could show for the same interaction.
 - **Severity:** LOW — currently harmless, but a future regression trap.
+
+**RESOLUTION:** RESOLVED — already fixed by prior commits (`IosInstallInstructions` only in `OpenInAppButton`)
 
 ---
 
@@ -199,6 +215,8 @@ Browser fires beforeinstallprompt
 - **Root cause:** `trackInstallPrompt()` is defined but never called. The `handleBeforeInstall` callback at usePwaInstall.ts:130 captures the event and sets state but does not fire the analytics event. Other events (`pwa_installed`, `pwa_install_prompt_dismissed`) are tracked correctly in `triggerInstall()`.
 - **Severity:** LOW — analytics gap only; no functional impact.
 
+**RESOLUTION:** RESOLVED — `trackEvent("pwa_install_prompt_shown")` added to both event capture paths in `app/hooks/usePwaInstall.ts`
+
 ---
 
 ### ISSUE-010 — LOW
@@ -207,6 +225,8 @@ Browser fires beforeinstallprompt
 - **File:** `app/hooks/usePwaInstall.ts:148`
 - **Root cause:** After the `appinstalled` event fires, the hook calls `setIsStandalone(true)` to hide the button. Semantically, `isStandalone` means "currently running in standalone display mode," not "was just installed." Any downstream consumer using `isStandalone` to branch on display mode will get a false positive. The cleaner signal for "just installed" is `isAppDetectedAsInstalled`.
 - **Severity:** LOW — no current downstream misuse; code smell.
+
+**RESOLUTION:** RESOLVED — `setIsStandalone(true)` removed from `appinstalled` handler; `isAppDetectedAsInstalled` is now the sole post-install signal
 
 ---
 
