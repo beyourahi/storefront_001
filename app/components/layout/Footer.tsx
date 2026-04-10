@@ -57,7 +57,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                 {/* ── Main Footer Grid ── */}
                 <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-12">
                     {/* Column 1: Newsletter */}
-                    <div className="sm:col-span-2 lg:col-span-2">
+                    <div className="sm:col-span-2 lg:col-span-2 lg:border-r lg:border-border/30 lg:pr-10">
                         <h3 className="font-serif text-lg font-semibold text-foreground">Stay Connected</h3>
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                             {brandDescription
