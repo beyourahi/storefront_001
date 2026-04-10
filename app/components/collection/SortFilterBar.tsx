@@ -60,7 +60,7 @@ export function SortFilterBar({currentSort, totalProducts, options = SORT_OPTION
             const qs = params.toString();
             return qs ? `?${qs}` : "";
         },
-        [searchParams]
+        [searchParams, defaultSortValue]
     );
 
     const handleSortChange = useCallback(
