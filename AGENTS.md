@@ -286,3 +286,18 @@ Read all comments before editing. Update comments when changing behavior. Add co
 
 - **MANDATORY CLEANUP**: After every successful task implementation, if the `tmp_screenshots/` directory was created during the work, it must be deleted before the task is considered complete. Do not skip this step — it is a hard requirement.
 - **MANDATORY CLEANUP**: After every successful task implementation, if the `.playwright-mcp/` directory exists in the project root, it must be deleted before the task is considered complete. This directory is created by the Playwright MCP server during browser automation and is a transient artifact that must not persist in the codebase. Do not skip this step — it is a hard requirement.
+
+## Changelog Entries (MANDATORY)
+
+Every meaningful commit — one that adds a feature, improves the shopping experience, or fixes something users would notice — **MUST** include a corresponding entry in `app/lib/changelog-data.ts`.
+
+**Rules:**
+- Add the entry in the **same commit** that ships the change (never as a follow-up)
+- Place the new entry at the **top** of `CHANGELOG_ENTRIES` (newest first)
+- Write in plain English for shoppers — no SHAs, file paths, variable names, branch names, or technical jargon
+- Use the correct category: `"New Feature"` | `"Improvement"` | `"Fix"` | `"Maintenance"`
+- Keep `headline` under 80 characters, focused on the user benefit
+
+**Skip entries for:** `chore`, `ci`, `build`, `docs`, `lint`, dependency bumps, internal refactors with no visible user effect, and commits under ~20 lines changed.
+
+**Do NOT rely on automation or AI to generate entries retroactively.** The entry must be written at commit time by the person who understands the change. Context is lost after the fact.

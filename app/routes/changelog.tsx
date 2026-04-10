@@ -7,8 +7,7 @@ import {GiantText} from "~/components/common/GiantText";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {cn} from "~/lib/utils";
 import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
-import type {ChangelogEntry} from "~/lib/changelog-pipeline";
-import {fetchChangelogEntries} from "~/lib/changelog-pipeline";
+import {CHANGELOG_ENTRIES, type ChangelogEntry} from "~/lib/changelog-data";
 import type {Route} from "./+types/changelog";
 
 // ── Meta ──────────────────────────────────────────────────────────────────────
@@ -28,12 +27,13 @@ export const meta: Route.MetaFunction = ({matches}) => {
 
 // ── Loader ────────────────────────────────────────────────────────────────────
 
-export const loader = async ({context}: Route.LoaderArgs) => {
-    const entries = await fetchChangelogEntries(context.env);
-    return {entries};
+export const loader = async () => {
+    return {entries: CHANGELOG_ENTRIES};
 };
 
 // ── Constants & Helpers ───────────────────────────────────────────────────────
+
+const CHANGELOG_AUTHOR = {name: "Rahi Khan", url: "https://beyourahi.com"} as const;
 
 const CATEGORIES = ["All", "New Feature", "Improvement", "Fix", "Maintenance"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -99,7 +99,20 @@ function ChangelogCard({entry}: {entry: ChangelogEntry}) {
             </div>
 
             {/* Headline */}
-            <h3 className="mb-2 text-sm font-semibold leading-snug text-foreground">{entry.headline}</h3>
+            <h3 className="mb-1 text-sm font-semibold leading-snug text-foreground">{entry.headline}</h3>
+
+            {/* Author */}
+            <p className="mb-2 text-xs text-muted-foreground">
+                by{" "}
+                <a
+                    href={CHANGELOG_AUTHOR.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium hover:text-foreground sleek transition-colors duration-150"
+                >
+                    {CHANGELOG_AUTHOR.name}
+                </a>
+            </p>
 
             {/* Summary with optional expand */}
             <p
@@ -145,7 +158,7 @@ function EmptyState({hasFilters}: {hasFilters: boolean}) {
 // ── Page Component ────────────────────────────────────────────────────────────
 
 export default function Changelog() {
-    const {entries} = useLoaderData<typeof loader>() as {entries: ChangelogEntry[]};
+    const {entries} = useLoaderData<typeof loader>();
 
     const [searchInput, setSearchInput] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
@@ -264,7 +277,7 @@ export default function Changelog() {
                             {/* Timeline */}
                             <div className="space-y-5 lg:space-y-6">
                                 {visible.map(entry => (
-                                    <div key={entry.id} className="lg:flex">
+                                    <div key={`${entry.date}-${entry.headline}`} className="lg:flex">
                                         {/* Date column (desktop only) */}
                                         <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5">
                                             <time
