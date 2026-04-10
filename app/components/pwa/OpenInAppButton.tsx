@@ -82,7 +82,7 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
             ) : (
                 <Button
                     onClick={() => void handleClick()}
-                    variant="outline"
+                    variant="default"
                     className={cn(
                         "gap-3",
                         isMenuItem && [
