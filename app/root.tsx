@@ -349,9 +349,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
                 <Meta />
                 <Links />
                 {generatedTheme?.cssVariables && <ThemeStyleTag css={generatedTheme.cssVariables} />}
-                {/* PWA install-capture script is non-critical — async prevents it from blocking
-                    HTML parsing. Placed after Links/Meta so it does not delay critical resources. */}
-                <script src="/pwa-install-capture.js" async nonce={nonce} suppressHydrationWarning />
+                {/* PWA install-capture script must load synchronously before the browser can fire
+                    beforeinstallprompt — removing async ensures the event listener is registered
+                    in time. The script is 6 lines served from the same edge origin (negligible cost). */}
+                <script src="/pwa-install-capture.js" nonce={nonce} suppressHydrationWarning />
             </head>
             <body>
                 <GtmScript gtmContainerId={data?.gtmContainerId || ""} />
