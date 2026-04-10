@@ -112,6 +112,20 @@ export const Footer = ({shopName}: {shopName: string}) => {
                                     </Link>
                                 </li>
                             ))}
+                            {/* Changelog — desktop only; mobile users see it in the mobile menu drawer */}
+                            <li className="hidden lg:block">
+                                <Link
+                                    to="/changelog"
+                                    className={cn(
+                                        "text-sm sleek",
+                                        pathname === "/changelog"
+                                            ? "text-primary font-medium"
+                                            : "text-muted-foreground hover:text-foreground"
+                                    )}
+                                >
+                                    Changelog
+                                </Link>
+                            </li>
                         </ul>
                     </nav>
 

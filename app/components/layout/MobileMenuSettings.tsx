@@ -1,5 +1,5 @@
 import {Link} from "react-router";
-import {Heart, Images, Mail, User} from "lucide-react";
+import {Heart, Images, Mail, ScrollText, User} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {useWishlist} from "~/lib/wishlist-context";
 
@@ -134,6 +134,33 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                         )}
                     >
                         Contact
+                    </span>
+                </Link>
+                <Link
+                    to="/changelog"
+                    onClick={onLinkClick}
+                    className={cn(
+                        "mobile-nav-link group sleek flex items-center gap-3 rounded-md px-4 py-4 text-sm font-medium active:scale-[0.98]",
+                        currentPath === "/changelog"
+                            ? "bg-primary text-primary-foreground shadow-primary/25 ring-primary/20 scale-[1.02] font-semibold shadow-md ring-2"
+                            : "bg-muted text-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-accent/10 hover:shadow-sm"
+                    )}
+                >
+                    <ScrollText
+                        className={cn(
+                            "sleek h-4 w-4 group-hover:scale-110",
+                            currentPath === "/changelog"
+                                ? "text-primary-foreground"
+                                : "text-muted-foreground group-hover:text-accent-foreground"
+                        )}
+                    />
+                    <span
+                        className={cn(
+                            "sleek group-hover:translate-x-0.5",
+                            currentPath === "/changelog" ? "drop-shadow-sm" : ""
+                        )}
+                    >
+                        Changelog
                     </span>
                 </Link>
             </nav>
