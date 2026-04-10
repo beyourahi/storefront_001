@@ -218,6 +218,7 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 **GraphQL**: `storefrontapi.generated.d.ts`, `customer-accountapi.generated.d.ts`
 **Theme System**: `app/lib/theme-utils.ts`, `app/root.tsx`, `app/styles/app.css`
 **PWA/Offline**: `app/components/OfflineAwareErrorPage.tsx`, `app/routes/manifest[.]webmanifest.tsx`, `public/sw.js`, `app/lib/pwa-parsers.ts`, `app/lib/pwa-queries.ts`, `app/lib/pwa-storage.ts`
+**Changelog**: `app/lib/changelog-data.ts` (entry source of truth), `app/routes/changelog.tsx` (public-facing route)
 
 ## Critical Warnings
 
