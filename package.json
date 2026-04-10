@@ -4,6 +4,7 @@
     "sideEffects": false,
     "type": "module",
     "scripts": {
+        "prebuild": "bunx workbox copyLibraries public/workbox-v7",
         "build": "shopify hydrogen build --codegen",
         "dev": "shopify hydrogen dev --codegen",
         "preview": "shopify hydrogen preview --build",
@@ -90,6 +91,7 @@
         "typescript": "^5.9.3",
         "vite": "^6.4.1",
         "vite-tsconfig-paths": "^6.1.0",
+        "workbox-cli": "^7.0.0",
         "wrangler": "4.70.0"
     },
     "engines": {
