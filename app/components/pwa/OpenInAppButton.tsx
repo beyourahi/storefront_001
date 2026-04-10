@@ -3,6 +3,7 @@ import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {usePwaInstall} from "~/hooks/usePwaInstall";
 import {IosInstallInstructions} from "./IosInstallInstructions";
+import {AlreadyInstalledInstructions} from "./AlreadyInstalledInstructions";
 import {Download} from "lucide-react";
 
 interface OpenInAppButtonProps {
@@ -10,8 +11,9 @@ interface OpenInAppButtonProps {
 }
 
 export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) => {
-    const {canInstall, isIOS, isStandalone, triggerInstall, appName, appIcon} = usePwaInstall();
+    const {canInstall, isIOS, isStandalone, isAppDetectedAsInstalled, triggerInstall, appName, appIcon} = usePwaInstall();
     const [showIosInstructions, setShowIosInstructions] = useState(false);
+    const [showAlreadyInstalled, setShowAlreadyInstalled] = useState(false);
 
     const handleClick = async () => {
         if (isIOS) {
@@ -24,15 +26,18 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
             return;
         }
 
-        window.location.href = window.location.origin;
+        if (isAppDetectedAsInstalled) {
+            setShowAlreadyInstalled(true);
+            return;
+        }
     };
 
     const isFixed = variant === "desktop-fixed";
     const isMenuItem = variant === "menu-item";
 
-    // Don't render if there's nothing useful to do (no install prompt available and not iOS,
-    // or already running as a PWA in standalone mode)
-    if ((!canInstall && !isIOS) || isStandalone) return null;
+    // Don't render if there's nothing useful to do (no install prompt available, not iOS,
+    // and not previously installed-but-browsing-in-browser), or already running standalone.
+    if ((!canInstall && !isIOS && !isAppDetectedAsInstalled) || isStandalone) return null;
 
     return (
         <>
@@ -100,6 +105,13 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
             <IosInstallInstructions
                 open={showIosInstructions}
                 onDismiss={() => setShowIosInstructions(false)}
+                appName={appName}
+                appIcon={appIcon}
+            />
+
+            <AlreadyInstalledInstructions
+                open={showAlreadyInstalled}
+                onDismiss={() => setShowAlreadyInstalled(false)}
                 appName={appName}
                 appIcon={appIcon}
             />
