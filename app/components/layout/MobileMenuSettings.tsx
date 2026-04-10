@@ -2,7 +2,6 @@ import {Link} from "react-router";
 import {Heart, Images, Mail, User} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {useWishlist} from "~/lib/wishlist-context";
-import {OpenInAppButton} from "~/components/pwa/OpenInAppButton";
 
 type MobileMenuSettingsProps = {
     currentPath: string;
@@ -137,8 +136,6 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                         Contact
                     </span>
                 </Link>
-                {/* PWA install — only renders when install is available (canInstall or isIOS) and not in standalone mode */}
-                <OpenInAppButton variant="menu-item" />
             </nav>
         </div>
     );
