@@ -45,7 +45,7 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                 <div
                     role="complementary"
                     aria-label="Install this page as an app"
-                    className="flex fixed right-4 z-[9999] animate-slide-up-fade"
+                    className="flex fixed right-4 z-[var(--z-navbar)] animate-slide-up-fade"
                     style={{
                         // Float above the product sticky action bar and device safe-area notch.
                         // --product-sticky-bar-height is set by ProductMobileStickyButtons via
