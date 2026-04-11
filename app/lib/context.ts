@@ -150,6 +150,12 @@ export async function createHydrogenRouterContext(request: Request, env: Env, ex
             // The fragment defines what cart data is fetched on every query
             cart: {
                 queryFragment: CART_QUERY_FRAGMENT
+            },
+            // Downgrades the dev-tunnel domain check from a thrown error to a
+            // warning, enabling ngrok and other custom HTTPS proxies to work
+            // with Customer Account API OAuth during local development.
+            customerAccount: {
+                useCustomAuthDomain: true
             }
         },
         // Merge in any additional context properties (CMS, reviews, etc.)
