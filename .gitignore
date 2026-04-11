@@ -11,9 +11,6 @@ node_modules/
 !.yarn/sdks
 !.yarn/versions
 
-# Bun lockfile (project uses npm — ignore if accidentally generated)
-bun.lock
-
 # ========================================
 # Build & Cache
 # ========================================
