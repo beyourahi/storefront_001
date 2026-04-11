@@ -26,7 +26,7 @@
  * ```
  *
  * @dependencies
- * - Shopify Storefront API (2026-01 version)
+ * - Shopify Storefront API (2026-04 version)
  *
  * @related
  * - context.ts - Uses CART_QUERY_FRAGMENT for cart operations

@@ -52,7 +52,12 @@ export function CartLineItem({line}: {line: CartLine}) {
             const {errors, warnings} = fetcher.data;
 
             if (errors?.length) {
-                setErrorMessage(errors[0].message);
+                const firstError = errors[0];
+                const message =
+                    firstError.code === "MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR"
+                        ? "A promotion couldn't be applied to this item. Please try again."
+                        : firstError.message;
+                setErrorMessage(message);
                 setShowError(true);
                 setShowWarning(false);
                 const timer = setTimeout(() => setShowError(false), 5000);
