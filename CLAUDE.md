@@ -66,7 +66,7 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 |               | PWA              | Custom     | Custom service worker, offline      |
 |               | Metaobjects      | Shopify    | Theme + content CMS                 |
 | **Dev**       | ESLint           | 9          | Flat config                         |
-|               | Bun              | Latest     | Package manager + scripts           |
+|               | npm              | Latest     | Package manager + scripts           |
 |               | Node.js          | >= 20.19.0 | **Strict requirement**              |
 
 **GraphQL**: Dual-project (Storefront API + Customer Account API)  
@@ -123,14 +123,14 @@ storefront_001/
 ## Common Commands
 
 ```bash
-bun run dev          # Dev server + GraphQL codegen
-bun run build        # Production build
-bun run preview      # Preview build
-bun run lint         # ESLint
-bun run typecheck    # TypeScript + route types
-bun run codegen      # Regenerate GraphQL types
-bun run deploy       # Build + deploy to Cloudflare Workers
-bun run dev:workers  # Build + run via Wrangler locally
+npm run dev          # Dev server + GraphQL codegen
+npm run build        # Production build
+npm run preview      # Preview build
+npm run lint         # ESLint
+npm run typecheck    # TypeScript + route types
+npm run codegen      # Regenerate GraphQL types
+npm run deploy       # Build + deploy to Cloudflare Workers
+npm run dev:workers  # Build + run via Wrangler locally
 ```
 
 ## Code Style
@@ -154,7 +154,7 @@ bun run dev:workers  # Build + run via Wrangler locally
 **shopify-dev**: Hydrogen, Storefront API, Customer Account API, GraphQL validation  
 **context7**: Tailwind, Radix UI, React, TypeScript
 
-Prefer MCP documentation tools over web search for official docs. Run `bun run codegen` after any GraphQL change.
+Prefer MCP documentation tools over web search for official docs. Run `npm run codegen` after any GraphQL change.
 
 ## Testing
 
@@ -178,7 +178,7 @@ Prefer MCP documentation tools over web search for official docs. Run `bun run c
 ## Repository
 
 **Commits**: Conventional prefixes preferred: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `perf:`  
-**Before Push**: `bun run typecheck`, `bun run lint`, `bun run codegen` after GraphQL changes  
+**Before Push**: `npm run typecheck`, `npm run lint`, `npm run codegen` after GraphQL changes  
 **Code Review**: Read comments before editing; preserve intent and constraints
 
 ## Environment
@@ -209,7 +209,7 @@ SHOP_ID=66049638586
 
 For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. UI and content defaults are currently embedded in `app/lib/metaobject-parsers.ts` rather than a separate fallback-data module.
 
-**Setup**: `bun install && bun run codegen && bun run dev`
+**Setup**: `npm install && npm run codegen && npm run dev`
 
 ## Key Files
 
@@ -230,7 +230,7 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 **2. GraphQL Codegen**
 
 - **Problem**: Stale generated types after query or fragment changes
-- **Solution**: Run `bun run codegen` after ANY GraphQL modification
+- **Solution**: Run `npm run codegen` after ANY GraphQL modification
 
 **3. Theme and Contrast**
 
