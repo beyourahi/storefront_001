@@ -22,9 +22,10 @@
  *
  * @positioning
  *   fixed right-4 z-50 — stacked column, WhatsApp above Messenger.
- *   Bottom offset mirrors OpenInAppButton's base calculation and adds the
- *   button height (h-11 = 2.75rem) + gap (0.75rem) so the two never overlap,
- *   even on product pages where --product-sticky-bar-height is non-zero.
+ *   Bottom = footer-clearance (--floating-btn-min-bottom) + OpenInAppButton
+ *   stack offset (--floating-chat-extra-offset, 0 on mobile/tablet where the
+ *   pill is in the navbar, 3.5rem on desktop where it floats).
+ *   Product-page sticky bars are handled via --product-sticky-bar-height.
  */
 
 import {useSiteSettings} from "~/lib/site-content-context";
@@ -81,10 +82,11 @@ export function FloatingChatWidget() {
         <div
             className="fixed right-4 z-50 flex flex-col items-end gap-3"
             style={{
-                // Stack above OpenInAppButton (h-11 = 2.75rem) plus a gap-3 (0.75rem),
-                // using the same base formula so product-page sticky bars and footer
-                // copyright clearance (--floating-btn-min-bottom) apply automatically.
-                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), var(--floating-btn-min-bottom, 5.5rem)) + 2.75rem + 0.75rem)",
+                // Anchor to bottom-right, clearing the footer copyright row.
+                // --floating-btn-min-bottom: footer height + margin (7rem mobile, 4.5rem md+).
+                // --floating-chat-extra-offset: 0rem on mobile/tablet (OIA is in navbar),
+                //   calc(2.75rem + 0.75rem) on desktop (OIA floats, stack above it).
+                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), var(--floating-btn-min-bottom, 7rem)) + var(--floating-chat-extra-offset, 0rem))",
             }}
             aria-label="Chat support options"
         >

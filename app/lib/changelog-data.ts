@@ -35,6 +35,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-12",
+        headline: "Chat buttons now sit in the bottom-right corner",
+        summary:
+            "The WhatsApp and Messenger contact buttons have moved to the conventional bottom-right position where you'd expect them. They now sit just above the copyright line with comfortable spacing, and the App install button no longer duplicates between the navbar and the floating position on mobile.",
+        category: "Fix"
+    },
+    {
         date: "2026-04-10",
         headline: "Changelog link added to footer on all devices",
         summary:
