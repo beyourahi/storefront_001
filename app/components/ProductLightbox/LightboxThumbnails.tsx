@@ -6,6 +6,7 @@ interface LightboxThumbnailsProps {
     media: any[];
     currentIndex: number;
     onSelect: (index: number) => void;
+    availableForSale?: boolean;
 }
 
 function getThumbnailUrl(item: any): string | null {
@@ -18,7 +19,7 @@ function getThumbnailUrl(item: any): string | null {
     return null;
 }
 
-export function LightboxThumbnails({media, currentIndex, onSelect}: LightboxThumbnailsProps) {
+export function LightboxThumbnails({media, currentIndex, onSelect, availableForSale = true}: LightboxThumbnailsProps) {
     const thumbnailRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
 
     useEffect(() => {
@@ -62,7 +63,7 @@ export function LightboxThumbnails({media, currentIndex, onSelect}: LightboxThum
                                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-light",
                                 isActive
                                     ? "ring-2 ring-light ring-offset-2 ring-offset-dark/80"
-                                    : "opacity-60 hover:opacity-100"
+                                    : cn("opacity-60", availableForSale && "hover:opacity-100")
                             )}
                         >
                             {thumbnailUrl ? (

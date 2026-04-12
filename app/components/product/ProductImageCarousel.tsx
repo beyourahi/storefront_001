@@ -34,6 +34,7 @@ type ProductImageCarouselProps = {
     productTitle: string;
     productHandle: string;
     onSale?: boolean;
+    availableForSale?: boolean;
     className?: string;
 };
 
@@ -42,6 +43,7 @@ export const ProductImageCarousel = ({
     productTitle,
     productHandle: _productHandle,
     onSale: _onSale = false,
+    availableForSale = true,
     className = ""
 }: ProductImageCarouselProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -149,7 +151,10 @@ export const ProductImageCarousel = ({
                                 <div key={image.id} className="min-w-0 shrink-0 grow-0 basis-full">
                                     <button
                                         type="button"
-                                        className={`focus-visible:ring-primary h-full w-full cursor-zoom-in select-none focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset lg:cursor-zoom-in ${aspectRatioClass}`}
+                                        className={cn(
+                                            `focus-visible:ring-primary h-full w-full select-none focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset ${aspectRatioClass}`,
+                                            availableForSale ? "cursor-zoom-in lg:cursor-zoom-in" : "cursor-default"
+                                        )}
                                         onClick={() => openLightbox(index)}
                                         aria-label="Open image in lightbox"
                                     >
@@ -158,7 +163,10 @@ export const ProductImageCarousel = ({
                                                 url: image.url,
                                                 altText: image.altText || `${productTitle} image ${index + 1}`
                                             }}
-                                            className="sleek h-full w-full object-cover hover:scale-105"
+                                            className={cn(
+                                                "sleek h-full w-full object-cover",
+                                                availableForSale && "hover:scale-105"
+                                            )}
                                             sizes="(min-width: 1024px) 40vw, 100vw"
                                         />
                                     </button>
@@ -172,7 +180,10 @@ export const ProductImageCarousel = ({
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="bg-background/80 hover:bg-background sleek absolute top-1/2 left-3 z-10 h-10 w-10 -translate-y-1/2 transform rounded-full opacity-0 group-hover:opacity-100"
+                                className={cn(
+                                    "bg-background/80 hover:bg-background sleek absolute top-1/2 left-3 z-10 h-10 w-10 -translate-y-1/2 transform rounded-full opacity-0",
+                                    availableForSale && "group-hover:opacity-100"
+                                )}
                                 onClick={() => mainApi?.scrollPrev()}
                                 disabled={!canScrollPrev}
                                 aria-label="Previous image"
@@ -182,7 +193,10 @@ export const ProductImageCarousel = ({
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="bg-background/80 hover:bg-background sleek absolute top-1/2 right-3 z-10 h-10 w-10 -translate-y-1/2 transform rounded-full opacity-0 group-hover:opacity-100"
+                                className={cn(
+                                    "bg-background/80 hover:bg-background sleek absolute top-1/2 right-3 z-10 h-10 w-10 -translate-y-1/2 transform rounded-full opacity-0",
+                                    availableForSale && "group-hover:opacity-100"
+                                )}
                                 onClick={() => mainApi?.scrollNext()}
                                 disabled={!canScrollNext}
                                 aria-label="Next image"
@@ -209,9 +223,12 @@ export const ProductImageCarousel = ({
                                     <div key={image.id} className="min-w-0 shrink-0 grow-0 basis-1/4">
                                         <button
                                             type="button"
-                                            className={`bg-muted sleek w-full select-none overflow-hidden rounded-md border-2 ${
-                                                activeIndex === index ? "border-primary" : "border-transparent"
-                                            } hover:border-primary/50`}
+                                            className={cn(
+                                                `bg-muted sleek w-full select-none overflow-hidden rounded-md border-2 ${
+                                                    activeIndex === index ? "border-primary" : "border-transparent"
+                                                }`,
+                                                availableForSale && "hover:border-primary/50"
+                                            )}
                                             onClick={() => onThumbClick(index)}
                                             onContextMenu={e => {
                                                 e.preventDefault();
@@ -221,9 +238,11 @@ export const ProductImageCarousel = ({
                                             aria-label={`Go to image ${index + 1}. Right-click or double-click to open lightbox.`}
                                         >
                                             <div
-                                                className={`relative h-full w-full ${aspectRatioClass} ${
-                                                    activeIndex !== index ? "opacity-60" : "opacity-100"
-                                                } sleek hover:opacity-100`}
+                                                className={cn(
+                                                    `relative h-full w-full ${aspectRatioClass} sleek`,
+                                                    activeIndex !== index ? "opacity-60" : "opacity-100",
+                                                    availableForSale && "hover:opacity-100"
+                                                )}
                                             >
                                                 <Image
                                                     data={{
@@ -231,7 +250,10 @@ export const ProductImageCarousel = ({
                                                         altText:
                                                             image.altText || `${productTitle} thumbnail ${index + 1}`
                                                     }}
-                                                    className="sleek h-full w-full hover:scale-110"
+                                                    className={cn(
+                                                        "sleek h-full w-full",
+                                                        availableForSale && "hover:scale-110"
+                                                    )}
                                                     sizes="150px"
                                                 />
                                             </div>
@@ -266,6 +288,7 @@ export const ProductImageCarousel = ({
                 images={images}
                 initialIndex={activeIndex}
                 productTitle={productTitle}
+                availableForSale={availableForSale}
             />
 
             <ProductLightbox
@@ -273,6 +296,7 @@ export const ProductImageCarousel = ({
                 initialIndex={lightboxIndex}
                 isOpen={lightboxOpen}
                 onClose={closeLightbox}
+                availableForSale={availableForSale}
             />
         </>
     );

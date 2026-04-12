@@ -19,6 +19,7 @@ type ProductImageGalleryDialogProps = {
     images: ProductImage[];
     initialIndex?: number;
     productTitle: string;
+    availableForSale?: boolean;
 };
 
 export const ProductImageGalleryDialog = ({
@@ -26,7 +27,8 @@ export const ProductImageGalleryDialog = ({
     onOpenChange,
     images,
     initialIndex = 0,
-    productTitle
+    productTitle,
+    availableForSale = true
 }: ProductImageGalleryDialogProps) => {
     const [activeIndex, setActiveIndex] = useState(initialIndex);
     const [canScrollPrev, setCanScrollPrev] = useState(false);
@@ -187,7 +189,10 @@ export const ProductImageGalleryDialog = ({
                                             "sleek h-16 w-16 shrink-0 select-none overflow-hidden rounded-md border-2",
                                             activeIndex === index
                                                 ? "border-popover-foreground scale-105 opacity-100"
-                                                : "border-transparent opacity-60 hover:scale-105 hover:opacity-80"
+                                                : cn(
+                                                    "border-transparent opacity-60",
+                                                    availableForSale && "hover:scale-105 hover:opacity-80"
+                                                )
                                         )}
                                         onClick={() => emblaApi?.scrollTo(index)}
                                         aria-label={`Go to image ${index + 1}`}

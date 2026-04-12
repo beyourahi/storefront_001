@@ -260,7 +260,7 @@ const Product = () => {
                 <section className="pt-4 md:pt-6">
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4">
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-12">
-                            <ProductImageSection productImages={productImages} product={product} onSale={onSale} />
+                            <ProductImageSection productImages={productImages} product={product} onSale={onSale} availableForSale={selectedVariant?.availableForSale ?? true} />
 
                             <ProductMobileTitlePrice product={product} discountPercentage={discountPercentage} />
 

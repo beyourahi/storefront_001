@@ -13,9 +13,10 @@ interface ProductLightboxProps {
     initialIndex: number;
     isOpen: boolean;
     onClose: () => void;
+    availableForSale?: boolean;
 }
 
-export function ProductLightbox({media, initialIndex, isOpen, onClose}: ProductLightboxProps) {
+export function ProductLightbox({media, initialIndex, isOpen, onClose, availableForSale = true}: ProductLightboxProps) {
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -148,7 +149,7 @@ export function ProductLightbox({media, initialIndex, isOpen, onClose}: ProductL
                         </div>
                     </div>
 
-                    <LightboxThumbnails media={media} currentIndex={currentIndex} onSelect={goToIndex} />
+                    <LightboxThumbnails media={media} currentIndex={currentIndex} onSelect={goToIndex} availableForSale={availableForSale} />
                 </DialogPrimitive.Content>
             </DialogPrimitive.Portal>
         </DialogPrimitive.Root>

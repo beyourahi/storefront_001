@@ -17,13 +17,15 @@ type ProductImageSectionProps = {
         handle: string;
     };
     onSale?: boolean;
+    availableForSale?: boolean;
 };
 
 export const ProductImageSection = ({
     isLoading = false,
     productImages,
     product,
-    onSale = false
+    onSale = false,
+    availableForSale = true
 }: ProductImageSectionProps) => {
     const aspectRatioClass = useMemo(() => {
         switch (FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO as string) {
@@ -54,6 +56,7 @@ export const ProductImageSection = ({
                     productTitle={product.title}
                     productHandle={product.handle}
                     onSale={onSale}
+                    availableForSale={availableForSale}
                 />
             ) : (
                 <div className="bg-muted aspect-square overflow-hidden rounded-lg">
