@@ -7,7 +7,7 @@ import {AlreadyInstalledInstructions} from "./AlreadyInstalledInstructions";
 import {Download} from "lucide-react";
 
 interface OpenInAppButtonProps {
-    variant?: "desktop-fixed" | "menu-item";
+    variant?: "desktop-fixed" | "menu-item" | "navbar";
 }
 
 export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) => {
@@ -34,6 +34,7 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
 
     const isFixed = variant === "desktop-fixed";
     const isMenuItem = variant === "menu-item";
+    const isNavbar = variant === "navbar";
 
     // Don't render if there's nothing useful to do (no install prompt available, not iOS,
     // and not previously installed-but-browsing-in-browser), or already running standalone.
@@ -45,7 +46,7 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                 <div
                     role="complementary"
                     aria-label="Install this page as an app"
-                    className="flex fixed right-4 z-[var(--z-navbar)] animate-slide-up-fade"
+                    className="flex fixed right-4 z-[var(--z-navbar)] animate-slide-up-fade lg:hidden"
                     style={{
                         // Float above the product sticky action bar, device safe-area notch,
                         // and the footer copyright row. --product-sticky-bar-height is set by
@@ -84,6 +85,31 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                         </span>
                     </button>
                 </div>
+            ) : isNavbar ? (
+                <button
+                    type="button"
+                    onClick={() => void handleClick()}
+                    className={cn(
+                        "flex items-center gap-1.5",
+                        "rounded-full",
+                        // Mirrors the floating pill's dark-on-background aesthetic
+                        "bg-[var(--text-primary)] text-[var(--text-inverse)]",
+                        "h-8 px-3",
+                        "shadow-md",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset",
+                        "active:opacity-80 transition-opacity duration-150"
+                    )}
+                    aria-label="Install app"
+                >
+                    <Download
+                        className="size-3.5 shrink-0"
+                        aria-hidden="true"
+                        strokeWidth={1.75}
+                    />
+                    <span className="text-[12px] font-semibold tracking-[0.01em] whitespace-nowrap">
+                        Open in App
+                    </span>
+                </button>
             ) : (
                 <Button
                     onClick={() => void handleClick()}
