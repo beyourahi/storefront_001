@@ -54,7 +54,7 @@ export const ProductPurchaseSection = ({
         [selectedVariant, quantity, selectedSellingPlan?.id]
     );
 
-    const isDisabled = !selectedVariant || isVariantTransitioning || isLoading;
+    const isDisabled = !selectedVariant || !selectedVariant.availableForSale || isVariantTransitioning || isLoading;
 
     return (
         <div className="space-y-6 lg:col-span-3 lg:space-y-6 lg:py-8" data-mobile-purchase-section>

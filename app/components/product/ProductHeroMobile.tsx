@@ -8,6 +8,7 @@ import type {ProductFragment} from "storefrontapi.generated";
 import {Minus, Plus} from "lucide-react";
 import {ColorSwatch} from "~/components/ui/color-swatch";
 import {getSpecialTags} from "~/lib/product-tags";
+import {OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 
 interface ProductHeroMobileProps {
     productOptions: MappedProductOptions[];
@@ -57,7 +58,7 @@ export function ProductHeroMobile({
     const isPreorder = badgeTypes.includes("preorder");
 
     const getButtonText = () => {
-        if (!selectedVariant?.availableForSale) return "Sold out";
+        if (!selectedVariant?.availableForSale) return OUT_OF_STOCK_LABEL;
         if (isSubscriptionMode && !selectedSellingPlan) return "Select frequency";
         if (isSubscriptionMode) return "Subscribe";
         return isPreorder ? "Pre Order" : "Get it Now";

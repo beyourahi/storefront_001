@@ -2,6 +2,8 @@ import {formatShopifyMoney, formatMinimalisticRange, calculateDiscount} from "~/
 import {parseNumber} from "~/lib/number-utils";
 import type {ProductCardData, ShopifyProduct, ShopifyProductVariant} from "~/lib/types/product-card";
 
+export const OUT_OF_STOCK_LABEL = "Out of Stock" as const;
+
 export interface PriceRangeDisplay {
     displayPrice: string;
     hasRange: boolean;

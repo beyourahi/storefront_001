@@ -35,6 +35,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-13",
+        headline: "Out-of-stock products now visible across all product surfaces",
+        summary:
+            "Products that are temporarily out of stock now appear everywhere — on collection pages, search results, the gallery, sale, and your wishlist — instead of being hidden. Each out-of-stock product shows a clear badge, a lightly muted image, and a disabled cart button so you can still browse, save to your wishlist, and check back when stock returns.",
+        category: "Improvement"
+    },
+    {
         date: "2026-04-12",
         headline: "Chat buttons now sit in the bottom-right corner",
         summary:

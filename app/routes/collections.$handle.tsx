@@ -92,15 +92,11 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
     // Build GraphQL variables for cursor-based pagination
     const variables = buildPaginationVariables(cursor, direction, 48);
 
-    // Always filter to available products only
-    const filters = [{available: true}];
-
-    // Query collection with server-side filters and sorting
+    // Query collection with server-side sorting
     const {collection} = await dataAdapter.query(COLLECTION_QUERY, {
         variables: {
             handle,
             ...variables,
-            filters,
             sortKey,
             reverse
         },
@@ -258,7 +254,6 @@ const COLLECTION_QUERY = `#graphql
     $last: Int
     $after: String
     $before: String
-    $filters: [ProductFilter!]
     $sortKey: ProductCollectionSortKeys
     $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
@@ -284,7 +279,6 @@ const COLLECTION_QUERY = `#graphql
         last: $last
         after: $after
         before: $before
-        filters: $filters
         sortKey: $sortKey
         reverse: $reverse
       ) {

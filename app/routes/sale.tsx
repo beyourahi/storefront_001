@@ -54,7 +54,6 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     // Single query for products with cursor pagination
     const {products} = await dataAdapter.query(SALE_PRODUCTS_QUERY, {
         variables: {
-            query: "available_for_sale:true",
             sortKey: productSortKey,
             reverse,
             ...variables
@@ -219,7 +218,6 @@ const SALE_PRODUCTS_QUERY = `#graphql
   query SalePageProducts(
     $country: CountryCode
     $language: LanguageCode
-    $query: String
     $sortKey: ProductSortKeys
     $reverse: Boolean
     $first: Int
@@ -232,7 +230,6 @@ const SALE_PRODUCTS_QUERY = `#graphql
       last: $last
       after: $after
       before: $before
-      query: $query
       sortKey: $sortKey
       reverse: $reverse
     ) {

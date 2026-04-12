@@ -371,7 +371,7 @@ const EXPLORE_COLLECTIONS_QUERY = `#graphql
           width
           height
         }
-        products(first: 250, filters: [{available: true}]) {
+        products(first: 250) {
           nodes {
             id
           }
@@ -392,7 +392,7 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
       title
       handle
       description
-      products(first: 20, filters: [{available: true}]) {
+      products(first: 20) {
         nodes {
           id
           title
@@ -437,7 +437,7 @@ const ALL_PRODUCTS_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    products(first: 50, query: "available_for_sale:true") {
+    products(first: 50) {
       nodes {
         id
         title

@@ -8,6 +8,7 @@ import {QuickAddSheet} from "~/components/QuickAddSheet";
 import {QuickAddDialog} from "~/components/QuickAddDialog";
 import {getButtonLabel} from "~/lib/product-tags";
 import {Button} from "~/components/ui/button";
+import {OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 
 interface QuickAddVariant {
     id: string;
@@ -110,16 +111,16 @@ export function QuickAddButton({
                 variant="secondary"
                 disabled
                 className={cn(baseStyles, "opacity-50", className)}
-                aria-label={`${product.title} is sold out`}
+                aria-label={`${product.title} — ${OUT_OF_STOCK_LABEL}`}
             >
                 {fullWidth ? (
                     <>
-                        <span>{buttonLabel}</span>
+                        <span>{OUT_OF_STOCK_LABEL}</span>
                         <Plus className={iconSize} />
                     </>
                 ) : (
                     <>
-                        <span className={iconOnlyMobile ? "hidden md:inline" : undefined}>{buttonLabel}</span>
+                        <span className={iconOnlyMobile ? "hidden md:inline" : undefined}>{OUT_OF_STOCK_LABEL}</span>
                         <Plus className={iconSize} />
                     </>
                 )}

@@ -80,7 +80,7 @@ export const ProductMobileStickyButtons = ({
     const isOnSale = totalComparePrice !== null && totalComparePrice > totalPrice;
     const savingsPercentage = isOnSale ? Math.round(((totalComparePrice - totalPrice) / totalComparePrice) * 100) : 0;
 
-    const isDisabled = !selectedVariant || isVariantTransitioning;
+    const isDisabled = !selectedVariant || !selectedVariant.availableForSale || isVariantTransitioning;
 
     return (
         <div ref={containerRef} className="fixed right-0 bottom-0 left-0 z-[45] lg:hidden" style={{transform: "translateZ(0)"}}>

@@ -5,7 +5,7 @@ import {Badge} from "~/components/ui/badge";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {cn} from "~/lib/utils";
-import {getProductDataForCard} from "~/lib/product/product-card-utils";
+import {getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import type {CompactProductCardProps} from "~/lib/types/product-card";
@@ -14,6 +14,7 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
     const productData = useMemo(() => getProductDataForCard(product), [product]);
     const {price, compareAtPrice, discountPercentage, image: productImage} = productData;
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
+    const isOutOfStock = !product.availableForSale;
 
     const {primary, secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
     const truncatedFirstPart = useMemo(() => {
@@ -34,7 +35,10 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                         {productImage ? (
                             <Image
                                 data={{url: productImage.url, altText: productImage.altText || product.title}}
-                                className="sleek h-full w-full object-cover xl:group-hover:scale-105"
+                                className={cn(
+                                    "sleek h-full w-full object-cover",
+                                    isOutOfStock ? "opacity-60" : "xl:group-hover:scale-105"
+                                )}
                                 width={64}
                                 height={64}
                                 loading="lazy"
@@ -58,14 +62,21 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                         </Badge>
                     )}
 
-                    {isPreorder && (
+                    {/* OOS badge takes priority over preorder */}
+                    {isOutOfStock ? (
+                        <div className="absolute top-0 right-0 z-30">
+                            <div className="bg-muted text-muted-foreground border-border rounded-bl-sm rounded-tr-sm border px-1 text-[9px]">
+                                OOS
+                            </div>
+                        </div>
+                    ) : isPreorder ? (
                         <div className="absolute top-0 right-0 z-30">
                             <PreorderBadge className="rounded-tr-sm rounded-bl-none text-[9px]" />
                         </div>
-                    )}
+                    ) : null}
                 </div>
 
-                <div className="flex-1 space-y-1.5">
+                <div className={cn("flex-1 space-y-1.5", isOutOfStock && "opacity-70")}>
                     <div>
                         <button
                             className="sleek group-hover:text-primary block w-full text-left"
@@ -95,16 +106,26 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
             </div>
 
             <div className="px-3 pb-3">
-                <ProductVariantDialog
-                    productHandle={product.handle}
-                    autoAddSingleVariant={true}
-                    onSuccess={onCartAdd}
-                >
-                    <div className="flex w-full items-center justify-center gap-1.5">
-                        <Plus className="h-3 w-3" />
-                        <span>{isPreorder ? "PRE ORDER" : "ADD TO CART"}</span>
-                    </div>
-                </ProductVariantDialog>
+                {isOutOfStock ? (
+                    <button
+                        disabled
+                        aria-disabled="true"
+                        className="border-foreground/20 bg-card text-card-foreground inline-flex h-8 w-full shrink-0 items-center justify-center rounded-md border-2 px-4 text-xs font-medium whitespace-nowrap opacity-50 cursor-not-allowed"
+                    >
+                        {OUT_OF_STOCK_LABEL}
+                    </button>
+                ) : (
+                    <ProductVariantDialog
+                        productHandle={product.handle}
+                        autoAddSingleVariant={true}
+                        onSuccess={onCartAdd}
+                    >
+                        <div className="flex w-full items-center justify-center gap-1.5">
+                            <Plus className="h-3 w-3" />
+                            <span>{isPreorder ? "PRE ORDER" : "ADD TO CART"}</span>
+                        </div>
+                    </ProductVariantDialog>
+                )}
             </div>
         </div>
     );

@@ -152,8 +152,7 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
             variables: {productId},
             cache: dataAdapter.CacheShort()
         })
-        // productRecommendations API does not support filters — client-side filter required
-        .then(data => (data.productRecommendations ?? []).filter((p: any) => p.availableForSale))
+        .then(data => data.productRecommendations ?? [])
         .catch((error: unknown) => {
             console.error("Failed to load product recommendations:", error);
             return null;

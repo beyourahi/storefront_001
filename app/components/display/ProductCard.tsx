@@ -6,8 +6,9 @@ import {ProductCardTitle} from "~/components/common/ProductCardTitle";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
+import {WishlistButton} from "~/components/WishlistButton";
 import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
-import {getProductDataForCard} from "~/lib/product/product-card-utils";
+import {getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
@@ -19,6 +20,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
     const productData = useMemo(() => getProductDataForCard(product, {showPriceRange: true}), [product]);
     const {price, compareAtPrice, discountPercentage, image: productImage, priceRange} = productData;
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
+    const isOutOfStock = !product.availableForSale;
 
     const {secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
     const hasSecondPart = !!secondary;
@@ -69,11 +71,18 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     </div>
                 )}
 
-                {isPreorder && (
+                {/* OOS badge takes priority over preorder — a product can't be preordered if it's OOS */}
+                {isOutOfStock ? (
+                    <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
+                        <div className="bg-muted text-muted-foreground border-border rounded-[var(--radius-xl)] border px-1 pr-1.5 text-xs">
+                            {OUT_OF_STOCK_LABEL}
+                        </div>
+                    </div>
+                ) : isPreorder ? (
                     <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
                         <PreorderBadge />
                     </div>
-                )}
+                ) : null}
 
                 <Link to={`/products/${product.handle}`} prefetch="intent">
                     {productImage ? (
@@ -81,7 +90,11 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                             data={{url: productImage.url, altText: productImage.altText || product.title}}
                             className={cn(
                                 "sleek product-image h-full w-full rounded-lg object-cover",
-                                canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]"
+                                isOutOfStock
+                                    ? "opacity-60"
+                                    : canHover
+                                      ? "group-hover:scale-[1.03]"
+                                      : "group-active:scale-[1.02]"
                             )}
                             sizes="(min-width: 1280px) 320px, (min-width: 1024px) 350px, (min-width: 768px) 280px, 200px"
                             width={400}
@@ -96,27 +109,42 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     )}
                 </Link>
 
+                {/* Wishlist button — always visible for both in-stock and OOS products */}
+                <div className="absolute left-1 bottom-1 z-20">
+                    <WishlistButton productId={product.id} size="sm" />
+                </div>
+
                 <div className="absolute right-1 bottom-1 z-20">
-                    <ProductVariantDialog productHandle={product.handle} autoAddSingleVariant={true}>
-                        <div className="flex items-center justify-center gap-1.5">
-                            <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
-                            {isPreorder ? (
-                                <>
-                                    <span className="sm:hidden">PRE ORDER</span>
-                                    <span className="hidden sm:inline">PRE ORDER</span>
-                                </>
-                            ) : (
-                                <>
-                                    <span className="sm:hidden">ADD</span>
-                                    <span className="hidden sm:inline">ADD TO CART</span>
-                                </>
-                            )}
-                        </div>
-                    </ProductVariantDialog>
+                    {isOutOfStock ? (
+                        <button
+                            disabled
+                            aria-disabled="true"
+                            className="sleek border-foreground/20 bg-card text-card-foreground inline-flex h-10 shrink-0 items-center justify-center rounded-md border-2 px-4 text-sm font-medium whitespace-nowrap opacity-50 cursor-not-allowed shadow-xs"
+                        >
+                            <span>{OUT_OF_STOCK_LABEL}</span>
+                        </button>
+                    ) : (
+                        <ProductVariantDialog productHandle={product.handle} autoAddSingleVariant={true}>
+                            <div className="flex items-center justify-center gap-1.5">
+                                <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                                {isPreorder ? (
+                                    <>
+                                        <span className="sm:hidden">PRE ORDER</span>
+                                        <span className="hidden sm:inline">PRE ORDER</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="sm:hidden">ADD</span>
+                                        <span className="hidden sm:inline">ADD TO CART</span>
+                                    </>
+                                )}
+                            </div>
+                        </ProductVariantDialog>
+                    )}
                 </div>
             </div>
 
-            <div className={`${hasSecondPart ? "space-y-2 sm:space-y-3" : "space-y-0.5 sm:space-y-1"} py-3 sm:py-4`}>
+            <div className={cn(`${hasSecondPart ? "space-y-2 sm:space-y-3" : "space-y-0.5 sm:space-y-1"} py-3 sm:py-4`, isOutOfStock && "opacity-70")}>
                 <div>
                     <Link
                         to={`/products/${product.handle}`}

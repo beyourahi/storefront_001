@@ -1362,7 +1362,7 @@ const SEARCH_QUERY = `#graphql
       after: $productAfter
       sortKey: $sortKey
       reverse: $reverse
-      unavailableProducts: HIDE
+      unavailableProducts: SHOW
     ) {
       nodes {
         ... on Product {
@@ -1413,7 +1413,7 @@ const SEARCH_PRODUCTS_QUERY = `#graphql
       after: $after
       sortKey: $sortKey
       reverse: $reverse
-      unavailableProducts: HIDE
+      unavailableProducts: SHOW
     ) {
       nodes {
         ... on Product {
@@ -1563,7 +1563,7 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
       limitScope: $limitScope
       query: $term
       types: $types
-      unavailableProducts: HIDE
+      unavailableProducts: SHOW
     ) {
       articles {
         ...PredictiveArticle
@@ -1620,18 +1620,14 @@ async function fetchCollections(
 
         const {collections} = result as {
             collections: {
-                nodes: Array<SearchCollection & {products: {nodes: Array<{id: string; availableForSale: boolean}>}}>;
+                nodes: Array<SearchCollection>;
                 totalCount: number | string;
             };
         };
 
-        const filteredNodes = collections.nodes.filter(collection =>
-            collection.products.nodes.some(product => product.availableForSale)
-        );
-
         return {
-            nodes: filteredNodes,
-            totalCount: filteredNodes.length
+            nodes: collections.nodes,
+            totalCount: Number(collections.totalCount)
         };
     } catch (error) {
         console.error("Collections search failed:", error);

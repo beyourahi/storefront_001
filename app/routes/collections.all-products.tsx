@@ -49,10 +49,9 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
 
     // Build GraphQL variables for cursor-based pagination
     // Note: QueryRoot.products doesn't support filters/sortKey like Collection.products,
-    // so we sort client-side. Availability filtering uses the `query` parameter at API level.
+    // so we sort client-side.
     const variables = {
-        ...buildPaginationVariables(cursor, direction, 48),
-        query: "available_for_sale:true"
+        ...buildPaginationVariables(cursor, direction, 48)
     };
 
     // Query all products with pagination
@@ -180,14 +179,12 @@ const CATALOG_QUERY = `#graphql
     $last: Int
     $after: String
     $before: String
-    $query: String
   ) @inContext(country: $country, language: $language) {
     products(
       first: $first
       last: $last
       after: $after
       before: $before
-      query: $query
     ) {
       nodes {
         id

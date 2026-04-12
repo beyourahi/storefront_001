@@ -1,7 +1,7 @@
 import {getSeoMeta} from "@shopify/hydrogen";
 import {useState, useMemo, useEffect} from "react";
 import {useLoaderData} from "react-router";
-import {Search} from "lucide-react";
+import {Search, ExternalLink} from "lucide-react";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
@@ -59,6 +59,12 @@ function getAbsoluteDate(dateStr: string): string {
     });
 }
 
+function truncateSummary(text: string, maxLength = 240): string {
+    if (text.length <= maxLength) return text;
+    const cut = text.lastIndexOf(" ", maxLength);
+    return text.slice(0, cut > 0 ? cut : maxLength) + "…";
+}
+
 function getCategoryBadgeClasses(category: ChangelogEntry["category"]): string {
     switch (category) {
         case "New Feature":
@@ -74,65 +80,75 @@ function getCategoryBadgeClasses(category: ChangelogEntry["category"]): string {
     }
 }
 
+function getCategoryAccentBorder(category: ChangelogEntry["category"]): string {
+    switch (category) {
+        case "New Feature":
+            return "border-l-primary";
+        case "Improvement":
+            return "border-l-success";
+        case "Fix":
+            return "border-l-warning";
+        case "Maintenance":
+            return "border-l-border";
+        default:
+            return "border-l-border";
+    }
+}
+
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function ChangelogCard({entry}: {entry: ChangelogEntry}) {
-    const [expanded, setExpanded] = useState(false);
-    const isLong = entry.summary.length > 200;
-
+function ChangelogCard({entry, index}: {entry: ChangelogEntry; index: number}) {
     return (
-        <article className="group rounded-lg border border-border/60 bg-card p-5 shadow-sm sleek transition-shadow duration-200 hover:border-border hover:shadow-md">
-            {/* Top row: category badge + mobile date */}
-            <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span
-                    className={cn(
-                        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
-                        getCategoryBadgeClasses(entry.category)
-                    )}
-                >
-                    {entry.category}
-                </span>
-                {/* Mobile-only date — desktop date lives in the timeline column */}
-                <span className="text-xs text-muted-foreground lg:hidden">
-                    {getRelativeDate(entry.date)} · {getAbsoluteDate(entry.date)}
-                </span>
-            </div>
-
-            {/* Headline */}
-            <h3 className="mb-1 text-sm font-semibold leading-snug text-foreground">{entry.headline}</h3>
-
-            {/* Author */}
-            <p className="mb-2 text-xs text-muted-foreground">
-                by{" "}
-                <a
-                    href={CHANGELOG_AUTHOR.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium hover:text-foreground sleek transition-colors duration-150"
-                >
-                    {CHANGELOG_AUTHOR.name}
-                </a>
-            </p>
-
-            {/* Summary with optional expand */}
-            <p
-                className={cn(
-                    "text-sm leading-relaxed text-muted-foreground",
-                    !expanded && isLong && "line-clamp-3"
-                )}
-            >
-                {entry.summary}
-            </p>
-
-            {isLong && (
-                <button
-                    type="button"
-                    onClick={() => setExpanded(e => !e)}
-                    className="mt-2 text-xs font-medium text-primary sleek transition-colors duration-150 hover:text-primary/70"
-                >
-                    {expanded ? "Show less" : "Read more"}
-                </button>
+        <article
+            className={cn(
+                "animate-in fade-in group rounded-xl border border-border/50 bg-card",
+                "overflow-hidden shadow-xs hover:shadow-md motion-surface",
+                "border-l-4",
+                getCategoryAccentBorder(entry.category)
             )}
+            style={{animationDelay: `${Math.min(index, 7) * 50}ms`}}
+        >
+            <div className="p-5 sm:p-6">
+                {/* Metadata: badge + date */}
+                <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <span
+                        className={cn(
+                            "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
+                            getCategoryBadgeClasses(entry.category)
+                        )}
+                    >
+                        {entry.category}
+                    </span>
+                    {/* Mobile-only date — desktop date lives in the timeline column */}
+                    <span className="text-xs text-muted-foreground lg:hidden">
+                        <time dateTime={entry.date}>{getAbsoluteDate(entry.date)}</time>
+                        {" · "}{getRelativeDate(entry.date)}
+                    </span>
+                </div>
+
+                {/* Headline — font-serif for premium feel */}
+                <h3 className="mb-2 font-serif text-base sm:text-lg font-semibold leading-snug text-foreground">
+                    {entry.headline}
+                </h3>
+
+                {/* Summary — pre-truncated, no toggle */}
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                    {truncateSummary(entry.summary)}
+                </p>
+
+                {/* Author attribution */}
+                <p className="mt-3 text-xs text-muted-foreground">
+                    by{" "}
+                    <a
+                        href={CHANGELOG_AUTHOR.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-foreground/70 underline underline-offset-2 decoration-foreground/30 hover:text-primary hover:decoration-primary motion-link"
+                    >
+                        {CHANGELOG_AUTHOR.name}
+                    </a>
+                </p>
+            </div>
         </article>
     );
 }
@@ -163,20 +179,20 @@ export default function Changelog() {
     const [searchInput, setSearchInput] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<Category>("All");
-    const [visibleCount, setVisibleCount] = useState(10);
+    const [visibleCount, setVisibleCount] = useState(100);
 
     // Debounce search query — 200ms after user stops typing
     useEffect(() => {
         const timer = setTimeout(() => {
             setSearchQuery(searchInput);
-            setVisibleCount(10);
+            setVisibleCount(100);
         }, 200);
         return () => clearTimeout(timer);
     }, [searchInput]);
 
     // Reset pagination when category changes
     useEffect(() => {
-        setVisibleCount(10);
+        setVisibleCount(100);
     }, [selectedCategory]);
 
     const filtered = useMemo(() => {
@@ -222,6 +238,28 @@ export default function Changelog() {
                             <p className="w-full text-xs text-muted-foreground lg:w-[60%] lg:text-sm 2xl:text-base">
                                 We&apos;re constantly improving your shopping experience. Here&apos;s what we&apos;ve shipped.
                             </p>
+
+                            {/* Prominent "Built by" attribution — visually unmissable */}
+                            <div className="mt-5 sm:mt-7 flex flex-col items-center gap-1.5">
+                                <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                                    Built by
+                                </span>
+                                <a
+                                    href={CHANGELOG_AUTHOR.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={cn(
+                                        "group flex items-center gap-2 font-serif font-bold",
+                                        "text-xl sm:text-2xl lg:text-3xl",
+                                        "text-primary hover:text-primary/80",
+                                        "border-b-2 border-primary/30 hover:border-primary pb-0.5",
+                                        "sleek motion-link"
+                                    )}
+                                >
+                                    {CHANGELOG_AUTHOR.name}
+                                    <ExternalLink className="size-4 text-primary/50 group-hover:text-primary/80 sleek" aria-hidden="true" />
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -276,13 +314,13 @@ export default function Changelog() {
                         <>
                             {/* Timeline */}
                             <div className="space-y-5 lg:space-y-6">
-                                {visible.map(entry => (
+                                {visible.map((entry, index) => (
                                     <div key={`${entry.date}-${entry.headline}`} className="lg:flex">
                                         {/* Date column (desktop only) */}
                                         <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5">
                                             <time
                                                 dateTime={entry.date}
-                                                className="text-right text-xs font-medium leading-tight text-foreground"
+                                                className="text-right text-xs font-mono font-medium leading-tight text-foreground"
                                             >
                                                 {getAbsoluteDate(entry.date)}
                                             </time>
@@ -292,13 +330,13 @@ export default function Changelog() {
                                         </div>
 
                                         {/* Card side — border-l creates the timeline line on desktop */}
-                                        <div className="relative flex-1 lg:border-l lg:border-border/40 lg:pl-8">
+                                        <div className="relative flex-1 lg:border-l-2 lg:border-border/40 lg:pl-8">
                                             {/* Timeline dot (desktop only) */}
                                             <div
-                                                className="hidden lg:block absolute -left-[5px] top-4 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-background"
+                                                className="hidden lg:block absolute -left-[7px] top-4 h-3 w-3 rounded-full bg-primary ring-4 ring-background"
                                                 aria-hidden="true"
                                             />
-                                            <ChangelogCard entry={entry} />
+                                            <ChangelogCard entry={entry} index={index} />
                                         </div>
                                     </div>
                                 ))}
@@ -309,8 +347,8 @@ export default function Changelog() {
                                 <div className="mt-10 flex justify-center">
                                     <button
                                         type="button"
-                                        onClick={() => setVisibleCount(c => c + 10)}
-                                        className="rounded-md border border-border bg-background px-6 py-2.5 text-sm font-medium text-foreground sleek transition-all duration-150 hover:border-primary/30 hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                        onClick={() => setVisibleCount(c => c + 50)}
+                                        className="w-full sm:w-auto rounded-md border border-border bg-background px-6 py-2.5 text-sm font-medium text-foreground sleek transition-all duration-150 hover:border-primary/30 hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                     >
                                         Load more updates
                                     </button>

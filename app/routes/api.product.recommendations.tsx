@@ -20,7 +20,7 @@ export const loader = async ({request, context}: Route.LoaderArgs) => {
         variables: {productId}
     });
 
-    return new Response(JSON.stringify({products: (productRecommendations ?? []).filter((p: any) => p.availableForSale)}), {
+    return new Response(JSON.stringify({products: productRecommendations ?? []}), {
         status: 200,
         headers: {"Content-Type": "application/json"}
     });
