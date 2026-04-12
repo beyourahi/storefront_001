@@ -807,6 +807,11 @@ export const parseSiteSettings = (rawData: unknown): SiteSettings => {
     const parsedInstagramMedia = parseInstagramMedia(data.instagramMediaData);
 
     return {
+        // Populated from shop {} via parseShopBrand; fallbacks ensure a complete SiteSettings shape
+        brandName: FALLBACK_SITE_SETTINGS.brandName,
+        missionStatement: FALLBACK_SITE_SETTINGS.missionStatement,
+        siteUrl: FALLBACK_SITE_SETTINGS.siteUrl,
+
         brandWords: parseBrandWords(data.brandWords),
         featuredProductSection: parseFeaturedProductSection(data.featuredProductSection),
 
