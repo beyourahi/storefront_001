@@ -64,7 +64,7 @@ import {toHex} from "~/lib/color";
 /** Lightweight stand-in for schema-dts WithContext — avoids TS stack overflow on deep union resolution */
 type JsonLdSchema = Record<string, unknown>;
 
-type SeoSiteSettings = Partial<Pick<SiteSettings, "brandName" | "brandLogo" | "missionStatement" | "siteUrl">>;
+type SeoSiteSettings = Partial<Pick<SiteSettings, "brandName" | "brandLogo" | "ogImage" | "missionStatement" | "siteUrl">>;
 
 const FALLBACK_BRAND_NAME = "Store";
 const FALLBACK_SITE_URL = "";
@@ -394,20 +394,20 @@ export function getSiteUrlFromMatches(matches: Array<{id: string; data?: unknown
 
 /**
  * Get default OG image from site_settings.
- * Falls back to a static /og-default.jpg (1200×630) when no brand logo is configured.
+ * Priority: ogImage (dedicated social share image) → brandLogo → /og-default.jpg (1200×630 static fallback).
+ * ogImage should be a landscape 1200×630 crop; brandLogo is a UI asset and may be the wrong aspect ratio.
  */
 export function getDefaultOgImage(
     siteSettings?: SeoSiteSettings | null
 ): SeoMedia | undefined {
-    const logo = siteSettings?.brandLogo;
+    const og = siteSettings?.ogImage;
+    if (og?.url) {
+        return {url: og.url, width: og.width ?? undefined, height: og.height ?? undefined, type: "image"};
+    }
 
+    const logo = siteSettings?.brandLogo;
     if (logo?.url) {
-        return {
-            url: logo.url,
-            width: logo.width ?? undefined,
-            height: logo.height ?? undefined,
-            type: "image"
-        };
+        return {url: logo.url, width: logo.width ?? undefined, height: logo.height ?? undefined, type: "image"};
     }
 
     return {url: "/og-default.jpg", width: 1200, height: 630, type: "image"};

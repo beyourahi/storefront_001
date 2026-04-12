@@ -1,7 +1,7 @@
 import type {Route} from "./+types/manifest[.]webmanifest";
 import {PWA_MANIFEST_QUERY} from "~/lib/pwa-queries";
 import {buildWebAppManifest} from "~/lib/pwa-parsers";
-import {parseSiteSettings, parseThemeSettings} from "~/lib/metaobject-parsers";
+import {parseSiteSettings, parseThemeSettings, parseShopBrand} from "~/lib/metaobject-parsers";
 
 export const loader = async ({context, request}: Route.LoaderArgs) => {
     const {dataAdapter} = context;
@@ -14,7 +14,7 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
             cache: dataAdapter.CacheLong()
         });
 
-        const siteSettings = parseSiteSettings(data?.siteSettings);
+        const siteSettings = {...parseSiteSettings(data?.siteSettings), ...parseShopBrand(data?.shop)};
         const themeConfig = parseThemeSettings(data?.themeSettings);
 
         const manifest = buildWebAppManifest(siteSettings, themeConfig, manifestUrl);
