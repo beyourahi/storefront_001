@@ -38,8 +38,15 @@ const CHANGELOG_AUTHOR = {name: "Rahi Khan", url: "https://beyourahi.com"} as co
 const CATEGORIES = ["All", "New Feature", "Improvement", "Fix", "Maintenance"] as const;
 type Category = (typeof CATEGORIES)[number];
 
+function parseLocalDate(dateStr: string): Date {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    return new Date(year, month - 1, day); // local midnight — avoids UTC-offset shift
+}
+
 function getRelativeDate(dateStr: string): string {
-    const diffDays = Math.floor((Date.now() - new Date(dateStr).getTime()) / 86_400_000);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.floor((today.getTime() - parseLocalDate(dateStr).getTime()) / 86_400_000);
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Yesterday";
     if (diffDays < 7) return `${diffDays} days ago`;
@@ -52,7 +59,7 @@ function getRelativeDate(dateStr: string): string {
 }
 
 function getAbsoluteDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString("en-US", {
+    return parseLocalDate(dateStr).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric"
