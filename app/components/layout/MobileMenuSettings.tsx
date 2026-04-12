@@ -1,5 +1,6 @@
 import {Link} from "react-router";
 import {Heart, Images, Mail, ScrollText, User} from "lucide-react";
+import {OpenInAppButton} from "~/components/pwa/OpenInAppButton";
 import {cn} from "~/lib/utils";
 import {useWishlist} from "~/lib/wishlist-context";
 
@@ -164,6 +165,9 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                     </span>
                 </Link>
             </nav>
+            <div className="mt-4">
+                <OpenInAppButton variant="menu-item" />
+            </div>
         </div>
     );
 };

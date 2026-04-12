@@ -9,7 +9,6 @@ import {useSearchController} from "~/hooks/useSearchController";
 import {WishlistCount} from "~/components/WishlistCount";
 import {MobileMenu} from "~/components/layout/MobileMenu";
 import {useSiteSettings} from "~/lib/site-content-context";
-import {OpenInAppButton} from "~/components/pwa/OpenInAppButton";
 import type {RootLoader} from "~/root";
 
 type CollectionCardData = {
@@ -169,11 +168,6 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                                     <span className="sr-only">Account</span>
                                 </Button>
                             </Link>
-                        </div>
-
-                        {/* PWA install pill — mobile navbar only; mirrors the floating pill's look */}
-                        <div className="lg:hidden">
-                            <OpenInAppButton variant="navbar" />
                         </div>
 
                         <Button
