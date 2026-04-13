@@ -267,7 +267,7 @@ export default function Changelog() {
                             </p>
                             {commitCount !== null && (
                                 <p className="font-mono text-[11px] tabular-nums text-muted-foreground/50 tracking-wide">
-                                    {commitCount.toLocaleString()} commits
+                                    {commitCount.toLocaleString()} changes
                                 </p>
                             )}
                         </div>
