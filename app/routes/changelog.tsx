@@ -261,7 +261,7 @@ export default function Changelog() {
                         <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
                             <GiantText
                                 text="Changelog"
-                                className={cn("w-full font-black", "lg:w-[45%]")}
+                                className={cn("w-full font-black", "lg:w-[60%]")}
                             />
                             <p className="w-full text-xs text-muted-foreground lg:w-[60%] lg:text-sm 2xl:text-base">
                                 We&apos;re constantly improving your shopping experience. Here&apos;s what we&apos;ve shipped.
