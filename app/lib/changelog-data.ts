@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-13",
+        headline: "Changelog now shows total commits and per-date update counts",
+        summary:
+            "The Changelog page now quietly displays the total number of commits shipped to the storefront, pulled live from the repository. Each date group also shows how many updates were released that day, so you can see at a glance how much work landed on any given date.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-13",
         headline: "Changelog date headers now stay visible while you scroll",
         summary:
             "Each date group on the Changelog page now has a sticky header that pins to the top of the screen as you scroll through its entries, then hands off cleanly to the next date. This makes it easy to know which update period you are reading without having to scroll back up.",

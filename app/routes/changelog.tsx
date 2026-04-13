@@ -27,8 +27,40 @@ export const meta: Route.MetaFunction = ({matches}) => {
 
 // ── Loader ────────────────────────────────────────────────────────────────────
 
-export const loader = async () => {
-    return {entries: CHANGELOG_ENTRIES};
+// Module-level cache — persists within a Worker isolate to reduce API calls.
+let _ghCountCache: {value: number; ts: number} | null = null;
+
+export const loader = async ({context}: Route.LoaderArgs) => {
+    // Fetch total git commit count via the Link-header pagination trick:
+    // per_page=1 triggers a Link header whose rel="last" page number equals the total.
+    let commitCount: number | null = null;
+    const now = Date.now();
+    if (_ghCountCache && now - _ghCountCache.ts < 3_600_000) {
+        commitCount = _ghCountCache.value;
+    } else {
+        try {
+            const headers: Record<string, string> = {
+                Accept: "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+                "User-Agent": "storefront_001/1.0"
+            };
+            if (context.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${context.env.GITHUB_TOKEN}`;
+            const res = await fetch(
+                "https://api.github.com/repos/beyourahi/storefront_001/commits?per_page=1",
+                {headers}
+            );
+            if (res.ok) {
+                const match = (res.headers.get("link") ?? "").match(/<[^>]*[?&]page=(\d+)[^>]*>;\s*rel="last"/);
+                if (match) {
+                    commitCount = parseInt(match[1], 10);
+                    _ghCountCache = {value: commitCount, ts: now};
+                }
+            }
+        } catch {
+            // Non-critical — page renders without the count
+        }
+    }
+    return {entries: CHANGELOG_ENTRIES, commitCount};
 };
 
 // ── Constants & Helpers ───────────────────────────────────────────────────────
@@ -195,7 +227,7 @@ function EmptyState({hasFilters}: {hasFilters: boolean}) {
 // ── Page Component ────────────────────────────────────────────────────────────
 
 export default function Changelog() {
-    const {entries} = useLoaderData<typeof loader>();
+    const {entries, commitCount} = useLoaderData<typeof loader>();
 
     const [selectedCategory, setSelectedCategory] = useState<Category>("All");
     const [visibleCount, setVisibleCount] = useState(100);
@@ -233,7 +265,11 @@ export default function Changelog() {
                             <p className="w-full text-xs text-muted-foreground lg:w-[60%] lg:text-sm 2xl:text-base">
                                 We&apos;re constantly improving your shopping experience. Here&apos;s what we&apos;ve shipped.
                             </p>
-
+                            {commitCount !== null && (
+                                <p className="font-mono text-[11px] tabular-nums text-muted-foreground/50 tracking-wide">
+                                    {commitCount.toLocaleString()} commits
+                                </p>
+                            )}
                         </div>
                     </div>
                 </section>
@@ -286,10 +322,15 @@ export default function Changelog() {
                                             <div
                                                 className="sticky top-(--total-header-height) z-20 -mx-2 bg-background px-2 py-2 md:-mx-4 md:px-4 lg:hidden"
                                             >
-                                                <span className="text-xs text-muted-foreground">
-                                                    <time dateTime={group.date}>{getAbsoluteDate(group.date)}</time>
-                                                    {" · "}{getRelativeDate(group.date)}
-                                                </span>
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <span className="text-xs text-muted-foreground">
+                                                        <time dateTime={group.date}>{getAbsoluteDate(group.date)}</time>
+                                                        {" · "}{getRelativeDate(group.date)}
+                                                    </span>
+                                                    <span className="shrink-0 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
+                                                        {group.entries.length} {group.entries.length === 1 ? "update" : "updates"}
+                                                    </span>
+                                                </div>
                                             </div>
 
                                             {/* Desktop date column — sticky side column, sticks below the navbar.
@@ -305,6 +346,9 @@ export default function Changelog() {
                                                 </time>
                                                 <span className="mt-0.5 text-right text-xs text-muted-foreground">
                                                     {getRelativeDate(group.date)}
+                                                </span>
+                                                <span className="mt-2 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
+                                                    {group.entries.length} {group.entries.length === 1 ? "update" : "updates"}
                                                 </span>
                                             </div>
 
