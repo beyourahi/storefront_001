@@ -102,6 +102,25 @@ function getCategoryAccentBorder(category: ChangelogEntry["category"]): string {
     }
 }
 
+interface DateGroup {
+    date: string;
+    entries: ChangelogEntry[];
+}
+
+/**
+ * Groups an ordered array of entries by their `date` field, preserving
+ * insertion order (newest-first, as CHANGELOG_ENTRIES is authored).
+ */
+function groupEntriesByDate(entries: ChangelogEntry[]): DateGroup[] {
+    const map = new Map<string, ChangelogEntry[]>();
+    for (const entry of entries) {
+        const existing = map.get(entry.date);
+        if (existing) existing.push(entry);
+        else map.set(entry.date, [entry]);
+    }
+    return Array.from(map.entries()).map(([date, groupEntries]) => ({date, entries: groupEntries}));
+}
+
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function ChangelogCard({entry, index}: {entry: ChangelogEntry; index: number}) {
@@ -319,34 +338,60 @@ export default function Changelog() {
                         <EmptyState hasFilters={hasFilters} />
                     ) : (
                         <>
-                            {/* Timeline */}
-                            <div className="space-y-5 lg:space-y-6">
-                                {visible.map((entry, index) => (
-                                    <div key={`${entry.date}-${entry.headline}`} className="lg:flex">
-                                        {/* Date column (desktop only) */}
-                                        <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5">
-                                            <time
-                                                dateTime={entry.date}
-                                                className="text-right text-xs font-mono font-medium leading-tight text-foreground"
-                                            >
-                                                {getAbsoluteDate(entry.date)}
-                                            </time>
-                                            <span className="mt-0.5 text-right text-xs text-muted-foreground">
-                                                {getRelativeDate(entry.date)}
-                                            </span>
-                                        </div>
+                            {/* Timeline — entries grouped by date, with a section header per group */}
+                            <div>
+                                {/* IIFE scopes globalStaggerIndex so animation delays are continuous
+                                    across all date groups rather than resetting per group. */}
+                                {(() => {
+                                    let globalStaggerIndex = 0;
+                                    return groupEntriesByDate(visible).map(group => (
+                                        <div key={group.date} className="mb-10 sm:mb-12">
+                                            {/* Date group header with decorative rule */}
+                                            <div className="flex items-center gap-3 mb-4 sm:mb-5">
+                                                <div className="flex items-baseline gap-2 shrink-0">
+                                                    <h2 className="font-serif text-base sm:text-lg font-medium text-foreground/70">
+                                                        {getAbsoluteDate(group.date)}
+                                                    </h2>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {getRelativeDate(group.date)}
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    className="flex-1 h-px bg-border/40"
+                                                    aria-hidden="true"
+                                                />
+                                            </div>
+                                            <div className="space-y-5 lg:space-y-6">
+                                                {group.entries.map(entry => (
+                                                    <div key={`${entry.date}-${entry.headline}`} className="lg:flex">
+                                                        {/* Date column (desktop only) */}
+                                                        <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5">
+                                                            <time
+                                                                dateTime={entry.date}
+                                                                className="text-right text-xs font-mono font-medium leading-tight text-foreground"
+                                                            >
+                                                                {getAbsoluteDate(entry.date)}
+                                                            </time>
+                                                            <span className="mt-0.5 text-right text-xs text-muted-foreground">
+                                                                {getRelativeDate(entry.date)}
+                                                            </span>
+                                                        </div>
 
-                                        {/* Card side — border-l creates the timeline line on desktop */}
-                                        <div className="relative flex-1 lg:border-l-2 lg:border-border/40 lg:pl-8">
-                                            {/* Timeline dot (desktop only) */}
-                                            <div
-                                                className="hidden lg:block absolute -left-[7px] top-4 h-3 w-3 rounded-full bg-primary ring-4 ring-background"
-                                                aria-hidden="true"
-                                            />
-                                            <ChangelogCard entry={entry} index={index} />
+                                                        {/* Card side — border-l creates the timeline line on desktop */}
+                                                        <div className="relative flex-1 lg:border-l-2 lg:border-border/40 lg:pl-8">
+                                                            {/* Timeline dot (desktop only) */}
+                                                            <div
+                                                                className="hidden lg:block absolute -left-[7px] top-4 h-3 w-3 rounded-full bg-primary ring-4 ring-background"
+                                                                aria-hidden="true"
+                                                            />
+                                                            <ChangelogCard entry={entry} index={globalStaggerIndex++} />
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ));
+                                })()}
                             </div>
 
                             {/* Load more */}
