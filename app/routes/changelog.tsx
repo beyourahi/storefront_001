@@ -123,7 +123,7 @@ function groupEntriesByDate(entries: ChangelogEntry[]): DateGroup[] {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function ChangelogCard({entry, index}: {entry: ChangelogEntry; index: number}) {
+function ChangelogCard({entry, index, showDate = true}: {entry: ChangelogEntry; index: number; showDate?: boolean}) {
     return (
         <article
             className={cn(
@@ -145,11 +145,14 @@ function ChangelogCard({entry, index}: {entry: ChangelogEntry; index: number}) {
                     >
                         {entry.category}
                     </span>
-                    {/* Mobile-only date — desktop date lives in the timeline column */}
-                    <span className="text-xs text-muted-foreground lg:hidden">
-                        <time dateTime={entry.date}>{getAbsoluteDate(entry.date)}</time>
-                        {" · "}{getRelativeDate(entry.date)}
-                    </span>
+                    {/* Mobile-only date — desktop date lives in the timeline column;
+                        suppressed for subsequent entries sharing the same date group */}
+                    {showDate && (
+                        <span className="text-xs text-muted-foreground lg:hidden">
+                            <time dateTime={entry.date}>{getAbsoluteDate(entry.date)}</time>
+                            {" · "}{getRelativeDate(entry.date)}
+                        </span>
+                    )}
                 </div>
 
                 {/* Headline — font-serif for premium feel */}
@@ -338,56 +341,46 @@ export default function Changelog() {
                         <EmptyState hasFilters={hasFilters} />
                     ) : (
                         <>
-                            {/* Timeline — entries grouped by date, with a section header per group */}
+                            {/* Timeline — entries grouped by date.
+                                Each group owns ONE date column, ONE dot, and ONE continuous vertical
+                                line. No repetition for subsequent entries sharing the same date.
+                                IIFE scopes globalStaggerIndex so animation delays are continuous
+                                across all date groups rather than resetting per group. */}
                             <div>
-                                {/* IIFE scopes globalStaggerIndex so animation delays are continuous
-                                    across all date groups rather than resetting per group. */}
                                 {(() => {
                                     let globalStaggerIndex = 0;
                                     return groupEntriesByDate(visible).map(group => (
-                                        <div key={group.date} className="mb-10 sm:mb-12">
-                                            {/* Date group header with decorative rule */}
-                                            <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                                                <div className="flex items-baseline gap-2 shrink-0">
-                                                    <h2 className="font-serif text-base sm:text-lg font-medium text-foreground/70">
-                                                        {getAbsoluteDate(group.date)}
-                                                    </h2>
-                                                    <span className="text-xs text-muted-foreground">
-                                                        {getRelativeDate(group.date)}
-                                                    </span>
-                                                </div>
+                                        <div key={group.date} className="mb-10 sm:mb-12 lg:flex">
+                                            {/* Date column (desktop only) — once per group */}
+                                            <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5">
+                                                <time
+                                                    dateTime={group.date}
+                                                    className="text-right text-xs font-mono font-medium leading-tight text-foreground"
+                                                >
+                                                    {getAbsoluteDate(group.date)}
+                                                </time>
+                                                <span className="mt-0.5 text-right text-xs text-muted-foreground">
+                                                    {getRelativeDate(group.date)}
+                                                </span>
+                                            </div>
+
+                                            {/* Single vertical line + single dot span the full group */}
+                                            <div className="relative flex-1 lg:border-l-2 lg:border-border/40 lg:pl-8">
+                                                {/* Timeline dot — once per group */}
                                                 <div
-                                                    className="flex-1 h-px bg-border/40"
+                                                    className="hidden lg:block absolute -left-[7px] top-4 h-3 w-3 rounded-full bg-primary ring-4 ring-background"
                                                     aria-hidden="true"
                                                 />
-                                            </div>
-                                            <div className="space-y-5 lg:space-y-6">
-                                                {group.entries.map(entry => (
-                                                    <div key={`${entry.date}-${entry.headline}`} className="lg:flex">
-                                                        {/* Date column (desktop only) */}
-                                                        <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5">
-                                                            <time
-                                                                dateTime={entry.date}
-                                                                className="text-right text-xs font-mono font-medium leading-tight text-foreground"
-                                                            >
-                                                                {getAbsoluteDate(entry.date)}
-                                                            </time>
-                                                            <span className="mt-0.5 text-right text-xs text-muted-foreground">
-                                                                {getRelativeDate(entry.date)}
-                                                            </span>
-                                                        </div>
-
-                                                        {/* Card side — border-l creates the timeline line on desktop */}
-                                                        <div className="relative flex-1 lg:border-l-2 lg:border-border/40 lg:pl-8">
-                                                            {/* Timeline dot (desktop only) */}
-                                                            <div
-                                                                className="hidden lg:block absolute -left-[7px] top-4 h-3 w-3 rounded-full bg-primary ring-4 ring-background"
-                                                                aria-hidden="true"
-                                                            />
-                                                            <ChangelogCard entry={entry} index={globalStaggerIndex++} />
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                                <div className="space-y-5 lg:space-y-6">
+                                                    {group.entries.map((entry, entryIndex) => (
+                                                        <ChangelogCard
+                                                            key={`${entry.date}-${entry.headline}`}
+                                                            entry={entry}
+                                                            index={globalStaggerIndex++}
+                                                            showDate={entryIndex === 0}
+                                                        />
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     ));
