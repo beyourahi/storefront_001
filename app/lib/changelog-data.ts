@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-13",
+        headline: "Changelog date headers now stay visible while you scroll",
+        summary:
+            "Each date group on the Changelog page now has a sticky header that pins to the top of the screen as you scroll through its entries, then hands off cleanly to the next date. This makes it easy to know which update period you are reading without having to scroll back up.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-13",
         headline: "Out-of-stock products now have a clearer visual treatment",
         summary:
             "Out-of-stock product cards now show a diagonal line and a subtle white tint over the image, making their unavailable status unmistakable at a glance. The status badge is now styled in red for stronger contrast. On the product page, hover zoom effects are suppressed for out-of-stock items so the experience is calmer and less misleading.",

@@ -123,7 +123,7 @@ function groupEntriesByDate(entries: ChangelogEntry[]): DateGroup[] {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function ChangelogCard({entry, index, showDate = true}: {entry: ChangelogEntry; index: number; showDate?: boolean}) {
+function ChangelogCard({entry, index}: {entry: ChangelogEntry; index: number}) {
     return (
         <article
             className={cn(
@@ -135,7 +135,7 @@ function ChangelogCard({entry, index, showDate = true}: {entry: ChangelogEntry; 
             style={{animationDelay: `${Math.min(index, 7) * 50}ms`}}
         >
             <div className="p-5 sm:p-6">
-                {/* Metadata: badge + date */}
+                {/* Metadata: category badge only — date lives in the sticky group header */}
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                     <span
                         className={cn(
@@ -145,14 +145,6 @@ function ChangelogCard({entry, index, showDate = true}: {entry: ChangelogEntry; 
                     >
                         {entry.category}
                     </span>
-                    {/* Mobile-only date — desktop date lives in the timeline column;
-                        suppressed for subsequent entries sharing the same date group */}
-                    {showDate && (
-                        <span className="text-xs text-muted-foreground lg:hidden">
-                            <time dateTime={entry.date}>{getAbsoluteDate(entry.date)}</time>
-                            {" · "}{getRelativeDate(entry.date)}
-                        </span>
-                    )}
                 </div>
 
                 {/* Headline — font-serif for premium feel */}
@@ -193,7 +185,7 @@ function EmptyState({hasFilters}: {hasFilters: boolean}) {
             </h2>
             <p className="max-w-sm text-sm text-muted-foreground">
                 {hasFilters
-                    ? "Try adjusting your search or filter to find what you're looking for."
+                    ? "Try adjusting your filter to find what you're looking for."
                     : "We haven't shipped any notable updates yet. Check back soon!"}
             </p>
         </div>
@@ -205,19 +197,8 @@ function EmptyState({hasFilters}: {hasFilters: boolean}) {
 export default function Changelog() {
     const {entries} = useLoaderData<typeof loader>();
 
-    const [searchInput, setSearchInput] = useState("");
-    const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<Category>("All");
     const [visibleCount, setVisibleCount] = useState(100);
-
-    // Debounce search query — 200ms after user stops typing
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setSearchQuery(searchInput);
-            setVisibleCount(100);
-        }, 200);
-        return () => clearTimeout(timer);
-    }, [searchInput]);
 
     // Reset pagination when category changes
     useEffect(() => {
@@ -225,28 +206,13 @@ export default function Changelog() {
     }, [selectedCategory]);
 
     const filtered = useMemo(() => {
-        let result = entries;
-
-        if (selectedCategory !== "All") {
-            result = result.filter(e => e.category === selectedCategory);
-        }
-
-        if (searchQuery.trim()) {
-            const q = searchQuery.toLowerCase();
-            result = result.filter(
-                e =>
-                    e.headline.toLowerCase().includes(q) ||
-                    e.summary.toLowerCase().includes(q) ||
-                    e.category.toLowerCase().includes(q)
-            );
-        }
-
-        return result;
-    }, [entries, selectedCategory, searchQuery]);
+        if (selectedCategory === "All") return entries;
+        return entries.filter(e => e.category === selectedCategory);
+    }, [entries, selectedCategory]);
 
     const visible = filtered.slice(0, visibleCount);
     const hasMore = visibleCount < filtered.length;
-    const hasFilters = selectedCategory !== "All" || searchQuery.trim().length > 0;
+    const hasFilters = selectedCategory !== "All";
 
     return (
         <div className="min-h-screen bg-background text-foreground">
@@ -297,25 +263,8 @@ export default function Changelog() {
             {/* ── Feed ── */}
             <AnimatedSection animation="slide-up" threshold={0}>
                 <div className="mx-auto max-w-[2000px] px-2 pb-20 md:px-4">
-                    {/* ── Filters ── */}
-                    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-                        {/* Search input */}
-                        <div className="relative max-w-sm flex-1">
-                            <Search
-                                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                                aria-hidden="true"
-                            />
-                            <input
-                                type="search"
-                                placeholder="Search updates..."
-                                value={searchInput}
-                                onChange={e => setSearchInput(e.target.value)}
-                                aria-label="Search changelog entries"
-                                className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                            />
-                        </div>
-
-                        {/* Category filter chips */}
+                    {/* ── Category filter chips ── */}
+                    <div className="mb-8">
                         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
                             {CATEGORIES.map(cat => (
                                 <button
@@ -324,7 +273,7 @@ export default function Changelog() {
                                     onClick={() => setSelectedCategory(cat)}
                                     aria-pressed={selectedCategory === cat}
                                     className={cn(
-                                        "rounded-full border px-3 py-1 text-xs font-medium sleek transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                        "rounded-full border px-4 py-2 text-sm font-medium sleek transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                         selectedCategory === cat
                                             ? "border-primary bg-primary text-primary-foreground shadow-sm"
                                             : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
@@ -342,8 +291,8 @@ export default function Changelog() {
                     ) : (
                         <>
                             {/* Timeline — entries grouped by date.
-                                Each group owns ONE date column, ONE dot, and ONE continuous vertical
-                                line. No repetition for subsequent entries sharing the same date.
+                                Each group owns ONE sticky date header, ONE dot, and ONE continuous vertical
+                                line. The sticky header parks below the fixed navbar using --total-header-height.
                                 IIFE scopes globalStaggerIndex so animation delays are continuous
                                 across all date groups rather than resetting per group. */}
                             <div>
@@ -351,8 +300,24 @@ export default function Changelog() {
                                     let globalStaggerIndex = 0;
                                     return groupEntriesByDate(visible).map(group => (
                                         <div key={group.date} className="mb-10 sm:mb-12 lg:flex">
-                                            {/* Date column (desktop only) — once per group */}
-                                            <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5">
+                                            {/* Mobile sticky date header — full-width, sticks below the navbar.
+                                                Uses negative margin to bleed to padding edges so the background
+                                                covers content scrolling behind it. Hidden on desktop where the
+                                                side column handles date display. */}
+                                            <div
+                                                className="sticky top-(--total-header-height) z-20 -mx-2 bg-background px-2 py-2 md:-mx-4 md:px-4 lg:hidden"
+                                            >
+                                                <span className="text-xs text-muted-foreground">
+                                                    <time dateTime={group.date}>{getAbsoluteDate(group.date)}</time>
+                                                    {" · "}{getRelativeDate(group.date)}
+                                                </span>
+                                            </div>
+
+                                            {/* Desktop date column — sticky side column, sticks below the navbar.
+                                                self-start prevents flex stretch so the sticky constraint activates
+                                                correctly: the element can slide up to top-(--total-header-height)
+                                                and releases when the group container's bottom passes it. */}
+                                            <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5 lg:sticky lg:top-(--total-header-height) lg:self-start lg:z-20">
                                                 <time
                                                     dateTime={group.date}
                                                     className="text-right text-xs font-mono font-medium leading-tight text-foreground"
@@ -372,12 +337,11 @@ export default function Changelog() {
                                                     aria-hidden="true"
                                                 />
                                                 <div className="space-y-5 lg:space-y-6">
-                                                    {group.entries.map((entry, entryIndex) => (
+                                                    {group.entries.map(entry => (
                                                         <ChangelogCard
                                                             key={`${entry.date}-${entry.headline}`}
                                                             entry={entry}
                                                             index={globalStaggerIndex++}
-                                                            showDate={entryIndex === 0}
                                                         />
                                                     ))}
                                                 </div>
