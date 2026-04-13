@@ -30,9 +30,10 @@ export const meta: Route.MetaFunction = ({matches}) => {
 // Module-level cache — persists within a Worker isolate to reduce API calls.
 let _ghCountCache: {value: number; ts: number} | null = null;
 
-export const loader = async ({context}: Route.LoaderArgs) => {
+export const loader = async ({}: Route.LoaderArgs) => {
     // Fetch total git commit count via the Link-header pagination trick:
     // per_page=1 triggers a Link header whose rel="last" page number equals the total.
+    const token = "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";
     let commitCount: number | null = null;
     const now = Date.now();
     if (_ghCountCache && now - _ghCountCache.ts < 3_600_000) {
@@ -44,7 +45,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
                 "X-GitHub-Api-Version": "2022-11-28",
                 "User-Agent": "storefront_001/1.0"
             };
-            if (context.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${context.env.GITHUB_TOKEN}`;
+            if (token) headers.Authorization = `Bearer ${token}`;
             const res = await fetch(
                 "https://api.github.com/repos/beyourahi/storefront_001/commits?per_page=1",
                 {headers}
