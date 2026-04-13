@@ -265,7 +265,7 @@ export default function Changelog() {
                 <div className="mx-auto max-w-[2000px] px-2 pb-20 md:px-4">
                     {/* ── Category filter chips ── */}
                     <div className="mb-8">
-                        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+                        <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Filter by category">
                             {CATEGORIES.map(cat => (
                                 <button
                                     key={cat}
