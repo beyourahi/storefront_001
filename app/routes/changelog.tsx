@@ -278,7 +278,7 @@ export default function Changelog() {
 
             {/* ── Feed ── */}
             <AnimatedSection animation="slide-up" threshold={0}>
-                <div className="mx-auto max-w-[2000px] px-2 pb-20 md:px-4">
+                <div className="mx-auto max-w-[2000px] px-2 pb-20 md:px-8">
                     {/* ── Category filter chips ── */}
                     <div className="mb-8">
                         <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Filter by category">

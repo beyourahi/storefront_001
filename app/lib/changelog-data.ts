@@ -35,6 +35,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-14",
+        headline: "Changelog update list now has balanced side spacing",
+        summary:
+            "The list of updates on the Changelog page now has equal breathing room on both sides at wider screen sizes. Previously, the right edge of the update cards sat closer to the screen edge than the left side, creating a slightly uneven appearance. The spacing is now consistent for a cleaner reading experience.",
+        category: "Improvement"
+    },
+    {
         date: "2026-04-13",
         headline: "Changelog now shows total changes and per-date update counts",
         summary:
