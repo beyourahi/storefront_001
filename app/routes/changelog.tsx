@@ -1,7 +1,7 @@
 import {getSeoMeta} from "@shopify/hydrogen";
 import {useState, useMemo, useEffect} from "react";
 import {useLoaderData} from "react-router";
-import {Search, ExternalLink} from "lucide-react";
+import {Search} from "lucide-react";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
@@ -234,27 +234,6 @@ export default function Changelog() {
                                 We&apos;re constantly improving your shopping experience. Here&apos;s what we&apos;ve shipped.
                             </p>
 
-                            {/* Prominent "Built by" attribution — visually unmissable */}
-                            <div className="mt-5 sm:mt-7 flex flex-col items-center gap-1.5">
-                                <span className="text-xs uppercase tracking-widest text-muted-foreground">
-                                    Built by
-                                </span>
-                                <a
-                                    href={CHANGELOG_AUTHOR.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={cn(
-                                        "group flex items-center gap-2 font-serif font-bold",
-                                        "text-xl sm:text-2xl lg:text-3xl",
-                                        "text-primary hover:text-primary/80",
-                                        "border-b-2 border-primary/30 hover:border-primary pb-0.5",
-                                        "sleek motion-link"
-                                    )}
-                                >
-                                    {CHANGELOG_AUTHOR.name}
-                                    <ExternalLink className="size-4 text-primary/50 group-hover:text-primary/80 sleek" aria-hidden="true" />
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </section>
