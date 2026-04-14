@@ -658,8 +658,11 @@ input[type="search"]::-webkit-search-results-decoration {
     display: none;
 }
 
-input {
-    border-radius: 0;
+@layer base {
+    /* Reset input border-radius so Tailwind rounded-* utilities can override it */
+    input {
+        border-radius: 0;
+    }
 }
 
 input[type="search"] {

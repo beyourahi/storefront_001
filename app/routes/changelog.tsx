@@ -28,40 +28,8 @@ export const meta: Route.MetaFunction = ({matches}) => {
 
 // ── Loader ────────────────────────────────────────────────────────────────────
 
-// Module-level cache — persists within a Worker isolate to reduce API calls.
-let _ghCountCache: {value: number; ts: number} | null = null;
-
 export const loader = async ({}: Route.LoaderArgs) => {
-    // Fetch total git commit count via the Link-header pagination trick:
-    // per_page=1 triggers a Link header whose rel="last" page number equals the total.
-    const token = "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";
-    let commitCount: number | null = null;
-    const now = Date.now();
-    if (_ghCountCache && now - _ghCountCache.ts < 3_600_000) {
-        commitCount = _ghCountCache.value;
-    } else {
-        try {
-            const headers: Record<string, string> = {
-                Accept: "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-                "User-Agent": "storefront_001/1.0"
-            };
-            if (token) headers.Authorization = `Bearer ${token}`;
-            const res = await fetch("https://api.github.com/repos/beyourahi/storefront_001/commits?per_page=1", {
-                headers
-            });
-            if (res.ok) {
-                const match = (res.headers.get("link") ?? "").match(/<[^>]*[?&]page=(\d+)[^>]*>;\s*rel="last"/);
-                if (match) {
-                    commitCount = parseInt(match[1], 10);
-                    _ghCountCache = {value: commitCount, ts: now};
-                }
-            }
-        } catch {
-            // Non-critical — page renders without the count
-        }
-    }
-    return {entries: CHANGELOG_ENTRIES, commitCount};
+    return {entries: CHANGELOG_ENTRIES};
 };
 
 // ── Constants & Helpers ───────────────────────────────────────────────────────
@@ -224,7 +192,7 @@ function EmptyState({hasFilters}: {hasFilters: boolean}) {
 // ── Page Component ────────────────────────────────────────────────────────────
 
 export default function Changelog() {
-    const {entries, commitCount} = useLoaderData<typeof loader>();
+    const {entries} = useLoaderData<typeof loader>();
 
     const [selectedCategory, setSelectedCategory] = useState<Category>("All");
     const [visibleCount, setVisibleCount] = useState(100);
@@ -260,31 +228,6 @@ export default function Changelog() {
                                 We&apos;re constantly improving your shopping experience. Here&apos;s what we&apos;ve
                                 shipped.
                             </p>
-                            {commitCount !== null && (
-                                <div className="flex flex-col items-center gap-3">
-                                    <div className="flex items-center gap-2.5" aria-hidden="true">
-                                        <div className="h-px w-24 bg-gradient-to-r from-transparent to-primary/55" />
-                                        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-primary ring-[3px] ring-primary/20" />
-                                        <div className="h-px w-24 bg-gradient-to-l from-transparent to-primary/55" />
-                                    </div>
-                                    <p className="flex flex-col items-center gap-1.5">
-                                        <data
-                                            value={commitCount}
-                                            className="text-4xl sm:text-5xl font-black tabular-nums tracking-tight text-primary"
-                                        >
-                                            {commitCount.toLocaleString()}
-                                        </data>
-                                        <span className="font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground/65">
-                                            updates shipped so far
-                                        </span>
-                                    </p>
-                                    <div className="flex items-center gap-2.5" aria-hidden="true">
-                                        <div className="h-px w-24 bg-gradient-to-r from-transparent to-primary/55" />
-                                        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-primary ring-[3px] ring-primary/20" />
-                                        <div className="h-px w-24 bg-gradient-to-l from-transparent to-primary/55" />
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </div>
                 </section>
