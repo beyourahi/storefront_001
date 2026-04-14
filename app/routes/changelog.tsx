@@ -333,8 +333,6 @@ export default function Changelog() {
                                 {(() => {
                                     let globalStaggerIndex = 0;
                                     return groupEntriesByDate(visible).map(group => {
-                                        // Use the first entry's time as the group-level time stamp
-                                        const groupTime = group.entries[0]?.time;
                                         return (
                                         <div key={group.date} className="mb-10 sm:mb-12 lg:flex">
                                             {/* Mobile sticky date header — full-width, sticks below the navbar.
@@ -347,9 +345,6 @@ export default function Changelog() {
                                                         <time dateTime={group.date}>{getAbsoluteDate(group.date)}</time>
                                                         {" · "}
                                                         {getRelativeDate(group.date)}
-                                                        {groupTime && (
-                                                            <>{" · "}<span className="font-mono">{groupTime}</span></>
-                                                        )}
                                                     </span>
                                                     <span className="shrink-0 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
                                                         {group.entries.length}{" "}
@@ -372,11 +367,6 @@ export default function Changelog() {
                                                 <span className="mt-0.5 text-right text-xs text-muted-foreground">
                                                     {getRelativeDate(group.date)}
                                                 </span>
-                                                {groupTime && (
-                                                    <span className="mt-0.5 text-right text-[10px] font-mono text-muted-foreground/70">
-                                                        {groupTime}
-                                                    </span>
-                                                )}
                                                 <span className="mt-2 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
                                                     {group.entries.length}{" "}
                                                     {group.entries.length === 1 ? "update" : "updates"}
