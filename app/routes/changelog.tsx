@@ -252,18 +252,38 @@ export default function Changelog() {
 
             {/* ── Hero ── */}
             <AnimatedSection animation="fade" threshold={0.08}>
-                <section className="py-8">
+                <section className="py-10">
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4">
-                        <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
+                        <div className="flex w-full flex-col items-center justify-center gap-3 text-center xl:gap-5">
                             <GiantText text="Changelog" className={cn("w-full font-black", "lg:w-[60%]")} />
                             <p className="w-full text-xs text-muted-foreground lg:w-[60%] lg:text-sm 2xl:text-base">
                                 We&apos;re constantly improving your shopping experience. Here&apos;s what we&apos;ve
                                 shipped.
                             </p>
                             {commitCount !== null && (
-                                <p className="font-mono text-[11px] tabular-nums text-muted-foreground/50 tracking-wide">
-                                    {commitCount.toLocaleString()} updates shipped
-                                </p>
+                                <div className="flex flex-col items-center gap-3">
+                                    <div className="flex items-center gap-2.5" aria-hidden="true">
+                                        <div className="h-px w-24 bg-gradient-to-r from-transparent to-primary/55" />
+                                        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-primary ring-[3px] ring-primary/20" />
+                                        <div className="h-px w-24 bg-gradient-to-l from-transparent to-primary/55" />
+                                    </div>
+                                    <p className="flex flex-col items-center gap-1.5">
+                                        <data
+                                            value={commitCount}
+                                            className="text-4xl sm:text-5xl font-black tabular-nums tracking-tight text-primary"
+                                        >
+                                            {commitCount.toLocaleString()}
+                                        </data>
+                                        <span className="font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground/65">
+                                            updates shipped so far
+                                        </span>
+                                    </p>
+                                    <div className="flex items-center gap-2.5" aria-hidden="true">
+                                        <div className="h-px w-24 bg-gradient-to-r from-transparent to-primary/55" />
+                                        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-primary ring-[3px] ring-primary/20" />
+                                        <div className="h-px w-24 bg-gradient-to-l from-transparent to-primary/55" />
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
