@@ -133,9 +133,9 @@ body {
     --announcement-scroll-duration: 20s;
 
     /* ── Floating Button Bottom Clearance ── */
-    /* mobile default: clears the 2-row (flex-col) footer copyright section (~86px from bottom) with ~26px margin */
-    --floating-btn-min-bottom: 7rem;
-    /* mobile/tablet: no floating OIA pill (it lives in the navbar); 0 extra offset for FloatingChatWidget */
+    /* mobile default: clears the 2-row (flex-col) footer copyright section (~88px from bottom) with ~8px margin */
+    --floating-btn-min-bottom: 6rem;
+    /* mobile/tablet: no floating OIA pill; 0 extra offset for FloatingChatWidget */
     --floating-chat-extra-offset: 0rem;
 
     /* ── Status Colors ── */
@@ -191,17 +191,19 @@ body {
     }
 }
 
-/* md+: clears the 1-row (flex-row) footer copyright section (~53px from bottom) with ~19px margin */
+/* md+: clears the 1-row (flex-row) footer copyright section (~72px from bottom) with ~24px margin */
 @media (min-width: 768px) {
     :root {
-        --floating-btn-min-bottom: 4.5rem;
+        --floating-btn-min-bottom: 6rem;
     }
 }
 
-/* lg+: floating OIA pill is visible on desktop; FloatingChatWidget stacks above it */
+/* lg+: floating OIA pill is visible on desktop; FloatingChatWidget stacks above it.
+   OIA pill height (h-11 = 2.75rem) + 20px visual gap (1.25rem) = 4rem total offset.
+   Chat bottom = 6rem (base) + 4rem (offset) = 10rem = 160px; PWA bottom = 6rem = 96px. */
 @media (min-width: 1024px) {
     :root {
-        --floating-chat-extra-offset: calc(2.75rem + 0.75rem); /* h-11 + gap-3 */
+        --floating-chat-extra-offset: calc(2.75rem + 1.25rem); /* h-11 + 20px gap */
     }
 }
 

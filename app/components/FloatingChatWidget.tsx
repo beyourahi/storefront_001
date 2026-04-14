@@ -23,8 +23,10 @@
  * @positioning
  *   fixed right-4 z-50 — stacked column, WhatsApp above Messenger.
  *   Bottom = footer-clearance (--floating-btn-min-bottom) + OpenInAppButton
- *   stack offset (--floating-chat-extra-offset, 0 on mobile/tablet where the
- *   pill is in the navbar, 3.5rem on desktop where it floats).
+ *   stack offset (--floating-chat-extra-offset, 0rem on mobile/tablet where the
+ *   OIA pill is in the menu, 4rem on desktop where it floats above the OIA pill).
+ *   --floating-btn-min-bottom = 6rem at all breakpoints (96px); the extra offset
+ *   at lg+ raises chat to 10rem (160px), clearing the 96px OIA pill by 20px.
  *   Product-page sticky bars are handled via --product-sticky-bar-height.
  */
 
@@ -83,10 +85,10 @@ export function FloatingChatWidget() {
             className="fixed right-4 z-50 flex flex-col items-end gap-3"
             style={{
                 // Anchor to bottom-right, clearing the footer copyright row.
-                // --floating-btn-min-bottom: footer height + margin (7rem mobile, 4.5rem md+).
-                // --floating-chat-extra-offset: 0rem on mobile/tablet (OIA is in navbar),
-                //   calc(2.75rem + 0.75rem) on desktop (OIA floats, stack above it).
-                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), var(--floating-btn-min-bottom, 7rem)) + var(--floating-chat-extra-offset, 0rem))",
+                // --floating-btn-min-bottom: 6rem at all breakpoints (96px), clears footer.
+                // --floating-chat-extra-offset: 0rem on mobile/tablet (OIA is in menu),
+                //   calc(2.75rem + 1.25rem) = 4rem on desktop (OIA floats, stack above it).
+                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), var(--floating-btn-min-bottom, 6rem)) + var(--floating-chat-extra-offset, 0rem))",
             }}
             aria-label="Chat support options"
         >
