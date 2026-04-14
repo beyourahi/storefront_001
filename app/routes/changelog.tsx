@@ -18,7 +18,8 @@ export const meta: Route.MetaFunction = ({matches}) => {
     return [
         ...(getSeoMeta({
             title: `Changelog | ${brandName}`,
-            description: "See what's new. We're constantly improving your shopping experience — here's a plain-language look at everything we've shipped.",
+            description:
+                "See what's new. We're constantly improving your shopping experience — here's a plain-language look at everything we've shipped.",
             url: buildCanonicalUrl("/changelog", siteUrl)
         }) ?? []),
         ...getRequiredSocialMeta("website", brandName)
@@ -33,7 +34,7 @@ let _ghCountCache: {value: number; ts: number} | null = null;
 export const loader = async ({}: Route.LoaderArgs) => {
     // Fetch total git commit count via the Link-header pagination trick:
     // per_page=1 triggers a Link header whose rel="last" page number equals the total.
-    const token = "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";
+    const token = "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";
     let commitCount: number | null = null;
     const now = Date.now();
     if (_ghCountCache && now - _ghCountCache.ts < 3_600_000) {
@@ -46,10 +47,9 @@ export const loader = async ({}: Route.LoaderArgs) => {
                 "User-Agent": "storefront_001/1.0"
             };
             if (token) headers.Authorization = `Bearer ${token}`;
-            const res = await fetch(
-                "https://api.github.com/repos/beyourahi/storefront_001/commits?per_page=1",
-                {headers}
-            );
+            const res = await fetch("https://api.github.com/repos/beyourahi/storefront_001/commits?per_page=1", {
+                headers
+            });
             if (res.ok) {
                 const match = (res.headers.get("link") ?? "").match(/<[^>]*[?&]page=(\d+)[^>]*>;\s*rel="last"/);
                 if (match) {
@@ -186,9 +186,7 @@ function ChangelogCard({entry, index}: {entry: ChangelogEntry; index: number}) {
                 </h3>
 
                 {/* Summary — pre-truncated, no toggle */}
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                    {truncateSummary(entry.summary)}
-                </p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{truncateSummary(entry.summary)}</p>
 
                 {/* Author attribution */}
                 <p className="mt-3 text-xs text-muted-foreground">
@@ -213,9 +211,7 @@ function EmptyState({hasFilters}: {hasFilters: boolean}) {
             <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
                 <Search className="h-6 w-6 text-muted-foreground" />
             </div>
-            <h2 className="mb-2 text-xl font-semibold">
-                {hasFilters ? "No updates found" : "Nothing here yet"}
-            </h2>
+            <h2 className="mb-2 text-xl font-semibold">{hasFilters ? "No updates found" : "Nothing here yet"}</h2>
             <p className="max-w-sm text-sm text-muted-foreground">
                 {hasFilters
                     ? "Try adjusting your filter to find what you're looking for."
@@ -259,12 +255,10 @@ export default function Changelog() {
                 <section className="py-8">
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4">
                         <div className="flex w-full flex-col items-center justify-center gap-2 text-center xl:gap-4">
-                            <GiantText
-                                text="Changelog"
-                                className={cn("w-full font-black", "lg:w-[60%]")}
-                            />
+                            <GiantText text="Changelog" className={cn("w-full font-black", "lg:w-[60%]")} />
                             <p className="w-full text-xs text-muted-foreground lg:w-[60%] lg:text-sm 2xl:text-base">
-                                We&apos;re constantly improving your shopping experience. Here&apos;s what we&apos;ve shipped.
+                                We&apos;re constantly improving your shopping experience. Here&apos;s what we&apos;ve
+                                shipped.
                             </p>
                             {commitCount !== null && (
                                 <p className="font-mono text-[11px] tabular-nums text-muted-foreground/50 tracking-wide">
@@ -278,10 +272,14 @@ export default function Changelog() {
 
             {/* ── Feed ── */}
             <AnimatedSection animation="slide-up" threshold={0}>
-                <div className="mx-auto max-w-[2000px] px-2 pb-20 md:px-8">
+                <div className="mx-auto max-w-5xl pr-2 pb-20">
                     {/* ── Category filter chips ── */}
                     <div className="mb-8">
-                        <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Filter by category">
+                        <div
+                            className="flex flex-wrap justify-center gap-2"
+                            role="group"
+                            aria-label="Filter by category"
+                        >
                             {CATEGORIES.map(cat => (
                                 <button
                                     key={cat}
@@ -320,16 +318,16 @@ export default function Changelog() {
                                                 Uses negative margin to bleed to padding edges so the background
                                                 covers content scrolling behind it. Hidden on desktop where the
                                                 side column handles date display. */}
-                                            <div
-                                                className="sticky top-(--total-header-height) z-20 -mx-2 bg-background px-2 py-2 md:-mx-4 md:px-4 lg:hidden"
-                                            >
+                                            <div className="sticky top-(--total-header-height) z-20 -mx-2 bg-background px-2 py-2 md:-mx-4 md:px-4 lg:hidden">
                                                 <div className="flex items-center justify-between gap-2">
                                                     <span className="text-xs text-muted-foreground">
                                                         <time dateTime={group.date}>{getAbsoluteDate(group.date)}</time>
-                                                        {" · "}{getRelativeDate(group.date)}
+                                                        {" · "}
+                                                        {getRelativeDate(group.date)}
                                                     </span>
                                                     <span className="shrink-0 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
-                                                        {group.entries.length} {group.entries.length === 1 ? "update" : "updates"}
+                                                        {group.entries.length}{" "}
+                                                        {group.entries.length === 1 ? "update" : "updates"}
                                                     </span>
                                                 </div>
                                             </div>
@@ -349,7 +347,8 @@ export default function Changelog() {
                                                     {getRelativeDate(group.date)}
                                                 </span>
                                                 <span className="mt-2 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
-                                                    {group.entries.length} {group.entries.length === 1 ? "update" : "updates"}
+                                                    {group.entries.length}{" "}
+                                                    {group.entries.length === 1 ? "update" : "updates"}
                                                 </span>
                                             </div>
 
