@@ -81,7 +81,7 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                             strokeWidth={1.75}
                         />
                         <span className="text-[13px] font-semibold tracking-[0.01em] whitespace-nowrap">
-                            Open in App
+                            Open App
                         </span>
                     </button>
                 </div>
@@ -107,7 +107,7 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                         strokeWidth={1.75}
                     />
                     <span className="text-[12px] font-semibold tracking-[0.01em] whitespace-nowrap">
-                        Open in App
+                        Open App
                     </span>
                 </button>
             ) : (
@@ -125,7 +125,7 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                     style={isMenuItem ? {animationDelay: "400ms", animationFillMode: "both"} : undefined}
                 >
                     <Download className="size-5" />
-                    <span>Open in App</span>
+                    <span>Open App</span>
                 </Button>
             )}
 
