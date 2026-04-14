@@ -18,7 +18,6 @@ export const MobileMenuNavigation = ({currentPath, onLinkClick}: MobileMenuNavig
         link =>
             link.href !== "/collections" &&
             link.href !== "/gallery" &&
-            link.href !== "/contact" &&
             link.href !== "/collections/all-products"
     );
 

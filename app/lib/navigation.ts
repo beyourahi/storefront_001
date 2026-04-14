@@ -1,8 +1,7 @@
 export const NAVIGATION_LINKS: readonly {href: string; label: string}[] = [
     {href: "/collections/all-products", label: "Shop All"},
     {href: "/collections", label: "Collections"},
-    {href: "/gallery", label: "Gallery"},
-    {href: "/contact", label: "Contact"}
+    {href: "/gallery", label: "Gallery"}
 ];
 
 export const POLICY_LINKS = [

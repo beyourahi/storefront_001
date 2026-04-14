@@ -30,7 +30,6 @@ const SHOP_LINKS = [
 
 /** Quick navigation links for the "Company" column */
 const COMPANY_LINKS = [
-    {href: "/contact", label: "Contact"},
     {href: "/faq", label: "FAQ"},
     {href: "/gallery", label: "Gallery"},
     {href: "/blogs", label: "Blog"}

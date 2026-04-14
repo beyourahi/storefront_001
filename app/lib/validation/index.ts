@@ -24,20 +24,6 @@ export {
 } from "./unified-validation";
 
 export {
-    isContactInfoValid,
-    isEmailValid,
-    isPhoneValid,
-    isAddressValid,
-    getAvailableContactMethodsCount,
-    getTotalContactOptionsCount,
-    hasFAQContent,
-    hasTestimonialsContent,
-    hasValidHappyCustomersCount,
-    hasSocialMediaContent,
-    getSocialMediaLinksCount
-} from "./contact-validation";
-
-export {
     isValidEmail,
     isValidPhone,
     isValidUrl,

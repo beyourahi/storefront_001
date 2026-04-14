@@ -6,7 +6,7 @@ import TikTokIcon from "~/assets/icons/tiktok.svg";
 import WhatsAppIcon from "~/assets/icons/whatsapp.svg";
 import XIcon from "~/assets/icons/x.svg";
 import YouTubeIcon from "~/assets/icons/youtube.svg";
-import {SocialLinkGrid, type SocialLinkItem} from "~/components/contact/SocialLinkGrid";
+import {SocialLinkGrid, type SocialLinkItem} from "~/components/homepage/SocialLinkGrid";
 import {useSiteSettings} from "~/lib/site-content-context";
 
 type SocialMediaSectionProps = {

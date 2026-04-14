@@ -1,9 +1,8 @@
-import {Images, Mail, Newspaper, Package, ShoppingCart, Sparkles, Star, TrendingUp} from "lucide-react";
+import {Images, Newspaper, Package, ShoppingCart, Sparkles, Star, TrendingUp} from "lucide-react";
 
 export const navigationIcons: Record<string, React.ComponentType<{className?: string}>> = {
     "/collections/all-products": ShoppingCart,
     "/gallery": Images,
-    "/contact": Mail,
     "/blogs": Newspaper
 };
 

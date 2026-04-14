@@ -5,7 +5,7 @@ export const loader = async ({request, context: {storefront}}: Route.LoaderArgs)
     const shopifyResponse = await getSitemapIndex({storefront, request});
 
     // Inject custom sitemap entry for pages not covered by Shopify's default sitemap
-    // (contact, faq, gallery, sale are custom routes absent from the Shopify-generated index)
+    // (faq, gallery, sale are custom routes absent from the Shopify-generated index)
     const url = new URL(request.url);
     const origin = url.origin;
     const body = await shopifyResponse.text();

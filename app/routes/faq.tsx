@@ -86,27 +86,6 @@ export default function FAQ() {
                 </section>
             </AnimatedSection>
 
-            <AnimatedSection animation="slide-up" threshold={0.1}>
-                <section className="bg-primary-foreground/10 py-12 sm:py-16 md:py-20">
-                    <div className="px-4 sm:px-6 lg:px-8">
-                        <div className="text-center">
-                            <h2 className="mb-3 font-serif text-2xl font-medium text-primary-foreground sm:mb-4 sm:text-3xl md:text-4xl">
-                                Still have questions?
-                            </h2>
-                            <p className="mx-auto mb-6 max-w-lg text-base text-primary-foreground/70 sm:mb-8 sm:text-lg">
-                                Our team is here to help. Reach out and we&apos;ll get back to you within 24 hours.
-                            </p>
-                            <a
-                                href="/contact"
-                                className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary-foreground px-6 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary-foreground/90 sm:min-h-14 sm:px-8 sm:py-4 sm:text-base"
-                            >
-                                Contact Us
-                                <span className="ml-2">&rarr;</span>
-                            </a>
-                        </div>
-                    </div>
-                </section>
-            </AnimatedSection>
         </div>
     );
 }
