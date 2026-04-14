@@ -292,7 +292,7 @@ export default function Changelog() {
 
             {/* ── Feed ── */}
             <AnimatedSection animation="slide-up" threshold={0}>
-                <div className="mx-auto max-w-5xl pr-2 pb-20">
+                <div className="mx-auto max-w-5xl px-2 pb-20 md:px-4">
                     {/* ── Category filter chips ── */}
                     <div className="mb-8">
                         <div
