@@ -34,7 +34,7 @@ let _ghCountCache: {value: number; ts: number} | null = null;
 export const loader = async ({}: Route.LoaderArgs) => {
     // Fetch total git commit count via the Link-header pagination trick:
     // per_page=1 triggers a Link header whose rel="last" page number equals the total.
-    const token = "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";
+    const token = "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";
     let commitCount: number | null = null;
     const now = Date.now();
     if (_ghCountCache && now - _ghCountCache.ts < 3_600_000) {
@@ -262,7 +262,7 @@ export default function Changelog() {
                             </p>
                             {commitCount !== null && (
                                 <p className="font-mono text-[11px] tabular-nums text-muted-foreground/50 tracking-wide">
-                                    {commitCount.toLocaleString()} changes
+                                    {commitCount.toLocaleString()} updates shipped
                                 </p>
                             )}
                         </div>
