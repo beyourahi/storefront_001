@@ -99,6 +99,14 @@ export const useFaqItems = (): FAQItem[] => useSiteSettings().faqItems;
 
 export const useInstagramMedia = (): InstagramMedia[] => useSiteSettings().instagramMedia;
 
+export const useShopLocation = (): {embedUrls: string[]; shareLinks: string[]} => {
+    const {googleMapsEmbed, googleMapsLink} = useSiteSettings();
+    return useMemo(
+        () => ({embedUrls: googleMapsEmbed, shareLinks: googleMapsLink}),
+        [googleMapsEmbed, googleMapsLink]
+    );
+};
+
 export const useThemeFonts = (): ThemeFonts => useThemeConfig().fonts;
 
 export const useThemeColors = (): ThemeCoreColors => useThemeConfig().colors;

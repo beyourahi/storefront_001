@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-15",
+        headline: "Shop location map added to homepage",
+        summary:
+            "A new section on the homepage shows the store's location on Google Maps, with a direct link to get directions. Multiple locations are supported with a tab switcher — each tab labeled by store letter.",
+        category: "New Feature"
+    },
+    {
         date: "2026-04-14",
         time: "3pm",
         headline: "Changelog dates now show the time of day each update shipped",
