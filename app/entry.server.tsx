@@ -105,6 +105,8 @@ export default async function handleRequest(
             "https://*.analytics.google.com",
             "https://*.googletagmanager.com"
         ],
+        // Allow Google Maps embeds in <iframe> (ShopLocation section)
+        frameSrc: ["https://www.google.com/"],
         // Prevent clickjacking by disallowing framing from any origin
         frameAncestors: ["'none'"]
     });
