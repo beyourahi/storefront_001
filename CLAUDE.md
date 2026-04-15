@@ -56,12 +56,18 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 |               | shadcn/ui        | Latest     | Radix-backed components             |
 |               | Lucide React     | Latest     | Icons                               |
 |               | OKLCH colors     | -          | Theme + contrast pipeline           |
+|               | sonner           | ^2         | Toast notifications                 |
+|               | @unpic/react     | ^1         | Optimized image rendering           |
+|               | colorjs.io       | ^0.6       | Color science (OKLCH pipeline)      |
+|               | schema-dts       | ^1.1       | JSON-LD structured data types       |
 | **Features**  | Embla Carousel   | 8          | Product galleries, auto-scroll      |
 |               | Lenis            | 1.3        | Smooth scrolling                    |
 |               | Vaul             | 1.1        | Drawer primitives                   |
 |               | react-intersection-observer | ^10 | Scroll/viewport-triggered rendering |
 |               | Wishlist         | Custom     | Account + share flows               |
 |               | Recently Viewed  | Custom     | History tracking + provider         |
+|               | Quick Add        | Custom     | Add-to-cart overlay (button/dialog/sheet) |
+|               | Newsletter Signup| Custom     | API endpoint + component + marketing mutation |
 |               | Blog             | Custom     | Article + author surfaces           |
 |               | PWA              | Custom     | Custom service worker, offline      |
 |               | Metaobjects      | Shopify    | Theme + content CMS                 |
@@ -79,7 +85,7 @@ storefront_001/
 ├── app/
 │   ├── routes/                    # Route modules
 │   ├── components/                # UI and feature components
-│   │   ├── *.tsx                  # Root-level shared components (QuantitySelector, WishlistButton, ShareDialog, DiscountBadge, etc.)
+│   │   ├── *.tsx                  # Root-level shared components (QuantitySelector, WishlistButton, WishlistCount, ShareDialog, DiscountBadge, QuickAddButton, QuickAddDialog, QuickAddSheet, RecentlyViewedProvider, NetworkStatusIndicator, ServiceWorkerRegistration, RouteErrorBoundary, etc.)
 │   │   ├── ui/                    # shadcn/ui generated primitives
 │   │   ├── account/               # Account dashboard surfaces
 │   │   ├── blog/                  # Blog surfaces
