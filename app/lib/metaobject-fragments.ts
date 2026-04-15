@@ -310,5 +310,11 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
         }
       }
     }
+    googleMapsEmbed: field(key: "google_maps_embed") {
+      value
+    }
+    googleMapsLink: field(key: "google_maps_link") {
+      value
+    }
   }
 ` as const;

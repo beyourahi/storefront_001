@@ -399,7 +399,10 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     faviconUrl: null,
     icon192Url: null,
     icon512Url: null,
-    icon180AppleUrl: null
+    icon180AppleUrl: null,
+
+    googleMapsEmbed: [],
+    googleMapsLink: []
 };
 
 // =============================================================================
@@ -459,6 +462,60 @@ const parseHeroMedia = (heroMediaField: MetaobjectField | undefined): HeroMedia 
     }
 
     return undefined;
+};
+
+const parseUrlList = (field: MetaobjectField | undefined): string[] => {
+    const raw = field?.value;
+    if (!raw) return [];
+    try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter((v): v is string => typeof v === "string" && v.length > 0);
+    } catch {
+        return [];
+    }
+};
+
+/**
+ * Extract the `src` URL from a Google Maps full iframe embed code.
+ * Google Maps "Share > Embed a map" produces HTML like:
+ *   <iframe src="https://www.google.com/maps/embed?pb=..." ...></iframe>
+ *
+ * Accepts both the full HTML string and a bare URL.
+ * Returns null when extraction fails.
+ */
+const extractIframeSrc = (value: string): string | null => {
+    const trimmed = value.trim();
+    // Full iframe HTML — extract src attribute
+    if (trimmed.startsWith("<")) {
+        const match = trimmed.match(/src="([^"]+)"/);
+        return match?.[1] ?? null;
+    }
+    // Already a bare URL
+    return trimmed.length > 0 ? trimmed : null;
+};
+
+/**
+ * Parse a list.single_line_text field containing Google Maps embed codes.
+ * Each entry may be either a full <iframe> HTML string (from the Google Maps
+ * "Embed a map" share flow) or a bare embed src URL.
+ * The extracted src URL is what the <iframe> element's src attribute receives.
+ * Returns [] when the field is absent, empty, or malformed.
+ */
+const parseEmbedUrlList = (field: MetaobjectField | undefined): string[] => {
+    const raw = field?.value;
+    if (!raw) return [];
+    try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return (parsed as unknown[]).flatMap(item => {
+            if (typeof item !== "string") return [];
+            const src = extractIframeSrc(item);
+            return src ? [src] : [];
+        });
+    } catch {
+        return [];
+    }
 };
 
 const parseBrandWords = (brandWordsField: MetaobjectField | undefined): string[] => {
@@ -855,7 +912,13 @@ export const parseSiteSettings = (rawData: unknown): SiteSettings => {
         faviconUrl: extractImageUrl(data.favicon),
         icon192Url: extractImageUrl(data.icon192),
         icon512Url: extractImageUrl(data.icon512),
-        icon180AppleUrl: extractImageUrl(data.icon180Apple)
+        icon180AppleUrl: extractImageUrl(data.icon180Apple),
+
+        // google_maps_embed: list.single_line_text — each entry is the full <iframe> HTML from
+        //   Google Maps "Share > Embed a map". Parser extracts the src URL from the HTML.
+        // google_maps_link: list.url — each entry is the maps.app.goo.gl/… share URL.
+        googleMapsEmbed: parseEmbedUrlList(data.googleMapsEmbed),
+        googleMapsLink: parseUrlList(data.googleMapsLink)
     };
 };
 
