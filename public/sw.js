@@ -203,6 +203,7 @@ if (!workbox) {
 
     self.addEventListener("install", event => {
         console.log("[SW] Installing service worker...");
+        self.skipWaiting();
 
         event.waitUntil(
             caches.open(OFFLINE_CACHE_NAME).then(cache => {

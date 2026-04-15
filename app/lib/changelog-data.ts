@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-15",
+        headline: "App updates now apply automatically without prompts",
+        summary:
+            "The store app previously required you to manually accept an update notification before new changes took effect. Updates now activate silently in the background the moment they are available — no prompt, no extra tap required.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-15",
         headline: "Shop location map added to homepage",
         summary:
             "A new section on the homepage shows the store's location on Google Maps, with a direct link to get directions. Multiple locations are supported with a tab switcher — each tab labeled by store letter.",
