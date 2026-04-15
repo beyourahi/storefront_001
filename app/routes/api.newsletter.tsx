@@ -86,7 +86,8 @@ export const action = async ({request, context}: Route.ActionArgs) => {
             success: true,
             message: "Thank you for subscribing!"
         });
-    } catch {
+    } catch (err) {
+        console.error("Newsletter subscription error:", err);
         return data({success: false, error: "Something went wrong. Please try again."}, {status: 500});
     }
 };

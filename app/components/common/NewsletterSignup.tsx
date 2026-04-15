@@ -1,6 +1,6 @@
-import {useEffect, useRef} from "react";
-import {useFetcher} from "react-router";
-import {Send, CheckCircle, AlertCircle, Loader2} from "lucide-react";
+import {useEffect, useState} from "react";
+import {useFetcher, NavLink} from "react-router";
+import {Send, CheckCircle, AlertCircle, Loader2, LogIn} from "lucide-react";
 import {cn} from "~/lib/utils";
 
 type NewsletterResponse = {
@@ -17,18 +17,24 @@ interface NewsletterSignupProps {
 
 export const NewsletterSignup = ({variant = "compact", className}: NewsletterSignupProps) => {
     const fetcher = useFetcher<NewsletterResponse>();
-    const inputRef = useRef<HTMLInputElement>(null);
+    const [email, setEmail] = useState("");
+    const [showSuccess, setShowSuccess] = useState(false);
     const isSubmitting = fetcher.state === "submitting";
     const data = fetcher.data;
     const isSuccess = data?.success === true;
     const isError = data?.success === false;
+    const errorMessage = isError ? (data?.error ?? "") : "";
 
-    // Clear the input after a successful submission
     useEffect(() => {
-        if (isSuccess && inputRef.current) {
-            inputRef.current.value = "";
+        if (isSuccess) {
+            setShowSuccess(true);
+            setEmail("");
+            const timer = setTimeout(() => setShowSuccess(false), 5000);
+            return () => clearTimeout(timer);
         }
     }, [isSuccess]);
+
+    const displayData = isSuccess && !showSuccess ? undefined : data;
 
     if (variant === "expanded") {
         return (
@@ -43,47 +49,72 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                 <fetcher.Form
                     method="post"
                     action="/api/newsletter"
-                    className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-start"
+                    className="mt-5 flex flex-col gap-3"
                 >
-                    <div className="relative flex-1">
-                        <input
-                            ref={inputRef}
-                            type="email"
-                            name="email"
-                            required
-                            placeholder="Enter your email address"
-                            autoComplete="email"
-                            disabled={isSubmitting}
-                            aria-label="Email address for newsletter"
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                        <div className="relative flex-1">
+                            <input
+                                type="email"
+                                name="email"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                                required
+                                placeholder="Enter your email address"
+                                autoComplete="email"
+                                disabled={isSubmitting}
+                                aria-label="Email address for newsletter"
+                                aria-describedby={errorMessage ? "newsletter-error" : undefined}
+                                className={cn(
+                                    "h-12 w-full rounded-md border bg-background px-4 text-foreground",
+                                    "placeholder:text-muted-foreground/60",
+                                    "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none",
+                                    "disabled:opacity-60",
+                                    isError && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                                )}
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting || !email}
                             className={cn(
-                                "h-12 w-full rounded-md border bg-background px-4 text-foreground",
-                                "placeholder:text-muted-foreground/60",
-                                "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none",
-                                "disabled:opacity-60",
-                                isError && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                                "cta-enhanced inline-flex h-12 items-center justify-center gap-2 rounded-md",
+                                "bg-primary px-6 text-primary-foreground",
+                                "hover:bg-primary/90 active:scale-[0.97]",
+                                "disabled:opacity-60 disabled:pointer-events-none"
                             )}
-                        />
+                        >
+                            {isSubmitting ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <Send className="h-4 w-4" />
+                            )}
+                            {isSubmitting ? "Subscribing..." : "Subscribe"}
+                        </button>
                     </div>
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={cn(
-                            "cta-enhanced inline-flex h-12 items-center justify-center gap-2 rounded-md",
-                            "bg-primary px-6 text-primary-foreground",
-                            "hover:bg-primary/90 active:scale-[0.97]",
-                            "disabled:opacity-60 disabled:pointer-events-none"
-                        )}
-                    >
-                        {isSubmitting ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                            <Send className="h-4 w-4" />
-                        )}
-                        {isSubmitting ? "Subscribing..." : "Subscribe"}
-                    </button>
+                    <p className="text-sm px-1 text-muted-foreground">
+                        By subscribing, you agree to our{" "}
+                        <a
+                            href="/policies/privacy-policy"
+                            className="underline underline-offset-2 text-muted-foreground hover:text-foreground"
+                        >
+                            Privacy Policy
+                        </a>
+                        . Unsubscribe anytime.
+                    </p>
                 </fetcher.Form>
 
-                <StatusMessage data={data} />
+                <StatusMessage data={displayData} />
+                <div className="mt-4 pt-4 border-t border-border flex items-center justify-center gap-2">
+                    <p className="text-sm text-muted-foreground">Already a member?</p>
+                    <NavLink
+                        to="/account"
+                        prefetch="viewport"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 hover:no-underline transition-colors"
+                    >
+                        <LogIn className="size-3.5" />
+                        <span>Log in to your account</span>
+                    </NavLink>
+                </div>
             </div>
         );
     }
@@ -98,14 +129,16 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
             >
                 <div className="relative flex-1">
                     <input
-                        ref={inputRef}
                         type="email"
                         name="email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                         required
                         placeholder="Your email"
                         autoComplete="email"
                         disabled={isSubmitting}
                         aria-label="Email address for newsletter"
+                        aria-describedby={errorMessage ? "newsletter-error" : undefined}
                         className={cn(
                             "h-10 w-full rounded-md border bg-background px-3 text-sm text-foreground",
                             "placeholder:text-muted-foreground/60",
@@ -117,7 +150,7 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                 </div>
                 <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !email}
                     aria-label={isSubmitting ? "Subscribing" : "Subscribe to newsletter"}
                     className={cn(
                         "inline-flex h-10 items-center justify-center gap-1.5 rounded-md",
@@ -135,7 +168,28 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                 </button>
             </fetcher.Form>
 
-            <StatusMessage data={data} compact />
+            <StatusMessage data={displayData} compact />
+            <p className="mt-2 text-sm px-1 text-muted-foreground">
+                By subscribing, you agree to our{" "}
+                <a
+                    href="/policies/privacy-policy"
+                    className="underline underline-offset-2 text-muted-foreground hover:text-foreground"
+                >
+                    Privacy Policy
+                </a>
+                . Unsubscribe anytime.
+            </p>
+            <div className="mt-4 pt-4 border-t border-border flex items-center justify-start gap-2">
+                <p className="text-sm text-muted-foreground">Already a member?</p>
+                <NavLink
+                    to="/account"
+                    prefetch="viewport"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 hover:no-underline transition-colors"
+                >
+                    <LogIn className="size-3.5" />
+                    <span>Log in to your account</span>
+                </NavLink>
+            </div>
         </div>
     );
 };
@@ -151,8 +205,9 @@ const StatusMessage = ({data, compact = false}: {data: NewsletterResponse | unde
 
     return (
         <p
-            role="status"
-            aria-live="polite"
+            id={!isSuccess ? "newsletter-error" : undefined}
+            role={isSuccess ? "status" : "alert"}
+            aria-live={isSuccess ? "polite" : undefined}
             className={cn(
                 "mt-2 flex items-center gap-1.5",
                 compact ? "text-xs" : "text-sm",
