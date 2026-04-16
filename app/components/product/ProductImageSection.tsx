@@ -1,5 +1,6 @@
 import {useMemo} from "react";
 import {Skeleton} from "~/components/ui/skeleton";
+import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 import {ProductImageCarousel} from "~/components/product/ProductImageCarousel";
 
@@ -64,14 +65,7 @@ export const ProductImageSection = ({
                     media={media}
                 />
             ) : (
-                <div className="bg-muted aspect-square overflow-hidden rounded-lg">
-                    <div className="from-primary/10 to-secondary/10 flex h-full w-full items-center justify-center bg-gradient-to-br">
-                        <div className="text-muted-foreground text-center">
-                            <div className="mb-4 text-6xl">📸</div>
-                            <p className="text-lg font-medium">Product Image</p>
-                        </div>
-                    </div>
-                </div>
+                <ProductImagePlaceholder aspectRatio="4/5" className="w-full rounded-lg" />
             )}
         </div>
     );

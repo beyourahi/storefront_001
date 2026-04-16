@@ -37,6 +37,20 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-16",
+        headline: "Review section adapts its layout to the number of reviews",
+        summary:
+            "Product pages with a single review now display a focused, editorial-style card rather than a lonely item in a wide grid. Two reviews get a balanced side-by-side layout. Three reviews use an asymmetric featured arrangement on larger screens. Four or more reviews are shown in a scrollable carousel with navigation arrows and dot indicators.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-16",
+        headline: "Products without images now show a designed placeholder",
+        summary:
+            "When a product has no image uploaded, the card and product page now display a purposeful, on-brand placeholder instead of an empty space. It uses the same visual style as the rest of the store — no broken layouts, no generic icons.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-16",
         headline: "Product pages now play videos directly in the gallery",
         summary:
             "Product galleries now support all Shopify media types. Videos hosted on Shopify play inline with native controls — hover to preview, or click expand to watch fullscreen. YouTube and Vimeo embeds open in a fullscreen lightbox. 3D model previews show the product thumbnail. Mixed galleries (photos + videos) are fully supported.",

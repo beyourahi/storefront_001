@@ -12,6 +12,7 @@ import {getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-c
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
+import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 import type {UnifiedProductCardProps} from "~/lib/types/product-card";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 
@@ -100,12 +101,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                             width={400}
                         />
                     ) : (
-                        <div className="bg-background flex h-full w-full items-center justify-center rounded-lg">
-                            <div className="text-muted-foreground text-center">
-                                <div className="mb-1 text-2xl sm:mb-2 sm:text-4xl">📦</div>
-                                <p className="text-xs sm:text-sm">Product Image</p>
-                            </div>
-                        </div>
+                        <ProductImagePlaceholder className="h-full w-full rounded-lg" />
                     )}
                 </Link>
 

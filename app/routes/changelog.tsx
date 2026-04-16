@@ -1,5 +1,5 @@
 import {getSeoMeta} from "@shopify/hydrogen";
-import {useState, useMemo, useEffect} from "react";
+import {useState, useMemo} from "react";
 import {useLoaderData} from "react-router";
 import {Search} from "lucide-react";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
@@ -195,20 +195,12 @@ export default function Changelog() {
     const {entries} = useLoaderData<typeof loader>();
 
     const [selectedCategory, setSelectedCategory] = useState<Category>("All");
-    const [visibleCount, setVisibleCount] = useState(100);
-
-    // Reset pagination when category changes
-    useEffect(() => {
-        setVisibleCount(100);
-    }, [selectedCategory]);
 
     const filtered = useMemo(() => {
         if (selectedCategory === "All") return entries;
         return entries.filter(e => e.category === selectedCategory);
     }, [entries, selectedCategory]);
 
-    const visible = filtered.slice(0, visibleCount);
-    const hasMore = visibleCount < filtered.length;
     const hasFilters = selectedCategory !== "All";
 
     return (
@@ -263,7 +255,7 @@ export default function Changelog() {
                     </div>
 
                     {/* ── Content ── */}
-                    {visible.length === 0 ? (
+                    {filtered.length === 0 ? (
                         <EmptyState hasFilters={hasFilters} />
                     ) : (
                         <>
@@ -275,7 +267,7 @@ export default function Changelog() {
                             <div>
                                 {(() => {
                                     let globalStaggerIndex = 0;
-                                    return groupEntriesByDate(visible).map(group => {
+                                    return groupEntriesByDate(filtered).map(group => {
                                         return (
                                         <div key={group.date} className="mb-10 sm:mb-12 lg:flex">
                                             {/* Mobile sticky date header — full-width, sticks below the navbar.
@@ -339,18 +331,6 @@ export default function Changelog() {
                                 })()}
                             </div>
 
-                            {/* Load more */}
-                            {hasMore && (
-                                <div className="mt-10 flex justify-center">
-                                    <button
-                                        type="button"
-                                        onClick={() => setVisibleCount(c => c + 50)}
-                                        className="w-full sm:w-auto rounded-md border border-border bg-background px-6 py-2.5 text-sm font-medium text-foreground sleek transition-all duration-150 hover:border-primary/30 hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                    >
-                                        Load more updates
-                                    </button>
-                                </div>
-                            )}
                         </>
                     )}
                 </div>
