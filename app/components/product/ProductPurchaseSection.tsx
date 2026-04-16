@@ -39,6 +39,15 @@ export const ProductPurchaseSection = ({
 
     const maxQuantity = selectedVariant?.quantityAvailable ? Math.min(999, selectedVariant.quantityAvailable) : 999;
 
+    // Low stock threshold: show indicator when a tracked variant has 10 or fewer units remaining.
+    // quantityAvailable is null when Shopify inventory tracking is disabled — those variants never trigger this.
+    const quantityLeft =
+        selectedVariant?.quantityAvailable != null &&
+        selectedVariant.quantityAvailable > 0 &&
+        selectedVariant.quantityAvailable <= 10
+            ? selectedVariant.quantityAvailable
+            : null;
+
     const lines = useMemo(
         () =>
             selectedVariant
@@ -87,6 +96,12 @@ export const ProductPurchaseSection = ({
                             selectedSellingPlan={selectedSellingPlan ?? null}
                             selectedVariant={selectedVariant}
                         />
+
+                        {quantityLeft !== null && (
+                            <p className="text-sm font-medium text-amber-700">
+                                Only {quantityLeft} left
+                            </p>
+                        )}
 
                         <QuantitySelector
                             quantity={quantity}

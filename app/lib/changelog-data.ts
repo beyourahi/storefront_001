@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-16",
+        headline: "Low stock warning appears when a variant is running low",
+        summary:
+            "When a product variant has 10 or fewer units remaining, an \"Only X left\" notice now appears on the product page before you set your quantity. The indicator updates instantly when you switch between variants and disappears when stock is sufficient or untracked.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-16",
         headline: "Review section adapts its layout to the number of reviews",
         summary:
             "Product pages with a single review now display a focused, editorial-style card rather than a lonely item in a wide grid. Two reviews get a balanced side-by-side layout. Three reviews use an asymmetric featured arrangement on larger screens. Four or more reviews are shown in a scrollable carousel with navigation arrows and dot indicators.",
