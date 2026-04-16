@@ -265,7 +265,7 @@ const Product = () => {
                 <section className="pt-4 md:pt-6">
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4">
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-12">
-                            <ProductImageSection productImages={productImages} product={product} onSale={onSale} availableForSale={selectedVariant?.availableForSale ?? true} />
+                            <ProductImageSection productImages={productImages} product={product} onSale={onSale} availableForSale={selectedVariant?.availableForSale ?? true} media={(product as any).media?.nodes ?? []} />
 
                             <ProductMobileTitlePrice product={product} discountPercentage={discountPercentage} />
 
@@ -522,6 +522,7 @@ const PRODUCT_FRAGMENT = `#graphql
     media(first: 20) {
       nodes {
         __typename
+        mediaContentType
         ... on MediaImage {
           id
           alt
@@ -539,7 +540,30 @@ const PRODUCT_FRAGMENT = `#graphql
           sources {
             url
             mimeType
+            height
+            width
           }
+          previewImage {
+            url
+            altText
+            width
+            height
+          }
+        }
+        ... on ExternalVideo {
+          id
+          alt
+          embedUrl
+          previewImage {
+            url
+            altText
+            width
+            height
+          }
+        }
+        ... on Model3d {
+          id
+          alt
           previewImage {
             url
             altText

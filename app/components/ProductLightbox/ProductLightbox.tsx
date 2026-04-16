@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from "react";
+import {useState, useEffect} from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {cn} from "~/lib/utils";
 import {useScrollLock} from "~/hooks/useScrollLock";
@@ -19,39 +19,15 @@ interface ProductLightboxProps {
 export function ProductLightbox({media, initialIndex, isOpen, onClose, availableForSale = true}: ProductLightboxProps) {
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-    const videoRef = useRef<HTMLVideoElement>(null);
-
     useEffect(() => {
-        if (isOpen) {
-            setCurrentIndex(initialIndex);
-            setIsVideoPlaying(false);
-        }
+        if (isOpen) setCurrentIndex(initialIndex);
     }, [isOpen, initialIndex]);
 
-    const goToNext = () => {
-        if (videoRef.current && !videoRef.current.paused) {
-            videoRef.current.pause();
-        }
-        setIsVideoPlaying(false);
-        setCurrentIndex(prev => (prev + 1) % media.length);
-    };
-
-    const goToPrevious = () => {
-        if (videoRef.current && !videoRef.current.paused) {
-            videoRef.current.pause();
-        }
-        setIsVideoPlaying(false);
-        setCurrentIndex(prev => (prev - 1 + media.length) % media.length);
-    };
-
-    const goToIndex = (index: number) => {
-        if (videoRef.current && !videoRef.current.paused) {
-            videoRef.current.pause();
-        }
-        setIsVideoPlaying(false);
-        setCurrentIndex(index);
-    };
+    // Videos unmount on navigation (only currentMedia is rendered) so no explicit
+    // pause needed — the new video autoPlays on mount via the autoPlay attribute.
+    const goToNext = () => setCurrentIndex(prev => (prev + 1) % media.length);
+    const goToPrevious = () => setCurrentIndex(prev => (prev - 1 + media.length) % media.length);
+    const goToIndex = (index: number) => setCurrentIndex(index);
 
     useLightboxKeyboard({
         isOpen,
@@ -139,13 +115,7 @@ export function ProductLightbox({media, initialIndex, isOpen, onClose, available
                             onKeyDown={e => e.stopPropagation()}
                             role="presentation"
                         >
-                            <LightboxMedia
-                                media={currentMedia}
-                                isVideoPlaying={isVideoPlaying}
-                                onVideoPlay={() => setIsVideoPlaying(true)}
-                                onVideoPause={() => setIsVideoPlaying(false)}
-                                videoRef={videoRef}
-                            />
+                            <LightboxMedia media={currentMedia} />
                         </div>
                     </div>
 

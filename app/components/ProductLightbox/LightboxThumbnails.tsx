@@ -13,7 +13,12 @@ function getThumbnailUrl(item: any): string | null {
     if (item.__typename === "MediaImage" && item.image) {
         return item.image.url;
     }
-    if (item.__typename === "Video" && item.previewImage) {
+    if (
+        (item.__typename === "Video" ||
+            item.__typename === "ExternalVideo" ||
+            item.__typename === "Model3d") &&
+        item.previewImage
+    ) {
         return item.previewImage.url;
     }
     return null;
@@ -39,7 +44,9 @@ export function LightboxThumbnails({media, currentIndex, onSelect, availableForS
                 {media.map((item, index) => {
                     const thumbnailUrl = getThumbnailUrl(item);
                     const isActive = index === currentIndex;
-                    const isVideo = item.__typename === "Video";
+                    const isVideo = item.__typename === "Video" || item.__typename === "ExternalVideo";
+                    const is3d = item.__typename === "Model3d";
+                    const typeLabel = is3d ? "3D model" : isVideo ? "video" : "image";
 
                     return (
                         <button
@@ -55,7 +62,7 @@ export function LightboxThumbnails({media, currentIndex, onSelect, availableForS
                             type="button"
                             role="tab"
                             aria-selected={isActive}
-                            aria-label={`View ${isVideo ? "video" : "image"} ${index + 1} of ${media.length}`}
+                            aria-label={`View ${typeLabel} ${index + 1} of ${media.length}`}
                             className={cn(
                                 "relative shrink-0 w-12 h-15 select-none md:w-14 md:h-[70px]",
                                 "rounded-md overflow-hidden",
@@ -82,6 +89,15 @@ export function LightboxThumbnails({media, currentIndex, onSelect, availableForS
                             {isVideo && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-dark/40">
                                     <PlayIcon className="size-4 md:size-5 text-light" />
+                                </div>
+                            )}
+
+                            {is3d && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-dark/40">
+                                    <svg width="16" height="16" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="white" strokeWidth="1" className="md:w-5 md:h-5">
+                                        <path d="M6 0.5L11 3.25V8.75L6 11.5L1 8.75V3.25L6 0.5Z" />
+                                        <path d="M6 0.5V6M6 6L11 3.25M6 6L1 3.25M6 6V11.5" strokeWidth="0.75" />
+                                    </svg>
                                 </div>
                             )}
                         </button>

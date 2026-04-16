@@ -18,6 +18,9 @@ type ProductImageSectionProps = {
     };
     onSale?: boolean;
     availableForSale?: boolean;
+    /** Raw Shopify media nodes (all four media types). When provided, the carousel
+     *  renders from these rather than from the images-only array. */
+    media?: unknown[];
 };
 
 export const ProductImageSection = ({
@@ -25,7 +28,8 @@ export const ProductImageSection = ({
     productImages,
     product,
     onSale = false,
-    availableForSale = true
+    availableForSale = true,
+    media
 }: ProductImageSectionProps) => {
     const aspectRatioClass = useMemo(() => {
         switch (FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO as string) {
@@ -57,6 +61,7 @@ export const ProductImageSection = ({
                     productHandle={product.handle}
                     onSale={onSale}
                     availableForSale={availableForSale}
+                    media={media}
                 />
             ) : (
                 <div className="bg-muted aspect-square overflow-hidden rounded-lg">

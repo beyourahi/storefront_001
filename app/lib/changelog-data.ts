@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-16",
+        headline: "Product pages now play videos directly in the gallery",
+        summary:
+            "Product galleries now support all Shopify media types. Videos hosted on Shopify play inline with native controls — hover to preview, or click expand to watch fullscreen. YouTube and Vimeo embeds open in a fullscreen lightbox. 3D model previews show the product thumbnail. Mixed galleries (photos + videos) are fully supported.",
+        category: "New Feature"
+    },
+    {
         date: "2026-04-15",
         headline: "App updates now apply automatically without prompts",
         summary:
