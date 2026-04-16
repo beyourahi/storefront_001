@@ -315,6 +315,10 @@ const Product = () => {
                 </section>
             </AnimatedSection>
 
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <ProductReviews reviews={reviews} />
+            </AnimatedSection>
+
             <AnimatedSection animation="slide-up" threshold={0.12}>
                 <Suspense fallback={null}>
                     <Await resolve={recommendations}>
@@ -325,10 +329,6 @@ const Product = () => {
                         }
                     </Await>
                 </Suspense>
-            </AnimatedSection>
-
-            <AnimatedSection animation="fade" threshold={0.08}>
-                <ProductReviews reviews={reviews} />
             </AnimatedSection>
 
             <ProductMobileStickyButtons
