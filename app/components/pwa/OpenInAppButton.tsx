@@ -46,13 +46,10 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                 <div
                     role="complementary"
                     aria-label="Install this page as an app"
-                    className="flex fixed right-4 z-[var(--z-navbar)] animate-slide-up-fade max-lg:hidden"
+                    // Positioning is handled by the parent FloatingButtonStack container
+                    // in root.tsx — no fixed/bottom/z-index needed here.
+                    className="flex animate-slide-up-fade max-lg:hidden"
                     style={{
-                        // Float above the product sticky action bar, device safe-area notch,
-                        // and the footer copyright row. Visible only on desktop (≥ lg) — on
-                        // mobile/tablet the menu-item variant is used instead to avoid duplication.
-                        // --floating-btn-min-bottom = 6rem (96px) at all breakpoints.
-                        bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), var(--floating-btn-min-bottom, 6rem)))",
                         animationDelay: "800ms",
                         animationFillMode: "both",
                     }}

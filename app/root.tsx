@@ -47,6 +47,7 @@ import {ServiceWorkerUpdateBanner} from "~/components/pwa/ServiceWorkerUpdateBan
 import {NetworkStatusIndicator} from "~/components/NetworkStatusIndicator";
 import {OpenInAppButton} from "~/components/pwa/OpenInAppButton";
 import {FloatingChatWidget} from "~/components/FloatingChatWidget";
+import {useFooterClearance} from "~/hooks/useFooterClearance";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
 import {generateWebsiteSchema, getSeoDefaults} from "~/lib/seo";
@@ -459,8 +460,7 @@ export default function App() {
                                     </main>
                                     <Footer shopName={shopName} />
                                     {/* Persistent PWA install banner — shown on mobile when install is available, mounted once at shell level */}
-                                    <OpenInAppButton variant="desktop-fixed" />
-                                    <FloatingChatWidget />
+                                    <FloatingButtonStack />
                                     <Toaster position="top-center" />
                                 </SearchControllerProvider>
                             </CartDrawerProvider>
@@ -469,6 +469,72 @@ export default function App() {
                 </Analytics.Provider>
             </WishlistProvider>
         </SiteContentProvider>
+    );
+}
+
+// ================================================================================
+// Floating Button Stack
+// ================================================================================
+
+/**
+ * FloatingButtonStack — unified fixed-position container for all floating action buttons.
+ *
+ * Owns the fixed stacking context so the PWA install button and chat widget
+ * share a single dynamic offset computation instead of each maintaining
+ * independently hardcoded `bottom` values.
+ *
+ * Footer clearance:
+ *   When `#footer-bottom-bar` scrolls into the viewport, `useFooterClearance`
+ *   returns its visible pixel height. Applied as `translateY(-Xpx)` on this
+ *   container, lifting the entire button stack by exactly the amount needed
+ *   to clear the footer's copyright/attribution block.
+ *
+ * Base `bottom` offset preserves the product-page sticky action bar clearance
+ * via `--product-sticky-bar-height` (set to the bar's height on product pages,
+ * 0 elsewhere) plus a 1rem gutter from the viewport edge.
+ *
+ * CSS transition:
+ *   `transition-transform duration-300 ease-in-out` animates the lift smoothly.
+ *   `motion-reduce:transition-none` skips the animation for prefers-reduced-motion.
+ *
+ * Stack order (bottom → top, flex-col in a bottom-anchored container):
+ *   ① PWA install button  — last DOM child → lowest in visual stack (lg+ only)
+ *   ② Messenger           — bottom of FloatingChatWidget's own flex-col
+ *   ③ WhatsApp            — top of FloatingChatWidget's own flex-col
+ *
+ * Mobile behaviour:
+ *   OpenInAppButton renders `max-lg:hidden` so only the two chat buttons are
+ *   visible on viewports narrower than 1024 px.
+ *
+ * @see useFooterClearance   — IO-based dynamic offset hook
+ * @see FloatingChatWidget   — Messenger + WhatsApp buttons (no own positioning)
+ * @see OpenInAppButton      — PWA install button (no own positioning when variant="desktop-fixed")
+ */
+function FloatingButtonStack() {
+    const offset = useFooterClearance();
+
+    return (
+        <div
+            className={[
+                "fixed right-4 z-[var(--z-navbar)]",
+                "flex flex-col items-end gap-3",
+                // Smooth lift when footer bar enters viewport.
+                // Only the transform axis is transitioned — no opacity/scale side-effects.
+                // motion-reduce: instant reposition is acceptable per WCAG 2.3.3.
+                "transition-transform duration-300 ease-in-out motion-reduce:transition-none"
+            ].join(" ")}
+            style={{
+                // Base bottom: clears the product sticky action bar (0 on non-product pages)
+                // plus a 1rem gutter from the safe-area / viewport edge.
+                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), 1rem))",
+                transform: offset > 0 ? `translateY(-${offset}px)` : undefined,
+            }}
+        >
+            {/* Chat widget first → sits above the PWA button in the visual stack */}
+            <FloatingChatWidget />
+            {/* PWA install button last → lowest in the stack, desktop only (max-lg:hidden) */}
+            <OpenInAppButton variant="desktop-fixed" />
+        </div>
     );
 }
 

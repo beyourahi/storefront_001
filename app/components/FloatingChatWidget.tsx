@@ -21,13 +21,11 @@
  *   - aria-label on every interactive element
  *
  * @positioning
- *   fixed right-4 z-50 — stacked column, WhatsApp above Messenger.
- *   Bottom = footer-clearance (--floating-btn-min-bottom) + OpenInAppButton
- *   stack offset (--floating-chat-extra-offset, 0rem on mobile/tablet where the
- *   OIA pill is in the menu, 4rem on desktop where it floats above the OIA pill).
- *   --floating-btn-min-bottom = 6rem at all breakpoints (96px); the extra offset
- *   at lg+ raises chat to 10rem (160px), clearing the 96px OIA pill by 20px.
- *   Product-page sticky bars are handled via --product-sticky-bar-height.
+ *   This component no longer manages its own fixed positioning. It renders as
+ *   a plain flex column and is mounted inside the `FloatingButtonStack` container
+ *   in root.tsx, which owns the fixed stacking context, the z-index, and the
+ *   footer-clearance lift via `useFooterClearance`. Product-page sticky bar
+ *   height is accounted for in the parent container's bottom calculation.
  */
 
 import {useSiteSettings} from "~/lib/site-content-context";
@@ -82,14 +80,7 @@ export function FloatingChatWidget() {
 
     return (
         <div
-            className="fixed right-4 z-50 flex flex-col items-end gap-3"
-            style={{
-                // Anchor to bottom-right, clearing the footer copyright row.
-                // --floating-btn-min-bottom: 6rem at all breakpoints (96px), clears footer.
-                // --floating-chat-extra-offset: 0rem on mobile/tablet (OIA is in menu),
-                //   calc(2.75rem + 1.25rem) = 4rem on desktop (OIA floats, stack above it).
-                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), var(--floating-btn-min-bottom, 6rem)) + var(--floating-chat-extra-offset, 0rem))",
-            }}
+            className="flex flex-col items-end gap-3"
             aria-label="Chat support options"
         >
             {/* WhatsApp — renders above Messenger */}

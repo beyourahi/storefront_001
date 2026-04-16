@@ -160,7 +160,10 @@ export const Footer = ({shopName}: {shopName: string}) => {
                 <div className="mt-10 h-px bg-gradient-to-r from-transparent via-border to-transparent lg:mt-12" />
 
                 {/* ── Bottom Bar: Copyright + Developer Credit ── */}
-                <div className="mt-6 flex flex-col items-center justify-between space-y-3 text-center md:flex-row md:space-y-0">
+                {/* id="footer-bottom-bar" is the IntersectionObserver target used by
+                     useFooterClearance (app/hooks/useFooterClearance.ts) to lift the
+                     floating button stack when this block enters the viewport. */}
+                <div id="footer-bottom-bar" className="mt-6 flex flex-col items-center justify-between space-y-3 text-center md:flex-row md:space-y-0">
                     <p className="text-muted-foreground/70 text-sm font-medium">
                         &copy; <span>{new Date().getFullYear()}</span>{" "}
                         <span className="font-serif">{shopName}</span>. All rights reserved.
