@@ -44,8 +44,8 @@ const THRESHOLDS = Array.from({length: 21}, (_, i) => i / 20);
  * Returns the pixel height of `#footer-bottom-bar` currently visible in the
  * viewport (0 when fully off-screen). Consumers should apply this as an upward
  * `translateY` offset so floating buttons clear all visible footer content.
- * Capped at `innerHeight - 200` so the button stack (≈116px) stays comfortably
- * below the navbar even when the full footer fills the viewport.
+ * Capped at 120px so the button stack lifts just enough to clear the footer
+ * copyright area while staying near the bottom of the screen.
  */
 export function useFooterClearance(): number {
     const [offset, setOffset] = useState(0);
@@ -62,9 +62,9 @@ export function useFooterClearance(): number {
         function observe(el: Element): void {
             // IntersectionObserver: tracks visible portion as user scrolls
             // Cap prevents buttons flying off-screen on short viewports (landscape mobile).
-            // 200px = stack height (≈116px) + default bottom (16px) + navbar buffer (≈68px)
-            // Prevents buttons from going above the sticky navbar on short viewports.
-            const cap = () => Math.max(0, window.innerHeight - 200);
+            // 120px max lift keeps buttons near the bottom of the screen while
+            // still clearing the footer copyright row and surrounding content.
+            const cap = () => 120;
 
             io = new IntersectionObserver(
                 entries => {
