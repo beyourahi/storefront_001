@@ -34,6 +34,7 @@ import {ProductMobileStickyButtons} from "~/components/product/ProductMobileStic
 import {ProductRelatedSection} from "~/components/product/ProductRelatedSection";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
+import {ProductReviews, type ReviewNode} from "~/components/product/ProductReviews";
 
 // Revalidate this route's loader whenever the URL search params change (e.g. variant selection).
 // Without this, React Router may skip re-running the loader on search-param-only navigations,
@@ -135,8 +136,12 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
         ? rawSeoDescription.substring(0, 152).trimEnd() + "..."
         : rawSeoDescription;
 
+    // Extract reviews from the metafield references — cast to ReviewNode[] for the component
+    const reviews = ((product as any).reviews?.references?.nodes ?? []) as ReviewNode[];
+
     return {
         product,
+        reviews,
         selectedSellingPlan,
         activeCollectionHandle,
         sizeChartData,
@@ -162,7 +167,7 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
 };
 
 const Product = () => {
-    const {product, recommendations, selectedSellingPlan, sizeChartData, activeCollectionHandle} = useLoaderData<typeof loader>();
+    const {product, recommendations, reviews, selectedSellingPlan, sizeChartData, activeCollectionHandle} = useLoaderData<typeof loader>();
     const [quantity, setQuantity] = useState(1);
     const {addProduct} = useRecentlyViewedContext();
 
@@ -320,6 +325,10 @@ const Product = () => {
                         }
                     </Await>
                 </Suspense>
+            </AnimatedSection>
+
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <ProductReviews reviews={reviews} />
             </AnimatedSection>
 
             <ProductMobileStickyButtons
@@ -481,6 +490,19 @@ const PRODUCT_FRAGMENT = `#graphql
     encodedVariantAvailability
     sizeChart: metafield(namespace: "custom", key: "size_chart") {
       value
+    }
+    reviews: metafield(namespace: "custom", key: "reviews") {
+      references(first: 20) {
+        nodes {
+          ... on Metaobject {
+            reviewerName: field(key: "reviewer_name") { value }
+            rating: field(key: "rating") { value }
+            reviewTitle: field(key: "review_title") { value }
+            body: field(key: "body") { value }
+            date: field(key: "date") { value }
+          }
+        }
+      }
     }
     collections(first: 10) {
       nodes {
