@@ -171,21 +171,29 @@ export const Footer = ({shopName}: {shopName: string}) => {
                         &copy; <span>{new Date().getFullYear()}</span>{" "}
                         <span className="font-serif">{shopName}</span>. All rights reserved.
                     </p>
+                    {/* Developer credit — Slash Cut badge (mirrors storefront_002 design).
+                         Contrast rationale (bg-background runtime ≈ L 14.5%):
+                         text-foreground/90 → ~16:1  ✓ (label)
+                         text-foreground/75 → ~13:1  ✓ (slash separator)
+                         text-foreground    → ~18:1  ✓ (name)
+                         Uses foreground-based tokens (dark surface) mirroring storefront_002's
+                         primary-foreground-based tokens (light surface). */}
                     <a
                         href={DEVELOPER_CONFIG.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="group motion-link inline-flex items-center gap-2 rounded-[6px] px-2.5 py-1.5 text-sm ring-1 ring-transparent transition-[background-color,box-shadow] duration-[220ms] ease-[var(--motion-ease-standard)] hover:bg-foreground/[0.06] hover:ring-foreground/[0.18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                        className="group motion-link inline-flex items-center rounded-[3px] border border-foreground/30 bg-foreground/[0.03] text-sm transition-[border-color,background-color] duration-[220ms] ease-[var(--motion-ease-standard)] hover:border-foreground/55 hover:bg-foreground/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background"
                     >
-                        {/* Dot — foreground-based so it works regardless of theme accent color */}
+                        <span className="px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.15em] text-foreground/90 transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-foreground">
+                            Designed by
+                        </span>
                         <span
                             aria-hidden="true"
-                            className="mb-px inline-block h-[5px] w-[5px] shrink-0 rounded-full bg-foreground/30 transition-[transform,background-color] duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:scale-[1.5] group-hover:bg-foreground/80"
-                        />
-                        {/* Label — full muted-foreground, hierarchy through size+case not opacity (~11:1 on dark bg) */}
-                        <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Designed by</span>
-                        {/* Name — full foreground (~18:1 on dark bg); underline uses foreground/50 */}
-                        <span className="relative font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-foreground/50 after:transition-[width] after:duration-[300ms] after:ease-[var(--motion-ease-emphasized)] group-hover:after:w-full">
+                            className="select-none text-sm font-light text-foreground/75 transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-foreground"
+                        >
+                            /
+                        </span>
+                        <span className="px-2.5 py-1.5 font-semibold text-foreground transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-foreground">
                             {DEVELOPER_CONFIG.name}
                         </span>
                     </a>
