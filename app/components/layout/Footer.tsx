@@ -47,7 +47,13 @@ export const Footer = ({shopName}: {shopName: string}) => {
             {/* Gradient top border */}
             <div className="via-primary absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent to-transparent" />
 
+            {/* id="footer-bottom-bar" is the IntersectionObserver target used by
+                 useFooterClearance (app/hooks/useFooterClearance.ts) to lift the
+                 floating button stack when this block enters the viewport.
+                 The ID covers the full footer content so buttons clear all columns,
+                 not just the copyright row. */}
             <div
+                id="footer-bottom-bar"
                 className={cn(
                     "mx-auto max-w-[2000px] px-4 pt-10 pb-8 md:px-6 lg:pt-14",
                     isProductPage ? "pb-36 lg:pb-8" : ""
@@ -160,10 +166,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                 <div className="mt-10 h-px bg-gradient-to-r from-transparent via-border to-transparent lg:mt-12" />
 
                 {/* ── Bottom Bar: Copyright + Developer Credit ── */}
-                {/* id="footer-bottom-bar" is the IntersectionObserver target used by
-                     useFooterClearance (app/hooks/useFooterClearance.ts) to lift the
-                     floating button stack when this block enters the viewport. */}
-                <div id="footer-bottom-bar" className="mt-6 flex flex-col items-center justify-between space-y-3 text-center md:flex-row md:space-y-0">
+                <div className="mt-6 flex flex-col items-center justify-between space-y-3 text-center md:flex-row md:space-y-0">
                     <p className="text-muted-foreground/70 text-sm font-medium">
                         &copy; <span>{new Date().getFullYear()}</span>{" "}
                         <span className="font-serif">{shopName}</span>. All rights reserved.

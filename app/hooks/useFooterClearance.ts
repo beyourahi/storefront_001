@@ -2,14 +2,15 @@
  * @fileoverview useFooterClearance hook
  *
  * @description
- * Observes the footer's bottom bar element (`#footer-bottom-bar`) via
+ * Observes the full footer content container (`#footer-bottom-bar`) via
  * IntersectionObserver and returns the number of CSS pixels by which
- * floating action buttons should be lifted so they never overlap the
- * visible portion of that element.
+ * floating action buttons should be lifted so they never overlap any
+ * visible portion of the footer.
  *
  * The returned offset equals the visible height (`intersectionRect.height`)
  * of the target element at any given scroll position — computed dynamically,
- * never hardcoded.
+ * never hardcoded. A safety cap of `innerHeight - 100` prevents the offset
+ * from pushing buttons off-screen on very short viewports.
  *
  * @behaviour
  * - Returns 0 when the footer bar is fully below the viewport (default state).
@@ -28,7 +29,7 @@
  * - ResizeObserver replaces the need for a window resize listener.
  *
  * @related
- * - app/components/layout/Footer.tsx — target element: `div#footer-bottom-bar`
+ * - app/components/layout/Footer.tsx — target element: outer content `div#footer-bottom-bar`
  * - app/root.tsx — FloatingButtonStack consumer
  */
 
@@ -42,7 +43,9 @@ const THRESHOLDS = Array.from({length: 21}, (_, i) => i / 20);
 /**
  * Returns the pixel height of `#footer-bottom-bar` currently visible in the
  * viewport (0 when fully off-screen). Consumers should apply this as an upward
- * `translateY` offset so floating buttons clear the element.
+ * `translateY` offset so floating buttons clear all visible footer content.
+ * Capped at `innerHeight - 200` so the button stack (≈116px) stays comfortably
+ * below the navbar even when the full footer fills the viewport.
  */
 export function useFooterClearance(): number {
     const [offset, setOffset] = useState(0);
@@ -58,13 +61,18 @@ export function useFooterClearance(): number {
          */
         function observe(el: Element): void {
             // IntersectionObserver: tracks visible portion as user scrolls
+            // Cap prevents buttons flying off-screen on short viewports (landscape mobile).
+            // 200px = stack height (≈116px) + default bottom (16px) + navbar buffer (≈68px)
+            // Prevents buttons from going above the sticky navbar on short viewports.
+            const cap = () => Math.max(0, window.innerHeight - 200);
+
             io = new IntersectionObserver(
                 entries => {
                     const entry = entries[0];
                     if (!entry) return;
                     // intersectionRect.height = rendered pixels of el visible in viewport
                     const visibleHeight = entry.isIntersecting ? entry.intersectionRect.height : 0;
-                    setOffset(Math.round(visibleHeight));
+                    setOffset(Math.min(Math.round(visibleHeight), cap()));
                 },
                 {threshold: THRESHOLDS}
             );
@@ -77,7 +85,7 @@ export function useFooterClearance(): number {
                 const rect = el.getBoundingClientRect();
                 const vh = window.innerHeight;
                 const visibleHeight = Math.max(0, Math.min(rect.bottom, vh) - Math.max(rect.top, 0));
-                setOffset(Math.round(visibleHeight));
+                setOffset(Math.min(Math.round(visibleHeight), cap()));
             });
             ro.observe(el);
         }
