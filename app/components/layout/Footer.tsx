@@ -175,10 +175,17 @@ export const Footer = ({shopName}: {shopName: string}) => {
                         href={DEVELOPER_CONFIG.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="group text-muted-foreground/70 text-sm font-medium"
+                        className="group motion-link inline-flex items-center gap-2 rounded-[6px] px-2.5 py-1.5 text-sm ring-1 ring-transparent transition-[background-color,box-shadow] duration-[220ms] ease-[var(--motion-ease-standard)] hover:bg-foreground/[0.06] hover:ring-foreground/[0.18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                     >
-                        <span>Designed by</span>{" "}
-                        <span className="after:bg-primary group-hover:text-primary sleek relative pb-2 font-semibold after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2 after:transition-[width] after:duration-200 group-hover:after:w-[35%]">
+                        {/* Dot — foreground-based so it works regardless of theme accent color */}
+                        <span
+                            aria-hidden="true"
+                            className="mb-px inline-block h-[5px] w-[5px] shrink-0 rounded-full bg-foreground/30 transition-[transform,background-color] duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:scale-[1.5] group-hover:bg-foreground/80"
+                        />
+                        {/* Label — full muted-foreground, hierarchy through size+case not opacity (~11:1 on dark bg) */}
+                        <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Designed by</span>
+                        {/* Name — full foreground (~18:1 on dark bg); underline uses foreground/50 */}
+                        <span className="relative font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-foreground/50 after:transition-[width] after:duration-[300ms] after:ease-[var(--motion-ease-emphasized)] group-hover:after:w-full">
                             {DEVELOPER_CONFIG.name}
                         </span>
                     </a>
