@@ -360,7 +360,7 @@ function groupVariantsByOption(
         const availableValues = Array.from(values.entries())
             .filter(([, info]) => info.hasAvailableVariant)
             .map(([value, info]) => ({value, variantId: info.variantId, hasAvailableVariant: info.hasAvailableVariant}));
-        if (availableValues.length > 0) result.push({name, values: availableValues});
+        if (availableValues.length > 1) result.push({name, values: availableValues});
     }
 
     return result;

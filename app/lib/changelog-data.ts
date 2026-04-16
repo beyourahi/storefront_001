@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-17",
+        headline: "Products with no variant options no longer show a selector",
+        summary:
+            "Simple products — those with no size, color, or other options — previously showed a pointless \"Default Title\" button on the product page and in the quick-add panel. That label is now suppressed everywhere it appeared. The product still adds to cart correctly; there's just nothing unnecessary to click.",
+        category: "Fix"
+    },
+    {
         date: "2026-04-16",
         headline: "Low stock warning appears when a variant is running low",
         summary:

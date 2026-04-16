@@ -38,7 +38,7 @@ export function ProductHeroMobile({
             ...option,
             optionValues: option.optionValues.filter(value => value.available)
         }))
-        .filter(option => option.optionValues.length > 0);
+        .filter(option => option.optionValues.length > 1);
 
     const isSubscriptionMode = new URLSearchParams(search).has("selling_plan");
     const displayPrice = selectedVariant?.price;

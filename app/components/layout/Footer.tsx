@@ -171,30 +171,27 @@ export const Footer = ({shopName}: {shopName: string}) => {
                         &copy; <span>{new Date().getFullYear()}</span>{" "}
                         <span className="font-serif">{shopName}</span>. All rights reserved.
                     </p>
-                    {/* Developer credit — Slash Cut badge (mirrors storefront_002 design).
-                         Contrast rationale (bg-background runtime ≈ L 14.5%):
-                         text-foreground/90 → ~16:1  ✓ (label)
-                         text-foreground/75 → ~13:1  ✓ (slash separator)
-                         text-foreground    → ~18:1  ✓ (name)
-                         Uses foreground-based tokens (dark surface) mirroring storefront_002's
-                         primary-foreground-based tokens (light surface). */}
+                    {/* Developer credit — primary-tinted badge. Off-site link so ExternalLink icon
+                         signals destination. Primary hue is merchant-configurable at runtime;
+                         opacity-based tokens keep contrast robust across light and dark themes. */}
                     <a
                         href={DEVELOPER_CONFIG.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="group uppercase motion-link flex w-full justify-center items-center rounded-[var(--radius-xs-raw)] border border-foreground/30 bg-foreground/[0.03] text-sm transition-[border-color,background-color] duration-[220ms] ease-[var(--motion-ease-standard)] hover:border-foreground/55 hover:bg-foreground/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background md:inline-flex md:w-auto"
+                        className="group uppercase motion-link flex w-full justify-center items-center rounded-[var(--radius-xs-raw)] border border-primary/25 bg-primary/[0.05] text-sm transition-[border-color,background-color] duration-[220ms] ease-[var(--motion-ease-standard)] hover:border-primary/45 hover:bg-primary/[0.10] active:bg-primary/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background md:inline-flex md:w-auto"
                     >
-                        <span className="px-2.5 py-1.5 text-sm font-medium tracking-[0.15em] text-foreground/90 transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-foreground">
+                        <span className="px-2.5 py-1.5 text-sm font-medium tracking-[0.15em] text-primary/70 transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-primary">
                             Designed by
                         </span>
                         <span
                             aria-hidden="true"
-                            className="select-none text-sm font-light text-foreground/75 transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-foreground"
+                            className="select-none text-sm font-light text-primary/40 transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-primary/65"
                         >
                             /
                         </span>
-                        <span className="px-2.5 py-1.5 font-semibold text-foreground transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-foreground">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 font-semibold text-primary transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-primary">
                             {DEVELOPER_CONFIG.name}
+                            <span aria-hidden="true">🔥</span>
                         </span>
                     </a>
                 </div>
