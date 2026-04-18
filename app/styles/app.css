@@ -2,6 +2,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "lenis/dist/lenis.css";
+
+/* Restrict hover styles to devices that natively support hover (mice/trackpads).
+   On touch-only devices (coarse pointer), :hover fires on tap and sticks — this
+   variant gates hover styles so they never apply on touch screens. */
+@custom-variant can-hover {
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            @slot;
+        }
+    }
+}
+
 /*---break---
  */
 
@@ -210,6 +222,15 @@ body {
 @media (hover: hover) and (pointer: fine) {
     :root {
         --pointer-hover-enabled: 1;
+    }
+}
+
+/* On touch-only devices, reset any cursor overrides set via Tailwind or inline styles.
+   Touch devices don't have a visible cursor, so pointer/crosshair etc. are meaningless
+   and can confuse accessibility tools. */
+@media (hover: none) and (pointer: coarse) {
+    * {
+        cursor: auto !important;
     }
 }
 
@@ -509,11 +530,23 @@ body {
     }
 }
 
+/* Hover states for .cool-underline are intentionally extracted into a @media (hover: hover)
+   block below — this prevents the underline from getting stuck in the hovered state on
+   touch devices, where :hover fires on tap and never clears. */
 .cool-underline {
-    @apply after:bg-primary hover:text-primary relative transform-gpu after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2 hover:after:w-[35%];
+    @apply after:bg-primary relative transform-gpu after:absolute after:-bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2;
     transition-property: color, opacity, transform;
     transition-duration: var(--motion-duration-standard);
     transition-timing-function: var(--motion-ease-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .cool-underline:hover {
+        @apply text-primary;
+    }
+    .cool-underline:hover::after {
+        width: 35%;
+    }
 }
 
 .cool-underline::after {
@@ -535,9 +568,13 @@ body {
     transition-timing-function: var(--motion-ease-standard);
 }
 
-.group:hover {
-    transition-duration: var(--motion-duration-standard);
-    transition-timing-function: var(--motion-ease-standard);
+/* Guard group hover transitions — on touch, :hover fires on tap and sticks,
+   which causes transition timing to override the base state unexpectedly. */
+@media (hover: hover) and (pointer: fine) {
+    .group:hover {
+        transition-duration: var(--motion-duration-standard);
+        transition-timing-function: var(--motion-ease-standard);
+    }
 }
 
 button:active {
@@ -629,8 +666,11 @@ select {
     transition-timing-function: var(--motion-ease-standard);
 }
 
-.motion-lift:hover {
-    transform: translateY(calc(var(--motion-hover-lift) * -1));
+/* Guard lift effect — only fire on real hover devices to avoid sticky lift on touch tap */
+@media (hover: hover) and (pointer: fine) {
+    .motion-lift:hover {
+        transform: translateY(calc(var(--motion-hover-lift) * -1));
+    }
 }
 
 .motion-press:active {
@@ -856,9 +896,11 @@ video,
     opacity: 1;
 }
 
-.article-content a:hover {
-    @apply text-primary/80;
-    text-decoration-thickness: 2px;
+@media (hover: hover) and (pointer: fine) {
+    .article-content a:hover {
+        @apply text-primary/80;
+        text-decoration-thickness: 2px;
+    }
 }
 
 .article-content blockquote {
@@ -954,6 +996,8 @@ video,
     transition-timing-function: var(--motion-ease-standard);
 }
 
-.article-content tbody tr:hover {
-    @apply bg-muted/30;
+@media (hover: hover) and (pointer: fine) {
+    .article-content tbody tr:hover {
+        @apply bg-muted/30;
+    }
 }
