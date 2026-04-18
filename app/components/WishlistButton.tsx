@@ -6,7 +6,7 @@ import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
 import {cn} from "~/lib/utils";
 
 const wishlistButtonVariants = cva(
-    "motion-interactive motion-press inline-flex select-none items-center justify-center rounded-full hover:scale-110 active:scale-[var(--motion-press-scale)]",
+    "motion-interactive motion-press inline-flex select-none items-center justify-center rounded-full hover:scale-110 active:scale-[var(--motion-press-scale)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
     {
         variants: {
             size: {

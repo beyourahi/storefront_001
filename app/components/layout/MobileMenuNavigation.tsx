@@ -42,6 +42,7 @@ export const MobileMenuNavigation = ({currentPath, onLinkClick}: MobileMenuNavig
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
                             "mobile-nav-link group sleek motion-press flex items-center gap-3 rounded-md px-4 py-4 text-sm font-medium active:scale-[var(--motion-press-scale)]",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:bg-accent",
                             isActive
                                 ? "bg-primary text-primary-foreground shadow-primary/25 ring-primary/20 scale-[1.02] font-semibold shadow-md ring-2"
                                 : canHover
@@ -81,6 +82,7 @@ export const MobileMenuNavigation = ({currentPath, onLinkClick}: MobileMenuNavig
                     aria-current={isBlogActive ? "page" : undefined}
                     className={cn(
                         "mobile-nav-link group sleek motion-press flex items-center gap-3 rounded-md px-4 py-4 text-sm font-medium active:scale-[var(--motion-press-scale)]",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:bg-accent",
                         isBlogActive
                             ? "bg-primary text-primary-foreground shadow-primary/25 ring-primary/20 scale-[1.02] font-semibold shadow-md ring-2"
                             : canHover

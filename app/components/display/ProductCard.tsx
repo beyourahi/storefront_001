@@ -85,7 +85,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     </div>
                 ) : null}
 
-                <Link to={`/products/${product.handle}`} prefetch="intent">
+                <Link to={`/products/${product.handle}`} prefetch="intent" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-inset">
                     {productImage ? (
                         <Image
                             data={{url: productImage.url, altText: productImage.altText || product.title}}
@@ -164,7 +164,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                 <div>
                     <Link
                         to={`/products/${product.handle}`}
-                        className={cn("motion-link", canHover && "group-hover:text-primary")}
+                        className={cn("motion-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:rounded-sm", canHover && "group-hover:text-primary")}
                         prefetch="intent"
                     >
                         <ProductCardTitle productTitle={product.title} viewMode={viewMode} />

@@ -478,7 +478,7 @@ function CartClearConfirmation({
                     </div>
 
                     {!isHolding && (
-                        <div className="bg-popover text-popover-foreground pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 transform rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-md sleek group-hover:opacity-100">
+                        <div className="bg-popover text-popover-foreground pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 transform rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-md sleek group-hover:opacity-100 group-focus-visible:opacity-100">
                             Hold or click to clear
                         </div>
                     )}

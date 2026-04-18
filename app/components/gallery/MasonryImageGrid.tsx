@@ -3,6 +3,7 @@ import {useNavigate} from "react-router";
 import {cn} from "~/lib/utils";
 import {parseProductTitle} from "~/lib/product";
 import {buildShopifyImageUrl, createResponsiveSizes, getGridImageConfig} from "~/lib/performance";
+import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
 import type {GalleryImageData} from "~/lib/gallery";
 
 type MasonryImageGridProps = {
@@ -13,6 +14,7 @@ type MasonryImageGridProps = {
 
 export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: MasonryImageGridProps) => {
     const navigate = useNavigate();
+    const {canHover} = usePointerCapabilities();
     const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
     const [visibleImages, setVisibleImages] = useState<Set<number>>(new Set());
     const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -140,7 +142,10 @@ export const MasonryImageGrid = ({images, onImageClick, onImagesLoaded}: Masonry
                             )}
                         </div>
 
-                        <div className="sleek absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 backdrop-blur-[1px] group-hover:translate-y-0">
+                        <div className={cn(
+                            "sleek absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 backdrop-blur-[1px]",
+                            canHover ? "translate-y-full group-hover:translate-y-0" : "translate-y-0"
+                        )}>
                             {(() => {
                                 const {primary, secondary} = parseProductTitle(image.productTitle ?? "");
                                 return (
