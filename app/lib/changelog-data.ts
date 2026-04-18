@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-18",
+        headline: "Quick Add dialog now appears above the cart panel",
+        summary:
+            "Tapping \"Add to Cart\" on a product suggestion inside the cart no longer leaves the option picker hidden behind the cart itself. The selector now reliably opens on top of everything else, so you can choose a size or color without closing the cart first.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-18",
         headline: "Product info and interactive cards are fully keyboard accessible",
         summary:
             "On touch screens, product gallery overlays now stay visible instead of hiding behind a hover you can never trigger. Buttons and links across product cards, collection cards, blog articles, the mobile menu, and the wishlist button now show a clear focus ring when navigated with a keyboard or assistive technology. The cart clear tooltip is also revealed when the button receives keyboard focus.",

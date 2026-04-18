@@ -560,10 +560,10 @@ function ProductVariantDialogContent({
     return (
         <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
             <DialogPrimitive.Portal>
-                <DialogPrimitive.Overlay className="bg-background/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[70] backdrop-blur-sm" />
+                <DialogPrimitive.Overlay className="bg-background/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[var(--z-nested-overlay)] backdrop-blur-sm" />
                 <DialogPrimitive.Content
                     className={cn(
-                        "bg-background fixed top-[50%] left-[50%] z-[70] h-auto w-[92vw] max-w-[380px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border-0 p-0 shadow-2xl",
+                        "bg-background fixed top-[50%] left-[50%] z-[var(--z-nested-modal)] h-auto w-[92vw] max-w-[380px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border-0 p-0 shadow-2xl",
                         "max-h-[calc(100dvh-2rem)]",
                         "data-[state=open]:animate-in data-[state=closed]:animate-out",
                         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
