@@ -28,7 +28,7 @@ export const meta: Route.MetaFunction = ({matches}) => {
 
 // ── Loader ────────────────────────────────────────────────────────────────────
 
-export const loader = async ({}: Route.LoaderArgs) => {
+export const loader = async (_: Route.LoaderArgs) => {
     return {entries: CHANGELOG_ENTRIES};
 };
 

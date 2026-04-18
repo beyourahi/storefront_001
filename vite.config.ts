@@ -9,6 +9,27 @@ export default defineConfig({
     plugins: [tailwindcss(), hydrogen(), oxygen(), reactRouter(), tsconfigPaths()],
 
     // -------------------------------------------------------------------------
+    // DEPENDENCY RESOLUTION
+    // -------------------------------------------------------------------------
+    resolve: {
+        // Force a single copy of React and React Router across all nested deps.
+        // Without this, Vite's optimizer can produce multiple pre-bundled chunks
+        // for the same package (different v= hashes), breaking hook invariants.
+        dedupe: ["react", "react-dom", "react-router"]
+    },
+
+    // -------------------------------------------------------------------------
+    // DEP OPTIMIZER
+    // -------------------------------------------------------------------------
+    optimizeDeps: {
+        // Pre-bundle React once so Radix UI (CJS) and the app (ESM) share the
+        // same chunk. Without this, Vite creates separate CJS-wrapped copies of
+        // React for every package that uses require('react'), causing the
+        // "Invalid hook call / two React copies" error in dev.
+        include: ["react", "react-dom", "react/jsx-runtime"]
+    },
+
+    // -------------------------------------------------------------------------
     // BUILD OPTIONS
     // -------------------------------------------------------------------------
     build: {
