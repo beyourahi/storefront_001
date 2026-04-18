@@ -9,27 +9,6 @@ export default defineConfig({
     plugins: [tailwindcss(), hydrogen(), oxygen(), reactRouter(), tsconfigPaths()],
 
     // -------------------------------------------------------------------------
-    // DEPENDENCY RESOLUTION
-    // -------------------------------------------------------------------------
-    resolve: {
-        // Force a single copy of React and React Router across all nested deps.
-        // Without this, Vite's optimizer can produce multiple pre-bundled chunks
-        // for the same package (different v= hashes), breaking hook invariants.
-        dedupe: ["react", "react-dom", "react-router"]
-    },
-
-    // -------------------------------------------------------------------------
-    // DEP OPTIMIZER
-    // -------------------------------------------------------------------------
-    optimizeDeps: {
-        // Pre-bundle React once so Radix UI (CJS) and the app (ESM) share the
-        // same chunk. Without this, Vite creates separate CJS-wrapped copies of
-        // React for every package that uses require('react'), causing the
-        // "Invalid hook call / two React copies" error in dev.
-        include: ["react", "react-dom", "react/jsx-runtime"]
-    },
-
-    // -------------------------------------------------------------------------
     // BUILD OPTIONS
     // -------------------------------------------------------------------------
     build: {
@@ -62,6 +41,7 @@ export default defineConfig({
             ]
         }
     },
+
     // -------------------------------------------------------------------------
     // DEV SERVER OPTIONS
     // -------------------------------------------------------------------------
@@ -73,6 +53,14 @@ export default defineConfig({
         // Dedicated HMR port avoids WebSocket conflicts with Hydrogen's dev server proxy
         hmr: {
             port: 24678
+        },
+        // Prevent browser from caching Vite dev chunks between server restarts.
+        // Each restart re-runs the dep optimizer with a new ?v=HASH stamp; if the
+        // browser serves a stale chunk the old React copy conflicts with the new one,
+        // causing useContext to return null (two React instances in memory).
+        // Cache-Control: no-store is dev-only and has no effect on production builds.
+        headers: {
+            "Cache-Control": "no-store"
         }
     }
 });

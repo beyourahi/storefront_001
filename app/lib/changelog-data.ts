@@ -36,6 +36,20 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-19",
+        headline: "Cart shows the correct product instantly when you add one",
+        summary:
+            "When adding a product to your cart, the cart panel now immediately shows the right product image, name, and price — no blank placeholder while the page talks to the server. This covers quick-add on collection pages, the variant selector on product pages, and the cart upsell panel.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-19",
+        headline: "Order note editor opens reliably on all browsers",
+        summary:
+            "The \"Add a note\" field inside the cart could silently fail to render on certain browsers, leaving the dialog visually broken. The underlying component has been corrected so the note editor appears consistently every time.",
+        category: "Fix"
+    },
+    {
         date: "2026-04-18",
         headline: "Quick Add dialog now appears above the cart panel",
         summary:

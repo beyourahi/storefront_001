@@ -3,7 +3,7 @@ import {useLoaderData, useRouteLoaderData, Await} from "react-router";
 import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {generateOrganizationSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
     bestSellers: "best-sellers",
@@ -43,8 +43,6 @@ export const meta: Route.MetaFunction = ({matches}) => {
     const brandName = getBrandNameFromMatches(matches);
     const logoUrl = siteSettings?.brandLogo?.url;
 
-    const organizationSchema = generateOrganizationSchema(siteSettings, socialLinks);
-    // Enriched Organization schema with sameAs social links (separate from the thin @graph entry)
     const enrichedOrgSchema = {
         "@context": "https://schema.org",
         "@type": "Organization",
@@ -61,8 +59,7 @@ export const meta: Route.MetaFunction = ({matches}) => {
             titleTemplate: null,
             description,
             url: buildCanonicalUrl("/", siteUrl),
-            media: logoUrl ? {url: logoUrl, type: "image" as const} : undefined,
-            jsonLd: organizationSchema as any
+            media: logoUrl ? {url: logoUrl, type: "image" as const} : undefined
         }) ?? []),
         ...getRequiredSocialMeta("website", brandName, logoUrl),
         {"script:ld+json": enrichedOrgSchema as any}

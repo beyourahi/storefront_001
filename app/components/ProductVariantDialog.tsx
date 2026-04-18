@@ -158,14 +158,14 @@ export function ProductVariantDialog({
         const productHasMultipleVariants = hasProductMultipleVariants(productVariants);
 
         if (autoAddSingleVariant && !productHasMultipleVariants) {
-            autoAddToCart(productVariants);
+            autoAddToCart(productVariants, product);
             return;
         }
 
         setOpen(true);
     };
 
-    const autoAddToCart = (productVariants: ShopifyProductVariant[]) => {
+    const autoAddToCart = (productVariants: ShopifyProductVariant[], product: ShopifyProduct) => {
         const bestVariant = selectBestVariant(
             productVariants.filter(variant => variant.availableForSale).length > 0
                 ? productVariants.filter(variant => variant.availableForSale)
@@ -189,7 +189,16 @@ export function ProductVariantDialog({
                 cartFormInput: JSON.stringify({
                     action: CartForm.ACTIONS.LinesAdd,
                     inputs: {
-                        lines: [{merchandiseId: bestVariant.id, quantity: 1}]
+                        lines: [
+                            {
+                                merchandiseId: bestVariant.id,
+                                quantity: 1,
+                                selectedVariant: {
+                                    ...bestVariant,
+                                    product: {id: product.id, title: product.title, handle: product.handle}
+                                }
+                            }
+                        ]
                     }
                 })
             },
@@ -523,13 +532,22 @@ function ProductVariantDialogContent({
                 cartFormInput: JSON.stringify({
                     action: CartForm.ACTIONS.LinesAdd,
                     inputs: {
-                        lines: [{merchandiseId: selectedVariant.id, quantity}]
+                        lines: [
+                            {
+                                merchandiseId: selectedVariant.id,
+                                quantity,
+                                selectedVariant: {
+                                    ...selectedVariant,
+                                    product: {id: product.id, title: product.title, handle: product.handle}
+                                }
+                            }
+                        ]
                     }
                 })
             },
             {method: "POST", action: "/cart"}
         );
-    }, [selectedVariant, isAddingToCart, quantity, addFetcher]);
+    }, [selectedVariant, isAddingToCart, quantity, addFetcher, product.id, product.title, product.handle]);
 
     const handleBuyNow = useCallback(() => {
         if (!selectedVariant || isBuyingNow || isAddingToCart) {
@@ -549,13 +567,22 @@ function ProductVariantDialogContent({
                 cartFormInput: JSON.stringify({
                     action: CartForm.ACTIONS.LinesAdd,
                     inputs: {
-                        lines: [{merchandiseId: selectedVariant.id, quantity}]
+                        lines: [
+                            {
+                                merchandiseId: selectedVariant.id,
+                                quantity,
+                                selectedVariant: {
+                                    ...selectedVariant,
+                                    product: {id: product.id, title: product.title, handle: product.handle}
+                                }
+                            }
+                        ]
                     }
                 })
             },
             {method: "POST", action: "/cart"}
         );
-    }, [selectedVariant, isBuyingNow, isAddingToCart, quantity, buyNowFetcher]);
+    }, [selectedVariant, isBuyingNow, isAddingToCart, quantity, buyNowFetcher, product.id, product.title, product.handle]);
 
     return (
         <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>

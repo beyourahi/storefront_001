@@ -269,6 +269,9 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
                                     quantity={quantity}
                                     buttonLabel={buttonLabel}
                                     onSuccess={handleCartSuccess}
+                                    productId={product.id}
+                                    productTitle={product.title}
+                                    productHandle={product.handle}
                                 />
                             </div>
                         ) : availableVariants.length === 0 ? (
@@ -289,12 +292,18 @@ function QuickAddCartButton({
     variant,
     quantity,
     onSuccess,
-    buttonLabel
+    buttonLabel,
+    productId,
+    productTitle,
+    productHandle
 }: {
     variant: QuickAddVariant;
     quantity: number;
     onSuccess: () => void;
     buttonLabel: string;
+    productId: string;
+    productTitle: string;
+    productHandle: string;
 }) {
     const fetcher = useFetcher({key: "cart-mutation"});
     const isLoading = fetcher.state !== "idle";
@@ -309,12 +318,23 @@ function QuickAddCartButton({
             {
                 cartFormInput: JSON.stringify({
                     action: CartForm.ACTIONS.LinesAdd,
-                    inputs: {lines: [{merchandiseId: variant.id, quantity}]}
+                    inputs: {
+                        lines: [
+                            {
+                                merchandiseId: variant.id,
+                                quantity,
+                                selectedVariant: {
+                                    ...variant,
+                                    product: {id: productId, title: productTitle, handle: productHandle}
+                                }
+                            }
+                        ]
+                    }
                 })
             },
             {method: "POST", action: "/cart"}
         );
-    }, [fetcher, isLoading, variant.availableForSale, variant.id, quantity]);
+    }, [fetcher, isLoading, variant, quantity, productId, productTitle, productHandle]);
 
     return (
         <button

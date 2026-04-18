@@ -257,6 +257,9 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                             quantity={quantity}
                             buttonLabel={buttonLabel}
                             onSuccess={handleCartSuccess}
+                            productId={product.id}
+                            productTitle={product.title}
+                            productHandle={product.handle}
                         />
                     ) : availableVariants.length === 0 ? (
                         <div className="w-full min-h-12 inline-flex items-center justify-center rounded-full border-2 border-muted bg-muted/50 px-3 sm:px-4 py-2 text-lg font-medium text-muted-foreground">
@@ -273,12 +276,18 @@ function QuickAddCartButton({
     variant,
     quantity,
     onSuccess,
-    buttonLabel
+    buttonLabel,
+    productId,
+    productTitle,
+    productHandle
 }: {
     variant: QuickAddVariant;
     quantity: number;
     onSuccess: () => void;
     buttonLabel: string;
+    productId: string;
+    productTitle: string;
+    productHandle: string;
 }) {
     // Shared fetcher key prevents concurrent cart mutations
     const fetcher = useFetcher({key: "cart-mutation"});
@@ -294,12 +303,23 @@ function QuickAddCartButton({
             {
                 cartFormInput: JSON.stringify({
                     action: CartForm.ACTIONS.LinesAdd,
-                    inputs: {lines: [{merchandiseId: variant.id, quantity}]}
+                    inputs: {
+                        lines: [
+                            {
+                                merchandiseId: variant.id,
+                                quantity,
+                                selectedVariant: {
+                                    ...variant,
+                                    product: {id: productId, title: productTitle, handle: productHandle}
+                                }
+                            }
+                        ]
+                    }
                 })
             },
             {method: "POST", action: "/cart"}
         );
-    }, [fetcher, isLoading, variant.availableForSale, variant.id, quantity]);
+    }, [fetcher, isLoading, variant, quantity, productId, productTitle, productHandle]);
 
     return (
         <button
