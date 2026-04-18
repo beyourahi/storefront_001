@@ -70,6 +70,7 @@ export const ArticleCard = ({
                     "flex items-start gap-3 sm:gap-4 py-3 sm:py-4 no-underline group cursor-pointer",
                     "sleek hover:bg-muted/30 rounded-lg px-2 -mx-2",
                     "animate-in fade-in",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2",
                     className
                 )}
                 style={{animationDelay: `${staggerDelay}ms`}}
@@ -105,7 +106,11 @@ export const ArticleCard = ({
             <Link
                 to={articleUrl}
                 prefetch="viewport"
-                className={cn("block no-underline group animate-in fade-in cursor-pointer", className)}
+                className={cn(
+                    "block no-underline group animate-in fade-in cursor-pointer",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2",
+                    className
+                )}
                 style={{animationDelay: `${staggerDelay}ms`}}
             >
                 {image && (
@@ -160,7 +165,11 @@ export const ArticleCard = ({
         <Link
             to={articleUrl}
             prefetch="viewport"
-            className={cn("group block no-underline animate-in fade-in cursor-pointer h-full", className)}
+            className={cn(
+                "group block no-underline animate-in fade-in cursor-pointer h-full",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2",
+                className
+            )}
             style={{animationDelay: `${staggerDelay}ms`}}
         >
             <Card className="h-full overflow-hidden group-hover:shadow-md sleek py-0 gap-0">

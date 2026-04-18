@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-18",
+        headline: "Product info and interactive cards are fully keyboard accessible",
+        summary:
+            "On touch screens, product gallery overlays now stay visible instead of hiding behind a hover you can never trigger. Buttons and links across product cards, collection cards, blog articles, the mobile menu, and the wishlist button now show a clear focus ring when navigated with a keyboard or assistive technology. The cart clear tooltip is also revealed when the button receives keyboard focus.",
+        category: "Improvement"
+    },
+    {
         date: "2026-04-17",
         headline: "Products with no variant options no longer show a selector",
         summary:
