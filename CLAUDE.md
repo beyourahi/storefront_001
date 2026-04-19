@@ -48,7 +48,7 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 | ------------- | ---------------- | ---------- | ----------------------------------- |
 | **Framework** | React            | 18.3.1     |                                     |
 |               | React Router     | 7.12.0     | Hydrogen preset, file-based routing |
-|               | Shopify Hydrogen | 2026.4.0   | Storefront + Customer Account APIs  |
+|               | Shopify Hydrogen | 2026.4.1   | Storefront + Customer Account APIs  |
 |               | Storefront API   | 2026-04    | GraphQL API version                 |
 |               | TypeScript       | 5.9        | Strict mode, ES2022 target          |
 |               | Vite             | 6          | Build tooling                       |
@@ -85,7 +85,7 @@ storefront_001/
 ├── app/
 │   ├── routes/                    # Route modules
 │   ├── components/                # UI and feature components
-│   │   ├── *.tsx                  # Root-level shared components (QuantitySelector, WishlistButton, WishlistCount, ShareDialog, DiscountBadge, QuickAddButton, QuickAddDialog, QuickAddSheet, RecentlyViewedProvider, NetworkStatusIndicator, ServiceWorkerRegistration, RouteErrorBoundary, etc.)
+│   │   ├── *.tsx                  # Root-level shared components (QuantitySelector, WishlistButton, WishlistCount, ShareDialog, DiscountBadge, ProductDiscountBadge, QuickAddButton, QuickAddDialog, QuickAddSheet, RecentlyViewedProvider, NetworkStatusIndicator, ServiceWorkerRegistration, RouteErrorBoundary, OfflineAwareErrorPage, FloatingChatWidget, GoogleTagManager, GtmScript, HomepageWishlistSection, ProductVariantDialog, ProductImagePlaceholder, etc.)
 │   │   ├── ui/                    # shadcn/ui generated primitives
 │   │   ├── account/               # Account dashboard surfaces
 │   │   ├── blog/                  # Blog surfaces
@@ -221,7 +221,7 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 **Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`, `app/lib/wishlist-context.tsx`, `app/lib/wishlist-utils.ts`, `app/lib/recently-viewed.ts`, `app/lib/LenisProvider.tsx` (note: component in `lib/`, not `components/`)
 **Config**: `vite.config.ts`, `react-router.config.ts`, `eslint.config.js`, `prettier.config.js`, `app/styles/app.css`, `wrangler.jsonc`
 **GraphQL**: `storefrontapi.generated.d.ts`, `customer-accountapi.generated.d.ts`
-**Theme System**: `app/lib/theme-utils.ts`, `app/root.tsx`, `app/styles/app.css`
+**Theme System**: `app/lib/theme-utils.ts`, `app/lib/theme-storage.ts`, `app/root.tsx`, `app/styles/app.css`
 **PWA/Offline**: `app/components/OfflineAwareErrorPage.tsx`, `app/routes/manifest[.]webmanifest.tsx`, `public/sw.js`, `app/lib/pwa-parsers.ts`, `app/lib/pwa-queries.ts`, `app/lib/pwa-storage.ts`
 **Changelog**: `app/lib/changelog-data.ts` (entry source of truth), `app/routes/changelog.tsx` (public-facing route)
 

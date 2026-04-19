@@ -709,6 +709,39 @@ input[type="search"] {
     -webkit-appearance: none;
 }
 
+/* ============================================================================
+   Mobile Input Zoom Prevention (iOS Safari / Android Chrome)
+   ============================================================================
+   iOS Safari auto-zooms the viewport on input focus when the computed
+   font-size is below 16px — the browser's readability threshold. This is a
+   browser-level accessibility behaviour that cannot be suppressed via the
+   viewport meta tag without also disabling user pinch-to-zoom (WCAG 1.4.4).
+
+   This rule enforces font-size: 16px on all interactive text fields at the
+   mobile breakpoint (< 768px / below Tailwind's `md` breakpoint). Desktop
+   sizes are untouched — Tailwind utility classes like `md:text-sm` continue
+   to apply normally above 768px.
+
+   Placed outside @layer blocks intentionally: unlayered rules have higher
+   cascade priority than all @layer-ed utilities (including Tailwind's text-sm,
+   text-xs, etc.), so no !important is required. The fix is global and covers
+   statically rendered, dynamically injected, and deeply nested inputs alike.
+*/
+@media (max-width: 767.98px) {
+    input[type="text"],
+    input[type="search"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="url"],
+    input:not([type]),
+    textarea,
+    select {
+        font-size: 16px;
+    }
+}
+
 iframe {
     margin-bottom: 0 !important;
 }

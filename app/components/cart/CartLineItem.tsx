@@ -14,17 +14,15 @@ import {cn} from "~/lib/utils";
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
-const CART_FETCHER_KEY = "cart-mutation";
-
-function getUpdateKey(_lineIds: string[]) {
-    return CART_FETCHER_KEY;
+function getUpdateKey(lineIds: string[]) {
+    return [CartForm.ACTIONS.LinesUpdate, ...lineIds].join("-");
 }
 
 export function CartLineItem({line}: {line: CartLine}) {
     const {id, merchandise, quantity, cost} = line;
     const {product, image, title: variantTitle, quantityAvailable} = merchandise;
     const {close} = useCartDrawer();
-    const fetcher = useFetcher({key: CART_FETCHER_KEY});
+    const fetcher = useFetcher({key: getUpdateKey([id])});
     const [showError, setShowError] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -32,6 +30,21 @@ export function CartLineItem({line}: {line: CartLine}) {
 
     const {primary: titlePrimary, secondary: titleSecondary} = parseProductTitle(product.title);
     const maxQuantity = Math.min(999, quantityAvailable || 999);
+
+    // Optimistic lines from useOptimisticCart have no `cost` field by design.
+    // Cart Suggestions is inside the already-open drawer, so the optimistic line
+    // renders immediately before the server response arrives — compute cost from
+    // merchandise.price * quantity to prevent the crash.
+    const optimisticCost =
+        !cost && line.isOptimistic
+            ? {
+                  totalAmount: {
+                      amount: String(parseFloat(merchandise.price?.amount ?? "0") * quantity),
+                      currencyCode: merchandise.price?.currencyCode ?? "USD"
+                  }
+              }
+            : undefined;
+    const effectiveCost = cost ?? optimisticCost;
 
     // Child lines have a parentRelationship pointing to their parent cart line
     const parentRelationship = (line as any).parentRelationship as
@@ -117,7 +130,7 @@ export function CartLineItem({line}: {line: CartLine}) {
                                 disabled={!!line.isOptimistic}
                             />
                         )}
-                        <CartLinePricing cost={cost} quantity={quantity} />
+                        <CartLinePricing cost={effectiveCost} quantity={quantity} />
                     </div>
                 </div>
             </div>
@@ -209,8 +222,9 @@ function CartLineDetails({
     );
 }
 
-function CartLinePricing({cost, quantity}: {cost: CartLine["cost"]; quantity: number}) {
-    const totalAmount = cost.totalAmount;
+function CartLinePricing({cost, quantity}: {cost: CartLine["cost"] | undefined; quantity: number}) {
+    const totalAmount = cost?.totalAmount;
+    if (!totalAmount) return null;
     const perItemAmount = (parseFloat(totalAmount.amount) / quantity).toFixed(2);
 
     return (

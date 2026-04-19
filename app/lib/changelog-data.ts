@@ -37,6 +37,27 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-19",
+        headline: "Cart quantity buttons no longer get stuck loading",
+        summary:
+            "Rapidly tapping the quantity + or - buttons, removing an item, or clicking checkout could occasionally leave the cart in a permanent loading state — stuck spinners, unresponsive buttons, or a blocked checkout. This is now fixed: each item in the cart manages its own state independently, so changes always resolve cleanly no matter how quickly you tap.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-19",
+        headline: "Tapping any text field on mobile no longer zooms the page",
+        summary:
+            "iOS Safari was involuntarily zooming in whenever you tapped a search box, email field, or any other text input — a frustrating experience on phones. This is now fixed across every input on the site, including the search overlay, newsletter sign-up, cart notes, and account forms.",
+        category: "Fix",
+    },
+    {
+        date: "2026-04-19",
+        headline: "Quick Add from cart suggestions no longer crashes the cart",
+        summary:
+            "Tapping 'Add' on a product in the 'Frequently bought with' section while the cart is already open could cause the cart to break and show a blank error screen. The cart now correctly displays the item and its price the moment it's added, without any glitch.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-19",
         headline: "Cart shows the correct product instantly when you add one",
         summary:
             "When adding a product to your cart, the cart panel now immediately shows the right product image, name, and price — no blank placeholder while the page talks to the server. This covers quick-add on collection pages, the variant selector on product pages, and the cart upsell panel.",
