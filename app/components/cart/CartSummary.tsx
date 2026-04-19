@@ -30,7 +30,7 @@ export function CartSummary({cart}: {cart: Cart}) {
     const checkoutUrl = cart.checkoutUrl;
     const lineIds = (cart.lines?.nodes ?? []).map(line => line.id);
     return (
-        <div className="bg-background rounded-l-2xl px-4 py-4 md:px-6">
+        <div className="bg-background shrink-0 rounded-l-2xl px-4 py-4 md:px-6">
             <div className="space-y-4">
                 <CartOrderNote noteValue={noteValue} />
 

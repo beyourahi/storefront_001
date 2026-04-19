@@ -20,7 +20,7 @@ export function CartAside() {
                 <DrawerContent className="cart-drawer border-0 shadow-none" overlayClassName="bg-overlay-dark backdrop-blur-md">
                     <DrawerTitle className="sr-only">Shopping Cart</DrawerTitle>
                     <DrawerDescription className="sr-only">Review and manage items in your cart</DrawerDescription>
-                    <div className="flex max-h-[80vh] flex-col overflow-hidden">
+                    <div className="flex h-[80dvh] flex-col overflow-hidden">
                         <Suspense fallback={<CartLoadingSkeleton />}>
                             <Await resolve={rootData.cart}>
                                 {cartData => <CartMain cart={cartData} layout="aside" />}
@@ -38,7 +38,7 @@ export function CartAside() {
                 side="right"
                 hideCloseButton
                 overlayClassName="bg-overlay-dark backdrop-blur-md"
-                className="cart-drawer m-4 mr-0 flex max-h-[calc(100vh-2rem)] w-full max-w-md flex-col rounded-l-2xl shadow-none border-0 lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl [&>button]:hidden"
+                className="cart-drawer m-4 mr-0 flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col rounded-l-2xl shadow-none border-0 lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl [&>button]:hidden"
             >
                 <SheetTitle className="sr-only">Shopping Cart</SheetTitle>
                 <SheetDescription className="sr-only">Review and manage items in your cart</SheetDescription>
