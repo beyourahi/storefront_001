@@ -14,11 +14,11 @@ type CartLineNode = CartApiQueryFragment["lines"]["nodes"][number];
 
 const StarIcon = () => (
     <svg
-        className="text-primary h-3.5 w-3.5 opacity-70"
+        className="text-primary h-3 w-3"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        strokeWidth={2}
+        strokeWidth={2.25}
     >
         <path
             strokeLinecap="round"
@@ -70,12 +70,14 @@ function CartSuggestionsContent({
 
     return (
         <div className={cn("space-y-3 pt-4", className)}>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
                 <div className="flex items-center gap-1.5">
-                    <StarIcon />
-                    <h3 className="text-foreground text-sm font-medium tracking-wide">Frequently bought with</h3>
+                    <span className="bg-primary/10 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full">
+                        <StarIcon />
+                    </span>
+                    <h3 className="text-foreground text-sm font-semibold tracking-[0.04em]">Frequently bought with</h3>
                 </div>
-                <div className="from-border/50 h-px flex-1 bg-gradient-to-r to-transparent" />
+                <div className="from-border/60 h-px flex-1 bg-gradient-to-r to-transparent" />
             </div>
             <CartSuggestionsCarousel suggestions={filteredSuggestions} />
         </div>
