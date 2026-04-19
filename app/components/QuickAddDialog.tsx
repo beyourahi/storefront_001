@@ -14,6 +14,7 @@ import {toast} from "sonner";
 import {filterDisplayTags, getButtonLabel} from "~/lib/product-tags";
 import {parseProductTitle} from "~/lib/product";
 import {OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
+import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 
 interface QuickAddVariant {
     id: string;
@@ -119,13 +120,13 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
                 onPointerDown={stopPropagation}
             >
                 <div className="flex flex-col md:flex-row h-[60dvh]">
-                    {productImages.length > 0 && (
-                        <div
-                            className="w-full md:w-1/2 shrink-0 h-full overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                            data-lenis-prevent
-                        >
-                            <div className="flex flex-col gap-2">
-                                {productImages.map((image, index) => (
+                    <div
+                        className="w-full md:w-1/2 shrink-0 h-full overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                        data-lenis-prevent
+                    >
+                        <div className="flex flex-col gap-2">
+                            {productImages.length > 0 ? (
+                                productImages.map((image, index) => (
                                     <div
                                         key={image.id || index}
                                         className="relative w-full overflow-hidden bg-muted/50 rounded-lg"
@@ -138,10 +139,12 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
                                             />
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                ))
+                            ) : (
+                                <ProductImagePlaceholder aspectRatio="4/5" className="w-full rounded-lg" />
+                            )}
                         </div>
-                    )}
+                    </div>
 
                     <div className="flex-1 p-4 sm:p-6 flex flex-col overflow-y-auto" data-lenis-prevent>
                         <DialogHeader className="text-left pr-10">

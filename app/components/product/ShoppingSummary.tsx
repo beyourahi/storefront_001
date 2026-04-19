@@ -91,7 +91,6 @@ const SummaryContent = ({
                                 return (
                                     <>
                                         <span className="text-foreground">Adding: {primary}</span>
-                                        {secondary && <span className="opacity-50 text-xs">{secondary}</span>}
                                     </>
                                 );
                             })()}

@@ -14,6 +14,7 @@ import {toast} from "sonner";
 import {filterDisplayTags, getButtonLabel} from "~/lib/product-tags";
 import {parseProductTitle} from "~/lib/product";
 import {OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
+import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 
 interface QuickAddVariant {
     id: string;
@@ -118,7 +119,7 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
 
                 <SheetHeader>
                     <div className="flex items-start gap-3">
-                        {product.featuredImage?.url && (
+                        {product.featuredImage?.url ? (
                             <div className="w-16 h-20 shrink-0 overflow-hidden rounded-lg bg-muted/50">
                                 <img
                                     src={product.featuredImage.url}
@@ -126,6 +127,8 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                                     className="w-full h-full object-cover"
                                 />
                             </div>
+                        ) : (
+                            <ProductImagePlaceholder compact className="w-16 h-20 shrink-0 rounded-lg" />
                         )}
 
                         <div className="flex-1 min-w-0">
