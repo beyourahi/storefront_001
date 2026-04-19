@@ -4,9 +4,7 @@ import {Await, useRouteLoaderData} from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
 import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {Skeleton} from "~/components/ui/skeleton";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {CompactProductCard} from "~/components/cart/CompactProductCard";
-import {useIsMobile} from "~/hooks/useIsMobile";
 import {useCartDrawer} from "~/hooks/useCartDrawer";
 import {fromCartSuggestionProduct} from "~/lib/product/product-card-normalizers";
 import {cn} from "~/lib/utils";
@@ -41,7 +39,7 @@ export function CartSuggestions({cartLines, className}: {cartLines: CartLineNode
                 {suggestions => {
                     if (!suggestions || !Array.isArray(suggestions) || suggestions.length === 0) return null;
                     return (
-                        <CartSuggestionsContent suggestions={suggestions} cartLines={cartLines} className={className} />
+                        <CartSuggestionsContent suggestions={suggestions} className={className} />
                     );
                 }}
             </Await>
@@ -51,40 +49,11 @@ export function CartSuggestions({cartLines, className}: {cartLines: CartLineNode
 
 function CartSuggestionsContent({
     suggestions,
-    cartLines,
     className
 }: {
     suggestions: any[];
-    cartLines: CartLineNode[];
     className?: string;
 }) {
-    const isMobile = useIsMobile();
-    const hasCartItems = cartLines.length > 0;
-
-    if (isMobile) {
-        return (
-            <div className={cn(className)}>
-                <Accordion type="single" defaultValue={hasCartItems ? undefined : "suggestions"} collapsible>
-                    <AccordionItem value="suggestions" className="border-0">
-                        <AccordionTrigger className="px-0 py-3 text-left hover:no-underline">
-                            <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1.5">
-                                    <StarIcon />
-                                    <h3 className="text-foreground text-sm font-medium tracking-wide">
-                                        Frequently bought with
-                                    </h3>
-                                </div>
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="pb-3">
-                            <CartSuggestionsCarousel suggestions={suggestions} />
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-            </div>
-        );
-    }
-
     return (
         <div className={cn("space-y-3 pt-4", className)}>
             <div className="flex items-center gap-2">
