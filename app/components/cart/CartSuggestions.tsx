@@ -51,6 +51,21 @@ export function CartSuggestions({cartLines, className}: {cartLines: CartLineNode
     );
 }
 
+const EMPTY_HEADINGS = [
+    "You might like these",
+    "Discover something you'll love",
+    "Hand-picked just for you",
+    "Something caught your eye?",
+];
+
+const POPULATED_HEADINGS = [
+    "Pairs well with your picks",
+    "Complete the look",
+    "Others also loved",
+    "Goes great with your choice",
+    "You may also want",
+];
+
 function CartSuggestionsContent({
     suggestions,
     cartLines,
@@ -66,6 +81,12 @@ function CartSuggestionsContent({
         return suggestions.filter(s => !inCartProductIds.has(s.id));
     }, [suggestions, cartLines]);
 
+    const isPopulated = cartLines.length > 0;
+    const heading = useMemo(() => {
+        const pool = isPopulated ? POPULATED_HEADINGS : EMPTY_HEADINGS;
+        return pool[Math.floor(Math.random() * pool.length)];
+    }, [isPopulated]);
+
     if (filteredSuggestions.length === 0) return null;
 
     return (
@@ -75,7 +96,7 @@ function CartSuggestionsContent({
                     <span className="bg-primary/10 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full">
                         <StarIcon />
                     </span>
-                    <h3 className="text-foreground text-sm font-semibold tracking-[0.04em]">Frequently bought with</h3>
+                    <h3 className="text-foreground text-sm font-semibold tracking-[0.04em]">{heading}</h3>
                 </div>
                 <div className="from-border/60 h-px flex-1 bg-gradient-to-r to-transparent" />
             </div>

@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-19",
+        headline: "Cart suggestions heading reflects what's in your cart",
+        summary:
+            "The heading above the suggested products in your cart now changes based on whether your cart is empty or has items. It draws from a curated set of copy lines — things like \"Pairs well with your picks\" or \"You might like these\" — so it always feels relevant to where you are in your shopping journey.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-19",
         headline: "Buttons show a clean spinner while actions are processing",
         summary:
             "Add to cart, buy now, newsletter sign-up, cart note, wishlist, address, and return form buttons now show a single spinner while they're working — no more bouncing icons or loading text. The button keeps its original size throughout, so the layout stays stable as you interact.",
