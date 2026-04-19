@@ -7,13 +7,13 @@ import {
     CalendarClock,
     Check,
     CreditCard,
-    Loader2,
     Minus,
     Plus,
     ShoppingCart,
     X
 } from "lucide-react";
 import {Button} from "~/components/ui/button";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {formatShopifyMoney, getZeroPrice} from "~/lib/currency-formatter";
 import {selectBestVariant, parseProductTitle} from "~/lib/product";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
@@ -243,25 +243,13 @@ export function ProductVariantDialog({
                         : ""
                 )}
             >
-                {isLoading ? (
-                    <>
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                        <span className="hidden sm:inline">ADDING...</span>
-                        <span className="sm:hidden">ADDING</span>
-                    </>
+                {isLoading || addToCartState === "adding" ? (
+                    <ButtonSpinner />
                 ) : fetchError ? (
                     <>
                         <AlertTriangle className="h-3 w-3" />
                         <span className="hidden sm:inline">TRY AGAIN</span>
                         <span className="sm:hidden">RETRY</span>
-                    </>
-                ) : addToCartState === "adding" ? (
-                    <>
-                        <div className="animate-bounce">
-                            <ShoppingCart className="h-3 w-3" />
-                        </div>
-                        <span className="hidden sm:inline">ADDING...</span>
-                        <span className="sm:hidden">ADDING</span>
                     </>
                 ) : addToCartState === "success" ? (
                     <>
@@ -787,16 +775,7 @@ function ProductVariantDialogContent({
                                     disabled={!selectedVariant || isAddingToCart}
                                 >
                                     {addToCartState === "adding" ? (
-                                        <>
-                                            <div className="animate-bounce">
-                                                {isPreorder ? (
-                                                    <CalendarClock className="mr-2 h-4 w-4" />
-                                                ) : (
-                                                    <ShoppingCart className="mr-2 h-4 w-4" />
-                                                )}
-                                            </div>
-                                            ADDING TO CART...
-                                        </>
+                                        <ButtonSpinner />
                                     ) : addToCartState === "success" ? (
                                         <>
                                             <div className="animate-pulse">
@@ -842,20 +821,8 @@ function ProductVariantDialogContent({
                                         )}
                                         disabled={!selectedVariant || isBuyingNow || isAddingToCart}
                                     >
-                                        {buyNowState === "adding" ? (
-                                            <>
-                                                <div className="animate-bounce">
-                                                    <ShoppingCart className="mr-2 h-4 w-4" />
-                                                </div>
-                                                ADDING TO CART...
-                                            </>
-                                        ) : buyNowState === "redirecting" ? (
-                                            <>
-                                                <div className="animate-spin">
-                                                    <CreditCard className="mr-2 h-4 w-4" />
-                                                </div>
-                                                REDIRECTING TO CHECKOUT...
-                                            </>
+                                        {buyNowState === "adding" || buyNowState === "redirecting" ? (
+                                            <ButtonSpinner />
                                         ) : (
                                             <>
                                                 <CreditCard className="mr-2 h-4 w-4" />

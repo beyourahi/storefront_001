@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-19",
+        headline: "Buttons show a clean spinner while actions are processing",
+        summary:
+            "Add to cart, buy now, newsletter sign-up, cart note, wishlist, address, and return form buttons now show a single spinner while they're working — no more bouncing icons or loading text. The button keeps its original size throughout, so the layout stays stable as you interact.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-19",
         headline: "Suggested products always visible in the cart",
         summary:
             "The Frequently bought with section in the cart is now always visible on every device, including phones. Previously, tapping to expand the section was required on mobile — it now opens immediately alongside your cart items, making it easier to discover and add complementary products.",

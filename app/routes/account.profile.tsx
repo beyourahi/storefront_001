@@ -41,6 +41,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import {AddressCard} from "~/components/account/AddressCard";
 import {MailIcon, PhoneIcon, PlusIcon, CheckIcon, Loader2Icon} from "lucide-react";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {useEffect, useRef, useState} from "react";
 import {toast} from "sonner";
 
@@ -327,16 +328,14 @@ const AddressFormDialog = ({
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2Icon className="mr-2 size-4 animate-spin" />
-                                    Saving...
-                                </>
-                            ) : isEditing ? (
-                                "Update Address"
-                            ) : (
-                                "Add Address"
+                        <Button type="submit" disabled={isSubmitting} className="relative">
+                            <span className={isSubmitting ? "opacity-0" : undefined}>
+                                {isEditing ? "Update Address" : "Add Address"}
+                            </span>
+                            {isSubmitting && (
+                                <span className="absolute inset-0 flex items-center justify-center">
+                                    <ButtonSpinner />
+                                </span>
                             )}
                         </Button>
                     </DialogFooter>
@@ -372,14 +371,12 @@ const DeleteAddressDialog = ({
                     <Form method="post">
                         <input type="hidden" name="intent" value="deleteAddress" />
                         <input type="hidden" name="addressId" value={addressId ?? ""} />
-                        <Button type="submit" variant="destructive" disabled={isSubmitting}>
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2Icon className="mr-2 size-4 animate-spin" />
-                                    Deleting...
-                                </>
-                            ) : (
-                                "Delete"
+                        <Button type="submit" variant="destructive" disabled={isSubmitting} className="relative">
+                            <span className={isSubmitting ? "opacity-0" : undefined}>Delete</span>
+                            {isSubmitting && (
+                                <span className="absolute inset-0 flex items-center justify-center">
+                                    <ButtonSpinner />
+                                </span>
                             )}
                         </Button>
                     </Form>

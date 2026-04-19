@@ -20,6 +20,7 @@ import {Checkbox} from "~/components/ui/checkbox";
 
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {Clock, CheckCircle, XCircle, Info} from "lucide-react";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {parseProductTitle} from "~/lib/product";
 
 export const meta: Route.MetaFunction = ({data}) => {
@@ -233,8 +234,13 @@ const OrderReturnRoute = () => {
                 </div>
 
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? "Submitting..." : "Submit Return Request"}
+                    <Button type="submit" disabled={isSubmitting} className="relative">
+                        <span className={isSubmitting ? "opacity-0" : undefined}>Submit Return Request</span>
+                        {isSubmitting && (
+                            <span className="absolute inset-0 flex items-center justify-center">
+                                <ButtonSpinner />
+                            </span>
+                        )}
                     </Button>
                     <Button variant="outline" asChild>
                         <Link to="/account/orders">Cancel</Link>

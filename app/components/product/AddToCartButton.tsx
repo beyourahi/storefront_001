@@ -5,6 +5,7 @@ import {ShoppingCart, Check, CalendarClock} from "lucide-react";
 import {toast} from "sonner";
 import {cn} from "~/lib/utils";
 import {Button} from "~/components/ui/button";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {useCartDrawer} from "~/hooks/useCartDrawer";
 
 type AddToCartButtonProps = {
@@ -59,12 +60,7 @@ const AddToCartButtonInner = ({
     return (
         <Button type="submit" className={buttonClass} size="lg" disabled={disabled || isAdding}>
             {isAdding ? (
-                <>
-                    <div className="animate-bounce">
-                        <Icon className="mr-2 h-4 w-4" />
-                    </div>
-                    ADDING TO CART...
-                </>
+                <ButtonSpinner />
             ) : justAdded ? (
                 <>
                     <div className="animate-pulse">

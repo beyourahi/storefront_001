@@ -60,7 +60,7 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 |               | @unpic/react     | ^1         | Optimized image rendering           |
 |               | colorjs.io       | ^0.6       | Color science (OKLCH pipeline)      |
 |               | schema-dts       | ^1.1       | JSON-LD structured data types       |
-| **Features**  | Embla Carousel   | 8          | Product galleries, auto-scroll      |
+| **Features**  | Embla Carousel   | 8          | Product galleries, auto-scroll, trackpad/wheel scroll (wheel-gestures plugin) |
 |               | Lenis            | 1.3        | Smooth scrolling                    |
 |               | Vaul             | 1.1        | Drawer primitives                   |
 |               | react-intersection-observer | ^10 | Scroll/viewport-triggered rendering |

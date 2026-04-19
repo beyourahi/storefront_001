@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {useFetcher, NavLink} from "react-router";
-import {Send, CheckCircle, AlertCircle, Loader2, LogIn} from "lucide-react";
+import {Send, CheckCircle, AlertCircle, LogIn} from "lucide-react";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {cn} from "~/lib/utils";
 
 type NewsletterResponse = {
@@ -78,17 +79,20 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                             disabled={isSubmitting || !email}
                             className={cn(
                                 "cta-enhanced inline-flex h-12 items-center justify-center gap-2 rounded-md",
-                                "bg-primary px-6 text-primary-foreground",
+                                "bg-primary px-6 text-primary-foreground relative",
                                 "hover:bg-primary/90 active:scale-[0.97]",
                                 "disabled:opacity-60 disabled:pointer-events-none"
                             )}
                         >
-                            {isSubmitting ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
+                            <span className={isSubmitting ? "opacity-0" : undefined}>
                                 <Send className="h-4 w-4" />
+                            </span>
+                            <span className={isSubmitting ? "opacity-0" : undefined}>Subscribe</span>
+                            {isSubmitting && (
+                                <span className="absolute inset-0 flex items-center justify-center">
+                                    <ButtonSpinner />
+                                </span>
                             )}
-                            {isSubmitting ? "Subscribing..." : "Subscribe"}
                         </button>
                     </div>
                     <p className="text-sm px-1 text-muted-foreground">
@@ -160,11 +164,11 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                     )}
                 >
                     {isSubmitting ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        <ButtonSpinner />
                     ) : (
                         <Send className="h-3.5 w-3.5" />
                     )}
-                    <span className="hidden sm:inline">{isSubmitting ? "..." : "Subscribe"}</span>
+                    <span className="hidden sm:inline">Subscribe</span>
                 </button>
             </fetcher.Form>
 

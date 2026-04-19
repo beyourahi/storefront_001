@@ -7,6 +7,7 @@ import {WishlistButton} from "~/components/WishlistButton";
 import {CartForm} from "@shopify/hydrogen";
 import type {CurrencyCode} from "@shopify/hydrogen/storefront-api-types";
 import {LayoutGrid, List, Trash2, Share2, ShoppingCart} from "lucide-react";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {ShareDialog} from "~/components/ShareDialog";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
@@ -254,10 +255,17 @@ const AccountWishlist = () => {
                                     <button
                                         type="submit"
                                         disabled={cartLines.length === 0 || fetcher.state !== "idle"}
-                                        className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                                        className="bg-primary text-primary-foreground hover:bg-primary/90 relative flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                                     >
-                                        <ShoppingCart className="h-5 w-5" />
-                                        {fetcher.state !== "idle" ? "Adding..." : "Add All to Cart"}
+                                        <span className={fetcher.state !== "idle" ? "flex items-center gap-2 opacity-0" : "flex items-center gap-2"}>
+                                            <ShoppingCart className="h-5 w-5" />
+                                            Add All to Cart
+                                        </span>
+                                        {fetcher.state !== "idle" && (
+                                            <span className="absolute inset-0 flex items-center justify-center">
+                                                <ButtonSpinner />
+                                            </span>
+                                        )}
                                     </button>
                                 )}
                             </CartForm>

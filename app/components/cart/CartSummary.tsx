@@ -10,6 +10,7 @@ import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "~/components/ui
 import {AlertDialog, AlertDialogContent, AlertDialogTitle} from "~/components/ui/alert-dialog";
 import {Textarea} from "~/components/ui/textarea";
 import {Spinner} from "~/components/ui/spinner";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {useIsMobile} from "~/hooks/useIsMobile";
 import {cn} from "~/lib/utils";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
@@ -224,12 +225,7 @@ function CartOrderNote({noteValue}: {noteValue?: string | null}) {
                                     )}
                                 >
                                     {noteButtonState === "adding" ? (
-                                        <>
-                                            <div className="animate-bounce">
-                                                <Cloud className="mr-2 h-4 w-4" />
-                                            </div>
-                                            Adding...
-                                        </>
+                                        <ButtonSpinner />
                                     ) : noteButtonState === "added" ? (
                                         <>
                                             <div className="animate-pulse">
@@ -238,12 +234,7 @@ function CartOrderNote({noteValue}: {noteValue?: string | null}) {
                                             Added!
                                         </>
                                     ) : noteButtonState === "updating" ? (
-                                        <>
-                                            <div className="animate-bounce">
-                                                <Cloud className="mr-2 h-4 w-4" />
-                                            </div>
-                                            Updating...
-                                        </>
+                                        <ButtonSpinner />
                                     ) : noteButtonState === "updated" ? (
                                         <>
                                             <div className="animate-pulse">

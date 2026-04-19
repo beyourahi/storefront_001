@@ -4,7 +4,7 @@ import {CartForm, type OptimisticCartLineInput} from "@shopify/hydrogen";
 import {Zap} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {Button} from "~/components/ui/button";
-import {Spinner} from "~/components/ui/spinner";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 
 type BuyNowButtonProps = {
     lines: Array<{merchandiseId: string; quantity: number; selectedVariant?: any; sellingPlanId?: string}>;
@@ -47,10 +47,7 @@ export const BuyNowButton = ({lines, disabled = false, className}: BuyNowButtonP
                             onClick={() => setForceIdle(false)}
                         >
                             {isLoading ? (
-                                <>
-                                    <Spinner className="mr-2 h-4 w-4" />
-                                    Processing...
-                                </>
+                                <ButtonSpinner />
                             ) : (
                                 <>
                                     <Zap className="mr-1 h-4 w-4 font-semibold" />
