@@ -39,7 +39,11 @@ export function CartSuggestions({cartLines, className}: {cartLines: CartLineNode
                 {suggestions => {
                     if (!suggestions || !Array.isArray(suggestions) || suggestions.length === 0) return null;
                     return (
-                        <CartSuggestionsContent suggestions={suggestions} className={className} />
+                        <CartSuggestionsContent
+                            suggestions={suggestions}
+                            cartLines={cartLines}
+                            className={className}
+                        />
                     );
                 }}
             </Await>
@@ -49,11 +53,21 @@ export function CartSuggestions({cartLines, className}: {cartLines: CartLineNode
 
 function CartSuggestionsContent({
     suggestions,
+    cartLines,
     className
 }: {
     suggestions: any[];
+    cartLines: CartLineNode[];
     className?: string;
 }) {
+    const filteredSuggestions = useMemo(() => {
+        if (!cartLines.length) return suggestions;
+        const inCartProductIds = new Set(cartLines.map(l => l.merchandise.product.id));
+        return suggestions.filter(s => !inCartProductIds.has(s.id));
+    }, [suggestions, cartLines]);
+
+    if (filteredSuggestions.length === 0) return null;
+
     return (
         <div className={cn("space-y-3 pt-4", className)}>
             <div className="flex items-center gap-2">
@@ -63,7 +77,7 @@ function CartSuggestionsContent({
                 </div>
                 <div className="from-border/50 h-px flex-1 bg-gradient-to-r to-transparent" />
             </div>
-            <CartSuggestionsCarousel suggestions={suggestions} />
+            <CartSuggestionsCarousel suggestions={filteredSuggestions} />
         </div>
     );
 }
