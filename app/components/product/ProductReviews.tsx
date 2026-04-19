@@ -27,6 +27,7 @@
 
 import {useState, useEffect} from "react";
 import {cn} from "~/lib/utils";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {
     Carousel,
     CarouselContent,
@@ -351,6 +352,7 @@ function ReviewLayoutCarousel({reviews}: {reviews: ReviewNode[]}) {
         <Carousel
             setApi={setApi}
             opts={{loop: false, align: "start"}}
+            plugins={[WheelGesturesPlugin({forceWheelAxis: "x"})]}
             className="w-full"
         >
             <CarouselContent className="-ml-4">

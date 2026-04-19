@@ -4,6 +4,7 @@ import {getPaginationVariables, getSeoMeta} from "@shopify/hydrogen";
 import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 import {ArticleCard, type ArticleCardData} from "~/components/blog/ArticleCard";
 import {ArticleHero} from "~/components/blog/ArticleHero";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {Carousel, CarouselContent, CarouselItem} from "~/components/ui/carousel";
 import {Button} from "~/components/ui/button";
 import {Tabs, TabsList, TabsTrigger, TabsContent} from "~/components/ui/tabs";
@@ -225,6 +226,7 @@ const ArticleCarousel = ({articles, categoryHandle}: {articles: ArticleCardData[
                     align: "start",
                     loop: true
                 }}
+                plugins={[WheelGesturesPlugin({forceWheelAxis: "x"})]}
                 className="w-full"
             >
                 <CarouselContent className="-ml-3 sm:-ml-4 md:-ml-6">

@@ -12,6 +12,7 @@ export const meta: Route.MetaFunction = () => [
 ];
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
+import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext} from "~/components/ui/carousel";
 
 export const loader = async ({request, context}: Route.LoaderArgs) => {
@@ -95,7 +96,7 @@ export function ErrorBoundary() {
 
                 {collections.length > 0 && (
                     <div className="relative mt-12 w-full">
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}} className="w-full">
+                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin({forceWheelAxis: "x"})]} className="w-full">
                             <CarouselContent className="-ml-4">
                                 {collections.map(collection => (
                                     <CarouselItem
