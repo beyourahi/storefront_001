@@ -39,7 +39,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-19",
         headline: "Suggested products always visible in the cart",
         summary:
-            "The "Frequently bought with" section in the cart is now always visible on every device, including phones. Previously, tapping to expand the section was required on mobile — it now opens immediately alongside your cart items, making it easier to discover and add complementary products.",
+            "The Frequently bought with section in the cart is now always visible on every device, including phones. Previously, tapping to expand the section was required on mobile — it now opens immediately alongside your cart items, making it easier to discover and add complementary products.",
         category: "Improvement"
     },
     {

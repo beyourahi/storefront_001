@@ -42,6 +42,9 @@ export function CartMain({
                         <CartLineItem key={line.id} line={line} />
                     ))}
                 </div>
+            </div>
+
+            <div className="px-4 md:px-6">
                 <CartSuggestions cartLines={cart?.lines?.nodes ?? []} />
             </div>
 
