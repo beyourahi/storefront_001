@@ -93,4 +93,5 @@ export type CompactProductCardProps = {
     className?: string;
     onCartAdd?: () => void;
     onProductClick?: () => void;
+    isMutating?: boolean;
 };

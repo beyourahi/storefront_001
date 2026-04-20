@@ -36,6 +36,62 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-20",
+        headline: "Cart items without photos now show a placeholder image",
+        summary:
+            "Products added to your cart that have no photos now display the same tidy placeholder icon used across the rest of the store, keeping the cart layout consistent and preventing empty gaps.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-20",
+        headline: "Page no longer scrolls behind open product or share dialogs",
+        summary:
+            "Opening a product options dialog or a share sheet now freezes the background page in place, just like the cart drawer already did. The page resumes scrolling the moment the dialog closes, with your scroll position exactly where you left it.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-20",
+        headline: "No-image products look consistent everywhere in the cart",
+        summary:
+            "Products without photos now show the same tidy placeholder across all surfaces — including the small suggestion cards at the bottom of your cart. Previously those cards showed a plain box emoji; they now match the refined placeholder used everywhere else in the store.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-20",
+        headline: "Cart badge and item removal update before the server responds",
+        summary:
+            "The cart count in the navigation updates the instant you add or remove a product — no waiting. Removing an item also hides it right away, so the cart always feels fast and never briefly shows something you've already taken out.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-20",
+        headline: "Cart controls freeze instantly while your cart updates",
+        summary:
+            "When you change a quantity, remove an item, or add something from suggestions, all buttons in the cart are briefly locked until the change goes through. This stops you from accidentally triggering a second action while the first one is still being applied.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-19",
+        headline: "Back navigation no longer crashes the storefront",
+        summary:
+            "Pressing the browser back button after visiting an external page — such as returning from the Shopify checkout — could cause the store to go blank with an error. The page now loads cleanly every time you navigate back.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-19",
+        headline: "Trackpad horizontal scroll works on all carousels",
+        summary:
+            "Swiping left and right with a trackpad or two-finger gesture now scrolls through every carousel in the store — including product reviews, the blog listing, and the catalog browsing carousel. Previously only the cart suggestion carousel supported this gesture.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-19",
+        headline: "Suggested products hide once you add them to cart",
+        summary:
+            "The \"Frequently bought with\" panel no longer shows products you have already added to your cart. Tapping Quick Add removes the item from the suggestion list instantly — no page reload needed.",
+        category: "Improvement"
+    },
+    {
         date: "2026-04-19",
         headline: "Cart suggestions heading reflects what's in your cart",
         summary:
@@ -60,7 +116,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-19",
         headline: "Cart quantity buttons no longer get stuck loading",
         summary:
-            "Rapidly tapping the quantity + or - buttons, removing an item, or clicking checkout could occasionally leave the cart in a permanent loading state — stuck spinners, unresponsive buttons, or a blocked checkout. This is now fixed: each item in the cart manages its own state independently, so changes always resolve cleanly no matter how quickly you tap.",
+            "Rapidly tapping the + or – buttons, removing an item, or clicking checkout could occasionally leave the cart completely frozen — stuck buttons, spinners that never clear, or a checkout you couldn't proceed through. This is now fixed so the cart always responds cleanly, no matter how quickly you tap.",
         category: "Fix"
     },
     {
@@ -81,14 +137,21 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-19",
         headline: "Cart shows the correct product instantly when you add one",
         summary:
-            "When adding a product to your cart, the cart panel now immediately shows the right product image, name, and price — no blank placeholder while the page talks to the server. This covers quick-add on collection pages, the variant selector on product pages, and the cart upsell panel.",
+            "When you add a product to your cart, the cart panel now immediately shows the correct image, name, and price — no blank placeholder or delay. This applies whether you're adding from a collection page, the product page, or the suggested products panel.",
         category: "Fix"
     },
     {
         date: "2026-04-19",
         headline: "Order note editor opens reliably on all browsers",
         summary:
-            "The \"Add a note\" field inside the cart could silently fail to render on certain browsers, leaving the dialog visually broken. The underlying component has been corrected so the note editor appears consistently every time.",
+            "The \"Add a note\" field inside the cart could silently fail to appear on certain browsers, leaving the area empty. It now shows up consistently every time, regardless of which browser you are using.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-18",
+        headline: "\"Buy Now\" button resets after returning from checkout",
+        summary:
+            "Tapping \"Buy Now\" and then pressing the browser back button from the checkout page left the button stuck showing \"Processing…\" with no way to click it again. It now resets to its normal state whenever you navigate back, ready for another tap.",
         category: "Fix"
     },
     {
@@ -102,7 +165,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-18",
         headline: "Product info and interactive cards are fully keyboard accessible",
         summary:
-            "On touch screens, product gallery overlays now stay visible instead of hiding behind a hover you can never trigger. Buttons and links across product cards, collection cards, blog articles, the mobile menu, and the wishlist button now show a clear focus ring when navigated with a keyboard or assistive technology. The cart clear tooltip is also revealed when the button receives keyboard focus.",
+            "On touchscreens, product image details now stay visible instead of requiring a hover gesture that isn't possible on touch devices. Buttons and links across the store — cards, articles, the menu, and the wishlist — now show a clear highlight outline when navigated with a keyboard, making it easy to see where you are on the page.",
         category: "Improvement"
     },
     {
@@ -359,7 +422,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         time: "6pm",
         headline: "Product links now show the correct preview when shared on social media",
         summary:
-            "Fixed missing metadata that caused product pages to appear without a title, image, or description when shared on social platforms like Twitter, Facebook, and iMessage. Links now display a proper rich preview.",
+            "Product pages now show a proper title, image, and description when shared on social platforms like Twitter, Facebook, and iMessage. Previously, shared links appeared as plain text with no preview.",
         category: "Fix"
     },
     {
@@ -367,7 +430,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         time: "6pm",
         headline: "Typography renders more consistently across all browsers",
         summary:
-            "Fixed font fallback settings that caused text to look different in Firefox and some versions of Safari. Headings, body text, and the search bar now use consistent, intentional font stacks across every browser.",
+            "Text now looks the same no matter which browser you use. Headings, body copy, and the search bar now render with consistent, intentional styling across Chrome, Firefox, and Safari.",
         category: "Fix"
     },
     {
@@ -375,7 +438,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         time: "6pm",
         headline: "Corrected heading structure on product pages for better search visibility",
         summary:
-            "Each product page now has a single, well-structured main heading instead of multiple conflicting ones. This helps search engines understand the page content correctly and can improve how products appear in search results.",
+            "Product pages are now better organized for search engines, which can improve how your products appear when shoppers search for them. Previously, some pages had conflicting title elements that made them harder to read correctly.",
         category: "Fix"
     },
     {

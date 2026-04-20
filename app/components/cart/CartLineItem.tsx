@@ -1,16 +1,18 @@
 import type {CartLineUpdateInput} from "@shopify/hydrogen/storefront-api-types";
-import {CartForm, Image, type OptimisticCartLine} from "@shopify/hydrogen";
+import {CartForm, Image, type OptimisticCartLine, OptimisticInput, useOptimisticData} from "@shopify/hydrogen";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Link, useFetcher} from "react-router";
 import {Trash2, Minus, Plus, AlertTriangle, XCircle} from "lucide-react";
 import {useEffect, useState} from "react";
+import {useCartMutationPending} from "~/lib/cart-utils";
 import {Button} from "~/components/ui/button";
 import {Spinner} from "~/components/ui/spinner";
 import {Alert, AlertDescription} from "~/components/ui/alert";
 import {useCartDrawer} from "~/hooks/useCartDrawer";
 import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
+import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
@@ -23,6 +25,9 @@ export function CartLineItem({line}: {line: CartLine}) {
     const {product, image, title: variantTitle, quantityAvailable} = merchandise;
     const {close} = useCartDrawer();
     const fetcher = useFetcher({key: getUpdateKey([id])});
+    const isMutating = useCartMutationPending();
+    const optimisticData = useOptimisticData<{action?: string}>(id);
+    const isRemoving = optimisticData?.action === "remove";
     const [showError, setShowError] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -92,6 +97,7 @@ export function CartLineItem({line}: {line: CartLine}) {
             className={cn("relative flex flex-col gap-4 py-4", isChildLine && "ml-6 pl-4")}
             role="group"
             aria-labelledby={`cart-item-${id}`}
+            style={{display: isRemoving ? "none" : undefined}}
         >
             {isChildLine && parentProductTitle && (
                 <p className="text-muted-foreground text-xs">Add-on for: {parentProductTitle}</p>
@@ -115,7 +121,7 @@ export function CartLineItem({line}: {line: CartLine}) {
                             variantTitle={variantTitle}
                             onNavigate={close}
                         />
-                        <CartLineRemoveButton lineId={id} productTitle={product.title} disabled={!!line.isOptimistic} />
+                        <CartLineRemoveButton lineId={id} productTitle={product.title} disabled={!!line.isOptimistic || isMutating} />
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -127,7 +133,7 @@ export function CartLineItem({line}: {line: CartLine}) {
                                 quantity={quantity}
                                 maxQuantity={maxQuantity}
                                 productTitle={product.title}
-                                disabled={!!line.isOptimistic}
+                                disabled={!!line.isOptimistic || isMutating}
                             />
                         )}
                         <CartLinePricing cost={effectiveCost} quantity={quantity} />
@@ -169,7 +175,7 @@ function CartLineImage({
     return (
         <div className="shrink-0">
             <Link to={`/products/${handle}`} prefetch="viewport" className="block" onClick={onNavigate}>
-                {image && (
+                {image ? (
                     <Image
                         alt={altText}
                         aspectRatio="1/1"
@@ -181,6 +187,11 @@ function CartLineImage({
                             "motion-image rounded-sm object-cover hover:scale-[1.03]",
                             small ? "size-12" : "size-16"
                         )}
+                    />
+                ) : (
+                    <ProductImagePlaceholder
+                        compact
+                        className={cn("rounded-sm", small ? "size-12" : "size-16")}
                     />
                 )}
             </Link>
@@ -224,11 +235,12 @@ function CartLineDetails({
 
 function CartLinePricing({cost, quantity}: {cost: CartLine["cost"] | undefined; quantity: number}) {
     const totalAmount = cost?.totalAmount;
+    const isMutating = useCartMutationPending();
     if (!totalAmount) return null;
     const perItemAmount = (parseFloat(totalAmount.amount) / quantity).toFixed(2);
 
     return (
-        <div className="text-right">
+        <div className={cn("text-right transition-opacity duration-150", isMutating && "opacity-50")}>
             <div
                 className="text-foreground font-mono text-base font-bold tracking-tight tabular-nums antialiased sm:text-base"
                 aria-label="Line total"
@@ -329,6 +341,7 @@ function CartLineRemoveButton({
             action={CartForm.ACTIONS.LinesRemove}
             inputs={{lineIds: [lineId]}}
         >
+            <OptimisticInput id={lineId} data={{action: "remove"}} />
             <Button
                 type="submit"
                 variant="ghost"
@@ -357,6 +370,7 @@ function CartLineUpdateButton({children, lines}: {children: React.ReactNode; lin
             action={CartForm.ACTIONS.LinesUpdate}
             inputs={{lines}}
         >
+            <OptimisticInput id={lines[0].id} data={{action: "update", quantity: lines[0].quantity}} />
             {children}
         </CartForm>
     );

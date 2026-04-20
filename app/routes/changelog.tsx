@@ -67,11 +67,6 @@ function getAbsoluteDate(dateStr: string): string {
     });
 }
 
-function truncateSummary(text: string, maxLength = 240): string {
-    if (text.length <= maxLength) return text;
-    const cut = text.lastIndexOf(" ", maxLength);
-    return text.slice(0, cut > 0 ? cut : maxLength) + "…";
-}
 
 function getCategoryBadgeClasses(category: ChangelogEntry["category"]): string {
     switch (category) {
@@ -153,8 +148,7 @@ function ChangelogCard({entry, index}: {entry: ChangelogEntry; index: number}) {
                     {entry.headline}
                 </h3>
 
-                {/* Summary — pre-truncated, no toggle */}
-                <p className="text-sm leading-relaxed text-muted-foreground">{truncateSummary(entry.summary)}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{entry.summary}</p>
 
                 {/* Author attribution */}
                 <p className="mt-3 text-xs text-muted-foreground">

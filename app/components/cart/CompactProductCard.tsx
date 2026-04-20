@@ -4,13 +4,14 @@ import {Plus} from "lucide-react";
 import {Badge} from "~/components/ui/badge";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
+import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 import {cn} from "~/lib/utils";
 import {getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import type {CompactProductCardProps} from "~/lib/types/product-card";
 
-export function CompactProductCard({product, className = "", onCartAdd, onProductClick}: CompactProductCardProps) {
+export function CompactProductCard({product, className = "", onCartAdd, onProductClick, isMutating = false}: CompactProductCardProps) {
     const productData = useMemo(() => getProductDataForCard(product), [product]);
     const {price, compareAtPrice, discountPercentage, image: productImage} = productData;
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
@@ -28,10 +29,10 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
     };
 
     return (
-        <div className={cn("sleek group w-[180px] shrink-0 overflow-hidden rounded-lg sm:w-[180px]", className)}>
+        <div className={cn("sleek group w-[180px] shrink-0 overflow-hidden rounded-lg sm:w-[180px]", isMutating && "opacity-50 cursor-not-allowed pointer-events-none", className)}>
             <div className="flex gap-3 p-3">
                 <div className="relative size-16 shrink-0 overflow-hidden rounded-sm">
-                    <button className="block w-full text-left" onClick={handleProductClick}>
+                    <button className="block h-full w-full text-left" onClick={handleProductClick}>
                         {productImage ? (
                             <Image
                                 data={{url: productImage.url, altText: productImage.altText || product.title}}
@@ -44,12 +45,7 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                                 loading="lazy"
                             />
                         ) : (
-                            <div className="bg-muted flex h-full w-full items-center justify-center">
-                                <div className="text-muted-foreground text-center">
-                                    <div className="mb-1 text-lg">📦</div>
-                                    <p className="text-xs">No Image</p>
-                                </div>
-                            </div>
+                            <ProductImagePlaceholder compact className="h-full w-full" />
                         )}
                     </button>
 
@@ -119,6 +115,7 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                         productHandle={product.handle}
                         autoAddSingleVariant={true}
                         onSuccess={onCartAdd}
+                        disabled={isMutating}
                     >
                         <div className="flex w-full items-center justify-center gap-1.5">
                             <Plus className="h-3 w-3" />

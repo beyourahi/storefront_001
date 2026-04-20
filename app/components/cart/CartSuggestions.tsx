@@ -1,6 +1,7 @@
 import {Suspense, useMemo} from "react";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Await, useRouteLoaderData} from "react-router";
+import {useCartMutationPending} from "~/lib/cart-utils";
 import useEmblaCarousel from "embla-carousel-react";
 import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {Skeleton} from "~/components/ui/skeleton";
@@ -107,6 +108,7 @@ function CartSuggestionsContent({
 
 function CartSuggestionsCarousel({suggestions}: {suggestions: any[]}) {
     const {close} = useCartDrawer();
+    const isMutating = useCartMutationPending();
     const [emblaRef] = useEmblaCarousel(
         {
             align: "start",
@@ -126,7 +128,7 @@ function CartSuggestionsCarousel({suggestions}: {suggestions: any[]}) {
             <div className="-ml-4 flex">
                 {normalizedSuggestions.map(product => (
                     <div key={product.id} className="min-w-0 flex-[0_0_180px] pl-4">
-                        <CompactProductCard product={product} onProductClick={close} />
+                        <CompactProductCard product={product} onProductClick={close} isMutating={isMutating} />
                     </div>
                 ))}
             </div>

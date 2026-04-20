@@ -2,7 +2,8 @@ import {CartForm} from "@shopify/hydrogen";
 import type {OptimisticCart} from "@shopify/hydrogen";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {useEffect, useRef, useState, useCallback} from "react";
-import {useFetcher, useFetchers} from "react-router";
+import {useFetcher} from "react-router";
+import {CART_FETCHER_KEY, useCartMutationPending} from "~/lib/cart-utils";
 import {FileText, Check, Cloud, CreditCard, Trash2, AlertTriangle} from "lucide-react";
 import {toast} from "sonner";
 import {Button} from "~/components/ui/button";
@@ -17,12 +18,6 @@ import {formatShopifyMoney} from "~/lib/currency-formatter";
 
 type Cart = OptimisticCart<CartApiQueryFragment>;
 
-const CART_FETCHER_KEY = "cart-mutation";
-
-function useCartMutationPending(): boolean {
-    const fetchers = useFetchers();
-    return fetchers.some(fetcher => fetcher.key === CART_FETCHER_KEY && fetcher.state !== "idle");
-}
 
 export function CartSummary({cart}: {cart: Cart}) {
     const totalAmount = cart.cost?.subtotalAmount;
@@ -286,9 +281,15 @@ function CartCheckoutActions({
                 isMutating && "pointer-events-none opacity-50 cursor-not-allowed"
             )}
         >
-            {isMutating ? <Spinner className="h-4 w-4" /> : <CreditCard className="h-4 w-4" />}
-            Checkout{totalAmount ? " - " : ""}
-            {totalAmount && formatShopifyMoney(totalAmount)}
+            {isMutating ? (
+                <Spinner className="h-4 w-4" />
+            ) : (
+                <>
+                    <CreditCard className="h-4 w-4" />
+                    Checkout{totalAmount ? " - " : ""}
+                    {totalAmount && formatShopifyMoney(totalAmount)}
+                </>
+            )}
         </a>
     );
 }

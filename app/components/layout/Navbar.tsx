@@ -1,5 +1,8 @@
 import {Suspense, useCallback, useState} from "react";
-import {Link, useLocation, useRouteLoaderData, Await} from "react-router";
+import {useCartMutationPending} from "~/lib/cart-utils";
+import {Link, useLocation, useRouteLoaderData, Await, useAsyncValue} from "react-router";
+import {useOptimisticCart} from "@shopify/hydrogen";
+import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {AlignLeft, Search as SearchIcon, ShoppingCart, User} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
@@ -24,6 +27,32 @@ type NavbarProps = {
     shopName: string;
     collections?: CollectionCardData[];
 };
+
+function CartBadge() {
+    const originalCart = useAsyncValue() as CartApiQueryFragment | null;
+    const cart = useOptimisticCart(originalCart);
+    const isMutating = useCartMutationPending();
+    const totalQuantity = cart?.totalQuantity ?? 0;
+    if (totalQuantity <= 0) return null;
+    return (
+        <>
+            <span
+                className={cn(
+                    "bg-primary absolute -top-0.5 right-0.5 h-4 w-4 rounded-full lg:-top-1 lg:-right-1 lg:h-5 lg:w-5",
+                    isMutating ? "opacity-60" : "animate-ping"
+                )}
+            />
+            <span
+                className={cn(
+                    "bg-primary text-primary-foreground absolute -top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full font-mono text-xs lg:-top-1 lg:-right-1 lg:h-5 lg:w-5",
+                    isMutating && "opacity-60"
+                )}
+            >
+                {totalQuantity}
+            </span>
+        </>
+    );
+}
 
 const NAVBAR_ICON_INTERACTION_CLASSES =
     "motion-interactive motion-press hover:bg-transparent active:bg-transparent hover:text-primary active:text-primary active:scale-[var(--motion-press-scale)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";
@@ -182,18 +211,7 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                             <ShoppingCart size={22} />
                             <Suspense fallback={null}>
                                 <Await resolve={data?.cart}>
-                                    {cart => {
-                                        const totalQuantity = cart?.totalQuantity ?? 0;
-                                        if (totalQuantity <= 0) return null;
-                                        return (
-                                            <>
-                                                <span className="bg-primary absolute -top-0.5 right-0.5 h-4 w-4 animate-ping rounded-full lg:-top-1 lg:-right-1 lg:h-5 lg:w-5" />
-                                                <span className="bg-primary text-primary-foreground absolute -top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full font-mono text-xs lg:-top-1 lg:-right-1 lg:h-5 lg:w-5">
-                                                    {totalQuantity}
-                                                </span>
-                                            </>
-                                        );
-                                    }}
+                                    <CartBadge />
                                 </Await>
                             </Suspense>
                             <span className="sr-only">Shopping cart</span>

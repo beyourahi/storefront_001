@@ -36,16 +36,18 @@ export function CartMain({
                 totalQuantity={cart?.totalQuantity ?? 0}
             />
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 md:px-6" data-lenis-prevent>
-                <div className="space-y-4 py-4">
-                    {(cart?.lines?.nodes ?? []).map(line => (
-                        <CartLineItem key={line.id} line={line} />
-                    ))}
+            <div className="flex min-h-0 flex-1 flex-col">
+                <div className="min-h-0 overflow-y-auto px-4 md:px-6" data-lenis-prevent>
+                    <div className="space-y-4 py-4">
+                        {(cart?.lines?.nodes ?? []).map(line => (
+                            <CartLineItem key={line.id} line={line} />
+                        ))}
+                    </div>
                 </div>
-            </div>
 
-            <div className="px-4 md:px-6">
-                <CartSuggestions cartLines={cart?.lines?.nodes ?? []} />
+                <div className="mt-auto shrink-0 px-4 md:px-6">
+                    <CartSuggestions cartLines={cart?.lines?.nodes ?? []} />
+                </div>
             </div>
 
             <CartSummary cart={cart} />
@@ -84,7 +86,7 @@ function CartEmpty() {
                 </Link>
             </div>
 
-            <div className="shrink-0 px-4 md:px-6">
+            <div className="mt-auto shrink-0 px-4 md:px-6">
                 <CartSuggestions cartLines={[]} />
             </div>
         </div>

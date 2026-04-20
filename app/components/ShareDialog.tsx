@@ -7,6 +7,7 @@ import {
     type ShareData,
     type SocialSharePlatform
 } from "~/lib/social-share";
+import {useLockBodyScroll} from "~/lib/LenisProvider";
 
 type ShareDialogProps = {
     url: string;
@@ -15,6 +16,7 @@ type ShareDialogProps = {
 };
 
 export const ShareDialog = ({url, title, onClose}: ShareDialogProps) => {
+    useLockBodyScroll(true);
     const [copied, setCopied] = useState(false);
 
     const shareData: ShareData = {

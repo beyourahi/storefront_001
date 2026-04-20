@@ -18,7 +18,9 @@ import {formatShopifyMoney, getZeroPrice} from "~/lib/currency-formatter";
 import {selectBestVariant, parseProductTitle} from "~/lib/product";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import type {ShopifyProduct, ShopifyProductVariant} from "~/lib/types/product-card";
+import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 import {cn} from "~/lib/utils";
+import {useLockBodyScroll} from "~/lib/LenisProvider";
 
 const productCache = new Map<string, ShopifyProduct>();
 
@@ -294,6 +296,8 @@ function ProductVariantDialogContent({
     onOpenChange: (open: boolean) => void;
     onSuccess?: () => void;
 }) {
+    useLockBodyScroll(open);
+
     const addFetcher = useFetcher<CartMutationResponse>();
     const buyNowFetcher = useFetcher<CartMutationResponse>();
     const [selectedVariant, setSelectedVariant] = useState<ShopifyProductVariant | null>(null);
@@ -591,8 +595,8 @@ function ProductVariantDialogContent({
                         Select a variant and quantity, then add this product to the cart or continue to checkout.
                     </DialogPrimitive.Description>
                     <div className="bg-background flex h-full flex-col lg:flex-row">
-                    {productImages.length > 0 ? (
-                        <div className="border-border/10 hidden max-h-[55vh] flex-shrink-0 border-r lg:block lg:w-2/5">
+                    <div className="border-border/10 hidden max-h-[55vh] flex-shrink-0 border-r lg:block lg:w-2/5">
+                        {productImages.length > 0 ? (
                             <div className="h-full overflow-x-hidden overflow-y-auto p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                                 <div className="space-y-3">
                                     {productImages.map((image, index) => (
@@ -610,8 +614,10 @@ function ProductVariantDialogContent({
                                     ))}
                                 </div>
                             </div>
-                        </div>
-                    ) : null}
+                        ) : (
+                            <ProductImagePlaceholder aspectRatio="square" className="h-full w-full rounded-none" />
+                        )}
+                    </div>
 
                     <div className="relative flex min-h-0 w-full flex-col lg:w-3/5">
                         <DialogPrimitive.Close
@@ -633,9 +639,9 @@ function ProductVariantDialogContent({
 
                                 <div className="mb-8 sm:mb-10">
                                     <div className="flex gap-4 lg:block">
-                                        {productImages.length > 0 ? (
-                                            <div className="flex-shrink-0 lg:hidden">
-                                                <div className="relative h-20 w-20 overflow-hidden rounded-lg shadow-md">
+                                        <div className="flex-shrink-0 overflow-hidden rounded-lg shadow-md lg:hidden">
+                                            {productImages.length > 0 ? (
+                                                <div className="relative h-20 w-20">
                                                     <img
                                                         src={productImages[0].url}
                                                         alt={productImages[0].altText || product.title}
@@ -643,8 +649,10 @@ function ProductVariantDialogContent({
                                                         loading="eager"
                                                     />
                                                 </div>
-                                            </div>
-                                        ) : null}
+                                            ) : (
+                                                <ProductImagePlaceholder compact className="h-20 w-20" />
+                                            )}
+                                        </div>
 
                                         <div className="min-w-0 flex-1">
                                             <div className="mb-1 sm:mb-1.5">
