@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-20",
+        headline: "Only the changed item's price animates during cart updates",
+        summary:
+            "When you adjust a quantity or remove an item, the loading indicator now appears only on that line's price and the checkout total — other items in your cart stay fully visible and static throughout.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-20",
         headline: "Cart prices animate gracefully while your updates process",
         summary:
             "When you change a quantity or remove an item, the price on that line and the checkout button total now display a subtle animated indicator instead of showing a stale number. Prices restore instantly the moment your change is confirmed.",

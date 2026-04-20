@@ -5,7 +5,7 @@ import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Link, useFetcher} from "react-router";
 import {Trash2, Minus, Plus, AlertTriangle, XCircle} from "lucide-react";
 import {useEffect, useState} from "react";
-import {useCartMutationPending} from "~/lib/cart-utils";
+import {getCartLineKey, useCartLineMutating, useCartMutationPending} from "~/lib/cart-utils";
 import {Button} from "~/components/ui/button";
 import {Spinner} from "~/components/ui/spinner";
 import {Alert, AlertDescription} from "~/components/ui/alert";
@@ -17,15 +17,12 @@ import {PriceLoadingIndicator} from "~/components/common/PriceLoadingIndicator";
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
-function getUpdateKey(lineIds: string[]) {
-    return [CartForm.ACTIONS.LinesUpdate, ...lineIds].join("-");
-}
 
 export function CartLineItem({line}: {line: CartLine}) {
     const {id, merchandise, quantity, cost} = line;
     const {product, image, title: variantTitle, quantityAvailable} = merchandise;
     const {close} = useCartDrawer();
-    const fetcher = useFetcher({key: getUpdateKey([id])});
+    const fetcher = useFetcher({key: getCartLineKey([id])});
     const isMutating = useCartMutationPending();
     const optimisticData = useOptimisticData<{action?: string}>(id);
     const isRemoving = optimisticData?.action === "remove";
@@ -137,7 +134,7 @@ export function CartLineItem({line}: {line: CartLine}) {
                                 disabled={!!line.isOptimistic || isMutating}
                             />
                         )}
-                        <CartLinePricing cost={effectiveCost} quantity={quantity} />
+                        <CartLinePricing cost={effectiveCost} quantity={quantity} lineId={id} />
                     </div>
                 </div>
             </div>
@@ -234,9 +231,9 @@ function CartLineDetails({
     );
 }
 
-function CartLinePricing({cost, quantity}: {cost: CartLine["cost"] | undefined; quantity: number}) {
+function CartLinePricing({cost, quantity, lineId}: {cost: CartLine["cost"] | undefined; quantity: number; lineId: string}) {
     const totalAmount = cost?.totalAmount;
-    const isMutating = useCartMutationPending();
+    const isMutating = useCartLineMutating(lineId);
     if (!totalAmount) return null;
     const perItemAmount = (parseFloat(totalAmount.amount) / quantity).toFixed(2);
 
@@ -337,7 +334,7 @@ function CartLineRemoveButton({
 }) {
     return (
         <CartForm
-            fetcherKey={getUpdateKey([lineId])}
+            fetcherKey={getCartLineKey([lineId])}
             route="/cart"
             action={CartForm.ACTIONS.LinesRemove}
             inputs={{lineIds: [lineId]}}
@@ -366,7 +363,7 @@ function CartLineUpdateButton({children, lines}: {children: React.ReactNode; lin
 
     return (
         <CartForm
-            fetcherKey={getUpdateKey(lineIds)}
+            fetcherKey={getCartLineKey(lineIds)}
             route="/cart"
             action={CartForm.ACTIONS.LinesUpdate}
             inputs={{lines}}
