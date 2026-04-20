@@ -10,8 +10,8 @@ import {Button} from "~/components/ui/button";
 import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "~/components/ui/dialog";
 import {AlertDialog, AlertDialogContent, AlertDialogTitle} from "~/components/ui/alert-dialog";
 import {Textarea} from "~/components/ui/textarea";
-import {Spinner} from "~/components/ui/spinner";
 import {ButtonSpinner} from "~/components/ui/button-spinner";
+import {PriceLoadingIndicator} from "~/components/common/PriceLoadingIndicator";
 import {useIsMobile} from "~/hooks/useIsMobile";
 import {cn} from "~/lib/utils";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
@@ -281,15 +281,9 @@ function CartCheckoutActions({
                 isMutating && "pointer-events-none opacity-50 cursor-not-allowed"
             )}
         >
-            {isMutating ? (
-                <Spinner className="h-4 w-4" />
-            ) : (
-                <>
-                    <CreditCard className="h-4 w-4" />
-                    Checkout{totalAmount ? " - " : ""}
-                    {totalAmount && formatShopifyMoney(totalAmount)}
-                </>
-            )}
+            <CreditCard className="h-4 w-4" />
+            Checkout{totalAmount ? " - " : ""}
+            {totalAmount && (isMutating ? <PriceLoadingIndicator className="ml-0.5" /> : formatShopifyMoney(totalAmount))}
         </a>
     );
 }

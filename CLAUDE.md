@@ -89,7 +89,7 @@ storefront_001/
 │   │   ├── ui/                    # shadcn/ui generated primitives
 │   │   ├── account/               # Account dashboard surfaces
 │   │   ├── blog/                  # Blog surfaces
-│   │   ├── cart/                  # Cart drawer + line items
+│   │   ├── cart/                  # Cart drawer, line items, and product suggestions
 │   │   ├── collection/            # Collection page components (sort/filter bar)
 │   │   ├── common/                # Shared presentational (breadcrumbs, price, skeletons)
 │   │   ├── custom/                # Custom overrides (collection pagination)
@@ -218,7 +218,7 @@ For portfolio Workers deploys, demo-store credentials live in `wrangler.jsonc`. 
 
 ## Key Files
 
-**Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`, `app/lib/wishlist-context.tsx`, `app/lib/wishlist-utils.ts`, `app/lib/recently-viewed.ts`, `app/lib/LenisProvider.tsx` (note: component in `lib/`, not `components/`)
+**Architecture**: `app/lib/metaobject-queries.ts`, `app/lib/metaobject-parsers.ts`, `app/lib/metaobject-fragments.ts`, `app/lib/data-source.ts`, `app/lib/site-content-context.tsx`, `app/lib/color/`, `app/lib/wishlist-context.tsx`, `app/lib/wishlist-utils.ts`, `app/lib/recently-viewed.ts`, `app/lib/LenisProvider.tsx` (note: component in `lib/`, not `components/`), `app/lib/cart-utils.ts` (cart mutation key + `useCartMutationPending` hook), `app/lib/social-share.tsx` (social sharing toolkit — Web Share API, Facebook, X, WhatsApp, Pinterest, clipboard)
 **Config**: `vite.config.ts`, `react-router.config.ts`, `eslint.config.js`, `prettier.config.js`, `app/styles/app.css`, `wrangler.jsonc`
 **GraphQL**: `storefrontapi.generated.d.ts`, `customer-accountapi.generated.d.ts`
 **Theme System**: `app/lib/theme-utils.ts`, `app/lib/theme-storage.ts`, `app/root.tsx`, `app/styles/app.css`

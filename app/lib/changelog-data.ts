@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-20",
+        headline: "Cart prices animate gracefully while your updates process",
+        summary:
+            "When you change a quantity or remove an item, the price on that line and the checkout button total now display a subtle animated indicator instead of showing a stale number. Prices restore instantly the moment your change is confirmed.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-20",
         headline: "Cart items without photos now show a placeholder image",
         summary:
             "Products added to your cart that have no photos now display the same tidy placeholder icon used across the rest of the store, keeping the cart layout consistent and preventing empty gaps.",

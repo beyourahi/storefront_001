@@ -13,6 +13,7 @@ import {useCartDrawer} from "~/hooks/useCartDrawer";
 import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
 import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
+import {PriceLoadingIndicator} from "~/components/common/PriceLoadingIndicator";
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
@@ -240,17 +241,17 @@ function CartLinePricing({cost, quantity}: {cost: CartLine["cost"] | undefined; 
     const perItemAmount = (parseFloat(totalAmount.amount) / quantity).toFixed(2);
 
     return (
-        <div className={cn("text-right transition-opacity duration-150", isMutating && "opacity-50")}>
+        <div className="text-right">
             <div
-                className="text-foreground font-mono text-base font-bold tracking-tight tabular-nums antialiased sm:text-base"
+                className="text-foreground font-mono text-base font-bold tracking-tight tabular-nums antialiased sm:text-base flex items-center justify-end"
                 aria-label="Line total"
             >
-                {formatShopifyMoney(totalAmount)}
+                {isMutating ? <PriceLoadingIndicator /> : formatShopifyMoney(totalAmount)}
             </div>
             <div
                 className={cn(
                     "text-muted-foreground gap-2 text-xs sm:text-sm flex items-baseline justify-end",
-                    quantity > 1 ? "opacity-100" : "opacity-0"
+                    quantity > 1 && !isMutating ? "opacity-100" : "opacity-0"
                 )}
             >
                 <span className="font-mono font-medium tracking-tight tabular-nums" aria-label="Price per item">
