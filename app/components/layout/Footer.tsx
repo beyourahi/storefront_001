@@ -64,7 +64,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                     {/* Column 1: Newsletter */}
                     <div className="sm:col-span-2 lg:col-span-2 lg:border-r lg:border-border/30 lg:pr-10">
                         <h3 className="font-serif text-lg font-semibold text-foreground">Stay Connected</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        <p className="mt-2 hidden text-sm leading-relaxed text-muted-foreground md:block">
                             {brandDescription
                                 ? brandDescription.length > 120
                                     ? brandDescription.slice(0, 120).trim() + "..."

@@ -6,8 +6,9 @@ import {reconstructGid, generateShareableWishlistUrl} from "~/lib/wishlist-utils
 import {WishlistButton} from "~/components/WishlistButton";
 import {CartForm} from "@shopify/hydrogen";
 import type {CurrencyCode} from "@shopify/hydrogen/storefront-api-types";
-import {LayoutGrid, List, Trash2, Share2, ShoppingCart} from "lucide-react";
+import {ArrowUpDown, LayoutGrid, List, Trash2, Share2, ShoppingCart} from "lucide-react";
 import {ButtonSpinner} from "~/components/ui/button-spinner";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
 import {ShareDialog} from "~/components/ShareDialog";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
@@ -108,6 +109,7 @@ const AccountWishlist = () => {
         try {
             const savedView = localStorage.getItem("wishlist-view-mode");
             const savedColumns = localStorage.getItem("wishlist-columns");
+            const savedSort = localStorage.getItem("wishlist-sort");
 
             if (savedView === "grid" || savedView === "list") {
                 setViewMode(savedView);
@@ -116,6 +118,10 @@ const AccountWishlist = () => {
             const cols = Number(savedColumns);
             if (cols === 2 || cols === 3 || cols === 4) {
                 setColumns(cols);
+            }
+
+            if (savedSort === "date-added" || savedSort === "price-low" || savedSort === "price-high") {
+                setSortBy(savedSort);
             }
         } catch {
             // localStorage unavailable
@@ -139,6 +145,15 @@ const AccountWishlist = () => {
             // localStorage unavailable
         }
     }, [columns]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        try {
+            localStorage.setItem("wishlist-sort", sortBy);
+        } catch {
+            // localStorage unavailable
+        }
+    }, [sortBy]);
 
     useEffect(() => {
         if (ids.length === 0) {
@@ -272,61 +287,71 @@ const AccountWishlist = () => {
                         </div>
                     )}
 
-                    <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => setViewMode("grid")}
-                                className={`rounded-lg p-2 transition-colors ${
-                                    viewMode === "grid"
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                                }`}
-                                aria-label="Grid view"
-                            >
-                                <LayoutGrid className="h-5 w-5" />
-                            </button>
-                            <button
-                                onClick={() => setViewMode("list")}
-                                className={`rounded-lg p-2 transition-colors ${
-                                    viewMode === "list"
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                                }`}
-                                aria-label="List view"
-                            >
-                                <List className="h-5 w-5" />
-                            </button>
-
-                            {viewMode === "grid" && (
-                                <div className="ml-4 flex items-center gap-2">
-                                    <span className="text-muted-foreground text-sm">Columns:</span>
-                                    {[2, 3, 4].map(col => (
-                                        <button
-                                            key={col}
-                                            onClick={() => setColumns(col as 2 | 3 | 4)}
-                                            className={`h-8 w-8 rounded-lg text-sm font-medium transition-colors ${
-                                                columns === col
-                                                    ? "bg-primary text-primary-foreground"
-                                                    : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                                            }`}
-                                        >
-                                            {col}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
+                    <div className="mb-6 flex flex-wrap items-center justify-between gap-3 py-3">
+                        {/* Left: product count + view toggles (matches SortFilterBar left side) */}
+                        <div className="flex items-center gap-3">
+                            <p className="text-muted-foreground text-sm">
+                                {products.length} {products.length === 1 ? "product" : "products"}
+                            </p>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => setViewMode("grid")}
+                                    className={`rounded-lg p-2 transition-colors ${
+                                        viewMode === "grid"
+                                            ? "bg-primary text-primary-foreground"
+                                            : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                                    }`}
+                                    aria-label="Grid view"
+                                >
+                                    <LayoutGrid className="size-4" />
+                                </button>
+                                <button
+                                    onClick={() => setViewMode("list")}
+                                    className={`rounded-lg p-2 transition-colors ${
+                                        viewMode === "list"
+                                            ? "bg-primary text-primary-foreground"
+                                            : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                                    }`}
+                                    aria-label="List view"
+                                >
+                                    <List className="size-4" />
+                                </button>
+                                {viewMode === "grid" && (
+                                    <div className="ml-2 flex items-center gap-1">
+                                        {([2, 3, 4] as const).map(col => (
+                                            <button
+                                                key={col}
+                                                onClick={() => setColumns(col)}
+                                                className={`h-8 w-8 rounded-lg text-sm font-medium transition-colors ${
+                                                    columns === col
+                                                        ? "bg-primary text-primary-foreground"
+                                                        : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                                                }`}
+                                                aria-label={`${col} columns`}
+                                            >
+                                                {col}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            <select
-                                value={sortBy}
-                                onChange={e => setSortBy(e.target.value as SortOption)}
-                                className="border-border bg-background text-foreground rounded-lg border px-4 py-2 text-sm"
-                            >
-                                <option value="date-added">Date Added</option>
-                                <option value="price-low">Price: Low to High</option>
-                                <option value="price-high">Price: High to Low</option>
-                            </select>
+                        {/* Right: sort + share + clear (sort matches SortFilterBar right side) */}
+                        <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex items-center gap-2">
+                                <ArrowUpDown className="text-muted-foreground hidden size-4 sm:block" aria-hidden="true" />
+                                <Select value={sortBy} onValueChange={value => setSortBy(value as SortOption)}>
+                                    <SelectTrigger size="sm" className="w-[180px] text-sm" aria-label="Sort wishlist">
+                                        <SelectValue placeholder="Sort by" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="date-added">Date Added</SelectItem>
+                                        <SelectItem value="price-low">Price: Low to High</SelectItem>
+                                        <SelectItem value="price-high">Price: High to Low</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
                             <button
                                 onClick={() => setShowShareDialog(true)}
