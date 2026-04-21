@@ -2,8 +2,6 @@ import {Suspense, useMemo} from "react";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Await, useRouteLoaderData} from "react-router";
 import {useCartMutationPending} from "~/lib/cart-utils";
-import useEmblaCarousel from "embla-carousel-react";
-import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
 import {Skeleton} from "~/components/ui/skeleton";
 import {CompactProductCard} from "~/components/cart/CompactProductCard";
 import {useCartDrawer} from "~/hooks/useCartDrawer";
@@ -109,29 +107,18 @@ function CartSuggestionsContent({
 function CartSuggestionsCarousel({suggestions}: {suggestions: any[]}) {
     const {close} = useCartDrawer();
     const isMutating = useCartMutationPending();
-    const [emblaRef] = useEmblaCarousel(
-        {
-            align: "start",
-            loop: false,
-            dragFree: true,
-            skipSnaps: false
-        },
-        [WheelGesturesPlugin({forceWheelAxis: "x"})]
-    );
 
     const normalizedSuggestions = useMemo(() => {
         return suggestions.map(product => fromCartSuggestionProduct(product));
     }, [suggestions]);
 
     return (
-        <div className="overflow-hidden" ref={emblaRef}>
-            <div className="-ml-4 flex">
-                {normalizedSuggestions.map(product => (
-                    <div key={product.id} className="min-w-0 flex-[0_0_180px] pl-4">
-                        <CompactProductCard product={product} onProductClick={close} isMutating={isMutating} />
-                    </div>
-                ))}
-            </div>
+        <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {normalizedSuggestions.map(product => (
+                <div key={product.id} className="w-[180px] shrink-0">
+                    <CompactProductCard product={product} onProductClick={close} isMutating={isMutating} />
+                </div>
+            ))}
         </div>
     );
 }
