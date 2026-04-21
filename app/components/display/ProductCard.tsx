@@ -75,7 +75,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                 {/* OOS badge takes priority over preorder — a product can't be preordered if it's OOS */}
                 {isOutOfStock ? (
                     <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
-                        <div className="bg-destructive text-destructive-foreground border-transparent rounded-[var(--radius-xl)] border px-1 pr-1.5 text-xs">
+                        <div className="bg-destructive text-destructive-foreground border-transparent rounded-[var(--radius-xl)] border px-0.5 pr-1 text-xs">
                             {OUT_OF_STOCK_LABEL}
                         </div>
                     </div>
