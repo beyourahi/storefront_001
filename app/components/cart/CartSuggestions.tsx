@@ -113,7 +113,10 @@ function CartSuggestionsCarousel({suggestions}: {suggestions: any[]}) {
     }, [suggestions]);
 
     return (
-        <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div
+            className="flex gap-4 overflow-x-auto pb-1 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            data-lenis-prevent
+        >
             {normalizedSuggestions.map(product => (
                 <div key={product.id} className="w-[180px] shrink-0">
                     <CompactProductCard product={product} onProductClick={close} isMutating={isMutating} />
