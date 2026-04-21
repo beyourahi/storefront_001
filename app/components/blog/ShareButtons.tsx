@@ -50,27 +50,65 @@ export const ShareButtons = ({article, variant = "inline", className, shopName}:
 
     if (variant === "inline") {
         return (
-            <div className={cn("space-y-2.5 sm:space-y-3 md:space-y-4", className)}>
-                <h3 className="text-sm sm:text-sm md:text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                    Share this article
-                </h3>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-2.5">
-                    {platforms.map(platform => (
-                        <Button
-                            key={platform.id}
-                            variant="outline"
-                            size="sm"
-                            className="gap-1.5 sm:gap-2 size-10 sm:size-auto p-0 sm:px-3"
-                            onClick={() => void handleShare(platform, shareData)}
-                        >
-                            {platform.id === "copy" && copied ? (
-                                <Check className="size-4" />
-                            ) : (
-                                <platform.icon className="size-4" />
-                            )}
-                            <span className="hidden sm:inline">{platform.name}</span>
-                        </Button>
-                    ))}
+            <div
+                className={cn(
+                    "border-primary/10 rounded-xl border bg-[var(--brand-primary-subtle)]/30 p-4 sm:p-5 md:p-6",
+                    "space-y-3 sm:space-y-4",
+                    className
+                )}
+            >
+                <div className="flex items-center gap-3">
+                    <div
+                        className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full"
+                        aria-hidden="true"
+                    >
+                        <Share2 className="size-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <h3 className="text-primary font-serif text-base leading-tight font-semibold sm:text-lg">
+                            Share this article
+                        </h3>
+                        <p className="text-muted-foreground text-xs sm:text-sm">
+                            Enjoyed the read? Pass it along.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
+                    {platforms.map(platform => {
+                        const isCopied = platform.id === "copy" && copied;
+                        return (
+                            <Button
+                                key={platform.id}
+                                variant="outline"
+                                className={cn(
+                                    "group sleek relative gap-2 overflow-hidden rounded-lg",
+                                    // Mobile: square tap target (min 48x48 per WCAG 2.5.5)
+                                    "h-12 w-full p-0 sm:h-11 sm:w-auto sm:px-4",
+                                    "border-primary/15 hover:border-primary hover:bg-primary hover:text-primary-foreground",
+                                    "focus-visible:ring-primary/40 focus-visible:ring-2 focus-visible:ring-offset-2",
+                                    "hover:shadow-sm hover:-translate-y-0.5"
+                                )}
+                                onClick={() => void handleShare(platform, shareData)}
+                                aria-label={
+                                    isCopied
+                                        ? "Link copied"
+                                        : platform.id === "copy"
+                                          ? "Copy link to clipboard"
+                                          : `Share on ${platform.name}`
+                                }
+                            >
+                                {isCopied ? (
+                                    <Check className="sleek size-5 group-hover:scale-110" />
+                                ) : (
+                                    <platform.icon className="sleek size-5 group-hover:scale-110" />
+                                )}
+                                <span className="hidden text-sm font-medium sm:inline">
+                                    {isCopied ? "Copied" : platform.name}
+                                </span>
+                            </Button>
+                        );
+                    })}
                 </div>
             </div>
         );
@@ -79,11 +117,7 @@ export const ShareButtons = ({article, variant = "inline", className, shopName}:
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className={cn("gap-1.5 sm:gap-2", className)}
-                >
+                <Button variant="outline" size="sm" className={cn("gap-1.5 sm:gap-2", className)}>
                     <Share2 className="size-3.5 sm:size-4" />
                     <span className="hidden xs:inline">Share</span>
                 </Button>

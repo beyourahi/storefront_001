@@ -97,6 +97,10 @@ export async function loader({context, request, params}: Route.LoaderArgs) {
 export default function Blog() {
     const {blog, featuredArticle, articles, allTags, activeTag} = useLoaderData<typeof loader>();
 
+    // When only a single article exists (and no tag filter is active), suppress
+    // the filter nav and "More Articles" grid so the featured card stands alone.
+    const hasOnlyFeatured = !activeTag && featuredArticle && articles.nodes.length === 0;
+
     return (
         <>
             <PageBreadcrumbs />
@@ -120,7 +124,7 @@ export default function Blog() {
             <div className="mx-auto max-w-[2000px] px-2 md:px-4 pb-12 md:pb-20">
                 {featuredArticle && <ArticleHero article={featuredArticle} variant="listing" />}
 
-                {allTags.length > 0 && (
+                {!hasOnlyFeatured && allTags.length > 0 && (
                     <nav className="flex flex-wrap items-center gap-2 mt-8 md:mt-12" aria-label="Filter by topic">
                         <Badge variant={!activeTag ? "default" : "outline"} asChild>
                             <Link to={`/blogs/${blog.handle}`} prefetch="viewport" className="cursor-pointer">

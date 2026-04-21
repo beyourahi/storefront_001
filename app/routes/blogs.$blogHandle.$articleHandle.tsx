@@ -14,7 +14,6 @@ import type {ArticleCardData} from "~/components/blog/ArticleCard";
 import {useReadingProgress} from "~/hooks/useReadingProgress";
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
-import {AnimatedSection} from "~/components/sections/AnimatedSection";
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const shopName =
@@ -160,56 +159,50 @@ export default function Article() {
                     </div>
                 </header>
 
-                <AnimatedSection animation="fade" threshold={0.05}>
-                    {/* Article HTML content from Shopify admin — trusted source */}
-                    <div
-                        ref={contentRef}
-                        dangerouslySetInnerHTML={{__html: contentHtml}}
-                        className="article-content mx-auto max-w-3xl py-8 md:py-10 lg:py-12"
+                {/* Article HTML content from Shopify admin — trusted source */}
+                <div
+                    ref={contentRef}
+                    dangerouslySetInnerHTML={{__html: contentHtml}}
+                    className="article-content mx-auto max-w-3xl py-8 md:py-10 lg:py-12"
+                />
+
+                <div className="mx-auto max-w-3xl pt-8 md:pt-10 pb-6 md:pb-8">
+                    <ShareButtons
+                        article={{
+                            title,
+                            excerpt: article.excerpt,
+                            image: article.image,
+                            blog: {handle: blogHandle},
+                            handle: article.handle
+                        }}
+                        variant="inline"
                     />
-                </AnimatedSection>
+                </div>
 
-                <AnimatedSection animation="fade" threshold={0.1}>
-                    <div className="mx-auto max-w-3xl pt-8 md:pt-10 pb-6 md:pb-8">
-                        <ShareButtons
-                            article={{
-                                title,
-                                excerpt: article.excerpt,
-                                image: article.image,
-                                blog: {handle: blogHandle},
-                                handle: article.handle
-                            }}
-                            variant="inline"
-                        />
+                {author?.bio && (
+                    <div className="mx-auto max-w-3xl pb-6 md:pb-8">
+                        <AuthorBio author={author} variant="card" />
                     </div>
+                )}
 
-                    {author?.bio && (
-                        <div className="mx-auto max-w-3xl pb-6 md:pb-8">
-                            <AuthorBio author={author} variant="card" />
-                        </div>
-                    )}
-
-                    <div className="mx-auto max-w-3xl pt-4 md:pt-6 pb-8 md:pb-12">
-                        <Button variant="ghost" asChild>
-                            <Link
-                                to={`/blogs/${blogHandle}`}
-                                prefetch="viewport"
-                                className="inline-flex items-center gap-2"
-                            >
-                                <ArrowLeft className="size-4" />
-                                Back to {blogTitle || "Blog"}
-                            </Link>
-                        </Button>
-                    </div>
-                </AnimatedSection>
+                <div className="mx-auto max-w-3xl pt-4 md:pt-6 pb-8 md:pb-12">
+                    <Button variant="ghost" asChild>
+                        <Link
+                            to={`/blogs/${blogHandle}`}
+                            prefetch="viewport"
+                            className="inline-flex items-center gap-2"
+                        >
+                            <ArrowLeft className="size-4" />
+                            Back to {blogTitle || "Blog"}
+                        </Link>
+                    </Button>
+                </div>
             </article>
 
             {relatedArticles && relatedArticles.length > 0 && (
-                <AnimatedSection animation="fade" threshold={0.1}>
-                    <div className="mt-12 sm:mt-16 md:mt-20 mx-auto max-w-[2000px] px-2 md:px-4">
-                        <RelatedArticles articles={relatedArticles} title="More Articles" />
-                    </div>
-                </AnimatedSection>
+                <div className="mt-12 sm:mt-16 md:mt-20 mx-auto max-w-[2000px] px-2 md:px-4">
+                    <RelatedArticles articles={relatedArticles} title="More Articles" />
+                </div>
             )}
         </div>
     );

@@ -37,6 +37,41 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-21",
+        headline: "Blog listing now spotlights the featured article on mobile",
+        summary:
+            "When a blog has a single article, the page focuses entirely on the featured story instead of showing an empty filter bar. The featured card is taller on phones for easier reading, and tapping anywhere on it now opens the article — not just the Read Article button.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-21",
+        headline: "Share buttons on articles are more prominent and tap-friendly",
+        summary:
+            "The social sharing section at the end of each blog article now stands out with a card-style container, a heading icon, and larger buttons that are easier to tap on small screens. The platform labels stay visible on larger screens so you know where each button shares to.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-21",
+        headline: "Blog articles now load instantly without fade-in",
+        summary:
+            "Individual blog posts no longer use scroll-triggered fade animations. Content appears immediately, which makes articles feel faster — especially when navigating from other pages or sharing direct links.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-21",
+        headline: "Recent searches now show product thumbnails",
+        summary:
+            "When you click a product from search results, we remember its image so the next time you open search, the product pops up as a visual chip alongside the text — making it quicker to recognize and re-open what you were looking at.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-21",
+        headline: "Long breadcrumb titles now truncate cleanly with ellipsis",
+        summary:
+            "Product and collection pages with very long names no longer overflow the breadcrumb trail. Long labels are shortened with an ellipsis, and hovering reveals the full text — keeping navigation tidy on every screen size.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-21",
         headline: "Quick-add panel redesigned to match the site's style",
         summary:
             "The quick-add sheet that opens when you tap \"Get Now\" on a suggested product now uses the same buttons, typography, and spacing as the rest of the store. The add-to-cart button is now a full-width solid button, and variant selectors match the style found on product pages.",

@@ -3,167 +3,122 @@
  *
  * @description
  * Manages a user's recent search history with automatic localStorage persistence.
- * Provides CRUD operations for search terms with a maximum history limit.
- * This improves UX by allowing users to quickly access previous searches.
+ * Each entry stores the search term plus an optional thumbnail image URL captured
+ * when the user clicks a product result — letting the UI show a visual cue alongside
+ * the text term.
  *
  * @architecture
  * - State synchronized with localStorage on mount and updates
  * - Case-insensitive deduplication (newer searches bubble to top)
  * - Graceful degradation for SSR and private browsing modes
  * - Maximum 8 searches to prevent localStorage bloat
- * - Memoized callbacks and return value to prevent unnecessary re-renders
- *
- * @dependencies
- * - React hooks (useState, useEffect, useCallback, useMemo)
- * - Browser localStorage API
- *
- * @related
- * - FullScreenSearch.tsx - Displays recent searches in search UI
- * - SearchFormPredictive.tsx - May trigger addSearch on submit
- * - search.tsx route - Search results page
+ * - Backward compatible with the legacy `string[]` format (auto-migrated on read)
  *
  * @storage
  * Key: "hydrogen-store-recent-searches"
- * Format: JSON array of strings
- * Max entries: 8 (oldest removed when limit exceeded)
- *
- * @example
- * ```tsx
- * const { recentSearches, addSearch, removeSearch, clearSearches } = useRecentSearches();
- *
- * // Add when user submits search
- * addSearch(searchTerm);
- *
- * // Display in UI
- * {recentSearches.map(term => <SearchChip key={term} term={term} />)}
- *
- * // Remove individual search
- * removeSearch(term);
- *
- * // Clear all history
- * clearSearches();
- * ```
+ * Format (new): JSON array of `{term: string, image?: string}`
+ * Format (legacy): JSON array of strings (auto-upgraded on first write)
  */
 
 import {useCallback, useEffect, useMemo, useState} from "react";
 
-// =============================================================================
-// CONSTANTS
-// =============================================================================
-
-/** LocalStorage key for persisting recent searches */
 const STORAGE_KEY = "hydrogen-store-recent-searches";
-
-/** Maximum number of recent searches to store (prevents localStorage bloat) */
 const MAX_RECENT_SEARCHES = 8;
 
-// =============================================================================
-// TYPES
-// =============================================================================
+export interface RecentSearchEntry {
+    term: string;
+    image?: string;
+}
 
-/**
- * Return type for the useRecentSearches hook.
- * Provides read access to searches and methods to modify them.
- */
 export interface UseRecentSearchesReturn {
-    /** Array of recent search terms, most recent first */
+    /** Full entries with optional thumbnail image */
+    recentSearchEntries: RecentSearchEntry[];
+    /** Legacy string-only view for callers that don't care about images */
     recentSearches: string[];
-    /** Add a new search term (deduplicates and moves to front if exists) */
-    addSearch: (term: string) => void;
-    /** Remove a specific search term from history */
+    /** Add a new search term. If `image` is provided, it is stored alongside. */
+    addSearch: (term: string, image?: string) => void;
+    /** Remove a specific search term from history (case-insensitive) */
     removeSearch: (term: string) => void;
     /** Clear all search history */
     clearSearches: () => void;
 }
 
-// =============================================================================
-// HOOK
-// =============================================================================
-
 /**
- * Hook for managing recent searches with automatic localStorage persistence.
- *
- * Provides a complete CRUD interface for user search history:
- * - Reads from localStorage on mount
- * - Writes to localStorage on every change
- * - Case-insensitive deduplication (existing terms bubble to top)
- * - Limits history to MAX_RECENT_SEARCHES entries
- *
- * @returns Object with recentSearches array and mutation methods
- *
- * @sideeffect Reads/writes to localStorage under STORAGE_KEY
+ * Parse raw localStorage data into entries, tolerating both the legacy
+ * `string[]` shape and the current `{term, image?}[]` shape.
  */
-export function useRecentSearches(): UseRecentSearchesReturn {
-    const [recentSearches, setRecentSearches] = useState<string[]>([]);
+function parseStoredEntries(raw: unknown): RecentSearchEntry[] {
+    if (!Array.isArray(raw)) return [];
 
-    // -------------------------------------------------------------------------
-    // INITIALIZATION: Load from localStorage on mount
-    // -------------------------------------------------------------------------
+    const entries: RecentSearchEntry[] = [];
+    for (const item of raw) {
+        if (typeof item === "string" && item.trim()) {
+            entries.push({term: item});
+        } else if (item && typeof item === "object" && typeof (item as RecentSearchEntry).term === "string") {
+            const e = item as RecentSearchEntry;
+            const term = e.term.trim();
+            if (!term) continue;
+            entries.push(typeof e.image === "string" && e.image ? {term, image: e.image} : {term});
+        }
+    }
+    return entries.slice(0, MAX_RECENT_SEARCHES);
+}
+
+export function useRecentSearches(): UseRecentSearchesReturn {
+    const [entries, setEntries] = useState<RecentSearchEntry[]>([]);
+
     useEffect(() => {
         try {
             const stored = localStorage.getItem(STORAGE_KEY);
             if (!stored) return;
-
             const parsed = JSON.parse(stored) as unknown;
-            if (Array.isArray(parsed) && parsed.every(item => typeof item === "string")) {
-                setRecentSearches(parsed.slice(0, MAX_RECENT_SEARCHES));
-            }
+            setEntries(parseStoredEntries(parsed));
         } catch {
             // Ignore localStorage parse and availability errors.
         }
     }, []);
 
-    // -------------------------------------------------------------------------
-    // PERSISTENCE: Save to localStorage
-    // -------------------------------------------------------------------------
-    const saveToStorage = useCallback((searches: string[]) => {
+    const saveToStorage = useCallback((next: RecentSearchEntry[]) => {
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(searches));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
         } catch {
             // Ignore localStorage write errors.
         }
     }, []);
 
-    // -------------------------------------------------------------------------
-    // MUTATION METHODS
-    // -------------------------------------------------------------------------
+    const addSearch = useCallback(
+        (term: string, image?: string) => {
+            const trimmed = term.trim();
+            if (!trimmed) return;
 
-    /**
-     * Adds a search term to history.
-     * If term already exists (case-insensitive), removes old and adds to front.
-     * Empty/whitespace-only terms are ignored.
-     */
-    const addSearch = useCallback((term: string) => {
-        const trimmed = term.trim();
-        if (!trimmed) return;
+            setEntries(prev => {
+                const normalized = trimmed.toLowerCase();
+                const existing = prev.find(e => e.term.toLowerCase() === normalized);
+                const filtered = prev.filter(e => e.term.toLowerCase() !== normalized);
+                // Preserve an older image if this call didn't provide a new one.
+                const nextImage = image ?? existing?.image;
+                const next: RecentSearchEntry = nextImage ? {term: trimmed, image: nextImage} : {term: trimmed};
+                const updated = [next, ...filtered].slice(0, MAX_RECENT_SEARCHES);
+                saveToStorage(updated);
+                return updated;
+            });
+        },
+        [saveToStorage]
+    );
 
-        setRecentSearches(prev => {
-            const normalized = trimmed.toLowerCase();
-            const filtered = prev.filter(item => item.toLowerCase() !== normalized);
-            const updated = [trimmed, ...filtered].slice(0, MAX_RECENT_SEARCHES);
-            saveToStorage(updated);
-            return updated;
-        });
-    }, [saveToStorage]);
+    const removeSearch = useCallback(
+        (term: string) => {
+            setEntries(prev => {
+                const updated = prev.filter(e => e.term.toLowerCase() !== term.toLowerCase());
+                saveToStorage(updated);
+                return updated;
+            });
+        },
+        [saveToStorage]
+    );
 
-    /**
-     * Removes a specific search term from history.
-     * Case-insensitive matching.
-     */
-    const removeSearch = useCallback((term: string) => {
-        setRecentSearches(prev => {
-            const updated = prev.filter(item => item.toLowerCase() !== term.toLowerCase());
-            saveToStorage(updated);
-            return updated;
-        });
-    }, [saveToStorage]);
-
-    /**
-     * Clears all search history.
-     * Removes both state and localStorage data.
-     */
     const clearSearches = useCallback(() => {
-        setRecentSearches([]);
+        setEntries([]);
         try {
             localStorage.removeItem(STORAGE_KEY);
         } catch {
@@ -171,10 +126,16 @@ export function useRecentSearches(): UseRecentSearchesReturn {
         }
     }, []);
 
-    return useMemo(() => ({
-        recentSearches,
-        addSearch,
-        removeSearch,
-        clearSearches
-    }), [recentSearches, addSearch, removeSearch, clearSearches]);
+    const recentSearches = useMemo(() => entries.map(e => e.term), [entries]);
+
+    return useMemo(
+        () => ({
+            recentSearchEntries: entries,
+            recentSearches,
+            addSearch,
+            removeSearch,
+            clearSearches
+        }),
+        [entries, recentSearches, addSearch, removeSearch, clearSearches]
+    );
 }

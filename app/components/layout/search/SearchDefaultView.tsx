@@ -1,7 +1,8 @@
 import {Link} from "react-router";
-import {ChevronRight, Clock, TrendingUp} from "lucide-react";
+import {ChevronRight, Clock, Search, TrendingUp} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import type {PopularProduct} from "~/root";
+import type {RecentSearchEntry} from "~/hooks/useRecentSearches";
 import {formatShopifyMoney} from "~/lib/product/currency";
 import {parseProductTitle} from "~/lib/product";
 
@@ -14,7 +15,7 @@ type FeaturedCollection = {
 
 type SearchDefaultViewProps = {
     featuredCollections: FeaturedCollection[];
-    recentSearches: string[];
+    recentSearchEntries: RecentSearchEntry[];
     popularSearches: string[];
     popularProducts?: PopularProduct[];
     onClose: () => void;
@@ -27,7 +28,7 @@ const MAX_POPULAR_PRODUCTS = 5;
 
 export const SearchDefaultView = ({
     featuredCollections,
-    recentSearches,
+    recentSearchEntries,
     popularSearches,
     popularProducts = [],
     onClose,
@@ -45,7 +46,7 @@ export const SearchDefaultView = ({
 
     return (
         <div className="flex flex-col gap-6 p-2">
-            {recentSearches.length > 0 && (
+            {recentSearchEntries.length > 0 && (
                 <section>
                     <div className="mb-2 flex items-center justify-between">
                         <h3 className="text-muted-foreground flex items-center gap-2 text-xs font-medium">
@@ -57,14 +58,33 @@ export const SearchDefaultView = ({
                         </Button>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        {recentSearches.map(term => (
+                        {recentSearchEntries.map(entry => (
                             <button
                                 type="button"
-                                key={term}
-                                className="sleek bg-muted hover:bg-accent rounded-full px-3 py-1.5 text-xs"
-                                onClick={() => onSuggestionClick(term)}
+                                key={entry.term}
+                                className="sleek bg-muted hover:bg-accent border-border/50 hover:border-border flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-xs"
+                                onClick={() => onSuggestionClick(entry.term)}
+                                aria-label={`Search again for ${entry.term}`}
                             >
-                                {term}
+                                {entry.image ? (
+                                    <span className="bg-background relative inline-flex h-6 w-6 shrink-0 overflow-hidden rounded-full">
+                                        <img
+                                            src={entry.image}
+                                            alt=""
+                                            aria-hidden="true"
+                                            className="h-full w-full object-cover"
+                                            loading="lazy"
+                                        />
+                                    </span>
+                                ) : (
+                                    <span
+                                        className="bg-background text-muted-foreground inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+                                        aria-hidden="true"
+                                    >
+                                        <Search className="h-3 w-3" />
+                                    </span>
+                                )}
+                                <span className="truncate max-w-[14ch]">{entry.term}</span>
                             </button>
                         ))}
                     </div>

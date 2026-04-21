@@ -71,7 +71,7 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
     const navigate = useNavigate();
     const fetcher = useFetcher<PredictiveSearchData>();
     const {open, openSearch, closeSearch, setOpen, restoreTriggerFocus} = useSearchController();
-    const {recentSearches, addSearch, clearSearches} = useRecentSearches();
+    const {recentSearchEntries, addSearch, clearSearches} = useRecentSearches();
 
     // Store fetcher in a ref so the debounced function always uses the latest
     // instance without being recreated every render (which would defeat debounce).
@@ -181,13 +181,16 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
         }
     }, [setOpen, handleClose]);
 
-    const navigateTo = useCallback((path: string, termForHistory?: string) => {
-        if (termForHistory) {
-            addSearch(termForHistory);
-        }
-        void navigate(path);
-        handleClose();
-    }, [addSearch, navigate, handleClose]);
+    const navigateTo = useCallback(
+        (path: string, termForHistory?: string, imageForHistory?: string) => {
+            if (termForHistory) {
+                addSearch(termForHistory, imageForHistory);
+            }
+            void navigate(path);
+            handleClose();
+        },
+        [addSearch, navigate, handleClose]
+    );
 
     const handleSubmit = useCallback(() => {
         const trimmed = query.trim();
@@ -230,7 +233,10 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
                             filteredPages={filteredPages}
                             filteredSuggestions={filteredSuggestions}
                             filteredPolicies={filteredPolicies}
-                            onProductClick={product => navigateTo(`/products/${product.handle}`, query.trim())}
+                            onProductClick={product => {
+                                const firstImage = product.images?.edges?.[0]?.node?.url;
+                                navigateTo(`/products/${product.handle}`, query.trim(), firstImage);
+                            }}
                             onCollectionClick={collection => navigateTo(`/collections/${collection.handle}`, query.trim())}
                             onArticleClick={article =>
                                 navigateTo(`/blogs/${article.blog?.handle ?? "news"}/${article.handle}`, query.trim())
@@ -245,7 +251,7 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
                         {!query && (
                             <SearchDefaultView
                                 featuredCollections={featuredCollections}
-                                recentSearches={recentSearches}
+                                recentSearchEntries={recentSearchEntries}
                                 popularSearches={popularSearchTerms}
                                 popularProducts={popularProducts}
                                 onSuggestionClick={term => {

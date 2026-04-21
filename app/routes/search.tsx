@@ -248,7 +248,7 @@ export default function SearchPage() {
     const data = useLoaderData<typeof loader>();
     const rootData = useRouteLoaderData<RootLoader>("root");
     const navigate = useNavigate();
-    const {recentSearches, addSearch, clearSearches} = useRecentSearches();
+    const {recentSearchEntries, addSearch, clearSearches} = useRecentSearches();
 
     const [activeTab, setActiveTab] = React.useState("products");
     const [productsGridColumns, setProductsGridColumns] = React.useState<GridColumns>(3);
@@ -410,7 +410,7 @@ export default function SearchPage() {
             {!term ? (
                 <AnimatedSection animation="fade" threshold={0.1}>
                     <SearchPageInitialState
-                        recentSearches={recentSearches}
+                        recentSearchEntries={recentSearchEntries}
                         collections={featuredCollections}
                         popularSearches={popularSearches}
                         onClearRecent={clearSearches}
@@ -534,13 +534,13 @@ export default function SearchPage() {
 }
 
 function SearchPageInitialState({
-    recentSearches,
+    recentSearchEntries,
     collections,
     popularSearches,
     onClearRecent,
     onSuggestionClick
 }: {
-    recentSearches: string[];
+    recentSearchEntries: import("~/hooks/useRecentSearches").RecentSearchEntry[];
     collections: Array<{
         id: string;
         handle: string;
@@ -552,7 +552,7 @@ function SearchPageInitialState({
     onClearRecent: () => void;
     onSuggestionClick: (term: string) => void;
 }) {
-    const hasContent = recentSearches.length > 0 || popularSearches.length > 0 || collections.length > 0;
+    const hasContent = recentSearchEntries.length > 0 || popularSearches.length > 0 || collections.length > 0;
 
     if (!hasContent) {
         return (
@@ -572,7 +572,7 @@ function SearchPageInitialState({
 
     return (
         <div className="space-y-8 sm:space-y-12">
-            {recentSearches.length > 0 && (
+            {recentSearchEntries.length > 0 && (
                 <section>
                     <div className="mb-4 flex items-center justify-between sm:mb-5">
                         <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-medium tracking-wider uppercase">
@@ -584,16 +584,37 @@ function SearchPageInitialState({
                         </Button>
                     </div>
                     <div className="flex flex-wrap gap-2 sm:gap-3">
-                        {recentSearches.map(searchTerm => (
-                            <Button
-                                key={searchTerm}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => onSuggestionClick(searchTerm)}
-                                className="border-[var(--border-strong)] text-sm"
+                        {recentSearchEntries.map(entry => (
+                            <button
+                                type="button"
+                                key={entry.term}
+                                onClick={() => onSuggestionClick(entry.term)}
+                                className={cn(
+                                    "group sleek flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm",
+                                    "border-[var(--border-strong)] bg-background hover:bg-accent hover:border-primary/40"
+                                )}
+                                aria-label={`Search again for ${entry.term}`}
                             >
-                                {searchTerm}
-                            </Button>
+                                {entry.image ? (
+                                    <span className="bg-muted relative inline-flex size-8 shrink-0 overflow-hidden rounded-full">
+                                        <img
+                                            src={entry.image}
+                                            alt=""
+                                            aria-hidden="true"
+                                            className="h-full w-full object-cover"
+                                            loading="lazy"
+                                        />
+                                    </span>
+                                ) : (
+                                    <span
+                                        className="bg-muted text-muted-foreground inline-flex size-8 shrink-0 items-center justify-center rounded-full"
+                                        aria-hidden="true"
+                                    >
+                                        <Search className="size-3.5" />
+                                    </span>
+                                )}
+                                <span className="truncate max-w-[20ch]">{entry.term}</span>
+                            </button>
                         ))}
                     </div>
                 </section>
