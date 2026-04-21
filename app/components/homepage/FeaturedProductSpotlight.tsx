@@ -146,7 +146,7 @@ export function FeaturedProductSpotlight({product, sectionNumber}: FeaturedProdu
                                 asChild
                                 variant="outline"
                                 size="lg"
-                                className="justify-between rounded-[var(--radius-pill-raw)] px-6 py-6 text-sm uppercase tracking-[0.22em] hover:translate-y-0"
+                                className="w-full justify-between rounded-[var(--radius-pill-raw)] px-6 py-6 text-sm uppercase tracking-[0.22em] hover:translate-y-0 md:w-auto"
                             >
                                 <Link to={`/products/${product.handle}`} prefetch="intent">
                                     View featured product
