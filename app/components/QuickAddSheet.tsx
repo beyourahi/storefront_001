@@ -1,11 +1,13 @@
 import {useState, useEffect, useMemo, useCallback} from "react";
 import {useFetcher} from "react-router";
 import {CartForm} from "@shopify/hydrogen";
-import {Loader2, Share2} from "lucide-react";
+import {Share2} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
 import {QuantitySelector} from "~/components/QuantitySelector";
 import {Badge} from "~/components/ui/badge";
+import {Button} from "~/components/ui/button";
+import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody, SheetFooter} from "~/components/ui/sheet";
 import {ColorSwatch} from "~/components/ui/color-swatch";
 import {isColorOption, getSwatchFromColorName, hasColorMapping} from "~/lib/color-name-map";
@@ -149,8 +151,8 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                                     ))}
                                 </div>
                             )}
-                            <div className="flex items-center gap-3 mt-1">
-                                <span className="font-mono tabular-nums text-sm text-primary">
+                            <div className="flex items-center gap-2 mt-1">
+                                <span className="font-mono tabular-nums text-base font-semibold text-primary">
                                     {selectedVariant ? (
                                         formatShopifyMoney(selectedVariant.price)
                                     ) : (
@@ -166,6 +168,13 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                                         </>
                                     )}
                                 </span>
+                                {selectedVariant?.compareAtPrice &&
+                                    parseFloat(selectedVariant.compareAtPrice.amount) >
+                                        parseFloat(selectedVariant.price.amount) && (
+                                        <s className="font-mono tabular-nums text-sm text-muted-foreground">
+                                            {formatShopifyMoney(selectedVariant.compareAtPrice)}
+                                        </s>
+                                    )}
                             </div>
                         </div>
                     </div>
@@ -173,62 +182,59 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
 
                 <SheetBody className="py-4" data-lenis-prevent>
                     {optionGroups.length > 0 && (
-                        <div className="space-y-4">
+                        <div className="space-y-5">
                             {optionGroups.map(group => {
                                 const isColor = isColorOption(group.name);
                                 return (
-                                    <div key={group.name} className="flex flex-wrap gap-2">
-                                        {group.values.map(value => {
-                                            const isSelected = currentSelections[group.name] === value.value;
-                                            const variant = findVariantByOptions(product.variants.nodes, {
-                                                ...currentSelections,
-                                                [group.name]: value.value
-                                            });
-                                            const isAvailable = variant?.availableForSale ?? false;
-                                            const swatchData = isColor
-                                                ? getSwatchFromColorName(value.value)
-                                                : undefined;
-                                            const hasSwatchData = isColor && hasColorMapping(value.value);
+                                    <div key={group.name}>
+                                        <p className="text-sm font-semibold text-foreground mb-2">{group.name}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {group.values.map(value => {
+                                                const isSelected = currentSelections[group.name] === value.value;
+                                                const variant = findVariantByOptions(product.variants.nodes, {
+                                                    ...currentSelections,
+                                                    [group.name]: value.value
+                                                });
+                                                const isAvailable = variant?.availableForSale ?? false;
+                                                const swatchData = isColor
+                                                    ? getSwatchFromColorName(value.value)
+                                                    : undefined;
+                                                const hasSwatchData = isColor && hasColorMapping(value.value);
 
-                                            const buttonClasses = cn(
-                                                "inline-flex min-h-10 select-none items-center justify-center gap-2 rounded-full border-2 px-3 py-1.5 text-base font-medium sleek hover:scale-[1.02] hover:shadow-md active:scale-[0.98]",
-                                                isSelected
-                                                    ? "border-primary bg-primary text-primary-foreground"
-                                                    : "border-primary text-primary hover:bg-primary hover:text-primary-foreground",
-                                                !isAvailable && "opacity-50 cursor-not-allowed"
-                                            );
-
-                                            const optionContent =
-                                                hasSwatchData && swatchData ? (
-                                                    <span className="inline-flex items-center gap-2">
-                                                        <ColorSwatch
-                                                            color={swatchData.color}
-                                                            name={value.value}
-                                                            size="sm"
-                                                            selected={isSelected}
-                                                        />
+                                                const optionContent =
+                                                    hasSwatchData && swatchData ? (
+                                                        <span className="inline-flex items-center gap-2">
+                                                            <ColorSwatch
+                                                                color={swatchData.color}
+                                                                name={value.value}
+                                                                size="sm"
+                                                                selected={isSelected}
+                                                            />
+                                                            <span>{value.value}</span>
+                                                        </span>
+                                                    ) : (
                                                         <span>{value.value}</span>
-                                                    </span>
-                                                ) : (
-                                                    <span>{value.value}</span>
-                                                );
+                                                    );
 
-                                            return (
-                                                <button
-                                                    key={value.value}
-                                                    type="button"
-                                                    disabled={!isAvailable}
-                                                    onClick={() => {
-                                                        if (variant && isAvailable) {
-                                                            setSelectedVariantId(variant.id);
-                                                        }
-                                                    }}
-                                                    className={buttonClasses}
-                                                >
-                                                    {optionContent}
-                                                </button>
-                                            );
-                                        })}
+                                                return (
+                                                    <Button
+                                                        key={value.value}
+                                                        type="button"
+                                                        variant={isSelected ? "default" : "secondary"}
+                                                        size="sm"
+                                                        disabled={!isAvailable}
+                                                        onClick={() => {
+                                                            if (variant && isAvailable) {
+                                                                setSelectedVariantId(variant.id);
+                                                            }
+                                                        }}
+                                                        className={cn(!isAvailable && "opacity-50 cursor-not-allowed")}
+                                                    >
+                                                        {optionContent}
+                                                    </Button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
                                 );
                             })}
@@ -236,7 +242,7 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                     )}
                 </SheetBody>
 
-                <SheetFooter className="border-none flex-col gap-3">
+                <SheetFooter className="flex-col gap-3">
                     {selectedVariant && selectedVariant.availableForSale && (
                         <div className="flex items-center justify-between gap-3">
                             <QuantitySelector quantity={quantity} onQuantityChange={setQuantity} min={1} max={10} />
@@ -265,9 +271,15 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                             productHandle={product.handle}
                         />
                     ) : availableVariants.length === 0 ? (
-                        <div className="w-full min-h-12 inline-flex items-center justify-center rounded-full border-2 border-muted bg-muted/50 px-3 sm:px-4 py-2 text-lg font-medium text-muted-foreground">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            size="lg"
+                            disabled
+                            className="w-full opacity-60 cursor-not-allowed cta-primary-emphasis"
+                        >
                             {OUT_OF_STOCK_LABEL}
-                        </div>
+                        </Button>
                     ) : null}
                 </SheetFooter>
             </SheetContent>
@@ -325,28 +337,22 @@ function QuickAddCartButton({
     }, [fetcher, isLoading, variant, quantity, productId, productTitle, productHandle]);
 
     return (
-        <button
+        <Button
             type="button"
+            size="lg"
             onClick={handleAddToCart}
             disabled={isLoading || !variant.availableForSale}
             className={cn(
-                "w-full min-h-12 inline-flex select-none items-center justify-between gap-4 rounded-full border-2 border-primary bg-transparent px-3 sm:px-4 py-2 text-lg font-medium text-primary sleek",
-                "hover:bg-primary hover:text-primary-foreground active:bg-primary active:text-primary-foreground",
+                "sleek cta-primary-emphasis w-full",
                 (isLoading || !variant.availableForSale) && "opacity-50 cursor-not-allowed"
             )}
         >
-            <span className="flex items-center gap-2">
-                {formatShopifyMoney(variant.price)}
-                {variant.compareAtPrice &&
-                    parseFloat(variant.compareAtPrice.amount) > parseFloat(variant.price.amount) && (
-                        <s className="text-sm opacity-60">{formatShopifyMoney(variant.compareAtPrice)}</s>
-                    )}
-            </span>
-            <span className="flex items-center gap-2">
-                {isLoading && <Loader2 className="size-5 animate-spin" />}
-                {variant.availableForSale ? buttonLabel : OUT_OF_STOCK_LABEL}
-            </span>
-        </button>
+            {isLoading ? (
+                <ButtonSpinner />
+            ) : (
+                <span>{variant.availableForSale ? buttonLabel : OUT_OF_STOCK_LABEL}</span>
+            )}
+        </Button>
     );
 }
 

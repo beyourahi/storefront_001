@@ -64,7 +64,8 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                   }
                 : undefined
         }) ?? []),
-        ...getRequiredSocialMeta("website", brandName, featuredArticle?.image?.url ?? undefined)
+        ...getRequiredSocialMeta("website", brandName, featuredArticle?.image?.url ?? undefined),
+        {rel: "alternate", type: "application/rss+xml", title: `${pageTitle} RSS Feed`, href: "/blogs/feed.xml"}
     ];
 };
 

@@ -118,58 +118,58 @@ export default function Article() {
             <PageBreadcrumbs />
 
             {image && (
-                <AnimatedSection animation="fade" threshold={0.08}>
-                    <div className="relative w-full overflow-hidden md:rounded-2xl md:mx-auto md:max-w-5xl">
-                        <div className="aspect-[16/9] relative">
-                            <Image
-                                data={image}
-                                sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 100vw"
-                                loading="eager"
-                                className="h-full w-full object-cover absolute inset-0"
-                            />
-                            <div
-                                className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
-                                style={{background: "linear-gradient(to top, var(--color-background), transparent)"}}
-                                aria-hidden="true"
-                            />
-                        </div>
+                <div className="relative w-full overflow-hidden md:rounded-2xl md:mx-auto md:max-w-5xl">
+                    <div className="aspect-[16/9] relative">
+                        <Image
+                            data={image}
+                            sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 100vw"
+                            loading="eager"
+                            className="h-full w-full object-cover absolute inset-0"
+                        />
+                        <div
+                            className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+                            style={{background: "linear-gradient(to top, var(--color-background), transparent)"}}
+                            aria-hidden="true"
+                        />
                     </div>
-                </AnimatedSection>
+                </div>
             )}
 
-            <AnimatedSection animation="slide-up" threshold={0.1}>
-                <article className="mx-auto max-w-[2000px] px-2 md:px-4">
-                    <header className="mx-auto max-w-3xl text-center space-y-5 md:space-y-6 pt-6 md:pt-8 mb-10 md:mb-14 lg:mb-16">
-                        {tags && tags.length > 0 && (
-                            <div className="flex justify-center">
-                                <TagList tags={tags} variant="outline" size="sm" blogHandle={blogHandle} />
-                            </div>
-                        )}
-
-                        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium leading-[1.15] tracking-tight text-primary">
-                            {title}
-                        </h1>
-
-                        <div className="flex flex-wrap items-center justify-center gap-2">
-                            <Badge variant="secondary">
-                                <time dateTime={publishedAt}>{publishedDate}</time>
-                            </Badge>
-                            <Badge variant="secondary">{readingTime} min read</Badge>
-                            {author?.name && <Badge variant="outline">{author.name}</Badge>}
+            <article className="mx-auto max-w-[2000px] px-2 md:px-4">
+                <header className="mx-auto max-w-3xl text-center space-y-5 md:space-y-6 pt-6 md:pt-8 mb-10 md:mb-14 lg:mb-16">
+                    {tags && tags.length > 0 && (
+                        <div className="flex justify-center">
+                            <TagList tags={tags} variant="outline" size="sm" blogHandle={blogHandle} />
                         </div>
+                    )}
 
-                        <div className="flex justify-center pt-2" aria-hidden="true">
-                            <div className="w-12 h-px bg-primary/30" />
-                        </div>
-                    </header>
+                    <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium leading-[1.15] tracking-tight text-primary">
+                        {title}
+                    </h1>
 
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                        <Badge variant="secondary">
+                            <time dateTime={publishedAt}>{publishedDate}</time>
+                        </Badge>
+                        <Badge variant="secondary">{readingTime} min read</Badge>
+                        {author?.name && <Badge variant="outline">{author.name}</Badge>}
+                    </div>
+
+                    <div className="flex justify-center pt-2" aria-hidden="true">
+                        <div className="w-12 h-px bg-primary/30" />
+                    </div>
+                </header>
+
+                <AnimatedSection animation="fade" threshold={0.05}>
                     {/* Article HTML content from Shopify admin — trusted source */}
                     <div
                         ref={contentRef}
                         dangerouslySetInnerHTML={{__html: contentHtml}}
                         className="article-content mx-auto max-w-3xl py-8 md:py-10 lg:py-12"
                     />
+                </AnimatedSection>
 
+                <AnimatedSection animation="fade" threshold={0.1}>
                     <div className="mx-auto max-w-3xl pt-8 md:pt-10 pb-6 md:pb-8">
                         <ShareButtons
                             article={{
@@ -201,8 +201,8 @@ export default function Article() {
                             </Link>
                         </Button>
                     </div>
-                </article>
-            </AnimatedSection>
+                </AnimatedSection>
+            </article>
 
             {relatedArticles && relatedArticles.length > 0 && (
                 <AnimatedSection animation="fade" threshold={0.1}>

@@ -37,6 +37,19 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-21",
+        headline: "Quick-add panel redesigned to match the site's style",
+        summary:
+            "The quick-add sheet that opens when you tap \"Get Now\" on a suggested product now uses the same buttons, typography, and spacing as the rest of the store. The add-to-cart button is now a full-width solid button, and variant selectors match the style found on product pages.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-21",
+        headline: "Blog articles now available as an RSS feed",
+        summary: "All published blog posts are now syndicated at /blogs/feed.xml in RSS 2.0 format. Subscribe in any RSS reader to get new articles automatically, or share the feed link with newsletter tools and content aggregators.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-21",
         headline: "\"Get Now\" in cart suggestions now opens the product options panel",
         summary:
             "Tapping \"Get Now\" on a suggested product inside the cart now correctly opens the full quick-add panel, where you can pick a size or colour and add it in one step. Previously the button had no effect.",

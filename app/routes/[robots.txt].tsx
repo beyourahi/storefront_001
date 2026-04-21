@@ -25,6 +25,8 @@ const robotsTxtData = ({url, shopId}: {shopId?: string; url?: string}) => {
 User-agent: *
 ${generalDisallowRules({sitemapUrl, shopId})}
 
+${aiCrawlerRules({shopId})}
+
 User-agent: adsbot-google
 Disallow: /checkouts/
 Disallow: /checkout
@@ -53,6 +55,37 @@ Crawl-Delay: 10
 User-agent: Pinterest
 Crawl-delay: 1
 `.trim();
+};
+
+const aiCrawlerRules = ({shopId}: {shopId?: string}) => {
+    return `# AI crawlers — explicitly permitted to index all public storefront content
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: Claude-Web
+User-agent: Google-Extended
+User-agent: PerplexityBot
+User-agent: YouBot
+User-agent: Applebot-Extended
+User-agent: cohere-ai
+User-agent: CCBot
+User-agent: Bytespider
+Allow: /products
+Allow: /collections
+Allow: /blogs
+Allow: /pages
+Allow: /policies
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+Disallow: /checkouts/
+Disallow: /carts
+Disallow: /orders
+Disallow: /account
+${shopId ? `Disallow: /${shopId}/checkouts` : ""}
+${shopId ? `Disallow: /${shopId}/orders` : ""}`;
 };
 
 const generalDisallowRules = ({shopId, sitemapUrl}: {shopId?: string; sitemapUrl?: string}) => {

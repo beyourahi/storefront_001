@@ -1,8 +1,9 @@
-import {Link} from "react-router";
-import {Heart, Images, ScrollText, User} from "lucide-react";
+import {Link, useRouteLoaderData} from "react-router";
+import {Heart, Images, Newspaper, ScrollText, User} from "lucide-react";
 import {OpenInAppButton} from "~/components/pwa/OpenInAppButton";
 import {cn} from "~/lib/utils";
 import {useWishlist} from "~/lib/wishlist-context";
+import type {RootLoader} from "~/root";
 
 type MobileMenuSettingsProps = {
     currentPath: string;
@@ -11,6 +12,9 @@ type MobileMenuSettingsProps = {
 
 export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSettingsProps) => {
     const {count: wishlistCount} = useWishlist();
+    const data = useRouteLoaderData<RootLoader>("root");
+    const hasBlog = data?.hasBlog;
+    const isBlogActive = currentPath === "/blogs" || currentPath.startsWith("/blogs/");
 
     const isWishlistActive =
         currentPath === "/account/wishlist" ||
@@ -110,6 +114,36 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                         Gallery
                     </span>
                 </Link>
+                {hasBlog && (
+                    <Link
+                        to="/blogs"
+                        onClick={onLinkClick}
+                        aria-current={isBlogActive ? "page" : undefined}
+                        className={cn(
+                            "mobile-nav-link group sleek flex items-center gap-3 rounded-md px-4 py-4 text-sm font-medium active:scale-[0.98]",
+                            isBlogActive
+                                ? "bg-primary text-primary-foreground shadow-primary/25 ring-primary/20 scale-[1.02] font-semibold shadow-md ring-2"
+                                : "bg-muted text-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-accent/10 hover:shadow-sm"
+                        )}
+                    >
+                        <Newspaper
+                            className={cn(
+                                "sleek h-4 w-4 group-hover:scale-110",
+                                isBlogActive
+                                    ? "text-primary-foreground"
+                                    : "text-muted-foreground group-hover:text-accent-foreground"
+                            )}
+                        />
+                        <span
+                            className={cn(
+                                "sleek group-hover:translate-x-0.5",
+                                isBlogActive ? "drop-shadow-sm" : ""
+                            )}
+                        >
+                            Blog
+                        </span>
+                    </Link>
+                )}
                 <Link
                     to="/changelog"
                     onClick={onLinkClick}
