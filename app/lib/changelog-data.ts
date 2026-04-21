@@ -57,6 +57,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     },
     {
         date: "2026-04-21",
+        headline: "Cart suggestions scroll smoothly on touch screens and trackpads",
+        summary:
+            "The suggested products inside the cart drawer can now be scrolled horizontally with a finger swipe or two-finger trackpad gesture. Previously, touch swipes were being captured by the drawer itself, making the suggestion cards difficult to browse on phones and tablets.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-21",
         headline: "Save any product to your wishlist directly from its page",
         summary:
             "A heart button now appears next to the product title on every product page. Tap it to save the item — the heart fills with a pop animation, and you get a toast confirmation with an undo option. Your saved items persist across sessions and stay in sync across tabs.",
@@ -67,6 +74,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         headline: "Wishlist button now reads clearly over any product image",
         summary:
             "The save button on product cards now has a frosted glass background so it stands out against any image colour or tone. Tapping it plays a satisfying pop animation as the heart fills. The button position remains at the bottom-left corner of the card image.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-21",
+        headline: "Wishlist sort order and item count are now saved between visits",
+        summary:
+            "Your preferred sort on the wishlist page — by date saved, lowest price, or highest price — is now remembered so the page opens the same way next time. The page also shows how many items you have saved, and the sort control uses the same styled selector as the rest of the store.",
         category: "Improvement"
     },
     {
@@ -232,6 +246,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     },
     {
         date: "2026-04-16",
+        headline: "Customer reviews section launched on all product pages",
+        summary:
+            "Product pages now include a dedicated reviews section where customers can share star ratings, a review title, and written feedback. An overall rating score and score distribution are shown at a glance. Reviews are pulled from the store's content management system and appear automatically when published.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-16",
         headline: "Review section adapts its layout to the number of reviews",
         summary:
             "Product pages with a single review now display a focused, editorial-style card rather than a lonely item in a wide grid. Two reviews get a balanced side-by-side layout. Three reviews use an asymmetric featured arrangement on larger screens. Four or more reviews are shown in a scrollable carousel with navigation arrows and dot indicators.",
@@ -266,6 +287,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         category: "New Feature"
     },
     {
+        date: "2026-04-15",
+        headline: "Newsletter sign-up now shows a privacy notice and account link",
+        summary:
+            "The email sign-up form now includes a short consent note explaining what subscribers receive and how to unsubscribe. If you already have an account, a direct log-in link is shown so you don't need to sign up twice. The form also clears itself after a successful submission and hides the confirmation message automatically after a few seconds.",
+        category: "Improvement"
+    },
+    {
         date: "2026-04-14",
         time: "3pm",
         headline: "Changelog dates now show the time of day each update shipped",
@@ -279,6 +307,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         headline: "Changelog update list now has balanced side spacing",
         summary:
             "The list of updates on the Changelog page now has equal breathing room on both sides at wider screen sizes. Previously, the right edge of the update cards sat closer to the screen edge than the left side, creating a slightly uneven appearance. The spacing is now consistent for a cleaner reading experience.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-14",
+        headline: "Contact page retired — use the live chat buttons instead",
+        summary:
+            "The contact form page has been removed. The floating WhatsApp and Messenger buttons on every page connect you directly to support and get faster responses than a form submission. Any saved or shared links to the contact page now redirect to the FAQ.",
         category: "Improvement"
     },
     {
@@ -320,6 +355,14 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         summary:
             "The WhatsApp and Messenger contact buttons have moved to the conventional bottom-right position where you'd expect them. They now sit just above the copyright line with comfortable spacing, and the App install button no longer duplicates between the navbar and the floating position on mobile.",
         category: "Fix"
+    },
+    {
+        date: "2026-04-10",
+        time: "2pm",
+        headline: "Changelog page launched — track every store update in one place",
+        summary:
+            "A new Changelog page is now linked in the store navigation. Every meaningful update, fix, and new feature is listed here in plain language so you can always see what changed and when. The page is updated with each release.",
+        category: "New Feature"
     },
     {
         date: "2026-04-10",
@@ -511,6 +554,153 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         headline: "Search results and sale page can now be sorted",
         summary:
             "You can now sort items on the search results page and sale page by price (low to high or high to low), newest first, or best-selling. The sort bar appears alongside the existing filters so you stay in control of what you see.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-05",
+        headline: "Blank sections no longer appear on store pages",
+        summary:
+            "Some page sections were rendering as empty white gaps when no content had been set up for them in the store settings. Those sections now hide themselves automatically, so every page looks complete and intentional with no unexplained blank spaces.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-04",
+        headline: "Product listings now show only items you can actually buy",
+        summary:
+            "All collection pages, search results, and the sale page now automatically filter out products that are unavailable or sold out. The \"In Stock Only\" checkbox that previously required manual toggling has been removed — you will only ever see products you can add to your cart.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-03",
+        headline: "Trackpad horizontal scroll added to product and homepage carousels",
+        summary:
+            "Swiping left and right with a laptop trackpad or two-finger gesture now scrolls through the featured product carousels, homepage sections, and the product image gallery. The update covers most carousels across the store.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-03",
+        headline: "Homepage video hero now shows the current date and time",
+        summary:
+            "The video section at the top of the homepage now displays a live date and time that updates in real time as you browse. It adds a sense of immediacy to the hero.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-03",
+        headline: "Product images now load correctly across the entire store",
+        summary:
+            "Some product images were failing to display due to a problem with how image URLs were being constructed for the Shopify image delivery network. All product images — in carousels, cards, galleries, and the lightbox — now load as expected.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-03",
+        headline: "Gallery loading shimmer no longer gets stuck on cached pages",
+        summary:
+            "When returning to a product page that your browser had already cached, the image gallery could sometimes stay in a loading state — showing the shimmer animation indefinitely even though the images had already loaded. This is now fixed.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-03",
+        headline: "Announcement banner now displays correctly",
+        summary:
+            "The announcement bar at the top of the store was not appearing for some configurations due to a parsing issue. It now handles all supported formats from the store's content settings and renders reliably on every page.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-03",
+        headline: "Homepage hero greeting restored and layout made stable",
+        summary:
+            "The welcome text and greeting on the homepage hero was invisible in some states and caused a visible layout jump as the page first loaded. The greeting now appears immediately and the layout stays fixed throughout the page load.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-02",
+        headline: "Account pages fully redesigned",
+        summary:
+            "Every page in the customer account area — order history, addresses, profile settings, wishlist, and returns — has been given a complete visual overhaul. The layout is now cleaner and more consistent throughout, and all pages work correctly on mobile and tablet.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-01",
+        headline: "Strike-through prices now only appear when there is a genuine saving",
+        summary:
+            "Some products were showing a crossed-out original price even when it was identical to the selling price, falsely implying a discount. The original price is now only shown when there is a real difference, so every price you see is accurate.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-01",
+        headline: "Discount code field removed from the cart panel",
+        summary:
+            "The discount code input has been removed from the slide-out cart. Discount codes can be applied at checkout, which is where they work most reliably and where Shopify processes them natively.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-01",
+        headline: "Old product and collection links now redirect to the right pages",
+        summary:
+            "Links that use an older URL format — such as those from shared posts or saved bookmarks — now automatically redirect to the correct product or collection page instead of showing a 404 error.",
+        category: "Maintenance"
+    },
+    {
+        date: "2026-04-01",
+        headline: "Product image lightbox errors fixed",
+        summary:
+            "The full-screen image viewer on product pages could throw an error and stop working on some browsers and devices. It now opens and closes reliably across all supported environments.",
+        category: "Fix"
+    },
+    {
+        date: "2026-03-26",
+        headline: "Buttons lock while a request is processing to prevent accidental double-taps",
+        summary:
+            "Tapping a button twice quickly — such as Add to Cart, Buy Now, or a form submit — could trigger the action twice. All interactive buttons now disable themselves the moment they are tapped and only re-enable once the action has completed.",
+        category: "Fix"
+    },
+    {
+        date: "2026-03-23",
+        headline: "Navigation breadcrumbs added to the sale page",
+        summary:
+            "The sale page now shows a breadcrumb trail at the top so you always know where you are in the store and can navigate back in one tap. Previously the sale page had no breadcrumb navigation.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-03-11",
+        headline: "Smooth transitions added to all buttons, cards, and interactive elements",
+        summary:
+            "Every interactive element across the store — product cards, navigation links, cart buttons, input fields, and badges — now transitions smoothly when you hover over or tap it. The effect is consistent and subtle throughout.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-03-11",
+        headline: "Background page now stays put when a drawer or panel is open",
+        summary:
+            "Opening the cart, mobile menu, image lightbox, or any overlay panel now locks the background page in place so it doesn't scroll underneath. Your scroll position is preserved exactly where you left it when the panel closes.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-03-11",
+        headline: "Collections section was showing zero products — now fixed",
+        summary:
+            "The collections grid on the homepage was displaying a product count of zero beneath every collection, regardless of how many items were inside. It now shows the correct count.",
+        category: "Fix"
+    },
+    {
+        date: "2026-03-10",
+        headline: "Carousel images now fill their frames without distortion",
+        summary:
+            "Product images inside carousels were sometimes showing with letterboxing or leaving empty space at the sides when the image proportions didn't match the carousel frame. Images now fill their containers cleanly regardless of their original dimensions.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-03-04",
+        headline: "\"Buy Now\" and \"Proceed to Checkout\" now go to the correct checkout page",
+        summary:
+            "The Buy Now and Proceed to Checkout buttons were not correctly navigating to the Shopify checkout page. They now send you to the right URL every time, so the purchase flow works as expected from end to end.",
+        category: "Fix"
+    },
+    {
+        date: "2026-03-04",
+        headline: "Store logo now appears in the navigation bar",
+        summary:
+            "The brand logo is now displayed in the top navigation bar, pulled directly from the store's settings. Stores without an uploaded logo fall back to displaying the store name as text.",
         category: "New Feature"
     }
 ];
