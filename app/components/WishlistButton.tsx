@@ -42,7 +42,7 @@ export const WishlistButton = ({productId, size, showLabel = false, className, .
         toggle(productId);
 
         setIsAnimating(true);
-        setTimeout(() => setIsAnimating(false), 300);
+        setTimeout(() => setIsAnimating(false), 360);
     };
 
     const label = wishlisted ? "Remove from wishlist" : "Add to wishlist";
@@ -57,28 +57,21 @@ export const WishlistButton = ({productId, size, showLabel = false, className, .
             title={label}
             {...props}
         >
-            <span className={cn("motion-image", isAnimating && "scale-125")}>
-                {wishlisted ? (
-                    <Heart
-                        className={cn(
-                            "motion-interactive",
-                            size === "sm" && "h-5 w-5",
-                            size === "md" && "h-6 w-6",
-                            size === "lg" && "h-7 w-7",
-                            "fill-wishlist-active text-wishlist-active"
-                        )}
-                    />
-                ) : (
-                    <Heart
-                        className={cn(
-                            "motion-interactive",
-                            size === "sm" && "h-5 w-5",
-                            size === "md" && "h-6 w-6",
-                            size === "lg" && "h-7 w-7",
-                            canHover ? "text-muted-foreground hover:text-foreground" : "text-muted-foreground"
-                        )}
-                    />
-                )}
+            <span className={cn(isAnimating && "animate-heart-pop")}>
+                <Heart
+                    className={cn(
+                        "motion-interactive",
+                        size === "sm" && "h-5 w-5",
+                        size === "md" && "h-6 w-6",
+                        size === "lg" && "h-7 w-7",
+                        wishlisted
+                            ? "fill-wishlist-active text-wishlist-active"
+                            : cn(
+                                  "fill-transparent",
+                                  canHover ? "text-muted-foreground hover:text-foreground" : "text-muted-foreground"
+                              )
+                    )}
+                />
             </span>
             {showLabel && <span className="ml-2 text-sm font-medium">{wishlisted ? "Saved" : "Save"}</span>}
         </button>

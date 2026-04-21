@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-21",
+        headline: "Wishlist button now reads clearly over any product image",
+        summary:
+            "The save button on product cards now has a frosted glass background so it stands out against any image colour or tone. Tapping it plays a satisfying pop animation as the heart fills. The button position remains at the bottom-left corner of the card image.",
+        category: "Improvement"
+    },
+    {
         date: "2026-04-20",
         headline: "Only the changed item's price animates during cart updates",
         summary:

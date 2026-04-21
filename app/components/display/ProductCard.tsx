@@ -125,9 +125,13 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     </div>
                 )}
 
-                {/* Wishlist button — always visible for both in-stock and OOS products */}
+                {/* Wishlist button — bottom-left, frosted glass so it reads over any image */}
                 <div className="absolute left-1 bottom-1 z-20">
-                    <WishlistButton productId={product.id} size="sm" />
+                    <WishlistButton
+                        productId={product.id}
+                        size="sm"
+                        className="bg-background/75 shadow-sm backdrop-blur-md hover:bg-background/95 hover:shadow-md"
+                    />
                 </div>
 
                 <div className="absolute right-1 bottom-1 z-20">

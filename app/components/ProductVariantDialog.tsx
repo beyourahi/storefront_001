@@ -236,7 +236,7 @@ export function ProductVariantDialog({
                 onClick={() => void handleButtonClick()}
                 disabled={triggerDisabled}
                 className={cn(
-                    "sleek !border-foreground/20 !bg-card !text-card-foreground hover:!bg-muted hover:!text-card-foreground hover:!border-foreground/40 inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-md !border-2 px-6 text-sm font-medium whitespace-nowrap !opacity-100 shadow-xs outline-none hover:!scale-[1.02] hover:!shadow-md focus-visible:ring-[3px] active:!scale-[0.98] has-[>svg]:px-4",
+                    "sleek !border-foreground/20 !bg-card !text-card-foreground hover:!bg-muted hover:!text-card-foreground hover:!border-foreground/40 inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-md !border-2 px-4 text-sm font-medium whitespace-nowrap !opacity-100 shadow-xs outline-none hover:!scale-[1.02] hover:!shadow-md focus-visible:ring-[3px] active:!scale-[0.98]",
                     addToCartState === "success" &&
                         "!border-success !bg-success !text-success-foreground hover:!border-success hover:!bg-success/90",
                     addToCartState === "adding" && "cursor-wait",
