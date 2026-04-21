@@ -265,10 +265,48 @@ body {
     100% { transform: scale(1); }
 }
 
+@keyframes heart-beat {
+    0%,
+    100% { transform: scale(1); }
+    14%  { transform: scale(1.18); }
+    28%  { transform: scale(1); }
+    42%  { transform: scale(1.12); }
+    56%  { transform: scale(1); }
+}
+
+@keyframes heart-glow {
+    0%,
+    100% { filter: drop-shadow(0 0 0 transparent); }
+    50%  { filter: drop-shadow(0 0 6px oklch(from var(--wishlist-active) l c h / 0.5)); }
+}
+
+@keyframes heart-breathe {
+    0%,
+    100% { transform: scale(1); opacity: 0.9; }
+    50%  { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes burst-ring {
+    0%   { box-shadow: 0 0 0 0 oklch(from var(--wishlist-active) l c h / 0.6); }
+    70%  { box-shadow: 0 0 0 10px oklch(from var(--wishlist-active) l c h / 0); }
+    100% { box-shadow: 0 0 0 0 oklch(from var(--wishlist-active) l c h / 0); }
+}
+
+/* Group-hover breathing effect — only on pointer devices to avoid sticky animation on touch */
+@media (hover: hover) and (pointer: fine) {
+    .group:hover .group-hover\:animate-heart-breathe {
+        animation: heart-breathe 1.8s ease-in-out infinite;
+    }
+}
+
 @theme inline {
     /* Animation utilities */
     --animate-announcement-scroll: announcement-scroll var(--announcement-scroll-duration) linear infinite;
     --animate-heart-pop: heart-pop 360ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    --animate-heart-beat: heart-beat 1.4s ease-in-out infinite;
+    --animate-heart-glow: heart-glow 2s ease-in-out infinite;
+    --animate-heart-breathe: heart-breathe 1.8s ease-in-out infinite;
+    --animate-burst-ring: burst-ring 600ms cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Base colors */
     --color-background: var(--background);

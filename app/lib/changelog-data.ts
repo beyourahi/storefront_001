@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-21",
+        headline: "Save any product to your wishlist directly from its page",
+        summary:
+            "A heart button now appears next to the product title on every product page. Tap it to save the item — the heart fills with a pop animation, and you get a toast confirmation with an undo option. Your saved items persist across sessions and stay in sync across tabs.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-21",
         headline: "Wishlist button now reads clearly over any product image",
         summary:
             "The save button on product cards now has a frosted glass background so it stands out against any image colour or tone. Tapping it plays a satisfying pop animation as the heart fills. The button position remains at the bottom-left corner of the card image.",

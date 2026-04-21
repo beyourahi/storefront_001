@@ -1,5 +1,6 @@
 import {ProductPageTitle} from "~/components/common/ProductPageTitle";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
+import {WishlistButton} from "~/components/WishlistButton";
 import {Badge} from "~/components/ui/badge";
 import {Skeleton} from "~/components/ui/skeleton";
 
@@ -10,12 +11,14 @@ type ProductMobileTitlePriceProps = {
         productType?: string;
     };
     discountPercentage?: number;
+    productId?: string;
 };
 
 export const ProductMobileTitlePrice = ({
     isLoading = false,
     product,
-    discountPercentage
+    discountPercentage,
+    productId
 }: ProductMobileTitlePriceProps) => {
     return (
         <div className="lg:hidden">
@@ -43,6 +46,13 @@ export const ProductMobileTitlePrice = ({
                 ) : product ? (
                     <ProductPageTitle title={product.title} as="p" aria-hidden={true} />
                 ) : null}
+                {!isLoading && productId && (
+                    <WishlistButton
+                        productId={productId}
+                        size="lg"
+                        className="ml-3 shrink-0"
+                    />
+                )}
             </div>
         </div>
     );

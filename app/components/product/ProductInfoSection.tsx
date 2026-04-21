@@ -2,6 +2,7 @@ import {ProductPageTitle} from "~/components/common/ProductPageTitle";
 import {ProductDescriptionAccordion} from "~/components/product/ProductDescriptionAccordion";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
 import {ProductBadgeStack} from "~/components/product/ProductBadge";
+import {WishlistButton} from "~/components/WishlistButton";
 import {Badge} from "~/components/ui/badge";
 import {Skeleton} from "~/components/ui/skeleton";
 import {getSpecialTags} from "~/lib/product-tags";
@@ -16,9 +17,10 @@ type ProductInfoSectionProps = {
         tags?: string[];
     };
     discountPercentage?: number;
+    productId?: string;
 };
 
-export const ProductInfoSection = ({isLoading = false, product, discountPercentage}: ProductInfoSectionProps) => {
+export const ProductInfoSection = ({isLoading = false, product, discountPercentage, productId}: ProductInfoSectionProps) => {
     const {badgeTypes} = getSpecialTags(product.tags);
 
     return (
@@ -48,6 +50,13 @@ export const ProductInfoSection = ({isLoading = false, product, discountPercenta
                 ) : product ? (
                     <ProductPageTitle title={product.title} />
                 ) : null}
+                {!isLoading && productId && (
+                    <WishlistButton
+                        productId={productId}
+                        size="lg"
+                        className="ml-3 shrink-0"
+                    />
+                )}
             </div>
 
             <div>
