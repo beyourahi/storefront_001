@@ -1,15 +1,17 @@
-import {useMemo} from "react";
+import {useMemo, useState, useEffect} from "react";
 import {Image} from "@shopify/hydrogen";
 import {Plus} from "lucide-react";
 import {Badge} from "~/components/ui/badge";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
+import {QuickAddDialog} from "~/components/QuickAddDialog";
+import {QuickAddSheet} from "~/components/QuickAddSheet";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 import {cn} from "~/lib/utils";
-import {getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
+import {getProductDataForCard, isProductCardData, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
-import type {CompactProductCardProps} from "~/lib/types/product-card";
+import type {CompactProductCardProps, ShopifyProduct} from "~/lib/types/product-card";
 
 export function CompactProductCard({product, className = "", onCartAdd, onProductClick, isMutating = false}: CompactProductCardProps) {
     const productData = useMemo(() => getProductDataForCard(product), [product]);
@@ -22,6 +24,33 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
         if (primary.length > 20) return `${primary.substring(0, 20)}...`;
         return primary;
     }, [primary]);
+
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const check = () => setIsMobile(window.matchMedia("(max-width: 767px)").matches);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
+
+    // Convert ShopifyProduct variant/image edges to the nodes format QuickAddDialog/QuickAddSheet expect.
+    // Falls back to null for ProductCardData (no variant edges), which keeps ProductVariantDialog as fallback.
+    const quickAddProduct = useMemo(() => {
+        if (isProductCardData(product)) return null;
+        const p = product as ShopifyProduct;
+        return {
+            id: p.id,
+            title: p.title,
+            handle: p.handle,
+            tags: p.tags,
+            featuredImage: p.images.edges[0]?.node ?? null,
+            images: {nodes: p.images.edges.map(e => e.node)},
+            priceRange: p.priceRange,
+            variants: {nodes: p.variants.edges.map(e => e.node)}
+        };
+    }, [product]);
 
     const handleProductClick = () => {
         onProductClick?.();
@@ -110,6 +139,33 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                     >
                         {OUT_OF_STOCK_LABEL}
                     </button>
+                ) : quickAddProduct ? (
+                    <>
+                        <button
+                            type="button"
+                            onClick={() => setIsDialogOpen(true)}
+                            disabled={isMutating}
+                            className="border-foreground/20 bg-card text-card-foreground sleek hover:bg-muted hover:border-foreground/40 hover:scale-[1.02] active:scale-[0.98] inline-flex h-8 w-full shrink-0 items-center justify-center rounded-md border-2 px-4 text-xs font-medium whitespace-nowrap"
+                        >
+                            <div className="flex w-full items-center justify-center gap-1.5">
+                                <Plus className="h-3 w-3" />
+                                <span>{isPreorder ? "PRE ORDER" : "Get Now"}</span>
+                            </div>
+                        </button>
+                        {isMobile ? (
+                            <QuickAddSheet
+                                product={quickAddProduct}
+                                open={isDialogOpen}
+                                onOpenChange={setIsDialogOpen}
+                            />
+                        ) : (
+                            <QuickAddDialog
+                                product={quickAddProduct}
+                                open={isDialogOpen}
+                                onOpenChange={setIsDialogOpen}
+                            />
+                        )}
+                    </>
                 ) : (
                     <ProductVariantDialog
                         productHandle={product.handle}

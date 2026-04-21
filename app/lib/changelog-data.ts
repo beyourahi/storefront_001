@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-21",
+        headline: "\"Get Now\" in cart suggestions now opens the product options panel",
+        summary:
+            "Tapping \"Get Now\" on a suggested product inside the cart now correctly opens the full quick-add panel, where you can pick a size or colour and add it in one step. Previously the button had no effect.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-21",
         headline: "Save any product to your wishlist directly from its page",
         summary:
             "A heart button now appears next to the product title on every product page. Tap it to save the item — the heart fills with a pop animation, and you get a toast confirmation with an undo option. Your saved items persist across sessions and stay in sync across tabs.",
