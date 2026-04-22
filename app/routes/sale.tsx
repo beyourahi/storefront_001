@@ -183,6 +183,20 @@ const SALE_PRODUCT_FRAGMENT = `#graphql
         height
       }
     }
+    media(first: 5) {
+      nodes {
+        __typename
+        ... on MediaImage {
+          id
+          image { url altText width height }
+        }
+        ... on Video {
+          id
+          sources { url mimeType }
+          previewImage { url altText width height }
+        }
+      }
+    }
     priceRange {
       minVariantPrice {
         amount

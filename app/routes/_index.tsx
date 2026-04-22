@@ -423,6 +423,20 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
               node { id url altText width height }
             }
           }
+          media(first: 5) {
+            nodes {
+              __typename
+              ... on MediaImage {
+                id
+                image { url altText width height }
+              }
+              ... on Video {
+                id
+                sources { url mimeType }
+                previewImage { url altText width height }
+              }
+            }
+          }
           priceRange {
             minVariantPrice { amount currencyCode }
             maxVariantPrice { amount currencyCode }
@@ -466,6 +480,20 @@ const ALL_PRODUCTS_QUERY = `#graphql
         images(first: 2) {
           edges {
             node { id url altText width height }
+          }
+        }
+        media(first: 5) {
+          nodes {
+            __typename
+            ... on MediaImage {
+              id
+              image { url altText width height }
+            }
+            ... on Video {
+              id
+              sources { url mimeType }
+              previewImage { url altText width height }
+            }
           }
         }
         priceRange {

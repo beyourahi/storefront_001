@@ -1,10 +1,12 @@
 import type {
     ShopifyImage,
+    ShopifyMediaNode,
     ShopifyMoney,
     ShopifyProduct,
     ShopifyProductOption,
     ShopifyProductSeo,
-    ShopifyProductVariant
+    ShopifyProductVariant,
+    ShopifyVideoSource
 } from "~/lib/types/product-card";
 
 type Maybe<T> = T | null | undefined;
@@ -104,6 +106,59 @@ const normalizeImages = (product: RawProduct): Array<Edge<ShopifyImage>> => {
     return featured ? [{node: featured}] : [];
 };
 
+const normalizeVideoSources = (sources: unknown): ShopifyVideoSource[] => {
+    if (!Array.isArray(sources)) return [];
+    return (sources as Record<string, unknown>[])
+        .filter(s => s?.url && s?.mimeType)
+        .map(s => ({
+            url: String(s.url),
+            mimeType: String(s.mimeType),
+            width: typeof s.width === "number" ? s.width : undefined,
+            height: typeof s.height === "number" ? s.height : undefined
+        }));
+};
+
+const normalizeMediaNodes = (product: RawProduct): Array<{node: ShopifyMediaNode}> => {
+    const media = product?.media as Record<string, unknown> | undefined;
+    const edgesSource = Array.isArray(media?.edges) ? (media.edges as Record<string, unknown>[]) : [];
+    const nodesSource = Array.isArray(media?.nodes) ? (media.nodes as Record<string, unknown>[]) : [];
+    const rawNodes = edgesSource.length > 0
+        ? edgesSource.map(edge => edge?.node as Record<string, unknown>)
+        : nodesSource;
+
+    const entries: Array<{node: ShopifyMediaNode}> = [];
+    for (const node of rawNodes) {
+        if (!node || typeof node !== "object") continue;
+        const typename = String(node.__typename ?? "");
+        if (typename === "Video") {
+            const sources = normalizeVideoSources(node.sources);
+            if (sources.length === 0) continue;
+            const preview = normalizeImage(node.previewImage as Maybe<Partial<ShopifyImage>>);
+            entries.push({
+                node: {
+                    __typename: "Video",
+                    id: node.id ? String(node.id) : undefined,
+                    alt: (node.alt as string | null) ?? null,
+                    sources,
+                    previewImage: preview
+                }
+            });
+        } else if (typename === "MediaImage") {
+            const image = normalizeImage(node.image as Maybe<Partial<ShopifyImage>>);
+            if (!image) continue;
+            entries.push({
+                node: {
+                    __typename: "MediaImage",
+                    id: node.id ? String(node.id) : undefined,
+                    alt: (node.alt as string | null) ?? null,
+                    image
+                }
+            });
+        }
+    }
+    return entries;
+};
+
 const normalizeOptions = (options: unknown): ShopifyProductOption[] => {
     if (!Array.isArray(options)) return [];
     return (options as Record<string, unknown>[])
@@ -121,6 +176,9 @@ const normalizeProduct = (product: RawProduct): ShopifyProduct => {
     const maxVariantPrice = normalizeMoney(priceRange?.maxVariantPrice as Maybe<Partial<ShopifyMoney>>, minVariantPrice);
     const seo = product?.seo as Record<string, unknown> | undefined;
 
+    const mediaEdges = normalizeMediaNodes(product);
+    const imageEdges = normalizeImages(product);
+
     return {
         id: String(product?.id ?? ""),
         title: String(product?.title ?? ""),
@@ -135,8 +193,9 @@ const normalizeProduct = (product: RawProduct): ShopifyProduct => {
             edges: normalizeVariants(product, minVariantPrice)
         },
         images: {
-            edges: normalizeImages(product)
+            edges: imageEdges
         },
+        media: mediaEdges.length > 0 ? {edges: mediaEdges} : undefined,
         priceRange: {
             minVariantPrice,
             maxVariantPrice

@@ -1,8 +1,77 @@
 import {formatShopifyMoney, formatMinimalisticRange, calculateDiscount} from "~/lib/currency-formatter";
 import {parseNumber} from "~/lib/number-utils";
-import type {ProductCardData, ShopifyProduct, ShopifyProductVariant} from "~/lib/types/product-card";
+import type {ProductCardData, ProductCardMedia, ShopifyMediaNode, ShopifyProduct, ShopifyProductVariant} from "~/lib/types/product-card";
 
 export const OUT_OF_STOCK_LABEL = "Out of Stock" as const;
+
+/**
+ * Normalize a single Shopify media node into the product card media shape.
+ * Returns null when the node lacks the data required to render (no image url / no video sources).
+ */
+const mediaNodeToCardMedia = (node: ShopifyMediaNode): ProductCardMedia | null => {
+    if (node.__typename === "Video") {
+        if (!node.sources || node.sources.length === 0) return null;
+        return {
+            type: "video",
+            sources: node.sources,
+            previewImage: node.previewImage
+                ? {url: node.previewImage.url, altText: node.previewImage.altText ?? null}
+                : null,
+            altText: node.alt ?? null
+        };
+    }
+    if (node.__typename === "MediaImage" && node.image?.url) {
+        return {
+            type: "image",
+            url: node.image.url,
+            altText: node.image.altText ?? node.alt ?? null
+        };
+    }
+    return null;
+};
+
+/**
+ * Extract carousel-ready media from a product: prefer the Storefront `media` field
+ * (which carries videos), fall back to `images` when only stills are available.
+ *
+ * Ensures callers always get a usable array — never throws on missing data.
+ */
+export const getProductCardMedia = (product: ShopifyProduct | ProductCardData): ProductCardMedia[] => {
+    // Duck-type check avoids a forward reference to `isProductCardData` (declared later in this module).
+    const isCardData = "primaryVariant" in product && "primaryImage" in product && "minPrice" in product;
+    if (isCardData) {
+        const cardData = product as ProductCardData;
+        if (cardData.firstMedia) {
+            return [cardData.firstMedia];
+        }
+        if (cardData.primaryImage?.url) {
+            return [{
+                type: "image",
+                url: cardData.primaryImage.url,
+                altText: cardData.primaryImage.altText ?? null
+            }];
+        }
+        return [];
+    }
+
+    const shopifyProduct = product as ShopifyProduct;
+    const mediaEdges = shopifyProduct.media?.edges ?? [];
+    if (mediaEdges.length > 0) {
+        const normalized = mediaEdges
+            .map(edge => mediaNodeToCardMedia(edge.node))
+            .filter((item): item is ProductCardMedia => item !== null);
+        if (normalized.length > 0) return normalized;
+    }
+
+    const imageEdges = shopifyProduct.images?.edges ?? [];
+    return imageEdges
+        .filter(edge => edge.node?.url)
+        .map(edge => ({
+            type: "image" as const,
+            url: edge.node.url,
+            altText: edge.node.altText ?? null
+        }));
+};
 
 export interface PriceRangeDisplay {
     displayPrice: string;

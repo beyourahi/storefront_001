@@ -37,6 +37,20 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-22",
+        headline: "Browse product videos and photos right from the card",
+        summary:
+            "Product cards now show every photo and video for a product in a swipeable carousel, so you can explore a product without leaving the page. Videos play silently in view and pause when you scroll away to save data and battery. Swipe on phones, or hover to reveal arrows on desktop.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-22",
+        headline: "Cleaner gallery view on phones",
+        summary:
+            "Product names no longer overlay every image in the gallery on phone-sized screens, so the visuals can breathe and the grid reads as a true lookbook. Tap any image to open its product page as before — the full details are a single tap away. On tablets and desktops the captions still appear on hover.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-22",
         headline: "Gallery now loads smoothly as you scroll",
         summary:
             "The visual gallery used to fetch every product image upfront, which made the first paint heavy on large catalogues. Now it loads an initial batch and streams in more as you scroll toward the bottom. Tapping an image also prefetches the product page on hover, so opening a product feels instant.",

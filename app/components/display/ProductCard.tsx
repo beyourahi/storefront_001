@@ -1,6 +1,5 @@
 import {useMemo} from "react";
 import {Link} from "react-router";
-import {Image} from "@shopify/hydrogen";
 import {Plus} from "lucide-react";
 import {ProductCardTitle} from "~/components/common/ProductCardTitle";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
@@ -8,18 +7,19 @@ import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDisc
 import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {WishlistButton} from "~/components/WishlistButton";
 import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
-import {getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
+import {getProductCardMedia, getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
-import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
+import {ProductCardMediaCarousel} from "~/components/display/ProductCardMediaCarousel";
 import type {UnifiedProductCardProps} from "~/lib/types/product-card";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 
 export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardProps) => {
     const {canHover} = usePointerCapabilities();
     const productData = useMemo(() => getProductDataForCard(product, {showPriceRange: true}), [product]);
-    const {price, compareAtPrice, discountPercentage, image: productImage, priceRange} = productData;
+    const {price, compareAtPrice, discountPercentage, priceRange} = productData;
+    const cardMedia = useMemo(() => getProductCardMedia(product), [product]);
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
     const isOutOfStock = !product.availableForSale;
 
@@ -85,25 +85,18 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     </div>
                 ) : null}
 
-                <Link to={`/products/${product.handle}`} prefetch="intent" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-inset">
-                    {productImage ? (
-                        <Image
-                            data={{url: productImage.url, altText: productImage.altText || product.title}}
-                            className={cn(
-                                "sleek product-image h-full w-full rounded-lg object-cover",
-                                isOutOfStock
-                                    ? "opacity-60"
-                                    : canHover
-                                      ? "group-hover:scale-[1.03]"
-                                      : "group-active:scale-[1.02]"
-                            )}
-                            sizes="(min-width: 1280px) 320px, (min-width: 1024px) 350px, (min-width: 768px) 280px, 200px"
-                            width={400}
-                        />
-                    ) : (
-                        <ProductImagePlaceholder className="h-full w-full rounded-lg" />
-                    )}
-                </Link>
+                <ProductCardMediaCarousel
+                    media={cardMedia}
+                    productTitle={product.title}
+                    productHandle={product.handle}
+                    isOutOfStock={isOutOfStock}
+                    canHover={canHover}
+                />
+                {cardMedia.length > 1 && (
+                    <span className="sr-only">
+                        {cardMedia.length} media items. Use arrow buttons to browse.
+                    </span>
+                )}
 
                 {/* Diagonal strike-through + white tint for OOS products — above image, below badges/buttons */}
                 {isOutOfStock && (
