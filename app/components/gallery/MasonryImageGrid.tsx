@@ -176,7 +176,7 @@ export const MasonryImageGrid = ({initialImages, pageInfo}: MasonryImageGridProp
                             </div>
 
                             <div className={cn(
-                                "sleek absolute inset-0 flex flex-col items-center justify-center bg-black/50 p-4 text-center backdrop-blur-[1px]",
+                                "sleek absolute inset-0 hidden flex-col items-center justify-center bg-black/50 p-4 text-center backdrop-blur-[1px] sm:flex",
                                 canHover ? "opacity-0 group-hover:opacity-100" : "opacity-100"
                             )}>
                                 {(() => {
