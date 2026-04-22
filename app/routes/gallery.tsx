@@ -5,7 +5,7 @@ import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {GalleryMasonrySection} from "~/components/sections/GalleryMasonrySection";
-import type {GalleryImageData} from "~/lib/gallery";
+import type {GalleryImageData, GalleryPageInfo} from "~/lib/gallery";
 import {transformToGalleryImages} from "~/lib/gallery";
 import {cn} from "~/lib/utils";
 import type {Route} from "./+types/gallery";
@@ -23,21 +23,33 @@ export const meta: Route.MetaFunction = ({matches}) => {
     ];
 };
 
-export const loader = async ({context}: Route.LoaderArgs) => {
+export const loader = async ({context, request}: Route.LoaderArgs) => {
+    const url = new URL(request.url);
+    const cursor = url.searchParams.get("cursor");
+
     const {products} = await context.dataAdapter.query(GALLERY_PRODUCTS_QUERY, {
         variables: {
-            first: 100
+            first: 100,
+            after: cursor
         },
         cache: context.dataAdapter.CacheShort()
     });
 
     const productImages = transformToGalleryImages(products.nodes);
 
-    return {productImages};
+    const pageInfo: GalleryPageInfo = {
+        hasNextPage: products.pageInfo.hasNextPage,
+        endCursor: products.pageInfo.endCursor ?? null
+    };
+
+    return {productImages, pageInfo};
 };
 
 export default function Gallery() {
-    const {productImages} = useLoaderData<typeof loader>() as {productImages: GalleryImageData[]};
+    const {productImages, pageInfo} = useLoaderData<typeof loader>() as {
+        productImages: GalleryImageData[];
+        pageInfo: GalleryPageInfo;
+    };
     const title = "Visual Showcase";
     const subtitle =
         "Explore our collection of stunning pieces, each telling its own unique story through craftsmanship and design.";
@@ -67,7 +79,7 @@ export default function Gallery() {
 
             {productImages.length > 0 ? (
                 <AnimatedSection animation="slide-up" threshold={0}>
-                    <GalleryMasonrySection productImages={productImages} />
+                    <GalleryMasonrySection productImages={productImages} pageInfo={pageInfo} />
                 </AnimatedSection>
             ) : (
                 <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -84,8 +96,9 @@ const GALLERY_PRODUCTS_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $first: Int!
+    $after: String
   ) @inContext(country: $country, language: $language) {
-    products(first: $first) {
+    products(first: $first, after: $after) {
       nodes {
         handle
         title
@@ -104,6 +117,10 @@ const GALLERY_PRODUCTS_QUERY = `#graphql
             height
           }
         }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }

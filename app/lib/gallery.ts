@@ -11,6 +11,11 @@ export interface GalleryImageData {
     collectionTitle?: string | null;
 }
 
+export interface GalleryPageInfo {
+    hasNextPage: boolean;
+    endCursor: string | null;
+}
+
 export const transformToGalleryImages = (
     products: Array<{
         handle: string;

@@ -1,13 +1,14 @@
 import {SkeletonGrid} from "~/components/common/SkeletonGrid";
 import {MasonryImageGrid} from "~/components/gallery/MasonryImageGrid";
-import type {GalleryImageData} from "~/lib/gallery";
+import type {GalleryImageData, GalleryPageInfo} from "~/lib/gallery";
 
 type GalleryMasonrySectionProps = {
     productImages: GalleryImageData[];
+    pageInfo: GalleryPageInfo;
     isLoading?: boolean;
 };
 
-export const GalleryMasonrySection = ({productImages, isLoading}: GalleryMasonrySectionProps) => {
+export const GalleryMasonrySection = ({productImages, pageInfo, isLoading}: GalleryMasonrySectionProps) => {
     const showContent = !isLoading && productImages && productImages.length > 0;
 
     return (
@@ -16,7 +17,7 @@ export const GalleryMasonrySection = ({productImages, isLoading}: GalleryMasonry
                 {isLoading ? (
                     <SkeletonGrid layout="masonry" count={20} />
                 ) : showContent ? (
-                    <MasonryImageGrid images={productImages} />
+                    <MasonryImageGrid initialImages={productImages} pageInfo={pageInfo} />
                 ) : (
                     <div className="py-16 text-center">
                         <div className="mb-4 text-6xl">📸</div>

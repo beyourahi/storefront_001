@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-22",
+        headline: "Gallery now loads smoothly as you scroll",
+        summary:
+            "The visual gallery used to fetch every product image upfront, which made the first paint heavy on large catalogues. Now it loads an initial batch and streams in more as you scroll toward the bottom. Tapping an image also prefetches the product page on hover, so opening a product feels instant.",
+        category: "Improvement"
+    },
+    {
         date: "2026-04-21",
         headline: "Blog listing now spotlights the featured article on mobile",
         summary:
