@@ -325,7 +325,11 @@ export function ProductCardMediaCarousel({
                             className="h-full basis-full pl-0"
                         >
                             <SlideLink productHandle={productHandle} productTitle={productTitle}>
-                                <div className="relative h-full w-full overflow-hidden rounded-lg">
+                                {/* aspect-[4/5] on the slide itself gives intrinsic height — Embla's
+                                    internal overflow-hidden wrapper has no explicit height, so relying
+                                    on h-full percentage chains collapses. Matches the single-media path
+                                    visually and aligns with storefront_002's reference implementation. */}
+                                <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg">
                                     {item.type === "video" ? (
                                         <CardVideo
                                             media={item}
@@ -384,9 +388,12 @@ export function ProductCardMediaCarousel({
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </div>
 
-            {/* Pagination dots — always visible so users discover multi-media. */}
+            {/* Pagination dots — always visible so users discover multi-media.
+                Positioned at bottom-12 (48px) to clear the 40px-tall Quick Add button
+                anchored at bottom-1 (bottom-1 + h-10 = 44px top edge) with a 4px gap,
+                so the dots never overlap or sit behind the interactive button region. */}
             <div
-                className="pointer-events-none absolute bottom-1.5 left-1/2 z-[15] flex -translate-x-1/2 items-center gap-1 rounded-full bg-background/75 px-1.5 py-1 backdrop-blur-md"
+                className="pointer-events-none absolute bottom-12 left-1/2 z-[15] flex -translate-x-1/2 items-center gap-1 rounded-full bg-background/75 px-1.5 py-1 backdrop-blur-md"
                 aria-hidden="true"
             >
                 {media.map((item, index) => (

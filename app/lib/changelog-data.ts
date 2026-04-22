@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-22",
+        headline: "Tidier product card media carousel",
+        summary:
+            "Fixed a layout glitch where some product card slides would collapse instead of filling the card when swiping between photos and videos. The little dots that show which slide you're on now sit clear of the Quick Add button, so they never overlap or feel cramped.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-22",
         headline: "Browse product videos and photos right from the card",
         summary:
             "Product cards now show every photo and video for a product in a swipeable carousel, so you can explore a product without leaving the page. Videos play silently in view and pause when you scroll away to save data and battery. Swipe on phones, or hover to reveal arrows on desktop.",
