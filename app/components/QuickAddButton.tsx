@@ -35,6 +35,12 @@ interface QuickAddProduct {
     tags?: string[];
     featuredImage?: QuickAddImage | null;
     images?: {nodes: QuickAddImage[]};
+    /**
+     * Pre-normalized primary media list. Forwarded to QuickAddDialog /
+     * QuickAddSheet so they can render a product's first Video in place of
+     * the featured image (parity with the product card grid).
+     */
+    cardMedia?: import("~/lib/types/product-card").ProductCardMedia[];
     priceRange: {
         minVariantPrice: {amount: string; currencyCode: string};
         maxVariantPrice: {amount: string; currencyCode: string};

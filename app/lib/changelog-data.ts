@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-22",
+        headline: "Product videos show up everywhere, not just product cards",
+        summary:
+            "If a product leads with a video, you'll now see that video in your cart, the 'you might like' suggestions, and the quick add window — not just on the product grid. Videos play silently when visible and pause when you scroll away, so they don't eat your data or battery.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-22",
         headline: "Tidier product card media carousel",
         summary:
             "Fixed a layout glitch where some product card slides would collapse instead of filling the card when swiping between photos and videos. The little dots that show which slide you're on now sit clear of the Quick Add button, so they never overlap or feel cramped.",

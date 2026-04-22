@@ -15,6 +15,8 @@ import {filterDisplayTags, getButtonLabel} from "~/lib/product-tags";
 import {parseProductTitle} from "~/lib/product";
 import {OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
+import {PrimaryProductMedia} from "~/components/common/PrimaryProductMedia";
+import type {ProductCardMedia} from "~/lib/types/product-card";
 
 interface QuickAddVariant {
     id: string;
@@ -40,6 +42,13 @@ interface QuickAddProduct {
     tags?: string[];
     featuredImage?: QuickAddImage | null;
     images?: {nodes: QuickAddImage[]};
+    /**
+     * Pre-normalized card media list. When present, takes precedence over
+     * `images` — lets the dialog render a product's primary Video in the
+     * hero slot rather than falling back to the still image (parity with
+     * product card grid).
+     */
+    cardMedia?: ProductCardMedia[];
     priceRange: {
         minVariantPrice: {amount: string; currencyCode: string};
         maxVariantPrice: {amount: string; currencyCode: string};
@@ -65,12 +74,24 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
         [product.variants.nodes]
     );
 
-    const productImages: QuickAddImage[] =
-        product.images?.nodes && product.images.nodes.length > 0
+    // Media list for the dialog's vertical preview strip. Prefer pre-normalized
+    // `cardMedia` (which carries videos) when the caller passed it, falling
+    // back to images so older call sites still render correctly.
+    const mediaList: ProductCardMedia[] = useMemo(() => {
+        if (product.cardMedia && product.cardMedia.length > 0) return product.cardMedia;
+        const imageNodes = product.images?.nodes && product.images.nodes.length > 0
             ? product.images.nodes
             : product.featuredImage
               ? [product.featuredImage]
               : [];
+        return imageNodes
+            .filter((img): img is QuickAddImage => Boolean(img?.url))
+            .map(img => ({
+                type: "image" as const,
+                url: img.url,
+                altText: img.altText ?? null
+            }));
+    }, [product.cardMedia, product.images, product.featuredImage]);
 
     const handleShare = useCallback(async () => {
         const productUrl = `${window.location.origin}/products/${product.handle}`;
@@ -125,17 +146,21 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
                         data-lenis-prevent
                     >
                         <div className="flex flex-col gap-2">
-                            {productImages.length > 0 ? (
-                                productImages.map((image, index) => (
+                            {mediaList.length > 0 ? (
+                                mediaList.map((item, index) => (
                                     <div
-                                        key={image.id || index}
+                                        key={(item.type === "image" ? item.url : item.sources[0]?.url) ?? `media-${index}`}
                                         className="relative w-full overflow-hidden bg-muted/50 rounded-lg"
                                     >
                                         <div className="aspect-4/5 w-full">
-                                            <img
-                                                src={image.url}
-                                                alt={image.altText || `${product.title} - Image ${index + 1}`}
-                                                className="w-full h-full object-cover"
+                                            <PrimaryProductMedia
+                                                media={item}
+                                                productTitle={product.title}
+                                                className="h-full w-full"
+                                                mediaClassName="rounded-lg"
+                                                /* Inside the dialog the full-width video is obvious;
+                                                   the badge would be noise. */
+                                                showVideoIndicator={false}
                                             />
                                         </div>
                                     </div>

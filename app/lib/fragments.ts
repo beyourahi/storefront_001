@@ -104,6 +104,22 @@ export const CART_QUERY_FRAGMENT = `#graphql
           title
           id
           vendor
+          media(first: 3) {
+            nodes {
+              __typename
+              ... on MediaImage {
+                id
+                alt
+                image { id url altText width height }
+              }
+              ... on Video {
+                id
+                alt
+                sources { url mimeType }
+                previewImage { id url altText width height }
+              }
+            }
+          }
         }
         selectedOptions {
           name
@@ -185,6 +201,22 @@ export const CART_QUERY_FRAGMENT = `#graphql
           title
           id
           vendor
+          media(first: 3) {
+            nodes {
+              __typename
+              ... on MediaImage {
+                id
+                alt
+                image { id url altText width height }
+              }
+              ... on Video {
+                id
+                alt
+                sources { url mimeType }
+                previewImage { id url altText width height }
+              }
+            }
+          }
         }
         selectedOptions {
           name
@@ -416,6 +448,22 @@ export const CART_SUGGESTIONS_QUERY = `#graphql
           altText
           width
           height
+        }
+        media(first: 3) {
+          nodes {
+            __typename
+            ... on MediaImage {
+              id
+              alt
+              image { id url altText width height }
+            }
+            ... on Video {
+              id
+              alt
+              sources { url mimeType }
+              previewImage { id url altText width height }
+            }
+          }
         }
         priceRange {
           minVariantPrice {

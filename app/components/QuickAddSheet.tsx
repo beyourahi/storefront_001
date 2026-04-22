@@ -16,7 +16,8 @@ import {toast} from "sonner";
 import {filterDisplayTags, getButtonLabel} from "~/lib/product-tags";
 import {parseProductTitle} from "~/lib/product";
 import {OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
-import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
+import {PrimaryProductMedia} from "~/components/common/PrimaryProductMedia";
+import type {ProductCardMedia} from "~/lib/types/product-card";
 
 interface QuickAddVariant {
     id: string;
@@ -42,6 +43,12 @@ interface QuickAddProduct {
     tags?: string[];
     featuredImage?: QuickAddImage | null;
     images?: {nodes: QuickAddImage[]};
+    /**
+     * Pre-normalized card media list. Takes precedence over `featuredImage`
+     * — lets the mobile sheet render video in the thumbnail tile when the
+     * product's first media is a Shopify Video.
+     */
+    cardMedia?: ProductCardMedia[];
     priceRange: {
         minVariantPrice: {amount: string; currencyCode: string};
         maxVariantPrice: {amount: string; currencyCode: string};
@@ -66,6 +73,16 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
         () => product.variants.nodes.filter(v => v.availableForSale),
         [product.variants.nodes]
     );
+
+    // Resolve the sheet's hero thumbnail. Prefer pre-normalized cardMedia[0]
+    // (which may be a Video), fall back to featuredImage, fall back to the
+    // first images.nodes entry. Keeps parity with QuickAddDialog.
+    const heroMedia: ProductCardMedia | null = useMemo(() => {
+        if (product.cardMedia && product.cardMedia.length > 0) return product.cardMedia[0];
+        const img = product.featuredImage ?? product.images?.nodes?.[0] ?? null;
+        if (!img?.url) return null;
+        return {type: "image", url: img.url, altText: img.altText ?? null};
+    }, [product.cardMedia, product.featuredImage, product.images]);
 
     const handleShare = useCallback(async () => {
         const productUrl = `${window.location.origin}/products/${product.handle}`;
@@ -121,17 +138,16 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
 
                 <SheetHeader>
                     <div className="flex items-start gap-3">
-                        {product.featuredImage?.url ? (
-                            <div className="w-16 h-20 shrink-0 overflow-hidden rounded-lg bg-muted/50">
-                                <img
-                                    src={product.featuredImage.url}
-                                    alt={product.featuredImage.altText || product.title}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        ) : (
-                            <ProductImagePlaceholder compact className="w-16 h-20 shrink-0 rounded-lg" />
-                        )}
+                        <PrimaryProductMedia
+                            media={heroMedia}
+                            productTitle={product.title}
+                            className="w-16 h-20 shrink-0 overflow-hidden rounded-lg bg-muted/50"
+                            mediaClassName="rounded-lg"
+                            placeholderCompact
+                            /* 64x80px thumb — motion is a strong enough signal. */
+                            showVideoIndicator={false}
+                            ariaLabel={product.title}
+                        />
 
                         <div className="flex-1 min-w-0">
                             <SheetTitle className="font-sans text-xl font-medium leading-snug text-primary line-clamp-2 mb-0">

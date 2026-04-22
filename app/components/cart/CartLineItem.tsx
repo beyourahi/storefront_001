@@ -1,10 +1,10 @@
 import type {CartLineUpdateInput} from "@shopify/hydrogen/storefront-api-types";
-import {CartForm, Image, type OptimisticCartLine, OptimisticInput, useOptimisticData} from "@shopify/hydrogen";
+import {CartForm, type OptimisticCartLine, OptimisticInput, useOptimisticData} from "@shopify/hydrogen";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Link, useFetcher} from "react-router";
 import {Trash2, Minus, Plus, AlertTriangle, XCircle} from "lucide-react";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {getCartLineKey, useCartLineMutating, useCartMutationPending} from "~/lib/cart-utils";
 import {Button} from "~/components/ui/button";
 import {Spinner} from "~/components/ui/spinner";
@@ -12,8 +12,9 @@ import {Alert, AlertDescription} from "~/components/ui/alert";
 import {useCartDrawer} from "~/hooks/useCartDrawer";
 import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
-import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 import {PriceLoadingIndicator} from "~/components/common/PriceLoadingIndicator";
+import {PrimaryProductMedia} from "~/components/common/PrimaryProductMedia";
+import {pickPrimaryMedia} from "~/lib/product/primary-media";
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
@@ -21,6 +22,18 @@ type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 export function CartLineItem({line}: {line: CartLine}) {
     const {id, merchandise, quantity, cost} = line;
     const {product, image, title: variantTitle, quantityAvailable} = merchandise;
+    // Prefer the product's first media asset (which may be a video) over the
+    // variant image so cart lines match product card rendering. When no
+    // product.media has been fetched (e.g. older cached cart payloads) or
+    // the first node is an unsupported Model3d/ExternalVideo, fall back to
+    // the variant image — preserving prior behaviour for those edge cases.
+    // Prefer the product's first media node (possibly a Video) so cart lines
+    // render the same media as the product card grid. Fall back to the variant
+    // image when media is absent / contains only unsupported types.
+    const primaryMedia = useMemo(() => {
+        const mediaNodes = (product as {media?: {nodes?: Array<Record<string, unknown>>}})?.media?.nodes;
+        return pickPrimaryMedia(mediaNodes, image);
+    }, [product, image]);
     const {close} = useCartDrawer();
     const fetcher = useFetcher({key: getCartLineKey([id])});
     const isMutating = useCartMutationPending();
@@ -102,8 +115,8 @@ export function CartLineItem({line}: {line: CartLine}) {
             )}
             <div className="flex gap-4">
                 <CartLineImage
-                    image={image}
-                    altText={image?.altText || product.title}
+                    media={primaryMedia}
+                    productTitle={product.title}
                     handle={product.handle}
                     onNavigate={close}
                     small={isChildLine}
@@ -157,41 +170,36 @@ export function CartLineItem({line}: {line: CartLine}) {
 }
 
 function CartLineImage({
-    image,
-    altText,
+    media,
+    productTitle,
     handle,
     onNavigate,
     small = false
 }: {
-    image?: {url: string; altText?: string | null} | null;
-    altText: string;
+    media: import("~/lib/types/product-card").ProductCardMedia | null;
+    productTitle: string;
     handle: string;
     onNavigate: () => void;
     small?: boolean;
 }) {
     const size = small ? 48 : 64;
+    const sizeClass = small ? "size-12" : "size-16";
     return (
         <div className="shrink-0">
             <Link to={`/products/${handle}`} prefetch="viewport" className="block" onClick={onNavigate}>
-                {image ? (
-                    <Image
-                        alt={altText}
-                        aspectRatio="1/1"
-                        data={image}
-                        height={size}
-                        width={size}
-                        loading="lazy"
-                        className={cn(
-                            "motion-image rounded-sm object-cover hover:scale-[1.03]",
-                            small ? "size-12" : "size-16"
-                        )}
-                    />
-                ) : (
-                    <ProductImagePlaceholder
-                        compact
-                        className={cn("rounded-sm", small ? "size-12" : "size-16")}
-                    />
-                )}
+                <PrimaryProductMedia
+                    media={media}
+                    productTitle={productTitle}
+                    className={cn("motion-image rounded-sm hover:scale-[1.03]", sizeClass)}
+                    mediaClassName="rounded-sm"
+                    placeholderCompact
+                    width={size}
+                    height={size}
+                    /* Small thumbnails don't benefit from the "▶ Video" badge
+                       — it would dominate the 48/64px tile. */
+                    showVideoIndicator={false}
+                    ariaLabel={productTitle}
+                />
             </Link>
         </div>
     );

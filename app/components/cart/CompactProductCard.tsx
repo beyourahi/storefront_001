@@ -1,23 +1,26 @@
 import {useMemo, useState, useEffect} from "react";
-import {Image} from "@shopify/hydrogen";
 import {Plus} from "lucide-react";
 import {Badge} from "~/components/ui/badge";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
 import {QuickAddDialog} from "~/components/QuickAddDialog";
 import {QuickAddSheet} from "~/components/QuickAddSheet";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
-import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
+import {PrimaryProductMedia} from "~/components/common/PrimaryProductMedia";
 import {cn} from "~/lib/utils";
-import {getProductDataForCard, isProductCardData, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
+import {getProductCardMedia, getProductDataForCard, isProductCardData, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import type {CompactProductCardProps, ShopifyProduct} from "~/lib/types/product-card";
 
 export function CompactProductCard({product, className = "", onCartAdd, onProductClick, isMutating = false}: CompactProductCardProps) {
     const productData = useMemo(() => getProductDataForCard(product), [product]);
-    const {price, compareAtPrice, discountPercentage, image: productImage} = productData;
+    const {price, compareAtPrice, discountPercentage} = productData;
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
     const isOutOfStock = !product.availableForSale;
+    // Primary media (video-first) — parity with ProductCard grid rendering.
+    // `getProductCardMedia` returns []/[image]/[video, ...] — we want the first
+    // renderable slot for this tiny 64x64 card.
+    const primaryMedia = useMemo(() => getProductCardMedia(product)[0] ?? null, [product]);
 
     const {primary, secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
     const truncatedFirstPart = useMemo(() => {
@@ -37,6 +40,8 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
 
     // Convert ShopifyProduct variant/image edges to the nodes format QuickAddDialog/QuickAddSheet expect.
     // Falls back to null for ProductCardData (no variant edges), which keeps ProductVariantDialog as fallback.
+    // We also forward the normalized card media so the dialog/sheet can render
+    // video in its hero slot when the product's first media is a Shopify Video.
     const quickAddProduct = useMemo(() => {
         if (isProductCardData(product)) return null;
         const p = product as ShopifyProduct;
@@ -48,7 +53,8 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
             featuredImage: p.images.edges[0]?.node ?? null,
             images: {nodes: p.images.edges.map(e => e.node)},
             priceRange: p.priceRange,
-            variants: {nodes: p.variants.edges.map(e => e.node)}
+            variants: {nodes: p.variants.edges.map(e => e.node)},
+            cardMedia: getProductCardMedia(p)
         };
     }, [product]);
 
@@ -62,20 +68,22 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
             <div className="flex gap-3 p-3">
                 <div className="relative size-16 shrink-0 overflow-hidden rounded-sm">
                     <button className="block h-full w-full text-left" onClick={handleProductClick}>
-                        {productImage ? (
-                            <Image
-                                data={{url: productImage.url, altText: productImage.altText || product.title}}
-                                className={cn(
-                                    "sleek h-full w-full object-cover",
-                                    isOutOfStock ? "opacity-60" : "xl:group-hover:scale-105"
-                                )}
-                                width={64}
-                                height={64}
-                                loading="lazy"
-                            />
-                        ) : (
-                            <ProductImagePlaceholder compact className="h-full w-full" />
-                        )}
+                        <PrimaryProductMedia
+                            media={primaryMedia}
+                            productTitle={product.title}
+                            className={cn(
+                                "sleek h-full w-full",
+                                isOutOfStock ? "opacity-60" : "xl:group-hover:scale-105"
+                            )}
+                            placeholderCompact
+                            width={64}
+                            height={64}
+                            /* Tight 64px tile — suppress the video badge
+                               since cards already group in a strip and the
+                               motion itself signals "video". */
+                            showVideoIndicator={false}
+                            ariaLabel={product.title}
+                        />
                     </button>
 
                     {discountPercentage && (
