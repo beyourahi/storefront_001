@@ -1,5 +1,6 @@
 import {ProductPageTitle} from "~/components/common/ProductPageTitle";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
+import {ProductTagBadges} from "~/components/product/ProductTagBadges";
 import {WishlistButton} from "~/components/WishlistButton";
 import {Badge} from "~/components/ui/badge";
 import {Skeleton} from "~/components/ui/skeleton";
@@ -9,6 +10,7 @@ type ProductMobileTitlePriceProps = {
     product: {
         title: string;
         productType?: string;
+        tags?: string[];
     };
     discountPercentage?: number;
     productId?: string;
@@ -39,6 +41,8 @@ export const ProductMobileTitlePrice = ({
                     </>
                 )}
             </div>
+
+            {!isLoading && <ProductTagBadges tags={product.tags} className="mb-2" />}
 
             <div className="mb-2 flex items-start justify-between">
                 {isLoading ? (

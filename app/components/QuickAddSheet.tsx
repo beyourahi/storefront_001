@@ -5,15 +5,15 @@ import {Share2} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {formatShopifyMoney} from "~/lib/currency-formatter";
 import {QuantitySelector} from "~/components/QuantitySelector";
-import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody, SheetFooter} from "~/components/ui/sheet";
 import {ColorSwatch} from "~/components/ui/color-swatch";
 import {isColorOption, getSwatchFromColorName, hasColorMapping} from "~/lib/color-name-map";
 import {WishlistButton} from "~/components/WishlistButton";
+import {ProductTagBadges} from "~/components/product/ProductTagBadges";
 import {toast} from "sonner";
-import {filterDisplayTags, getButtonLabel} from "~/lib/product-tags";
+import {getButtonLabel} from "~/lib/product-tags";
 import {parseProductTitle} from "~/lib/product";
 import {OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {PrimaryProductMedia} from "~/components/common/PrimaryProductMedia";
@@ -66,7 +66,6 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
     const [quantity, setQuantity] = useState(1);
     const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
 
-    const displayTags = filterDisplayTags(product.tags);
     const buttonLabel = getButtonLabel(product.tags, "Get it now");
 
     const availableVariants = useMemo(
@@ -150,23 +149,11 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                         />
 
                         <div className="flex-1 min-w-0">
+                            <ProductTagBadges tags={product.tags} className="mb-1" />
                             <SheetTitle className="font-sans text-xl font-medium leading-snug text-primary line-clamp-2 mb-0">
                                 <span>{primary}</span>
                                 {secondary && <span>, {secondary}</span>}
                             </SheetTitle>
-                            {displayTags.length > 0 && (
-                                <div className="flex flex-wrap gap-1.5 mt-1">
-                                    {displayTags.map((tag: string) => (
-                                        <Badge
-                                            key={tag}
-                                            variant="outline"
-                                            className="text-sm border text-primary font-semibold px-2 uppercase"
-                                        >
-                                            {tag}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            )}
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="font-mono tabular-nums text-base font-semibold text-primary">
                                     {selectedVariant ? (

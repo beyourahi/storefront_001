@@ -2,6 +2,7 @@ import {ProductPageTitle} from "~/components/common/ProductPageTitle";
 import {ProductDescriptionAccordion} from "~/components/product/ProductDescriptionAccordion";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
 import {ProductBadgeStack} from "~/components/product/ProductBadge";
+import {ProductTagBadges} from "~/components/product/ProductTagBadges";
 import {WishlistButton} from "~/components/WishlistButton";
 import {Badge} from "~/components/ui/badge";
 import {Skeleton} from "~/components/ui/skeleton";
@@ -43,6 +44,8 @@ export const ProductInfoSection = ({isLoading = false, product, discountPercenta
                     </>
                 )}
             </div>
+
+            {!isLoading && <ProductTagBadges tags={product.tags} className="hidden lg:flex" />}
 
             <div className="mb-8 hidden items-start justify-between lg:flex">
                 {isLoading ? (

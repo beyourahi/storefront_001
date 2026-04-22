@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-22",
+        headline: "Product tags now sit in the same spot everywhere",
+        summary:
+            "Product tags like 'Fragrance' or 'Women' now appear as small badges right above the product name on the product page and inside both quick add views. Before, they were in different spots depending on where you opened a product, which made pages feel less tidy. Same tag, same place, same look — every time.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-22",
         headline: "Product videos show up everywhere, not just product cards",
         summary:
             "If a product leads with a video, you'll now see that video in your cart, the 'you might like' suggestions, and the quick add window — not just on the product grid. Videos play silently when visible and pause when you scroll away, so they don't eat your data or battery.",
