@@ -19,8 +19,6 @@ const FALLBACK_ERROR_CONTENT = {
     serverErrorMessage: "We're experiencing technical difficulties. Please try again.",
     serverErrorRetry: "Try Again",
     serverErrorHome: "Return Home",
-    serverErrorContactPrefix: "Need help?",
-    serverErrorContactLink: "Contact Support",
     offlineHeading: "You're Offline",
     offlineMessage: "Please check your internet connection and try again.",
     offlineRetry: "Retry",

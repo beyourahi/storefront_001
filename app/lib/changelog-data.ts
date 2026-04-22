@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-23",
+        headline: "Old contact page URL fully removed",
+        summary:
+            "The /contact URL previously forwarded to the FAQ page as a holdover from the retired contact form. That forwarding has now been removed, so any stale bookmarks to /contact will land on the standard not-found page. Reach out via the floating WhatsApp and Messenger buttons on every page for support.",
+        category: "Maintenance"
+    },
+    {
         date: "2026-04-22",
         headline: "Product tags now sit in the same spot everywhere",
         summary:

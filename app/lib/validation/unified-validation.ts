@@ -27,18 +27,6 @@ export const createMinLengthSchema = (minLength: number, fieldName: string) =>
 export const createMaxLengthSchema = (maxLength: number, fieldName: string) =>
     z.string().max(maxLength, `${fieldName} cannot exceed ${maxLength} characters`);
 
-export const contactInfoSchema = z
-    .string()
-    .min(1, "This field is required")
-    .transform(value => value.trim());
-
-export const contactFormSchema = z.object({
-    email: emailSchema.optional(),
-    phone: phoneSchema.optional(),
-    address: contactInfoSchema.optional(),
-    message: createMinLengthSchema(10, "Message").optional()
-});
-
 export const productValidationSchema = z.object({
     productId: z.string().min(1, "Product ID is required"),
     variantId: z.string().min(1, "Variant ID is required"),
@@ -102,10 +90,6 @@ export const validateHandle = (handle: string): boolean => {
 export const validateQuantity = (quantity: number, max?: number): boolean => {
     const schema = max ? quantitySchema.max(max) : quantitySchema;
     return schema.safeParse(quantity).success;
-};
-
-export const validateContactInfo = (value: string | null | undefined): boolean => {
-    return contactInfoSchema.optional().safeParse(value).success;
 };
 
 export const safeValidate = <T>(

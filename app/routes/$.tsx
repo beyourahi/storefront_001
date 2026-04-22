@@ -89,7 +89,7 @@ export function ErrorBoundary() {
                         </div>
                         <div className="sr-only">
                             <h3>Error 404</h3>
-                            <p>Navigate to: Homepage, Collections, Contact</p>
+                            <p>Navigate to: Homepage, Collections</p>
                         </div>
                     </div>
                 </div>

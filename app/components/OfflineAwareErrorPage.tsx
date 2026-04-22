@@ -122,7 +122,7 @@ const NotFoundErrorUI = ({title, message}: NotFoundErrorUIProps) => {
                     </div>
                     <div className="sr-only">
                         <h3>Error 404</h3>
-                        <p>Navigate to: Homepage, Collections, Contact</p>
+                        <p>Navigate to: Homepage, Collections</p>
                     </div>
                 </div>
             </div>
@@ -174,7 +174,7 @@ const GenericErrorUI = ({statusCode, title, message}: GenericErrorUIProps) => {
                     </div>
                     <div className="sr-only">
                         <h3>Error {statusCode}</h3>
-                        <p>Navigate to: Homepage, Contact</p>
+                        <p>Navigate to: Homepage</p>
                     </div>
                 </div>
             </div>

@@ -7,8 +7,6 @@ export {
     quantitySchema,
     createMinLengthSchema,
     createMaxLengthSchema,
-    contactInfoSchema,
-    contactFormSchema,
     productValidationSchema,
     cartLineSchema,
     cartValidationSchema,
@@ -19,7 +17,6 @@ export {
     validateUrl as validateUrlSchema,
     validateHandle as validateHandleSchema,
     validateQuantity as validateQuantitySchema,
-    validateContactInfo,
     safeValidate
 } from "./unified-validation";
 
