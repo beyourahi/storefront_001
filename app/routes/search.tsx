@@ -1705,7 +1705,8 @@ async function regularSearch({
                     articleFirst: 12,
                     sortKey: searchSortOption.sortKey,
                     reverse: searchSortOption.reverse
-                }
+                },
+                cache: dataAdapter.CacheShort()
             }),
             fetchCollections(dataAdapter, term)
         ]);
@@ -1769,7 +1770,8 @@ async function fetchMoreProducts({
             after: cursor,
             sortKey: searchSortOption.sortKey,
             reverse: searchSortOption.reverse
-        }
+        },
+        cache: dataAdapter.CacheShort()
     })) as {
         products: {
             nodes: SearchProduct[];

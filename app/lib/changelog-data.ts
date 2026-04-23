@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-24",
+        headline: "Faster page loads with smarter Shopify API caching",
+        summary:
+            "The homepage and search pages now cache product and collection data from Shopify instead of fetching it fresh on every visit. Collections and blog articles — which rarely change — are held longer, while product listings refresh more frequently so prices and availability stay accurate. Repeat visits and searches on popular terms load noticeably faster.",
+        category: "Performance"
+    },
+    {
         date: "2026-04-23",
         headline: "Old contact page URL fully removed",
         summary:
