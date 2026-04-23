@@ -72,9 +72,9 @@ export const loader = async ({context}: Route.LoaderArgs) => {
     const specialCollections = FALLBACK_SPECIAL_COLLECTIONS;
 
     const [exploreCollectionsResponse, allProductsResponse] = await Promise.all([
-        dataAdapter.query(EXPLORE_COLLECTIONS_QUERY)
+        dataAdapter.query(EXPLORE_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()})
             .catch((error: unknown) => { console.error("Failed to load explore collections:", error); return null; }),
-        dataAdapter.query(ALL_PRODUCTS_QUERY)
+        dataAdapter.query(ALL_PRODUCTS_QUERY, {cache: dataAdapter.CacheShort()})
             .catch((error: unknown) => { console.error("Failed to load all products:", error); return null; })
     ]);
 
@@ -86,22 +86,22 @@ export const loader = async ({context}: Route.LoaderArgs) => {
     };
 
     const bestSellers = dataAdapter
-        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.bestSellers}})
+        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.bestSellers}, cache: dataAdapter.CacheShort()})
         .then(filterCollectionProducts)
         .catch((error: unknown) => { console.error("Failed to load best sellers:", error); return null; });
 
     const newArrivals = dataAdapter
-        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.newArrivals}})
+        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.newArrivals}, cache: dataAdapter.CacheShort()})
         .then(filterCollectionProducts)
         .catch((error: unknown) => { console.error("Failed to load new arrivals:", error); return null; });
 
     const trending = dataAdapter
-        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.trending}})
+        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.trending}, cache: dataAdapter.CacheShort()})
         .then(filterCollectionProducts)
         .catch((error: unknown) => { console.error("Failed to load trending products:", error); return null; });
 
     const recentArticles = dataAdapter
-        .query(HOMEPAGE_BLOG_ARTICLES_QUERY, {variables: {first: 6}})
+        .query(HOMEPAGE_BLOG_ARTICLES_QUERY, {variables: {first: 6}, cache: dataAdapter.CacheLong()})
         .then((data: any) => data?.articles?.nodes ?? [])
         .catch((error: unknown) => {
             console.error("Failed to load blog articles:", error);
