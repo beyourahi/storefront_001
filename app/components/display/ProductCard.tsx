@@ -98,26 +98,6 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     </span>
                 )}
 
-                {/* Diagonal strike-through + white tint for OOS products — above image, below badges/buttons */}
-                {isOutOfStock && (
-                    <div className="pointer-events-none absolute inset-0 z-[5]">
-                        <div className="absolute inset-0 bg-white/25" />
-                        <svg
-                            className="absolute inset-0 h-full w-full"
-                            viewBox="0 0 100 100"
-                            preserveAspectRatio="none"
-                            aria-hidden="true"
-                        >
-                            <line
-                                x1="0" y1="0" x2="100" y2="100"
-                                stroke="rgba(0,0,0,0.3)"
-                                vectorEffect="non-scaling-stroke"
-                                strokeWidth="1.5"
-                            />
-                        </svg>
-                    </div>
-                )}
-
                 {/* Wishlist button — bottom-left, frosted glass so it reads over any image */}
                 <div className="absolute left-1 bottom-1 z-20">
                     <WishlistButton
