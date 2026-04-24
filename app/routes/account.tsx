@@ -14,6 +14,7 @@ import {WishlistCountInline} from "~/components/WishlistCount";
 import type {Route} from "./+types/account";
 import {getSeoMeta} from "@shopify/hydrogen";
 import {CUSTOMER_DETAILS_QUERY} from "~/graphql/customer-account/customer";
+import {RETURNS_AVAILABILITY_QUERY, checkReturnsEnabled} from "~/graphql/customer-account/ReturnsAvailabilityQuery";
 import {LayoutDashboard, Package, Heart, RotateCcw, User} from "lucide-react";
 import {cn} from "~/lib/utils";
 
@@ -51,7 +52,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 
     if (!isAuthenticated) {
         return remixData(
-            {customer: null, isAuthenticated: false as const},
+            {customer: null, isAuthenticated: false as const, returnsEnabled: false},
             {
                 headers: {
                     "Set-Cookie": await context.session.commit(),
@@ -61,11 +62,14 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         );
     }
 
-    const {data, errors} = await customerAccount.query(CUSTOMER_DETAILS_QUERY);
+    const [{data, errors}, returnsData] = await Promise.all([
+        customerAccount.query(CUSTOMER_DETAILS_QUERY),
+        customerAccount.query(RETURNS_AVAILABILITY_QUERY, {variables: {first: 10}}).catch(() => null)
+    ]);
 
     if (errors?.length || !data?.customer) {
         return remixData(
-            {customer: null, isAuthenticated: false as const},
+            {customer: null, isAuthenticated: false as const, returnsEnabled: false},
             {
                 headers: {
                     "Set-Cookie": await context.session.commit(),
@@ -75,8 +79,12 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         );
     }
 
+    const returnsEnabled = checkReturnsEnabled(
+        returnsData?.data?.customer?.orders?.nodes ?? []
+    );
+
     return remixData(
-        {customer: data.customer, isAuthenticated: true as const},
+        {customer: data.customer, isAuthenticated: true as const, returnsEnabled},
         {
             headers: {
                 "Set-Cookie": await context.session.commit(),
@@ -125,7 +133,7 @@ const AccountNavLink = ({to, end, icon: Icon, children}: AccountNavLinkProps) =>
     </NavLink>
 );
 
-const AccountMenu = () => (
+const AccountMenu = ({returnsEnabled}: {returnsEnabled: boolean}) => (
     <div className="overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <nav
             role="navigation"
@@ -144,9 +152,11 @@ const AccountMenu = () => (
             <AccountNavLink to="/account/wishlist" icon={Heart}>
                 Wishlist <WishlistCountInline />
             </AccountNavLink>
-            <AccountNavLink to="/account/returns" icon={RotateCcw}>
-                Returns
-            </AccountNavLink>
+            {returnsEnabled && (
+                <AccountNavLink to="/account/returns" icon={RotateCcw}>
+                    Returns
+                </AccountNavLink>
+            )}
             <AccountNavLink to="/account/profile" icon={User}>
                 Account Details
             </AccountNavLink>
@@ -170,11 +180,11 @@ const AccountContentSkeleton = () => (
 );
 
 const AccountLayout = () => {
-    const {customer, isAuthenticated} = useLoaderData<typeof loader>();
+    const {customer, isAuthenticated, returnsEnabled} = useLoaderData<typeof loader>();
 
     return (
         <div className="mx-auto max-w-[2000px] px-2 md:px-4 pt-8 sm:pt-10 md:pt-12 mb-4 pb-6 sm:pb-8 md:pb-12 lg:pb-16 xl:pb-20 min-h-[calc(100dvh-var(--total-header-height))]">
-            {isAuthenticated && <AccountMenu />}
+            {isAuthenticated && <AccountMenu returnsEnabled={returnsEnabled ?? false} />}
             <div className={cn("mx-auto max-w-5xl", isAuthenticated ? "mt-8 md:mt-10 lg:mt-12 xl:mt-14" : "mt-4")}>
                 <Suspense fallback={<AccountContentSkeleton />}>
                     <Outlet context={{customer, isAuthenticated} satisfies AccountOutletContext} />

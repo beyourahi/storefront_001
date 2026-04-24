@@ -9,12 +9,47 @@ export default defineConfig({
     plugins: [tailwindcss(), hydrogen(), oxygen(), reactRouter(), tsconfigPaths()],
 
     // -------------------------------------------------------------------------
+    // MODULE DEDUPLICATION
+    // -------------------------------------------------------------------------
+    // Prevents duplicate React instances when multiple node_modules resolutions
+    // exist (common in monorepos or workspace setups). Duplicate React causes
+    // "Invalid hook call" runtime errors that are hard to diagnose.
+    resolve: {
+        dedupe: [
+            "react",
+            "react-dom",
+            "react-router",
+            "react/jsx-runtime",
+            "react/jsx-dev-runtime",
+            "react-dom/client",
+            "@shopify/hydrogen"
+        ]
+    },
+
+    // -------------------------------------------------------------------------
     // BUILD OPTIONS
     // -------------------------------------------------------------------------
     build: {
         // Don't inline assets as base64 - this allows strict CSP headers
         // All assets are served as separate files with proper caching
         assetsInlineLimit: 0
+    },
+
+    // -------------------------------------------------------------------------
+    // DEPENDENCY OPTIMIZATION
+    // -------------------------------------------------------------------------
+    optimizeDeps: {
+        // Pre-bundle React packages so Vite serves a single copy in dev
+        include: [
+            "react",
+            "react-dom",
+            "react/jsx-runtime",
+            "react/jsx-dev-runtime",
+            "react-dom/client"
+        ],
+        // Hydrogen ships pre-bundled ESM — excluding it avoids double-bundling
+        // and prevents CJS/ESM boundary issues with its internal Workers-targeted code
+        exclude: ["@shopify/hydrogen"]
     },
 
     // -------------------------------------------------------------------------
@@ -50,17 +85,11 @@ export default defineConfig({
         // - tryhydrogen.dev: Shopify's development environment
         // - ngrok: Required for Customer Account API OAuth flow
         allowedHosts: [".tryhydrogen.dev", "hermelinda-nonsegmentary-hettie.ngrok-free.dev"],
-        // Dedicated HMR port avoids WebSocket conflicts with Hydrogen's dev server proxy
+        // Explicit WebSocket config prevents HMR port conflicts with Hydrogen's
+        // dev server proxy and ensures stable hot reload connections
         hmr: {
-            port: 24678
-        },
-        // Prevent browser from caching Vite dev chunks between server restarts.
-        // Each restart re-runs the dep optimizer with a new ?v=HASH stamp; if the
-        // browser serves a stale chunk the old React copy conflicts with the new one,
-        // causing useContext to return null (two React instances in memory).
-        // Cache-Control: no-store is dev-only and has no effect on production builds.
-        headers: {
-            "Cache-Control": "no-store"
+            protocol: "ws",
+            host: "localhost"
         }
     }
 });

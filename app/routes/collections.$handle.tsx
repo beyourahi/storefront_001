@@ -20,6 +20,8 @@ import {
 } from "~/lib/collection-route-helpers";
 import {parseSortFilterParams} from "~/lib/sort-filter-helpers";
 import {sortWithPinnedFirst} from "~/lib/product-tags";
+import {SIDEBAR_COLLECTIONS_QUERY} from "~/lib/fragments";
+import {withTimeoutAndFallback, TIMEOUT_DEFAULTS} from "~/lib/promise-utils";
 
 const redirectIfHandleIsLocalized = (
     request: Request,
@@ -80,7 +82,13 @@ export function links({ data }: { data: Awaited<ReturnType<typeof loader>> | nul
     return [{ rel: "preload", as: "image", href }] as const;
 }
 
-export const loader = async ({context, params, request}: Route.LoaderArgs) => {
+export async function loader(args: Route.LoaderArgs) {
+    const criticalData = await loadCriticalData(args);
+    const deferredData = loadDeferredData(args);
+    return {...deferredData, ...criticalData};
+}
+
+async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     const {handle} = params;
     const {dataAdapter} = context;
     const url = new URL(request.url);
@@ -89,26 +97,28 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
         throw redirect("/collections");
     }
 
-    // Parse pagination params
     const {cursor, page, direction} = parsePaginationParams(url);
     const pageParam = url.searchParams.get("page");
-
-    // Parse sort and filter params from URL
     const {sort, sortKey, reverse, sortLabel} = parseSortFilterParams(url);
-
-    // Build GraphQL variables for cursor-based pagination
     const variables = buildPaginationVariables(cursor, direction, 48);
 
-    // Query collection with server-side sorting
-    const {collection} = await dataAdapter.query(COLLECTION_QUERY, {
-        variables: {
-            handle,
-            ...variables,
-            sortKey,
-            reverse
-        },
-        cache: dataAdapter.CacheShort()
-    });
+    const [{collection}, collectionCountData] = await Promise.all([
+        // Main collection + paginated products (CacheShort for live inventory/availability)
+        dataAdapter.query(COLLECTION_QUERY, {
+            variables: {
+                handle,
+                ...variables,
+                sortKey,
+                reverse
+            },
+            cache: dataAdapter.CacheShort()
+        }),
+        // Lightweight count query for accurate total (CacheLong — catalog metadata changes rarely)
+        dataAdapter.query(COLLECTION_COUNT_QUERY, {
+            variables: {handle},
+            cache: dataAdapter.CacheLong()
+        })
+    ]);
 
     if (!collection) {
         throw new Response(`Collection ${handle} not found`, {status: 404});
@@ -118,24 +128,44 @@ export const loader = async ({context, params, request}: Route.LoaderArgs) => {
 
     // Products are already filtered and sorted by GraphQL; apply pin sorting on top
     const products = sortWithPinnedFirst(collection.products.nodes);
-
-    // Build pagination data
     const pagination = buildPaginationData(collection.products.pageInfo, page);
 
-    // Check for canonical redirect
     const canonicalRedirect = getCanonicalRedirect(url, page, pagination.hasNextPage, pageParam);
     if (canonicalRedirect) {
         throw redirect(canonicalRedirect);
     }
+
+    // Accurate product count from lightweight query (up to 250); main query paginates at 48
+    const collectionProductCount =
+        (collectionCountData as {collection?: {products?: {nodes?: {id: string}[]}}})
+            ?.collection?.products?.nodes?.length ?? 0;
 
     return {
         collection,
         products,
         pagination,
         sort,
-        sortLabel
+        sortLabel,
+        collectionProductCount
     };
-};
+}
+
+function loadDeferredData({context}: Route.LoaderArgs) {
+    const {dataAdapter} = context;
+
+    const sidebarData = withTimeoutAndFallback(
+        dataAdapter
+            .query(SIDEBAR_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()})
+            .catch((error: unknown) => {
+                console.error("Failed to load sidebar collections:", error);
+                return null;
+            }),
+        null,
+        TIMEOUT_DEFAULTS.API
+    );
+
+    return {sidebarData};
+}
 
 export default function CollectionPage() {
     const {collection, products, pagination, sort, sortLabel} =
@@ -397,6 +427,23 @@ const COLLECTION_QUERY = `#graphql
           startCursor
           endCursor
         }
+      }
+    }
+  }
+` as const;
+
+// Lightweight query to get accurate product count for a collection.
+// The main COLLECTION_QUERY paginates at 48, so .nodes.length would cap at page size.
+const COLLECTION_COUNT_QUERY = `#graphql
+  query CollectionCount(
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: 250) {
+        nodes { id }
+        pageInfo { hasNextPage }
       }
     }
   }

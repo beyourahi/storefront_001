@@ -104,7 +104,7 @@ export const CART_QUERY_FRAGMENT = `#graphql
           title
           id
           vendor
-          media(first: 3) {
+          media(first: 5) {
             nodes {
               __typename
               ... on MediaImage {
@@ -115,7 +115,7 @@ export const CART_QUERY_FRAGMENT = `#graphql
               ... on Video {
                 id
                 alt
-                sources { url mimeType }
+                sources { url mimeType width height }
                 previewImage { id url altText width height }
               }
             }
@@ -139,6 +139,20 @@ export const CART_QUERY_FRAGMENT = `#graphql
             }
           }
         }
+      }
+    }
+    discountAllocations {
+      discountedAmount {
+        ...Money
+      }
+      ... on CartAutomaticDiscountAllocation {
+        title
+      }
+      ... on CartCodeDiscountAllocation {
+        code
+      }
+      ... on CartCustomDiscountAllocation {
+        title
       }
     }
     sellingPlanAllocation {
@@ -201,7 +215,7 @@ export const CART_QUERY_FRAGMENT = `#graphql
           title
           id
           vendor
-          media(first: 3) {
+          media(first: 5) {
             nodes {
               __typename
               ... on MediaImage {
@@ -212,7 +226,7 @@ export const CART_QUERY_FRAGMENT = `#graphql
               ... on Video {
                 id
                 alt
-                sources { url mimeType }
+                sources { url mimeType width height }
                 previewImage { id url altText width height }
               }
             }
@@ -222,6 +236,20 @@ export const CART_QUERY_FRAGMENT = `#graphql
           name
           value
         }
+      }
+    }
+    discountAllocations {
+      discountedAmount {
+        ...Money
+      }
+      ... on CartAutomaticDiscountAllocation {
+        title
+      }
+      ... on CartCodeDiscountAllocation {
+        code
+      }
+      ... on CartCustomDiscountAllocation {
+        title
       }
     }
     sellingPlanAllocation {
@@ -449,7 +477,7 @@ export const CART_SUGGESTIONS_QUERY = `#graphql
           width
           height
         }
-        media(first: 3) {
+        media(first: 5) {
           nodes {
             __typename
             ... on MediaImage {
@@ -460,7 +488,7 @@ export const CART_SUGGESTIONS_QUERY = `#graphql
             ... on Video {
               id
               alt
-              sources { url mimeType }
+              sources { url mimeType width height }
               previewImage { id url altText width height }
             }
           }
@@ -578,6 +606,57 @@ export const MENU_COLLECTIONS_QUERY = `#graphql
       }
       pageInfo {
         hasNextPage
+      }
+    }
+  }
+` as const;
+
+// =============================================================================
+// SIDEBAR COLLECTIONS QUERY
+// =============================================================================
+
+/**
+ * Sidebar collections query - fetches collections and all available products
+ * for the sidebar navigation on collection/product/sale pages.
+ *
+ * Single canonical definition shared across all routes that render a sidebar.
+ * Returned as a deferred Promise so it does not block above-fold rendering.
+ *
+ * - collections.products(first:100): accurate per-collection counts for filter sidebar
+ * - allProducts(first:250): full catalog slice for discount counting without over-fetching
+ */
+export const SIDEBAR_COLLECTIONS_QUERY = `#graphql
+  query SidebarCollections(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    collections(first: 50, sortKey: TITLE) {
+      nodes {
+        id
+        handle
+        title
+        products(first: 100) {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+    allProducts: products(first: 250, query: "available_for_sale:true") {
+      nodes {
+        id
+        availableForSale
+        variants(first: 3) {
+          nodes {
+            availableForSale
+            price {
+              amount
+            }
+            compareAtPrice {
+              amount
+            }
+          }
+        }
       }
     }
   }

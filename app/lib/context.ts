@@ -151,11 +151,12 @@ export async function createHydrogenRouterContext(request: Request, env: Env, ex
             cart: {
                 queryFragment: CART_QUERY_FRAGMENT
             },
-            // Downgrades the dev-tunnel domain check from a thrown error to a
-            // warning, enabling ngrok and other custom HTTPS proxies to work
-            // with Customer Account API OAuth during local development.
+            // Downgrades the dev-tunnel domain check to a warning in development,
+            // enabling ngrok and other custom HTTPS proxies to work with Customer
+            // Account API OAuth. Must be false in production (Oxygen) to enforce
+            // Shopify's secure auth domain validation.
             customerAccount: {
-                useCustomAuthDomain: true
+                useCustomAuthDomain: process.env.NODE_ENV === "development"
             }
         },
         // Merge in any additional context properties (CMS, reviews, etc.)

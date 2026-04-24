@@ -238,10 +238,23 @@ export async function loader({request, context}: Route.LoaderArgs) {
     }
 
     if (isPredictive) {
-        return await predictiveSearch({request, context});
+        return await predictiveSearch({request, context}).catch((error: Error) => {
+            console.error(error);
+            return {type: "predictive" as const, term: "", result: getEmptyPredictiveSearchResult()};
+        });
     }
 
-    return await regularSearch({request, context});
+    return await regularSearch({request, context}).catch((error: Error) => {
+        console.error(error);
+        return {
+            type: "categorized" as const,
+            term: "",
+            error: error.message,
+            products: {nodes: [], pageInfo: {hasNextPage: false, endCursor: null}, totalCount: 0},
+            collections: {nodes: [], totalCount: 0},
+            articles: {nodes: [], pageInfo: {hasNextPage: false, endCursor: null}, totalCount: 0}
+        } satisfies CategorizedSearchResult;
+    });
 }
 
 export default function SearchPage() {
@@ -1375,8 +1388,8 @@ const SEARCH_QUERY = `#graphql
     $productAfter: String
     $articleFirst: Int!
     $articleAfter: String
-    $sortKey: SearchSortKeys
-    $reverse: Boolean
+    $sortKey: SearchSortKeys!
+    $reverse: Boolean!
   ) @inContext(country: $country, language: $language) {
     products: search(
       query: $term
@@ -1426,8 +1439,8 @@ const SEARCH_PRODUCTS_QUERY = `#graphql
     $term: String!
     $first: Int!
     $after: String
-    $sortKey: SearchSortKeys
-    $reverse: Boolean
+    $sortKey: SearchSortKeys!
+    $reverse: Boolean!
   ) @inContext(country: $country, language: $language) {
     products: search(
       query: $term

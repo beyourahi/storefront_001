@@ -1,4 +1,4 @@
-import {data, redirect, type HeadersFunction} from "react-router";
+import {data, type HeadersFunction} from "react-router";
 import type {Route} from "./+types/cart";
 import type {CartQueryDataReturn} from "@shopify/hydrogen";
 import {CartForm} from "@shopify/hydrogen";
@@ -116,8 +116,12 @@ export const action = async ({request, context}: Route.ActionArgs) => {
     );
 };
 
-export const loader = async () => {
-    return redirect("/");
-};
+export async function loader({context, request}: Route.LoaderArgs) {
+    const {cart} = context;
+    if (request.headers.get("Accept")?.includes("text/html")) {
+        return new Response(null, {status: 302, headers: {Location: "/"}});
+    }
+    return await cart.get();
+}
 
 export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";
