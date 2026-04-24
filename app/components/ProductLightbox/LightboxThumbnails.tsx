@@ -1,4 +1,5 @@
 import {useRef, useEffect} from "react";
+import {Image} from "@shopify/hydrogen";
 import {PlayIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 
@@ -74,7 +75,7 @@ export function LightboxThumbnails({media, currentIndex, onSelect, availableForS
                             )}
                         >
                             {thumbnailUrl ? (
-                                <img
+                                <Image
                                     src={`${thumbnailUrl}&width=128&height=160&crop=center`}
                                     alt=""
                                     className="size-full object-cover"

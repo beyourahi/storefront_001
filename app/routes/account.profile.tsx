@@ -1,3 +1,4 @@
+import {Image} from "@shopify/hydrogen";
 import type {CustomerAddressInput, CustomerUpdateInput} from "@shopify/hydrogen/customer-account-api-types";
 import type {AddressFragment, CustomerFragment} from "customer-accountapi.generated";
 import type {Route} from "./+types/account.profile";
@@ -490,7 +491,7 @@ const AccountProfile = () => {
             <div className="flex items-center gap-4 md:gap-6">
                 <Avatar className="size-16 sm:size-20 shrink-0">
                     {customer.imageUrl ? (
-                        <img
+                        <Image
                             src={customer.imageUrl}
                             alt={customer.displayName ?? ""}
                             className="size-full object-cover"

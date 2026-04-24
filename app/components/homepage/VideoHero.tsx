@@ -1,5 +1,6 @@
 import {useState, useEffect, useCallback, useRef} from "react";
 import {Link} from "react-router";
+import {Image} from "@shopify/hydrogen";
 import {ArrowRight, Search as SearchIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {ParallaxLayer} from "~/components/motion/ParallaxLayer";
@@ -106,6 +107,7 @@ function HeroBackgroundMedia({
                     width={effectiveLargeScreen.width || undefined}
                     height={effectiveLargeScreen.height || undefined}
                 />
+                {/* img: kept — fallback inside <picture>; Hydrogen Image CDN transforms conflict with <source> responsive selection */}
                 <img
                     src={effectiveMobile.url}
                     alt={effectiveMobile.altText || "Hero Section Background"}
@@ -137,7 +139,7 @@ function HeroBackgroundMedia({
 
     if (activeMedia?.mediaType === "image") {
         return (
-            <img
+            <Image
                 src={activeMedia.url}
                 alt={activeMedia.altText || "Hero Section Background"}
                 className="h-full w-full cursor-zoom-in object-cover"
@@ -149,7 +151,7 @@ function HeroBackgroundMedia({
 
     if (fallbackImageSrc && !fallbackVideoSrc) {
         return (
-            <img
+            <Image
                 src={fallbackImageSrc}
                 alt="Hero Section Background"
                 className="h-full w-full cursor-zoom-in object-cover"

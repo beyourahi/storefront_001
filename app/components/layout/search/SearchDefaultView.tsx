@@ -69,7 +69,7 @@ export const SearchDefaultView = ({
                             >
                                 {entry.image ? (
                                     <span className="bg-background relative inline-flex h-6 w-6 shrink-0 overflow-hidden rounded-full">
-                                        <img
+                                        <Image
                                             src={entry.image}
                                             alt=""
                                             aria-hidden="true"

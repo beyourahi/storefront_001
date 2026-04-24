@@ -1,5 +1,6 @@
 import {useState, useEffect, useRef, useCallback} from "react";
 import {Link, useFetcher, useSearchParams} from "react-router";
+import {Image} from "@shopify/hydrogen";
 import {cn} from "~/lib/utils";
 import {parseProductTitle} from "~/lib/product";
 import {buildShopifyImageUrl, createResponsiveSizes, getGridImageConfig} from "~/lib/performance";
@@ -148,7 +149,7 @@ export const MasonryImageGrid = ({initialImages, pageInfo}: MasonryImageGridProp
                             className="group sleek bg-muted/20 hover:ring-primary/20 focus-visible:ring-primary/40 relative mb-2 block w-full break-inside-avoid overflow-hidden rounded-lg hover:shadow-xl hover:ring-2 focus-visible:ring-2 focus-visible:outline-none"
                         >
                             <div className="relative w-full" style={{aspectRatio: image.aspectRatio || 1}}>
-                                <img
+                                <Image
                                     ref={el => {
                                         imageRefs.current[index] = el;
                                     }}

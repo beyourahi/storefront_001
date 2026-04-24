@@ -1,4 +1,5 @@
 import {Facebook, Instagram, Linkedin, Twitter, Youtube, type LucideIcon} from "lucide-react";
+import {Image} from "@shopify/hydrogen";
 import {cn} from "~/lib/utils";
 
 export type SocialLinkItem = {
@@ -65,7 +66,7 @@ export const SocialLinkGrid = ({socialLinks}: SocialLinkGridProps) => {
                             style={{backgroundColor: getBrandColor(social.platform)}}
                         >
                             {isStringIcon ? (
-                                <img
+                                <Image
                                     src={social.icon as string}
                                     alt={social.platform || "Social media"}
                                     className="sleek h-6 w-6"

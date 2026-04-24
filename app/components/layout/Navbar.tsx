@@ -1,7 +1,7 @@
 import {Suspense, useCallback, useState} from "react";
 import {useCartMutationPending} from "~/lib/cart-utils";
 import {Link, useLocation, useRouteLoaderData, Await, useAsyncValue} from "react-router";
-import {useOptimisticCart} from "@shopify/hydrogen";
+import {Image, useOptimisticCart} from "@shopify/hydrogen";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {AlignLeft, Search as SearchIcon, ShoppingCart, User} from "lucide-react";
 import {Button} from "~/components/ui/button";
@@ -145,11 +145,9 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                             className="motion-link text-primary flex items-center space-x-2 px-2 py-2 hover:opacity-80 md:px-4"
                         >
                             {brandLogo?.url ? (
-                                <img
-                                    src={brandLogo.url}
+                                <Image
+                                    data={brandLogo}
                                     alt={brandLogo.altText ?? displayBrandName}
-                                    width={brandLogo.width ?? undefined}
-                                    height={brandLogo.height ?? undefined}
                                     className="h-8 w-auto object-contain lg:h-10"
                                     loading="eager"
                                     {...{fetchpriority: "high"}}

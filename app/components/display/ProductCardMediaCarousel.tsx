@@ -121,7 +121,7 @@ function CardVideo({
             {/* Poster layer: always rendered so the slot has a stable image
                 even before the video can paint its first frame. */}
             {posterUrl && !isReady && (
-                <img
+                <Image
                     src={posterUrl}
                     alt={media.altText ?? productTitle}
                     className={cn(

@@ -127,7 +127,7 @@ function LazyVideo({
     return (
         <div ref={containerRef} className="relative h-full w-full">
             {posterUrl && !isReady && (
-                <img
+                <Image
                     src={posterUrl}
                     alt={media.altText ?? productTitle}
                     className={cn("absolute inset-0 h-full w-full object-cover", mediaClassName)}

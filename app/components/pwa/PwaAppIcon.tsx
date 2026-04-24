@@ -1,3 +1,4 @@
+import {Image} from "@shopify/hydrogen";
 import {cn} from "~/lib/utils";
 
 interface PwaAppIconProps {
@@ -33,7 +34,7 @@ export const PwaAppIcon = ({src, alt, className, size = "md"}: PwaAppIconProps) 
     }
 
     return (
-        <img
+        <Image
             src={src}
             alt={alt || "App icon"}
             className={cn(sizeClass, "rounded-2xl shadow-md object-cover", className)}
