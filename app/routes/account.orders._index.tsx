@@ -33,6 +33,7 @@ export const loader = async ({request, context}: Route.LoaderArgs) => {
 
     const paginationVariables = getPaginationVariables(request, {pageBy: 20});
 
+    // Personalized customer data — bypasses server cache intentionally; HTTP headers enforce no-store.
     const {data} = await customerAccount.query(CUSTOMER_ORDERS_LIST_QUERY, {
         variables: {...paginationVariables}
     });

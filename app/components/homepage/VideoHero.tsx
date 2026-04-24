@@ -112,6 +112,8 @@ function HeroBackgroundMedia({
                     width={effectiveMobile.width || undefined}
                     height={effectiveMobile.height || undefined}
                     className="h-full w-full cursor-zoom-in object-cover"
+                    loading="eager"
+                    fetchPriority="high"
                 />
             </picture>
         );
@@ -139,6 +141,8 @@ function HeroBackgroundMedia({
                 src={activeMedia.url}
                 alt={activeMedia.altText || "Hero Section Background"}
                 className="h-full w-full cursor-zoom-in object-cover"
+                loading="eager"
+                fetchPriority="high"
             />
         );
     }
@@ -149,6 +153,8 @@ function HeroBackgroundMedia({
                 src={fallbackImageSrc}
                 alt="Hero Section Background"
                 className="h-full w-full cursor-zoom-in object-cover"
+                loading="eager"
+                fetchPriority="high"
             />
         );
     }

@@ -597,12 +597,13 @@ function SearchPageInitialState({
                             >
                                 {entry.image ? (
                                     <span className="bg-muted relative inline-flex size-8 shrink-0 overflow-hidden rounded-full">
-                                        <img
-                                            src={entry.image}
-                                            alt=""
-                                            aria-hidden="true"
-                                            className="h-full w-full object-cover"
+                                        <Image
+                                            data={{url: entry.image, altText: null}}
+                                            width={32}
+                                            height={32}
                                             loading="lazy"
+                                            className="h-full w-full object-cover"
+                                            aria-hidden="true"
                                         />
                                     </span>
                                 ) : (
@@ -652,9 +653,10 @@ function SearchPageInitialState({
                             <Link key={collection.id} to={`/collections/${collection.handle}`} prefetch="viewport" className="group">
                                 <div className="bg-muted/50 mb-2 aspect-square overflow-hidden rounded-xl sm:mb-3 sm:rounded-2xl">
                                     {collection.image ? (
-                                        <img
-                                            alt={collection.image.altText ?? collection.title}
-                                            src={collection.image.url}
+                                        <Image
+                                            data={collection.image}
+                                            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                                            loading="lazy"
                                             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
                                     ) : (
@@ -1276,7 +1278,7 @@ const SEARCH_PRODUCT_FRAGMENT = `#graphql
         currencyCode
       }
     }
-    variants(first: 20) {
+    variants(first: 1) {
       nodes {
         id
         title

@@ -512,7 +512,7 @@ const PRODUCT_FRAGMENT = `#graphql
         title
       }
     }
-    images(first: 20) {
+    images(first: 10) {
       nodes {
         id
         url
@@ -521,7 +521,7 @@ const PRODUCT_FRAGMENT = `#graphql
         height
       }
     }
-    media(first: 20) {
+    media(first: 10) {
       nodes {
         __typename
         mediaContentType

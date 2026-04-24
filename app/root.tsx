@@ -126,7 +126,7 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
             variables: {headerMenuHandle: "main-menu"},
             cache: dataAdapter.CacheLong()
         }),
-        dataAdapter.query(MENU_COLLECTIONS_QUERY, {cache: dataAdapter.CacheShort()}).catch((error: unknown) => {
+        dataAdapter.query(MENU_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
             console.error("Failed to load menu collections:", error);
             return null;
         }),

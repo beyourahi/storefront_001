@@ -47,6 +47,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         );
     }
 
+    // Personalized customer data — bypasses server cache intentionally; HTTP headers enforce no-store.
     const [ordersResponse, storeCreditResponse] = await Promise.all([
         customerAccount.query(CUSTOMER_ORDERS_LIST_QUERY, {
             variables: {first: 5}

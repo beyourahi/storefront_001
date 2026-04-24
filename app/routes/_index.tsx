@@ -82,20 +82,13 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 
     const specialCollections = FALLBACK_SPECIAL_COLLECTIONS;
 
-    const [exploreCollectionsResponse, allProductsResponse] = await Promise.all([
-        dataAdapter.query(EXPLORE_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()})
-            .catch((error: unknown) => { console.error("Failed to load explore collections:", error); return null; }),
-        dataAdapter.query(ALL_PRODUCTS_QUERY, {cache: dataAdapter.CacheShort()})
-            .catch((error: unknown) => { console.error("Failed to load all products:", error); return null; })
-    ]);
-
-    const allProducts = allProductsResponse?.products?.nodes ?? [];
-
+    // Helper to filter out empty/unavailable collections — defined before use below
     const filterCollectionProducts = (response: any) => {
         if (!response?.collection || response.collection.products.nodes.length === 0) return null;
         return response;
     };
 
+    // START ALL DEFERRED QUERIES FIRST — they fire concurrently with the critical await below
     const bestSellers = dataAdapter
         .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.bestSellers}, cache: dataAdapter.CacheShort()})
         .then(filterCollectionProducts)
@@ -119,6 +112,39 @@ export const loader = async ({context}: Route.LoaderArgs) => {
             return null;
         });
 
+    const orderHistory = loadOrderHistory(context);
+
+    // THEN await critical data — deferred queries above are already in flight
+    const [exploreCollectionsResponse, allProductsResponse] = await Promise.all([
+        dataAdapter.query(EXPLORE_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()})
+            .catch((error: unknown) => { console.error("Failed to load explore collections:", error); return null; }),
+        dataAdapter.query(ALL_PRODUCTS_QUERY, {cache: dataAdapter.CacheShort()})
+            .catch((error: unknown) => { console.error("Failed to load all products:", error); return null; })
+    ]);
+
+    const allProducts = allProductsResponse?.products?.nodes ?? [];
+
+    // products(first:1, filters:[{available:true}]) — any returned node confirms non-empty collection
+    const exploreCollections = (exploreCollectionsResponse?.collections?.nodes ?? [])
+        .filter((col: any) => col.products?.nodes?.length > 0)
+        .slice(0, 5)
+        .map((col: any) => ({
+            ...col,
+            productCount: col.products?.nodes?.length ?? 0
+        }));
+
+    return {
+        exploreCollections,
+        bestSellers,
+        newArrivals,
+        trending,
+        recentArticles,
+        allProducts,
+        orderHistory
+    };
+};
+
+async function loadOrderHistory(context: Route.LoaderArgs["context"]): Promise<{products: OrderHistoryProduct[]; isLoggedIn: boolean}> {
     let orderHistoryProducts: OrderHistoryProduct[] = [];
     let isLoggedIn = false;
 
@@ -171,29 +197,8 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         console.error("Failed to load order history:", error);
     }
 
-    // The query already filters products by availability (filters: [{available: true}]),
-    // so any returned product node confirms at least one available product exists.
-    const exploreCollections = (exploreCollectionsResponse?.collections?.nodes ?? [])
-        .filter((col: any) => col.products?.nodes?.length > 0)
-        .slice(0, 5)
-        .map((col: any) => ({
-            ...col,
-            productCount: col.products?.nodes?.length ?? 0
-        }));
-
-    return {
-        exploreCollections,
-        bestSellers,
-        newArrivals,
-        trending,
-        recentArticles,
-        allProducts,
-        orderHistory: {
-            products: orderHistoryProducts,
-            isLoggedIn
-        }
-    };
-};
+    return {products: orderHistoryProducts, isLoggedIn};
+}
 
 export default function Homepage() {
     const data = useLoaderData<typeof loader>();
@@ -228,11 +233,17 @@ export default function Homepage() {
                 <HomepageWishlistSection />
             </AnimatedSection>
 
-            {data.orderHistory?.isLoggedIn && data.orderHistory.products.length > 0 && (
-                <AnimatedSection animation="slide-up" threshold={0.14}>
-                    <OrderHistorySection products={data.orderHistory.products} />
-                </AnimatedSection>
-            )}
+            <Suspense fallback={null}>
+                <Await resolve={data.orderHistory}>
+                    {(orderHistory: {products: OrderHistoryProduct[]; isLoggedIn: boolean}) =>
+                        orderHistory?.isLoggedIn && orderHistory.products.length > 0 ? (
+                            <AnimatedSection animation="slide-up" threshold={0.14}>
+                                <OrderHistorySection products={orderHistory.products} />
+                            </AnimatedSection>
+                        ) : null
+                    }
+                </Await>
+            </Suspense>
 
             {featuredProduct ? (
                 <AnimatedSection animation="fade" threshold={0.14}>
@@ -384,7 +395,7 @@ const EXPLORE_COLLECTIONS_QUERY = `#graphql
           width
           height
         }
-        products(first: 250) {
+        products(first: 1, filters: [{available: true}]) {
           nodes {
             id
           }
