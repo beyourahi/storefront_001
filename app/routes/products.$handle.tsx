@@ -435,7 +435,6 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       value
     }
     sku
-    barcode
     title
     unitPrice {
       amount
@@ -500,13 +499,12 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     tags
     productType
-    publishedAt
     encodedVariantExistence
     encodedVariantAvailability
     sizeChart: metafield(namespace: "custom", key: "size_chart") {
       value
     }
-    collections(first: 10) {
+    collections(first: 1) {
       nodes {
         handle
         title

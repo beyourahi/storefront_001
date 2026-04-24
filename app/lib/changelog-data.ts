@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-24",
+        headline: "Product pages request less data so they open faster",
+        summary:
+            "The product page now fetches only the fields it actually shows, trimming unused data from every product request. Collection lookups were also tightened to fetch one result instead of ten. These changes reduce the payload on every product page load.",
+        category: "Performance"
+    },
+    {
+        date: "2026-04-24",
         headline: "Pages load faster with leaner API queries and smarter image loading",
         summary: "Product reviews now load after the main product details so prices and buy options appear sooner. Images across the site use Shopify's CDN to serve the right resolution for each screen. Navigating between products and collections now plays smooth native page transitions.",
         category: "Improvement"
