@@ -84,6 +84,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                                 <li key={link.href}>
                                     <Link
                                         to={link.href}
+                                        prefetch="viewport"
                                         className={cn(
                                             "text-sm sleek",
                                             pathname === link.href
@@ -106,6 +107,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                                 <li key={link.href}>
                                     <Link
                                         to={link.href}
+                                        prefetch="viewport"
                                         className={cn(
                                             "text-sm sleek",
                                             pathname === link.href
@@ -120,6 +122,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                             <li>
                                 <Link
                                     to="/changelog"
+                                    prefetch="viewport"
                                     className={cn(
                                         "text-sm sleek",
                                         pathname === "/changelog"
@@ -144,6 +147,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                                         <li key={link.href}>
                                             <Link
                                                 to={link.href}
+                                                prefetch="viewport"
                                                 className={cn(
                                                     "inline-flex items-center gap-2 text-sm sleek",
                                                     pathname === link.href

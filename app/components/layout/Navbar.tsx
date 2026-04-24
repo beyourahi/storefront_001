@@ -108,6 +108,8 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                             <Link
                                 key={link.href}
                                 to={link.href}
+                                prefetch="intent"
+                                viewTransition
                                 className={cn(
                                     "hover:text-primary sleek px-3 py-2 text-sm font-semibold",
                                     "motion-link",
@@ -122,6 +124,8 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                         {data?.hasBlog && (
                             <Link
                                 to="/blogs"
+                                prefetch="intent"
+                                viewTransition
                                 className={cn(
                                     "hover:text-primary sleek px-3 py-2 text-sm font-semibold",
                                     "motion-link",
@@ -183,7 +187,7 @@ export const Navbar = ({shopName, collections}: NavbarProps) => {
                         </div>
 
                         <div className="hidden lg:block">
-                            <Link to="/account">
+                            <Link to="/account" prefetch="intent" viewTransition>
                                 <Button
                                     variant="ghost"
                                     size="icon"
