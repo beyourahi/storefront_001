@@ -84,6 +84,13 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     ];
 };
 
+export function links({ data }: { data: Awaited<ReturnType<typeof loader>> | null }) {
+    // Preload first product image for LCP — this is the dominant above-fold element
+    const href = data?.product?.images?.nodes?.[0]?.url;
+    if (!href) return [];
+    return [{ rel: "preload", as: "image", href }] as const;
+}
+
 export const loader = async (args: Route.LoaderArgs) => {
     const criticalData = await loadCriticalData(args);
     const deferredData = loadDeferredData(args, criticalData.product.id);

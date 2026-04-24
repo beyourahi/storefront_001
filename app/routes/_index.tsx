@@ -66,6 +66,17 @@ export const meta: Route.MetaFunction = ({matches}) => {
     ];
 };
 
+export function links({ data }: { data: Awaited<ReturnType<typeof loader>> | null }) {
+    // Preload first product image for LCP — hero is video-based, first image below fold
+    const firstProduct = (data?.allProducts as any[] | undefined)?.[0];
+    const firstMediaImage = firstProduct?.media?.nodes?.find(
+        (n: any) => n.__typename === "MediaImage"
+    );
+    const href = firstMediaImage?.image?.url;
+    if (!href) return [];
+    return [{ rel: "preload", as: "image", href }] as const;
+}
+
 export const loader = async ({context}: Route.LoaderArgs) => {
     const {dataAdapter} = context;
 
