@@ -161,7 +161,7 @@ const QUICK_ADD_PRODUCT_QUERY = `#graphql
         width
         height
       }
-      images(first: 20) {
+      images(first: 5) {
         nodes {
           id
           url
@@ -186,7 +186,7 @@ const QUICK_ADD_PRODUCT_QUERY = `#graphql
           currencyCode
         }
       }
-      variants(first: 100) {
+      variants(first: 20) {
         nodes {
           id
           title
