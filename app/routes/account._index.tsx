@@ -3,6 +3,7 @@ import type {Route} from "./+types/account._index";
 import type {CustomerFragment} from "customer-accountapi.generated";
 import type {AccountOutletContext} from "~/routes/account";
 import {CUSTOMER_ORDERS_LIST_QUERY} from "~/graphql/customer-account/CustomerOrdersQuery";
+import {Image} from "@shopify/hydrogen";
 import {Button} from "~/components/ui/button";
 import {Avatar, AvatarFallback} from "~/components/ui/avatar";
 import {OrderCard} from "~/components/account/OrderCard";
@@ -132,9 +133,11 @@ const WelcomeBanner = ({customer}: {customer: CustomerFragment}) => {
             <div className="flex items-center gap-4">
                 <Avatar className="size-14 sm:size-16">
                     {customer.imageUrl ? (
-                        <img
+                        <Image
                             src={customer.imageUrl}
                             alt={customer.displayName ?? ""}
+                            width={64}
+                            height={64}
                             className="size-full object-cover"
                         />
                     ) : (

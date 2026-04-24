@@ -649,7 +649,7 @@ function SearchPageInitialState({
                     </h3>
                     <div className="grid grid-cols-2 gap-2 sm:gap-responsive sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                         {collections.map(collection => (
-                            <Link key={collection.id} to={`/collections/${collection.handle}`} className="group">
+                            <Link key={collection.id} to={`/collections/${collection.handle}`} prefetch="viewport" className="group">
                                 <div className="bg-muted/50 mb-2 aspect-square overflow-hidden rounded-xl sm:mb-3 sm:rounded-2xl">
                                     {collection.image ? (
                                         <img
@@ -1276,7 +1276,7 @@ const SEARCH_PRODUCT_FRAGMENT = `#graphql
         currencyCode
       }
     }
-    variants(first: 100) {
+    variants(first: 20) {
       nodes {
         id
         title

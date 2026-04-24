@@ -316,11 +316,12 @@ export const ProductImageCarousel = ({
                 aria-label={`Play ${item.alt || "external video"}`}
             >
                 {item.previewImage ? (
-                    <img
-                        src={item.previewImage.url}
+                    <Image
+                        data={item.previewImage}
                         alt={item.alt || `Video thumbnail ${index + 1}`}
                         className={cn("sleek h-full w-full object-cover", availableForSale && "hover:scale-105")}
                         loading="lazy"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
                     />
                 ) : (
                     <div className="h-full w-full bg-muted" />
@@ -356,11 +357,12 @@ export const ProductImageCarousel = ({
                 aria-label={`View 3D model ${index + 1}`}
             >
                 {item.previewImage ? (
-                    <img
-                        src={item.previewImage.url}
+                    <Image
+                        data={item.previewImage}
                         alt={item.alt || `3D model ${index + 1}`}
                         className={cn("sleek h-full w-full object-cover", availableForSale && "hover:scale-105")}
                         loading="lazy"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
                     />
                 ) : (
                     <div className="h-full w-full bg-muted" />
@@ -425,11 +427,14 @@ export const ProductImageCarousel = ({
                         )}
                     >
                         {thumbUrl ? (
-                            <img
-                                src={`${thumbUrl}&width=128&height=160&crop=center`}
+                            <Image
+                                src={thumbUrl}
                                 alt=""
+                                width={128}
+                                height={160}
                                 className={cn("sleek h-full w-full", availableForSale && "hover:scale-110", "object-cover")}
                                 loading="lazy"
+                                sizes="128px"
                             />
                         ) : (
                             <div className="h-full w-full bg-muted flex items-center justify-center">
