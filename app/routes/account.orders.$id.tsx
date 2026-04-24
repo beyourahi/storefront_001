@@ -78,8 +78,8 @@ const OrderDetailPage = () => {
                                 src={item.image.url}
                                 alt={item.image.altText ?? item.title}
                                 className="size-16 rounded-md object-cover sm:size-20"
-                                width={item.image.width ?? 80}
-                                height={item.image.height ?? 80}
+                                width={Math.min(item.image.width ?? 80, 80)}
+                                height={Math.min(item.image.height ?? 80, 80)}
                             />
                         )}
                         <div className="flex flex-1 flex-col justify-center gap-1">
