@@ -28,7 +28,7 @@ const FALLBACK_ERROR_CONTENT = {
     maintenanceMessage: "We're making some improvements. Please check back soon.",
     maintenanceEstimated: "Estimated time: a few minutes"
 };
-import type {GeneratedTheme} from "~/lib/theme-utils";
+import type {GeneratedTheme} from "types";
 
 const useOfflineTheme = () => {
     const [theme, setTheme] = useState<GeneratedTheme | null>(null);

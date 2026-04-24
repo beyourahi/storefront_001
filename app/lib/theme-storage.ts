@@ -30,7 +30,7 @@
  * 4. Fallback: If no cached theme, uses default theme constants
  *
  * @dependencies
- * - TypeScript types from ./theme-utils (GeneratedTheme)
+ * - TypeScript types from types (GeneratedTheme)
  * - Browser localStorage API
  * - Service Worker postMessage API
  *
@@ -41,7 +41,7 @@
  * - public/service-worker.js - Handles UPDATE_OFFLINE_CACHE message
  */
 
-import type {GeneratedTheme} from "~/lib/theme-utils";
+import type {GeneratedTheme} from "types";
 
 const STORAGE_KEY = "hydrogen-theme-cache";
 

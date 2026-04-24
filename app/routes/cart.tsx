@@ -124,4 +124,12 @@ export async function loader({context, request}: Route.LoaderArgs) {
     return await cart.get();
 }
 
-export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";
+/**
+ * Resource route — cart UI is the drawer.
+ * This component should never render (loader redirects document requests).
+ */
+export default function Cart() {
+    // Resource route — cart UI is the drawer.
+    // This component should never render (loader redirects document requests).
+    return null;
+}

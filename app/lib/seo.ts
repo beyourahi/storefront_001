@@ -60,6 +60,7 @@ import type {WithContext, Organization, WebSite, Product, ItemList, BlogPosting,
 import type {SiteSettings, ThemeConfig} from "types";
 import {STORE_LOCALE} from "~/lib/store-locale";
 import {toHex} from "~/lib/color";
+import {extractImagesFromMedia} from "~/lib/media-utils";
 
 /** Lightweight stand-in for schema-dts WithContext — avoids TS stack overflow on deep union resolution */
 type JsonLdSchema = Record<string, unknown>;
@@ -116,24 +117,40 @@ export function getSeoDefaults(
     const themeColor = toHex(themeConfig?.colors.primary ?? "") ?? "#000000";
     const media = getDefaultOgImage(siteSettings);
 
-    return {brandName, description, siteUrl, themeColor, media};
+    return {
+        brandName,
+        description,
+        siteUrl,
+        themeColor,
+        media,
+        ogType: "website" as const,
+        ogSiteName: brandName,
+        twitterCard: "summary_large_image" as const
+    };
 }
 
 /**
- * Build canonical URL from path
+ * Build canonical URL from path.
+ * When siteUrl is empty (no site URL configured), returns path-only to avoid
+ * generating URLs like "/products/foo" with no origin prefix.
  */
-export function buildCanonicalUrl(path: string, siteUrl?: string): string {
+export function buildCanonicalUrl(path: string, siteUrl: string = SEO_CONFIG.siteUrl): string {
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
-    const base = (siteUrl ?? SEO_CONFIG.siteUrl).replace(/\/$/, "");
-    return base ? `${base}${cleanPath}` : cleanPath;
+    if (!siteUrl) {
+        // siteUrl not configured — returning path-only canonical
+        // Set website_url in site_settings metaobject to generate absolute URLs
+        if (typeof console !== "undefined") console.warn("[SEO] buildCanonicalUrl: siteUrl is empty, returning path-only URL. Configure website_url in site_settings.");
+        return cleanPath;
+    }
+    return `${siteUrl}${cleanPath}`;
 }
 
 /**
  * Truncate description to SEO-friendly length
  * @param text - Text to truncate
- * @param maxLength - Maximum length (default 155 for meta descriptions)
+ * @param maxLength - Maximum length (default 152 for meta descriptions — leaves headroom for "..." and display variance)
  */
-export function truncateDescription(text: string | null | undefined, maxLength = 155): string {
+export function truncateDescription(text: string | null | undefined, maxLength = 152): string {
     if (!text) return "";
     if (text.length <= maxLength) return text;
     // Truncate at word boundary
@@ -221,6 +238,7 @@ export function generateWebsiteSchema(
 
 /**
  * Generate Product schema for product pages
+ * @param siteUrl - Optional absolute site URL for generating absolute offer URLs (e.g. https://example.com)
  */
 export function generateProductSchema(
     product: {
@@ -228,7 +246,7 @@ export function generateProductSchema(
         description?: string | null;
         handle: string;
         vendor?: string | null;
-        images?: {nodes: Array<{url: string; altText?: string | null}>};
+        media?: {nodes: Array<{__typename: string; image?: {id?: string | null; url: string; altText?: string | null; width?: number | null; height?: number | null} | null}>};
     },
     variant?: {
         sku?: string | null;
@@ -238,7 +256,7 @@ export function generateProductSchema(
     } | null,
     siteUrl?: string
 ): JsonLdSchema {
-    const images = product.images?.nodes?.map(img => img.url) || [];
+    const images = extractImagesFromMedia(product.media?.nodes).map(img => img.url);
     // Strip " + Category" suffixes that Shopify sometimes appends to product titles
     const cleanTitle = product.title.split(" + ")[0].trim();
 

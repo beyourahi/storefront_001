@@ -1,4 +1,4 @@
-import type {Route} from "./+types/sitemap[.]custom.xml";
+import type {Route} from "./+types/sitemap[.]custom[.]xml";
 
 /**
  * Custom sitemap for routes not included in the Shopify-generated sitemap index.

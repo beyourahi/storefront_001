@@ -387,7 +387,7 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     blogPageDescription:
         "Ideas, guides, and stories from our world\u2014exploring craft, design, and the things worth owning.",
 
-    announcementBanner: ["Free shipping on orders over $100 — Shop the collection"],
+    announcementBanner: [],
     promotionalBannerOneMedia: undefined,
     promotionalBannerTwoMedia: undefined,
 
@@ -655,12 +655,12 @@ const parseFeaturedProductSection = (featuredProductField: MetaobjectField | und
         tags: (reference.tags as string[] | null) ?? [],
         priceRange: {
             minVariantPrice: {
-                amount: (minVariantPrice?.amount as string) ?? "0",
-                currencyCode: (minVariantPrice?.currencyCode as string) ?? "USD"
+                amount: (minVariantPrice?.amount as string | undefined) ?? (variantPrice.amount as string),
+                currencyCode: (minVariantPrice?.currencyCode as string | undefined) ?? (variantPrice.currencyCode as string)
             },
             maxVariantPrice: {
-                amount: (maxVariantPrice?.amount as string) ?? "0",
-                currencyCode: (maxVariantPrice?.currencyCode as string) ?? "USD"
+                amount: (maxVariantPrice?.amount as string | undefined) ?? (variantPrice.amount as string),
+                currencyCode: (maxVariantPrice?.currencyCode as string | undefined) ?? (variantPrice.currencyCode as string)
             }
         },
         variants: {
@@ -859,7 +859,7 @@ const parseInstagramMedia = (mediaField: MetaobjectField | undefined): Instagram
                     id: (ref.id as string) || `instagram-${index}`,
                     mediaType: "video",
                     url: videoSource.url as string,
-                    altText: (previewImage?.altText as string) || `Instagram video ${index + 1}`,
+                    altText: (ref.alt as string) || `Instagram video ${index + 1}`,
                     previewImage: previewImage?.url
                         ? {url: previewImage.url as string, altText: previewImage.altText as string | undefined}
                         : undefined

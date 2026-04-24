@@ -379,7 +379,7 @@ const MENU_FRAGMENT = `#graphql
  * Provides brand identity data (name, logo, domain) for the navbar and SEO.
  */
 const SHOP_FRAGMENT = `#graphql
-  fragment ShopInfo on Shop {
+  fragment Shop on Shop {
     id
     name
     description
@@ -412,7 +412,7 @@ export const HEADER_QUERY = `#graphql
     $language: LanguageCode
   ) @inContext(language: $language, country: $country) {
     shop {
-      ...ShopInfo
+      ...Shop
     }
     menu(handle: $headerMenuHandle) {
       ...Menu
@@ -455,74 +455,98 @@ export const FOOTER_QUERY = `#graphql
  * @param $country - Country code for localized pricing
  * @param $language - Language code for localized content
  *
- * @note Fetches first 12 products sorted by BEST_SELLING.
+ * @note Fetches first 16 available products sorted by BEST_SELLING.
  */
 export const CART_SUGGESTIONS_QUERY = `#graphql
+  fragment CartSuggestionProduct on Product {
+    id
+    title
+    handle
+    availableForSale
+    priceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+      maxVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+    compareAtPriceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+    featuredImage {
+      id
+      url
+      altText
+      width
+      height
+    }
+    media(first: 5) {
+      nodes {
+        __typename
+        ... on MediaImage {
+          id
+          alt
+          image {
+            id
+            url
+            altText
+            width
+            height
+          }
+        }
+        ... on Video {
+          id
+          alt
+          sources {
+            url
+            mimeType
+            width
+            height
+          }
+          previewImage {
+            id
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
+    variants(first: 20) {
+      nodes {
+        id
+        title
+        availableForSale
+        selectedOptions {
+          name
+          value
+        }
+        price {
+          amount
+          currencyCode
+        }
+        compareAtPrice {
+          amount
+          currencyCode
+        }
+      }
+    }
+  }
+
   query CartSuggestions(
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    products(first: 12, sortKey: BEST_SELLING) {
+    products(first: 16, sortKey: BEST_SELLING, query: "available_for_sale:true") {
       nodes {
-        id
-        handle
-        title
-        availableForSale
-        productType
-        tags
-        featuredImage {
-          id
-          url
-          altText
-          width
-          height
-        }
-        media(first: 5) {
-          nodes {
-            __typename
-            ... on MediaImage {
-              id
-              alt
-              image { id url altText width height }
-            }
-            ... on Video {
-              id
-              alt
-              sources { url mimeType width height }
-              previewImage { id url altText width height }
-            }
-          }
-        }
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-          maxVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        compareAtPriceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        variants(first: 1) {
-          nodes {
-            id
-            availableForSale
-            price {
-              amount
-              currencyCode
-            }
-            compareAtPrice {
-              amount
-              currencyCode
-            }
-          }
-        }
+        ...CartSuggestionProduct
       }
     }
   }

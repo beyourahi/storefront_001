@@ -1,4 +1,4 @@
-import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
+import {formatPrice} from "~/lib/currency-formatter";
 
 /**
  * @fileoverview Shipping Configuration and Free Shipping Utilities
@@ -23,9 +23,6 @@ import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
  * - Threshold is in the store's configured currency (fetched via paymentSettings.currencyCode)
  * - Cart must reach or exceed threshold for free shipping
  * - UI shows progress toward free shipping goal
- *
- * @dependencies
- * - fallback-data.ts - Default threshold when metafield not set
  *
  * @related
  * - root.tsx - Fetches shipping config in loader
@@ -79,21 +76,11 @@ export function parseShippingConfig(
 }
 
 /**
- * Format currency amount for display
+ * Format currency amount for display using the shared CurrencyFormatter.
+ * Produces consistent symbol-based formatting (e.g., "৳5,000" for BDT).
  */
 export function formatShippingThreshold(amount: number, currencyCode: string = DEFAULT_CURRENCY_CODE): string {
-    // For BDT, use the Taka symbol
-    if (currencyCode === "BDT") {
-        return `৳${amount.toLocaleString(STORE_FORMAT_LOCALE)}`;
-    }
-
-    // For other currencies, use Intl formatter
-    return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
-        style: "currency",
-        currency: currencyCode,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(amount);
+    return formatPrice(amount, currencyCode);
 }
 
 /**

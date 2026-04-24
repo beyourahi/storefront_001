@@ -82,9 +82,8 @@ export function links() {
     return [
         {rel: "preconnect", href: "https://cdn.shopify.com"},
         {rel: "preconnect", href: "https://shop.app"},
-        // Google Fonts preconnects are emitted dynamically in Layout's <head> alongside the
-        // actual stylesheet. Duplicating them here via links() caused them to appear twice
-        // because links() feeds <Links /> which renders on every navigation.
+        {rel: "preconnect", href: "https://fonts.googleapis.com"},
+        {rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" as const},
         {rel: "stylesheet", href: appCss},
         {rel: "manifest", href: "/manifest.webmanifest"},
         {rel: "apple-touch-icon", href: "/apple-touch-icon.png"},
@@ -161,6 +160,9 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
         shopData?.shop?.paymentSettings?.currencyCode
     );
 
+    // Capture raw total before filtering — used for "All Collections" count in FullScreenMenu
+    const totalCollections = menuCollectionsData?.collections?.nodes?.length ?? 0;
+
     const menuCollections =
         menuCollectionsData?.collections?.nodes
             ?.map((collection: any) => ({
@@ -226,6 +228,7 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
         generatedTheme,
         hasBlog,
         menuCollections,
+        totalCollections,
         totalProductCount,
         discountCount,
         popularSearchTerms,
@@ -346,15 +349,15 @@ export function Layout({children}: {children?: React.ReactNode}) {
                 <meta name="apple-mobile-web-app-title" content={seoDefaults.brandName} />
                 <meta name="mobile-web-app-capable" content="yes" />
                 <meta name="format-detection" content="telephone=no" />
-                {/* Google Fonts: preconnect + preload hint the browser early; NonBlockingFontLoader
+                {/* OG + Twitter tags — static JSX so they survive child route meta() overrides.
+                    og:type defaults to "website"; product/article routes emit their own type additionally. */}
+                <meta property="og:site_name" content={seoDefaults.brandName} />
+                <meta property="og:type" content="website" />
+                <meta name="twitter:card" content="summary_large_image" />
+                {/* Google Fonts: preload hint the browser early; NonBlockingFontLoader
                     appends the actual stylesheet via useEffect — never render-blocking.
-                    The &display=swap param makes Google Fonts include font-display:swap in @font-face. */}
-                {generatedTheme?.googleFontsUrl && (
-                    <link rel="preconnect" href="https://fonts.googleapis.com" />
-                )}
-                {generatedTheme?.googleFontsUrl && (
-                    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                )}
+                    The &display=swap param makes Google Fonts include font-display:swap in @font-face.
+                    Preconnect links are emitted via links() so they apply on every navigation. */}
                 {generatedTheme?.googleFontsUrl && (
                     <link rel="preload" as="style" href={generatedTheme.googleFontsUrl} />
                 )}
@@ -563,6 +566,28 @@ function FloatingButtonStack() {
     );
 }
 
+/**
+ * Tracks error boundary events via analytics using useEffect (not during render).
+ * Returns null — purely a side-effect component.
+ */
+function ErrorTracker({
+    statusCode,
+    errorType,
+    route
+}: {
+    statusCode: number;
+    errorType: "route_error" | "js_error";
+    route: string;
+}) {
+    useEffect(() => {
+        // Log error analytics in a non-blocking way
+        if (typeof window !== "undefined") {
+            console.warn(`[ErrorBoundary] ${errorType} on ${route}: status=${statusCode}`);
+        }
+    }, [statusCode, errorType, route]);
+    return null;
+}
+
 function CachedThemeInjector() {
     useEffect(() => {
         const theme = getThemeFromStorage();
@@ -607,18 +632,27 @@ export function ErrorBoundary() {
         message = error.message;
     }
 
+    const errorType = isRouteErrorResponse(error) ? "route_error" : "js_error";
+
+    const title =
+        status === 404 ? "Page Not Found" : status >= 500 ? "Something Went Wrong" : "An Error Occurred";
+
     // Content only — React Router 7's Layout export wraps ErrorBoundary
     // with the full <html> document shell, so we must NOT render one here.
     return (
         <>
             <CachedThemeInjector />
-            <OfflineAwareErrorPage statusCode={status} title={undefined} message={message} />
+            <ErrorTracker statusCode={status} errorType={errorType} route="root" />
+            <OfflineAwareErrorPage statusCode={status} title={title} message={message} />
         </>
     );
 }
 
 const HAS_BLOG_QUERY = `#graphql
-  query HasBlog {
+  query HasBlog(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
     articles(first: 1) {
       nodes {
         id
