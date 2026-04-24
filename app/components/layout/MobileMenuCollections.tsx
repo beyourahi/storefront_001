@@ -1,3 +1,4 @@
+import {Image} from "@shopify/hydrogen";
 import {Link} from "react-router";
 import {ShoppingCart, Tag, Sparkles} from "lucide-react";
 import {cn} from "~/lib/utils";
@@ -191,11 +192,11 @@ export const MobileMenuCollections = ({
                                 >
                                     <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-md">
                                         {collection.image?.url ? (
-                                            <img
-                                                src={collection.image.url}
-                                                alt={collection.title}
-                                                width={40}
-                                                height={40}
+                                            <Image
+                                                data={{url: collection.image.url, altText: collection.title}}
+                                                sizes="40px"
+                                                aspectRatio="1/1"
+                                                loading="lazy"
                                                 className="h-full w-full object-cover"
                                             />
                                         ) : (
@@ -229,11 +230,11 @@ export const MobileMenuCollections = ({
                                 >
                                     <div className="from-primary/20 to-primary/10 relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-gradient-to-br">
                                         {collection.image?.url ? (
-                                            <img
-                                                src={collection.image.url}
-                                                alt={collection.title}
-                                                width={40}
-                                                height={40}
+                                            <Image
+                                                data={{url: collection.image.url, altText: collection.title}}
+                                                sizes="40px"
+                                                aspectRatio="1/1"
+                                                loading="lazy"
                                                 className="h-full w-full object-cover"
                                             />
                                         ) : (

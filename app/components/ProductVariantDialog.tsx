@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useMemo, useRef, useState, type ReactNode} from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {useFetcher} from "react-router";
-import {CartForm} from "@shopify/hydrogen";
+import {CartForm, Image} from "@shopify/hydrogen";
 import {
     AlertTriangle,
     CalendarClock,
@@ -604,11 +604,12 @@ function ProductVariantDialogContent({
                                             key={image.id ?? `${image.url}-${index}`}
                                             className="relative aspect-square w-full overflow-hidden rounded-lg shadow-md"
                                         >
-                                            <img
-                                                src={image.url}
-                                                alt={image.altText || `${product.title} - Image ${index + 1}`}
-                                                className="sleek h-full w-full object-cover hover:scale-105"
+                                            <Image
+                                                data={{url: image.url, altText: image.altText || `${product.title} - Image ${index + 1}`}}
+                                                sizes="(min-width: 1024px) 40vw, 80vw"
+                                                aspectRatio="1/1"
                                                 loading={index === 0 ? "eager" : "lazy"}
+                                                className="sleek h-full w-full object-cover hover:scale-105"
                                             />
                                         </div>
                                     ))}
@@ -642,11 +643,12 @@ function ProductVariantDialogContent({
                                         <div className="flex-shrink-0 overflow-hidden rounded-lg shadow-md lg:hidden">
                                             {productImages.length > 0 ? (
                                                 <div className="relative h-20 w-20">
-                                                    <img
-                                                        src={productImages[0].url}
-                                                        alt={productImages[0].altText || product.title}
-                                                        className="h-full w-full object-cover"
+                                                    <Image
+                                                        data={{url: productImages[0].url, altText: productImages[0].altText || product.title}}
+                                                        sizes="80px"
+                                                        aspectRatio="1/1"
                                                         loading="eager"
+                                                        className="h-full w-full object-cover"
                                                     />
                                                 </div>
                                             ) : (

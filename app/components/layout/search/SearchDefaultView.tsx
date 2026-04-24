@@ -1,3 +1,4 @@
+import {Image} from "@shopify/hydrogen";
 import {Link} from "react-router";
 import {ChevronRight, Clock, Search, TrendingUp} from "lucide-react";
 import {Button} from "~/components/ui/button";
@@ -136,9 +137,11 @@ export const SearchDefaultView = ({
                                         <div className="flex min-w-0 flex-1 items-center gap-3">
                                             {product.featuredImage ? (
                                                 <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-sm">
-                                                    <img
-                                                        src={product.featuredImage.url}
-                                                        alt={product.featuredImage.altText ?? product.title}
+                                                    <Image
+                                                        data={{url: product.featuredImage.url, altText: product.featuredImage.altText ?? product.title}}
+                                                        sizes="40px"
+                                                        aspectRatio="1/1"
+                                                        loading="lazy"
                                                         className="h-full w-full object-cover"
                                                     />
                                                 </div>
@@ -207,9 +210,11 @@ export const SearchDefaultView = ({
                                 <div className="flex w-full items-center gap-3">
                                     {collection.image ? (
                                         <div className="bg-muted relative h-10 w-10 overflow-hidden rounded-sm">
-                                            <img
-                                                src={collection.image.url}
-                                                alt={collection.title}
+                                            <Image
+                                                data={{url: collection.image.url, altText: collection.title}}
+                                                sizes="40px"
+                                                aspectRatio="1/1"
+                                                loading="lazy"
                                                 className="h-full w-full object-cover"
                                             />
                                         </div>

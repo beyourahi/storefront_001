@@ -1,3 +1,4 @@
+import {Image} from "@shopify/hydrogen";
 import {CommandGroup, CommandGroupHeading, CommandItem} from "~/components/ui/command";
 
 type SearchCollection = {
@@ -25,9 +26,11 @@ export const SearchCollectionGroup = ({collections, onCollectionClick}: SearchCo
                     <div className="flex w-full items-center gap-3">
                         {collection.image ? (
                             <div className="bg-muted relative h-10 w-10 overflow-hidden rounded-sm">
-                                <img
-                                    src={collection.image.url}
-                                    alt={collection.title}
+                                <Image
+                                    data={{url: collection.image.url, altText: collection.title}}
+                                    sizes="40px"
+                                    aspectRatio="1/1"
+                                    loading="lazy"
                                     className="h-full w-full object-cover"
                                 />
                             </div>

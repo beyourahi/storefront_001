@@ -1,3 +1,4 @@
+import {Image} from "@shopify/hydrogen";
 import {CommandGroup, CommandGroupHeading, CommandItem} from "~/components/ui/command";
 import {formatShopifyMoney} from "~/lib/product/currency";
 import {parseProductTitle} from "~/lib/product";
@@ -53,9 +54,11 @@ export const SearchProductGroup = ({products, onProductClick}: SearchProductGrou
                             <div className="flex min-w-0 flex-1 items-center gap-3">
                                 {productImage ? (
                                     <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-sm">
-                                        <img
-                                            src={productImage.url}
-                                            alt={product.title}
+                                        <Image
+                                            data={{url: productImage.url, altText: product.title}}
+                                            sizes="40px"
+                                            aspectRatio="1/1"
+                                            loading="lazy"
                                             className="h-full w-full object-cover"
                                         />
                                     </div>
