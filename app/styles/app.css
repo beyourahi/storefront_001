@@ -17,6 +17,13 @@
 /*---break---
  */
 
+/* View Transitions API — keep page transitions snappy */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.15s;
+    animation-timing-function: ease-in-out;
+}
+
 /* Prevent horizontal overflow on narrow viewports (375px etc.) */
 body {
     overflow-x: clip;
