@@ -37,6 +37,12 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-24",
+        headline: "Pages load faster with leaner API queries and smarter image loading",
+        summary: "Product reviews now load after the main product details so prices and buy options appear sooner. Images across the site use Shopify's CDN to serve the right resolution for each screen. Navigating between products and collections now plays smooth native page transitions.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-24",
         headline: "Faster page loads with smarter Shopify API caching",
         summary:
             "The homepage and search pages now cache product and collection data from Shopify instead of fetching it fresh on every visit. Collections and blog articles — which rarely change — are held longer, while product listings refresh more frequently so prices and availability stay accurate. Repeat visits and searches on popular terms load noticeably faster.",
