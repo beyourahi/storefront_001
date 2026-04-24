@@ -400,7 +400,9 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
           title
           handle
           tags
+          description
           availableForSale
+          options { id name values }
           variants(first: 10) {
             edges {
               node {
@@ -449,7 +451,9 @@ const ALL_PRODUCTS_QUERY = `#graphql
         title
         handle
         tags
+        description
         availableForSale
+        options { id name values }
         variants(first: 3) {
           edges {
             node {
