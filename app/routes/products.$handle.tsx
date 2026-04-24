@@ -136,12 +136,8 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
         ? rawSeoDescription.substring(0, 152).trimEnd() + "..."
         : rawSeoDescription;
 
-    // Extract reviews from the metafield references — cast to ReviewNode[] for the component
-    const reviews = ((product as any).reviews?.references?.nodes ?? []) as ReviewNode[];
-
     return {
         product,
-        reviews,
         selectedSellingPlan,
         activeCollectionHandle,
         sizeChartData,
@@ -163,7 +159,15 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
             return null;
         });
 
-    return {recommendations};
+    const reviews = dataAdapter
+        .query(PRODUCT_REVIEWS_QUERY, {
+            variables: {id: productId},
+            cache: dataAdapter.CacheShort()
+        })
+        .then((data: any) => (data.product?.reviews?.references?.nodes ?? []) as ReviewNode[])
+        .catch(() => [] as ReviewNode[]);
+
+    return {recommendations, reviews};
 };
 
 const Product = () => {
@@ -316,7 +320,11 @@ const Product = () => {
             </AnimatedSection>
 
             <AnimatedSection animation="fade" threshold={0.08}>
-                <ProductReviews reviews={reviews} />
+                <Suspense fallback={null}>
+                    <Await resolve={reviews}>
+                        {resolvedReviews => <ProductReviews reviews={resolvedReviews ?? []} />}
+                    </Await>
+                </Suspense>
             </AnimatedSection>
 
             <AnimatedSection animation="slide-up" threshold={0.12}>
@@ -490,19 +498,6 @@ const PRODUCT_FRAGMENT = `#graphql
     encodedVariantAvailability
     sizeChart: metafield(namespace: "custom", key: "size_chart") {
       value
-    }
-    reviews: metafield(namespace: "custom", key: "reviews") {
-      references(first: 20) {
-        nodes {
-          ... on Metaobject {
-            reviewerName: field(key: "reviewer_name") { value }
-            rating: field(key: "rating") { value }
-            reviewTitle: field(key: "review_title") { value }
-            body: field(key: "body") { value }
-            date: field(key: "date") { value }
-          }
-        }
-      }
     }
     collections(first: 10) {
       nodes {
@@ -744,6 +739,26 @@ const RECOMMENDED_PRODUCT_FRAGMENT = `#graphql
         compareAtPrice {
           amount
           currencyCode
+        }
+      }
+    }
+  }
+` as const;
+
+const PRODUCT_REVIEWS_QUERY = `#graphql
+  query ProductReviews($id: ID!) {
+    product(id: $id) {
+      reviews: metafield(namespace: "custom", key: "reviews") {
+        references(first: 20) {
+          nodes {
+            ... on Metaobject {
+              reviewerName: field(key: "reviewer_name") { value }
+              rating: field(key: "rating") { value }
+              reviewTitle: field(key: "review_title") { value }
+              body: field(key: "body") { value }
+              date: field(key: "date") { value }
+            }
+          }
         }
       }
     }
