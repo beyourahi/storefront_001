@@ -371,8 +371,8 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     contactPhone: "+1 (555) 000-0000",
     messengerPageId: "",
     whatsappNumber: "",
-    businessHours: "",
-    address: {street: "", city: "", state: "", zip: ""},
+    businessHours: "Mon–Fri: 9am–5pm",
+    address: {street: "123 Brand Street", city: "Your City", state: "NY", zip: "10001"},
 
     blogSectionTitle: "From the Blog",
     collectionsTitle: "Featured Collections",

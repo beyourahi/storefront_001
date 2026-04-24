@@ -5,6 +5,11 @@ type ShopifyMoney = {
     currencyCode: string;
 };
 
+/**
+ * Currency symbol lookup used ONLY as a fallback when Intl.NumberFormat fails.
+ * The primary formatting path uses Intl.NumberFormat with currencyDisplay: "narrowSymbol"
+ * to produce locale-correct symbols (e.g., "৳69" for BDT, "$69" for USD).
+ */
 const CURRENCY_SYMBOLS: Record<string, string> = {
     USD: "$",
     EUR: "€",
@@ -36,7 +41,22 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
     COP: "$",
     SAR: "﷼",
     MYR: "RM",
-    RON: "lei"
+    RON: "lei",
+    BDT: "৳",
+    TWD: "NT$",
+    NZD: "NZ$",
+    TRY: "₺",
+    RUB: "₽",
+    UAH: "₴",
+    VND: "₫",
+    NGN: "₦",
+    PKR: "₨",
+    LKR: "₨",
+    NPR: "₨",
+    BHD: "BD",
+    KWD: "د.ك",
+    QAR: "ر.ق",
+    OMR: "ر.ع."
 };
 
 const DEFAULT_CURRENCY = "USD";
@@ -64,12 +84,19 @@ export class CurrencyFormatter {
         }
 
         try {
-            const isInteger = Number.isInteger(amount);
+            // Use narrowSymbol to display currency symbols (e.g., "৳69") instead of
+            // ISO codes (e.g., "BDT 69") — ensures consistent symbol-based formatting
+            // across all locales and currencies.
+            // Pin both min/max to the same value so fractional prices always show
+            // exactly 2 decimal places ("$12.50" not "$12.5") while integers stay
+            // clean ("$12" not "$12.00").
+            const isInteger = amount % 1 === 0;
             return new Intl.NumberFormat(DEFAULT_LOCALE, {
                 style: "currency",
                 currency: currencyCode,
+                currencyDisplay: "narrowSymbol",
                 minimumFractionDigits: isInteger ? 0 : 2,
-                maximumFractionDigits: 2
+                maximumFractionDigits: isInteger ? 0 : 2
             }).format(amount);
         } catch {
             return this.getFallbackFormat(amount, currencyCode);
@@ -158,7 +185,8 @@ export class CurrencyFormatter {
 
     private getFallbackFormat(amount: number, currencyCode: string): string {
         const symbol = CURRENCY_SYMBOLS[currencyCode] || currencyCode;
-        const formattedAmount = Number.isInteger(amount) ? amount.toFixed(0) : amount.toFixed(2);
+        const isInteger = amount % 1 === 0;
+        const formattedAmount = isInteger ? amount.toFixed(0) : amount.toFixed(2);
         return `${symbol}${formattedAmount}`;
     }
 }

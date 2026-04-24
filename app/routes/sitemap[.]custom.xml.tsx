@@ -13,6 +13,8 @@ export const loader = async ({request}: Route.LoaderArgs) => {
   <url><loc>${origin}/faq</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>${origin}/gallery</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>${origin}/sale</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>${origin}/changelog</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>${origin}/wishlist</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
 </urlset>`;
 
     return new Response(xml, {
