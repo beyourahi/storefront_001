@@ -135,9 +135,11 @@ export const ProductImageGalleryDialog = ({
                                         key={image.id}
                                         className="flex h-full min-w-0 shrink-0 grow-0 basis-full items-center justify-center p-8"
                                     >
-                                        <img
+                                        <Image
                                             src={image.url}
                                             alt={image.altText || `${productTitle} image ${index + 1}`}
+                                            width={1200}
+                                            height={1500}
                                             className="max-h-full max-w-full rounded-lg object-contain shadow-2xl"
                                             style={{
                                                 width: "auto",

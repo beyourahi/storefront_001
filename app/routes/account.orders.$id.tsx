@@ -1,6 +1,7 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/account.orders.$id";
 import {CUSTOMER_ORDER_QUERY} from "~/graphql/customer-account/CustomerOrderQuery";
+import {Image} from "@shopify/hydrogen";
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 import {Card} from "~/components/ui/card";
@@ -73,12 +74,12 @@ const OrderDetailPage = () => {
                 {order.lineItems?.nodes?.map(item => (
                     <div key={item.id} className="flex gap-4 p-4 md:p-5">
                         {item.image && (
-                            <img
+                            <Image
                                 src={item.image.url}
                                 alt={item.image.altText ?? item.title}
                                 className="size-16 rounded-md object-cover sm:size-20"
-                                width={item.image.width ?? 80}
-                                height={item.image.height ?? 80}
+                                width={Math.min(item.image.width ?? 80, 80)}
+                                height={Math.min(item.image.height ?? 80, 80)}
                             />
                         )}
                         <div className="flex flex-1 flex-col justify-center gap-1">

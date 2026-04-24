@@ -17,12 +17,16 @@ export const loader = async ({request, context}: Route.LoaderArgs) => {
     }
 
     const {productRecommendations} = await context.dataAdapter.query(PRODUCT_RECOMMENDATIONS_QUERY, {
-        variables: {productId}
+        variables: {productId},
+        cache: context.dataAdapter.CacheShort()
     });
 
     return new Response(JSON.stringify({products: productRecommendations ?? []}), {
         status: 200,
-        headers: {"Content-Type": "application/json"}
+        headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "public, max-age=1, stale-while-revalidate=9"
+        }
     });
 };
 
@@ -77,7 +81,7 @@ const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
           currencyCode
         }
       }
-      variants(first: 100) {
+      variants(first: 20) {
         nodes {
           id
           title

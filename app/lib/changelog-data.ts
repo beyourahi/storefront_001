@@ -23,7 +23,7 @@
  * no visible user effect, commits under ~20 lines changed.
  */
 
-export type ChangelogCategory = "New Feature" | "Improvement" | "Fix" | "Maintenance";
+export type ChangelogCategory = "New Feature" | "Improvement" | "Fix" | "Maintenance" | "Performance";
 
 export type ChangelogEntry = {
     date: string; // ISO 8601 YYYY-MM-DD
@@ -35,6 +35,12 @@ export type ChangelogEntry = {
 
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
+    {
+        date: "2026-04-24",
+        headline: "Pages load faster with leaner API queries and smarter image loading",
+        summary: "Product reviews now load after the main product details so prices and buy options appear sooner. Images across the site use Shopify's CDN to serve the right resolution for each screen. Navigating between products and collections now plays smooth native page transitions.",
+        category: "Improvement"
+    },
     {
         date: "2026-04-24",
         headline: "Faster page loads with smarter Shopify API caching",

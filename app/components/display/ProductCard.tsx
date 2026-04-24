@@ -143,6 +143,7 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                         to={`/products/${product.handle}`}
                         className={cn("motion-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:rounded-sm", canHover && "group-hover:text-primary")}
                         prefetch="intent"
+                        viewTransition
                     >
                         <ProductCardTitle productTitle={product.title} viewMode={viewMode} />
                     </Link>

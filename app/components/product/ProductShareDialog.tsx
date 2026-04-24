@@ -1,5 +1,6 @@
 import {useState, useEffect, useMemo} from "react";
 import {useLocation} from "react-router";
+import {Image} from "@shopify/hydrogen";
 import type {ProductFragment} from "storefrontapi.generated";
 import {parseProductTitle} from "~/lib/product";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from "~/components/ui/dialog";
@@ -52,7 +53,7 @@ export const ProductShareDialog = ({product, variant, open = false, onOpenChange
                                     style={{width: 80, height: 80}}
                                 >
                                     {!imageLoaded && <div className="bg-muted absolute inset-0 animate-pulse" />}
-                                    <img
+                                    <Image
                                         src={firstImage.url}
                                         alt={firstImage.altText || product.title}
                                         width={80}

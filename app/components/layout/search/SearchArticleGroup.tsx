@@ -1,3 +1,4 @@
+import {Image} from "@shopify/hydrogen";
 import {CommandGroup, CommandGroupHeading, CommandItem} from "~/components/ui/command";
 
 type SearchArticle = {
@@ -26,9 +27,11 @@ export const SearchArticleGroup = ({articles, onArticleClick}: SearchArticleGrou
                     <div className="flex w-full items-center gap-3">
                         {article.image ? (
                             <div className="bg-muted relative h-10 w-10 overflow-hidden rounded-sm">
-                                <img
+                                <Image
                                     src={article.image.url}
                                     alt={article.title}
+                                    width={40}
+                                    height={40}
                                     className="h-full w-full object-cover"
                                 />
                             </div>

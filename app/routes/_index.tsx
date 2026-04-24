@@ -66,6 +66,17 @@ export const meta: Route.MetaFunction = ({matches}) => {
     ];
 };
 
+export function links({ data }: { data: Awaited<ReturnType<typeof loader>> | null }) {
+    // Preload first product image for LCP — hero is video-based, first image below fold
+    const firstProduct = (data?.allProducts as any[] | undefined)?.[0];
+    const firstMediaImage = firstProduct?.media?.nodes?.find(
+        (n: any) => n.__typename === "MediaImage"
+    );
+    const href = firstMediaImage?.image?.url;
+    if (!href) return [];
+    return [{ rel: "preload", as: "image", href }] as const;
+}
+
 export const loader = async ({context}: Route.LoaderArgs) => {
     const {dataAdapter} = context;
 
@@ -399,10 +410,8 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
           id
           title
           handle
-          description
           tags
-          vendor
-          productType
+          description
           availableForSale
           options { id name values }
           variants(first: 10) {
@@ -416,11 +425,6 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
                 compareAtPrice { amount currencyCode }
                 image { url altText }
               }
-            }
-          }
-          images(first: 5) {
-            edges {
-              node { id url altText width height }
             }
           }
           media(first: 5) {
@@ -441,7 +445,6 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
             minVariantPrice { amount currencyCode }
             maxVariantPrice { amount currencyCode }
           }
-          seo { title description }
         }
       }
     }
@@ -458,10 +461,8 @@ const ALL_PRODUCTS_QUERY = `#graphql
         id
         title
         handle
-        description
         tags
-        vendor
-        productType
+        description
         availableForSale
         options { id name values }
         variants(first: 3) {
@@ -475,11 +476,6 @@ const ALL_PRODUCTS_QUERY = `#graphql
               compareAtPrice { amount currencyCode }
               image { url altText }
             }
-          }
-        }
-        images(first: 2) {
-          edges {
-            node { id url altText width height }
           }
         }
         media(first: 5) {
@@ -500,7 +496,6 @@ const ALL_PRODUCTS_QUERY = `#graphql
           minVariantPrice { amount currencyCode }
           maxVariantPrice { amount currencyCode }
         }
-        seo { title description }
       }
     }
   }
