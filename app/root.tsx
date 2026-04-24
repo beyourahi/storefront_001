@@ -313,6 +313,18 @@ function ThemeStyleTag({css}: {css: string}) {
     return <style dangerouslySetInnerHTML={{__html: css}} />;
 }
 
+function NonBlockingFontLoader({url}: {url?: string}) {
+    useEffect(() => {
+        if (!url) return;
+        if (document.querySelector(`link[href="${url}"][rel="stylesheet"]`)) return;
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = url;
+        document.head.appendChild(link);
+    }, [url]);
+    return null;
+}
+
 export function Layout({children}: {children?: React.ReactNode}) {
     const nonce = useNonce();
     const data = useRouteLoaderData<RootLoader>("root");
@@ -334,7 +346,9 @@ export function Layout({children}: {children?: React.ReactNode}) {
                 <meta name="apple-mobile-web-app-title" content={seoDefaults.brandName} />
                 <meta name="mobile-web-app-capable" content="yes" />
                 <meta name="format-detection" content="telephone=no" />
-                {/* Font preload reduces FOUT by hinting the browser to fetch before the stylesheet parses */}
+                {/* Google Fonts: preconnect + preload hint the browser early; NonBlockingFontLoader
+                    appends the actual stylesheet via useEffect — never render-blocking.
+                    The &display=swap param makes Google Fonts include font-display:swap in @font-face. */}
                 {generatedTheme?.googleFontsUrl && (
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
                 )}
@@ -344,9 +358,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
                 {generatedTheme?.googleFontsUrl && (
                     <link rel="preload" as="style" href={generatedTheme.googleFontsUrl} />
                 )}
-                {generatedTheme?.googleFontsUrl && (
-                    <link rel="stylesheet" href={generatedTheme.googleFontsUrl} />
-                )}
+                <NonBlockingFontLoader url={generatedTheme?.googleFontsUrl} />
                 <Meta />
                 <Links />
                 {generatedTheme?.cssVariables && <ThemeStyleTag css={generatedTheme.cssVariables} />}
