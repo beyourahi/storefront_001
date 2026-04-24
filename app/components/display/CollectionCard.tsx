@@ -53,6 +53,7 @@ export const CollectionCard = ({collection}: CollectionCardProps) => {
         <Link
             to={linkHref}
             prefetch="intent"
+            viewTransition
             className={cn(
                 "sleek bg-card collection-card block overflow-hidden rounded-lg",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2",
