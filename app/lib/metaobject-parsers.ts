@@ -301,6 +301,8 @@ const FALLBACK_ERROR_CONTENT: ErrorContent = {
     serverErrorMessage: "We're experiencing technical difficulties. Please try again.",
     serverErrorRetry: "Try Again",
     serverErrorHome: "Return Home",
+    serverErrorContactPrefix: "Need help?",
+    serverErrorContactLink: "Contact Support",
     offlineHeading: "You're Offline",
     offlineMessage: "Please check your internet connection and try again.",
     offlineRetry: "Retry",
@@ -365,8 +367,8 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
 
     siteUrl: "",
 
-    contactEmail: "",
-    contactPhone: "",
+    contactEmail: "hello@yourbrand.com",
+    contactPhone: "+1 (555) 000-0000",
     messengerPageId: "",
     whatsappNumber: "",
     businessHours: "",
@@ -389,9 +391,30 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     promotionalBannerOneMedia: undefined,
     promotionalBannerTwoMedia: undefined,
 
-    socialLinks: [],
+    socialLinks: FALLBACK_SOCIAL_LINKS,
     testimonials: [],
-    faqItems: [],
+    faqItems: [
+        {
+            id: "faq-default-1",
+            question: "What shipping options do you offer?",
+            answer: "We offer standard and express shipping. Standard delivery takes 5-7 business days, while express delivery arrives in 2-3 business days."
+        },
+        {
+            id: "faq-default-2",
+            question: "What is your return policy?",
+            answer: "We accept returns within 30 days of purchase. Items must be unused and in original packaging. Contact us to initiate a return."
+        },
+        {
+            id: "faq-default-3",
+            question: "How can I track my order?",
+            answer: "Once your order ships, you'll receive a confirmation email with a tracking number. You can also check your order status in your account."
+        },
+        {
+            id: "faq-default-4",
+            question: "Do you ship internationally?",
+            answer: "Yes, we ship to most countries worldwide. Shipping costs and delivery times vary by destination."
+        }
+    ],
     instagramMedia: [],
 
     faviconUrl: null,
@@ -614,6 +637,12 @@ const parseFeaturedProductSection = (featuredProductField: MetaobjectField | und
     const rawVariants = (reference.variants as Record<string, unknown> | undefined)?.nodes;
     const variantNodes = Array.isArray(rawVariants) ? rawVariants : [];
 
+    // Forward raw media nodes so downstream components (QuickAdd*, FeaturedProductSpotlight)
+    // can render a video when product.media[0] is a Video. Shape kept loose —
+    // getCardVideoMedia reads only __typename and the relevant sub-fields.
+    const rawMedia = reference.media as {nodes?: Array<Record<string, unknown>>} | undefined;
+    const mediaNodes = Array.isArray(rawMedia?.nodes) ? rawMedia.nodes : null;
+
     return {
         id: reference.id as string,
         handle: reference.handle as string,
@@ -622,6 +651,7 @@ const parseFeaturedProductSection = (featuredProductField: MetaobjectField | und
         description: (reference.description as string | null) ?? "",
         availableForSale: true,
         featuredImage,
+        media: mediaNodes ? {nodes: mediaNodes} : null,
         tags: (reference.tags as string[] | null) ?? [],
         priceRange: {
             minVariantPrice: {
@@ -746,6 +776,27 @@ const parseTestimonialsJson = (jsonField: MetaobjectField | undefined): Testimon
     }
 };
 
+/**
+ * Known generic/placeholder FAQ questions that Shopify metaobject templates
+ * ship with. When ALL questions are generic placeholders, return [] so the
+ * caller falls back to the curated e-commerce defaults in FALLBACK_SITE_SETTINGS.
+ */
+const GENERIC_FAQ_QUESTIONS = new Set([
+    "what is this?",
+    "who is this for?",
+    "how does it work?",
+    "do i need any special knowledge to use this?",
+    "can i get started quickly?",
+    "is everything easy to understand?",
+    "is this designed to be user-friendly?",
+    "can i explore it at my own pace?",
+    "what makes this stand out?",
+    "where can i find more information?"
+]);
+
+const isGenericFaqQuestion = (question: string): boolean =>
+    GENERIC_FAQ_QUESTIONS.has(question.trim().toLowerCase());
+
 const parseFaqItemsJson = (jsonField: MetaobjectField | undefined): FAQItem[] => {
     if (!jsonField?.value) return [];
 
@@ -753,13 +804,21 @@ const parseFaqItemsJson = (jsonField: MetaobjectField | undefined): FAQItem[] =>
         const parsed = JSON.parse(jsonField.value) as unknown;
         if (!Array.isArray(parsed)) return [];
 
-        return (parsed as Record<string, unknown>[])
+        const items = (parsed as Record<string, unknown>[])
             .map((item, index) => ({
                 id: (item.id as string) || `faq-${index}`,
                 question: (item.question as string) || "",
                 answer: (item.answer as string) || ""
             }))
             .filter((f: FAQItem) => f.question && f.answer);
+
+        // When every question is a generic Shopify placeholder, return [] so the
+        // caller falls back to the curated e-commerce defaults.
+        if (items.length > 0 && items.every(item => isGenericFaqQuestion(item.question))) {
+            return [];
+        }
+
+        return items;
     } catch {
         return [];
     }
@@ -846,6 +905,21 @@ export const parseThemeSettings = (rawData: unknown): ThemeConfig => {
     if (!rawData || typeof rawData !== "object") return DEFAULT_THEME_CONFIG;
     const d = rawData as MetaobjectData;
 
+    if (process.env.NODE_ENV === "development") {
+        // eslint-disable-next-line no-console -- intentional debug logging for theme parsing
+        console.log("[ThemeSettings] Raw values from Shopify metaobject:", {
+            colorPrimary: d.colorPrimary?.value ?? "(not set)",
+            colorSecondary: d.colorSecondary?.value ?? "(not set)",
+            colorBackground: d.colorBackground?.value ?? "(not set)",
+            colorForeground: d.colorForeground?.value ?? "(not set)",
+            colorAccent: d.colorAccent?.value ?? "(not set)",
+            borderRadius: d.borderRadius?.value ?? "(not set)",
+            fontBody: d.fontBody?.value ?? "(not set)",
+            fontHeading: d.fontHeading?.value ?? "(not set)",
+            fontPrice: d.fontPrice?.value ?? "(not set)"
+        });
+    }
+
     return {
         fonts: parseThemeFonts(d),
         colors: parseThemeColors(d),
@@ -857,6 +931,7 @@ export const parseSiteSettings = (rawData: unknown): SiteSettings => {
     if (!rawData || typeof rawData !== "object") return FALLBACK_SITE_SETTINGS;
     const data = rawData as MetaobjectData;
 
+    const parsedSocialLinks = parseSocialLinks(data.socialLinksData);
     const parsedTestimonials = parseTestimonialsJson(data.testimonialsData);
     const parsedFaqItems = parseFaqItemsJson(data.faqItemsData);
     const parsedInstagramMedia = parseInstagramMedia(data.instagramMediaData);
@@ -902,9 +977,9 @@ export const parseSiteSettings = (rawData: unknown): SiteSettings => {
         promotionalBannerOneMedia: parseHeroMedia(data.promotionalBannerOneMedia),
         promotionalBannerTwoMedia: parseHeroMedia(data.promotionalBannerTwoMedia),
 
-        socialLinks: parseSocialLinks(data.socialLinksData),
+        socialLinks: parsedSocialLinks.length > 0 ? parsedSocialLinks : FALLBACK_SOCIAL_LINKS,
         testimonials: parsedTestimonials,
-        faqItems: parsedFaqItems,
+        faqItems: parsedFaqItems.length > 0 ? parsedFaqItems : FALLBACK_SITE_SETTINGS.faqItems,
         instagramMedia: parsedInstagramMedia,
 
         faviconUrl: extractImageUrl(data.favicon),
@@ -1131,6 +1206,8 @@ export const parseErrorContent = (data: unknown): ErrorContent => {
         serverErrorMessage: d.serverErrorMessage?.value || FALLBACK_ERROR_CONTENT.serverErrorMessage,
         serverErrorRetry: d.serverErrorRetry?.value || FALLBACK_ERROR_CONTENT.serverErrorRetry,
         serverErrorHome: d.serverErrorHome?.value || FALLBACK_ERROR_CONTENT.serverErrorHome,
+        serverErrorContactPrefix: d.serverErrorContactPrefix?.value || FALLBACK_ERROR_CONTENT.serverErrorContactPrefix,
+        serverErrorContactLink: d.serverErrorContactLink?.value || FALLBACK_ERROR_CONTENT.serverErrorContactLink,
         offlineHeading: d.offlineHeading?.value || FALLBACK_ERROR_CONTENT.offlineHeading,
         offlineMessage: d.offlineMessage?.value || FALLBACK_ERROR_CONTENT.offlineMessage,
         offlineRetry: d.offlineRetry?.value || FALLBACK_ERROR_CONTENT.offlineRetry,
