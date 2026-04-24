@@ -399,12 +399,8 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
           id
           title
           handle
-          description
           tags
-          vendor
-          productType
           availableForSale
-          options { id name values }
           variants(first: 10) {
             edges {
               node {
@@ -416,11 +412,6 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
                 compareAtPrice { amount currencyCode }
                 image { url altText }
               }
-            }
-          }
-          images(first: 5) {
-            edges {
-              node { id url altText width height }
             }
           }
           media(first: 5) {
@@ -441,7 +432,6 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
             minVariantPrice { amount currencyCode }
             maxVariantPrice { amount currencyCode }
           }
-          seo { title description }
         }
       }
     }
@@ -458,12 +448,8 @@ const ALL_PRODUCTS_QUERY = `#graphql
         id
         title
         handle
-        description
         tags
-        vendor
-        productType
         availableForSale
-        options { id name values }
         variants(first: 3) {
           edges {
             node {
@@ -475,11 +461,6 @@ const ALL_PRODUCTS_QUERY = `#graphql
               compareAtPrice { amount currencyCode }
               image { url altText }
             }
-          }
-        }
-        images(first: 2) {
-          edges {
-            node { id url altText width height }
           }
         }
         media(first: 5) {
@@ -500,7 +481,6 @@ const ALL_PRODUCTS_QUERY = `#graphql
           minVariantPrice { amount currencyCode }
           maxVariantPrice { amount currencyCode }
         }
-        seo { title description }
       }
     }
   }
