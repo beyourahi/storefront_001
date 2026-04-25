@@ -2,6 +2,7 @@ import {data, type HeadersFunction} from "react-router";
 import type {Route} from "./+types/cart";
 import type {CartQueryDataReturn} from "@shopify/hydrogen";
 import {CartForm} from "@shopify/hydrogen";
+import {RouteErrorBoundary} from "~/components/RouteErrorBoundary";
 
 export const meta: Route.MetaFunction = () => [
     {title: "Cart"},
@@ -124,12 +125,4 @@ export async function loader({context, request}: Route.LoaderArgs) {
     return await cart.get();
 }
 
-/**
- * Resource route — cart UI is the drawer.
- * This component should never render (loader redirects document requests).
- */
-export default function Cart() {
-    // Resource route — cart UI is the drawer.
-    // This component should never render (loader redirects document requests).
-    return null;
-}
+export {RouteErrorBoundary as ErrorBoundary};
