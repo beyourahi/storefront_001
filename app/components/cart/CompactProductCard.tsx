@@ -2,14 +2,13 @@ import {useMemo} from "react";
 import {Plus} from "lucide-react";
 import {Badge} from "~/components/ui/badge";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
-import {QuickAddButton} from "~/components/QuickAddButton";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {PrimaryProductMedia} from "~/components/common/PrimaryProductMedia";
 import {cn} from "~/lib/utils";
-import {getProductCardMedia, getProductDataForCard, isProductCardData, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
+import {getProductCardMedia, getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
-import type {CompactProductCardProps, ShopifyProduct} from "~/lib/types/product-card";
+import type {CompactProductCardProps} from "~/lib/types/product-card";
 
 export function CompactProductCard({product, className = "", onCartAdd, onProductClick, isMutating = false}: CompactProductCardProps) {
     const productData = useMemo(() => getProductDataForCard(product), [product]);
@@ -17,8 +16,6 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
     const isOutOfStock = !product.availableForSale;
     // Primary media (video-first) — parity with ProductCard grid rendering.
-    // `getProductCardMedia` returns []/[image]/[video, ...] — we want the first
-    // renderable slot for this tiny 64x64 card.
     const primaryMedia = useMemo(() => getProductCardMedia(product)[0] ?? null, [product]);
 
     const {primary, secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
@@ -26,27 +23,6 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
         if (primary.length > 20) return `${primary.substring(0, 20)}...`;
         return primary;
     }, [primary]);
-
-    // Convert ShopifyProduct variant/image edges to the nodes format QuickAddButton expects.
-    // Falls back to null for ProductCardData (no variant edges), which keeps ProductVariantDialog as fallback.
-    // We also forward the normalized card media so the dialog/sheet can render
-    // video in its hero slot when the product's first media is a Shopify Video.
-    const quickAddProduct = useMemo(() => {
-        if (isProductCardData(product)) return null;
-        const p = product as ShopifyProduct;
-        return {
-            id: p.id,
-            title: p.title,
-            handle: p.handle,
-            availableForSale: p.availableForSale,
-            tags: p.tags,
-            featuredImage: p.images.edges[0]?.node ?? null,
-            images: {nodes: p.images.edges.map(e => e.node)},
-            priceRange: p.priceRange,
-            variants: {nodes: p.variants.edges.map(e => e.node)},
-            cardMedia: getProductCardMedia(p)
-        };
-    }, [product]);
 
     const handleProductClick = () => {
         onProductClick?.();
@@ -133,27 +109,29 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                     <button
                         disabled
                         aria-disabled="true"
-                        className="border-foreground/20 bg-card text-card-foreground inline-flex h-8 w-full shrink-0 items-center justify-center rounded-md border-2 px-4 text-xs font-medium whitespace-nowrap opacity-50 cursor-not-allowed"
+                        className="sleek border-foreground/20 bg-card text-card-foreground inline-flex h-10 w-full shrink-0 items-center justify-center rounded-md border-2 px-4 text-sm font-medium whitespace-nowrap opacity-50 cursor-not-allowed shadow-xs"
                     >
                         {OUT_OF_STOCK_LABEL}
                     </button>
-                ) : quickAddProduct ? (
-                    <QuickAddButton
-                        product={quickAddProduct}
-                        fullWidth
-                        skipCartOpen
-                        className="h-8 rounded-md border-2 border-foreground/20 bg-card text-card-foreground text-xs hover:bg-muted hover:border-foreground/40"
-                    />
                 ) : (
                     <ProductVariantDialog
                         productHandle={product.handle}
                         autoAddSingleVariant={true}
                         onSuccess={onCartAdd}
-                        disabled={isMutating}
                     >
-                        <div className="flex w-full items-center justify-center gap-1.5">
-                            <Plus className="h-3 w-3" />
-                            <span>{isPreorder ? "PRE ORDER" : "ADD TO CART"}</span>
+                        <div className="flex items-center justify-center gap-1.5">
+                            <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                            {isPreorder ? (
+                                <>
+                                    <span className="sm:hidden">PRE ORDER</span>
+                                    <span className="hidden sm:inline">PRE ORDER</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="sm:hidden">ADD</span>
+                                    <span className="hidden sm:inline">ADD TO CART</span>
+                                </>
+                            )}
                         </div>
                     </ProductVariantDialog>
                 )}

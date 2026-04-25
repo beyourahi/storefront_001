@@ -351,7 +351,7 @@ function ReviewLayoutCarousel({reviews}: {reviews: ReviewNode[]}) {
     return (
         <Carousel
             setApi={setApi}
-            opts={{loop: false, align: "start"}}
+            opts={{loop: false, align: "start", dragFree: true}}
             plugins={[WheelGesturesPlugin({forceWheelAxis: "x"})]}
             className="w-full"
         >

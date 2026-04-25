@@ -18,7 +18,6 @@ import {FeaturedProductSpotlight} from "~/components/homepage/FeaturedProductSpo
 import {RecentlyViewedSection} from "~/components/homepage/RecentlyViewedSection";
 import {HomepageWishlistSection} from "~/components/HomepageWishlistSection";
 import {ProductSection} from "~/components/homepage/ProductSection";
-import {SocialMediaSection} from "~/components/homepage/SocialMediaSection";
 import {TestimonialsSection} from "~/components/homepage/TestimonialsSection";
 import {FAQSection} from "~/components/homepage/FAQSection";
 import {ShopLocation} from "~/components/homepage/ShopLocation";
@@ -351,10 +350,6 @@ export default function Homepage() {
                         }}
                     </Await>
                 </Suspense>
-            </AnimatedSection>
-
-            <AnimatedSection animation="slide-up" threshold={0.1}>
-                <SocialMediaSection />
             </AnimatedSection>
 
             <AnimatedSection animation="slide-up" threshold={0.1}>

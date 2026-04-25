@@ -315,9 +315,42 @@ Every meaningful commit — one that adds a feature, improves the shopping exper
 - Add the entry in the **same commit** that ships the change (never as a follow-up)
 - Place the new entry at the **top** of `CHANGELOG_ENTRIES` (newest first)
 - Write in plain English for shoppers — no SHAs, file paths, variable names, branch names, or technical jargon
-- Use the correct category: `"New Feature"` | `"Improvement"` | `"Fix"` | `"Maintenance"`
+- Use the correct category: `"New Feature"` | `"Improvement"` | `"Fix"` | `"Maintenance"` | `"Performance"`
 - Keep `headline` under 80 characters, focused on the user benefit
 
 **Skip entries for:** `chore`, `ci`, `build`, `docs`, `lint`, dependency bumps, internal refactors with no visible user effect, and commits under ~20 lines changed.
 
 **Do NOT rely on automation or AI to generate entries retroactively.** The entry must be written at commit time by the person who understands the change. Context is lost after the fact.
+
+---
+
+## Frontend UI Visual Verification (REQUIRED)
+
+**During any frontend UI or design work, you MUST visually verify your changes.**
+
+### Workflow
+
+1. **Determine the active port** before taking screenshots
+2. **Take screenshots** via Playwright MCP targeting `http://localhost:<port>`
+3. **Save to `tmp_screenshots/`** at the sub-project root (create if it doesn't exist)
+4. **Analyze each screenshot** against requirements to verify accuracy
+5. **Iterate** — fix discrepancies, re-screenshot, re-analyze until done
+
+### Port Detection
+
+```bash
+lsof -i :3000-4999 | grep LISTEN   # Scan active ports
+# Also check vite.config.ts for explicit server.port
+# Or check dev server terminal output for the printed URL
+```
+
+**Never assume port 3000.**
+
+### Rules
+
+- **ALWAYS** take at least one screenshot per UI change
+- **NEVER** mark frontend work complete without visual verification
+- Name screenshots descriptively: `homepage-hero.png`, `cart-drawer-open.png`
+- Take at multiple viewport sizes for responsive work (mobile + desktop)
+- **MANDATORY CLEANUP**: After every successful task implementation, if the `tmp_screenshots/` directory was created during the work, it must be deleted before the task is considered complete.
+- **MANDATORY CLEANUP**: After every successful task implementation, if the `.playwright-mcp/` directory exists in the project root, it must be deleted before the task is considered complete.

@@ -314,7 +314,8 @@ export function ProductCardMediaCarousel({
                     align: "start",
                     loop: true,
                     skipSnaps: false,
-                    containScroll: "trimSnaps"
+                    containScroll: "trimSnaps",
+                    dragFree: true
                 }}
                 className="h-full w-full"
             >

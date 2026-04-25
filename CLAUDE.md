@@ -315,7 +315,7 @@ Every meaningful commit — one that adds a feature, improves the shopping exper
 - Add the entry in the **same commit** that ships the change (never as a follow-up)
 - Place the new entry at the **top** of `CHANGELOG_ENTRIES` (newest first)
 - Write in plain English for shoppers — no SHAs, file paths, variable names, branch names, or technical jargon
-- Use the correct category: `"New Feature"` | `"Improvement"` | `"Fix"` | `"Maintenance"`
+- Use the correct category: `"New Feature"` | `"Improvement"` | `"Fix"` | `"Maintenance"` | `"Performance"`
 - Keep `headline` under 80 characters, focused on the user benefit
 
 **Skip entries for:** `chore`, `ci`, `build`, `docs`, `lint`, dependency bumps, internal refactors with no visible user effect, and commits under ~20 lines changed.

@@ -225,7 +225,8 @@ const ArticleCarousel = ({articles, categoryHandle}: {articles: ArticleCardData[
             <Carousel
                 opts={{
                     align: "start",
-                    loop: true
+                    loop: true,
+                    dragFree: true
                 }}
                 plugins={[WheelGesturesPlugin({forceWheelAxis: "x"})]}
                 className="w-full"

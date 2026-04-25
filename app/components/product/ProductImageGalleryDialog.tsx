@@ -39,7 +39,8 @@ export const ProductImageGalleryDialog = ({
             loop: true,
             align: "center",
             skipSnaps: false,
-            containScroll: "trimSnaps"
+            containScroll: "trimSnaps",
+            dragFree: true
         },
         [WheelGesturesPlugin({forceWheelAxis: "x"})]
     );

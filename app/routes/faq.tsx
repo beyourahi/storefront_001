@@ -58,7 +58,7 @@ export default function FAQ() {
                     value={itemId}
                     className="border-0 border-b border-border"
                 >
-                    <AccordionTrigger className="py-5 sm:py-6 text-left hover:no-underline [&>svg]:hidden gap-0 items-start">
+                    <AccordionTrigger className="py-5 sm:py-6 text-left hover:no-underline [&>svg]:hidden gap-0 items-start justify-start">
                         <span className="font-mono text-xs font-semibold text-primary mr-4 mt-1 shrink-0 tabular-nums">
                             {String(globalOffset + i + 1).padStart(2, "0")}
                         </span>

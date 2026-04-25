@@ -168,11 +168,11 @@ export const ProductImageCarousel = ({
     // Embla carousel
     // -------------------------------------------------------------------------
 
-    const [mainRef, mainApi] = useEmblaCarousel({loop: true, align: "center"}, [
+    const [mainRef, mainApi] = useEmblaCarousel({loop: true, align: "center", dragFree: true}, [
         WheelGesturesPlugin({forceWheelAxis: "x"})
     ]);
 
-    const [thumbRef, thumbApi] = useEmblaCarousel({containScroll: "keepSnaps", slidesToScroll: 1}, [
+    const [thumbRef, thumbApi] = useEmblaCarousel({containScroll: "keepSnaps", slidesToScroll: 1, dragFree: true}, [
         WheelGesturesPlugin({forceWheelAxis: "x"})
     ]);
 

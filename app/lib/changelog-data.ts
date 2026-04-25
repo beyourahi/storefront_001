@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-25",
+        headline: "All carousels now scroll with natural momentum drag",
+        summary:
+            "Every carousel across the storefront — product galleries, reviews, blog articles, and image viewers — now supports free-form drag scrolling with natural momentum, making browsing feel more fluid and responsive on both touch and mouse.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-25",
         headline: "FAQ page redesigned with storefront-specific visual identity",
         summary:
             "FAQ page now uses the light editorial design system with numbered questions, replacing the previous dark-theme layout. Questions are displayed in a clean single-column layout with serif typography and mono-spaced index numbers.",
