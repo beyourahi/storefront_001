@@ -40,6 +40,41 @@ export default function FAQ() {
     const title = "Frequently Asked Questions";
     const subtitle = "Everything you need to know, answered.";
 
+    const hasMoreThanTen = faqItems.length > 10;
+    const mid = Math.ceil(faqItems.length / 2);
+    const leftItems = hasMoreThanTen ? faqItems.slice(0, mid) : faqItems;
+    const rightItems = hasMoreThanTen ? faqItems.slice(mid) : [];
+
+    const renderAccordionItems = (
+        items: typeof faqItems,
+        globalOffset: number,
+        idPrefix: string
+    ) =>
+        items.map((item, i) => {
+            const itemId = `${idPrefix}-${i}`;
+            return (
+                <AccordionItem
+                    key={itemId}
+                    value={itemId}
+                    className="border-0 border-b border-border"
+                >
+                    <AccordionTrigger className="py-5 sm:py-6 text-left hover:no-underline [&>svg]:hidden gap-0 items-start">
+                        <span className="font-mono text-xs font-semibold text-primary mr-4 mt-1 shrink-0 tabular-nums">
+                            {String(globalOffset + i + 1).padStart(2, "0")}
+                        </span>
+                        <span className="font-serif text-base sm:text-lg font-medium text-foreground">
+                            {item.question}
+                        </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 sm:pb-6">
+                        <p className="pl-10 text-muted-foreground text-base leading-relaxed">
+                            {item.answer}
+                        </p>
+                    </AccordionContent>
+                </AccordionItem>
+            );
+        });
+
     return (
         <div className="min-h-screen bg-background text-foreground">
             <PageBreadcrumbs customTitle="FAQ" />
@@ -63,35 +98,47 @@ export default function FAQ() {
 
             <AnimatedSection animation="slide-up" threshold={0.1}>
                 <div className="pb-16 sm:pb-24">
-                    <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-                        {/* Accordion — numbered questions, serif body, mono index prefix */}
-                        <Accordion type="single" collapsible className="w-full">
-                            {faqItems.map((item, index) => {
-                                const itemId = `faq-${index}`;
-                                return (
-                                    <AccordionItem
-                                        key={itemId}
-                                        value={itemId}
-                                        className="border-0 border-b border-border"
-                                    >
-                                        <AccordionTrigger className="py-5 sm:py-6 text-left hover:no-underline [&>svg]:hidden gap-0 items-start">
-                                            <span className="font-mono text-xs font-semibold text-primary mr-4 mt-1 shrink-0 tabular-nums">
-                                                {String(index + 1).padStart(2, "0")}
-                                            </span>
-                                            <span className="font-serif text-base sm:text-lg font-medium text-foreground">
-                                                {item.question}
-                                            </span>
-                                        </AccordionTrigger>
-                                        <AccordionContent className="pb-5 sm:pb-6">
-                                            <p className="pl-10 text-muted-foreground text-base leading-relaxed">
-                                                {item.answer}
-                                            </p>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                );
-                            })}
-                        </Accordion>
-                    </div>
+                    {hasMoreThanTen ? (
+                        <>
+                            {/* Two-column layout for large screens (>10 FAQs only) */}
+                            <div className="hidden lg:grid lg:grid-cols-2 lg:gap-x-12 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                                <Accordion
+                                    type="multiple"
+                                    defaultValue={leftItems.map((_, i) => `ll-${i}`)}
+                                    className="w-full"
+                                >
+                                    {renderAccordionItems(leftItems, 0, "ll")}
+                                </Accordion>
+                                <Accordion
+                                    type="multiple"
+                                    defaultValue={rightItems.map((_, i) => `lr-${i}`)}
+                                    className="w-full"
+                                >
+                                    {renderAccordionItems(rightItems, mid, "lr")}
+                                </Accordion>
+                            </div>
+                            {/* Single-column fallback for smaller screens */}
+                            <div className="lg:hidden mx-auto max-w-3xl px-4 sm:px-6">
+                                <Accordion
+                                    type="multiple"
+                                    defaultValue={faqItems.map((_, i) => `sm-${i}`)}
+                                    className="w-full"
+                                >
+                                    {renderAccordionItems(faqItems, 0, "sm")}
+                                </Accordion>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+                            <Accordion
+                                type="multiple"
+                                defaultValue={faqItems.map((_, i) => `fq-${i}`)}
+                                className="w-full"
+                            >
+                                {renderAccordionItems(faqItems, 0, "fq")}
+                            </Accordion>
+                        </div>
+                    )}
                 </div>
             </AnimatedSection>
         </div>
