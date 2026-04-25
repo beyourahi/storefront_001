@@ -50,6 +50,62 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         category: "Fix"
     },
     {
+        date: "2026-04-25",
+        headline: "Store navigation and cart now fail gracefully on load errors",
+        summary:
+            "If the store's navigation menu or cart encounters an error while loading, the page now continues to function instead of crashing into a blank error screen. The failing section degrades silently, keeping the rest of the page fully usable.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-25",
+        headline: "Prices now display correctly for 15 more global currencies",
+        summary:
+            "Shoppers in Bangladesh, New Zealand, Turkey, Ukraine, Vietnam, Nigeria, Pakistan, Sri Lanka, Nepal, Bahrain, Kuwait, Qatar, and Oman now see prices with the correct local currency symbol. Whole-number amounts in all newly supported currencies also drop the unnecessary decimal places.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-24",
+        headline: "Discounts now appear on each item in your cart",
+        summary:
+            "Applied discount codes, automatic discounts, and bundle savings now show directly on the relevant line items inside the cart drawer. You can see exactly how much each product's price has been reduced before proceeding to checkout.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-24",
+        headline: "Out-of-stock product card overlay simplified to badge and tinted image",
+        summary:
+            "The diagonal strikethrough line that previously overlaid out-of-stock product images has been removed. Unavailable products are still clearly indicated by the red \"Out of Stock\" badge and a subtly muted image — a cleaner look that no longer obscures the product photo.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-24",
+        headline: "Account \"Returns\" link only appears when the feature is set up",
+        summary:
+            "The Returns link inside the account navigation menu is now hidden unless the store has an active returns flow configured. This keeps the account area clean and prevents you from landing on a non-functional page when the feature is not yet enabled.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-24",
+        headline: "FAQ page no longer shows Shopify template placeholder text",
+        summary:
+            "When the store's FAQ hasn't been customised yet, the page now shows a useful set of default e-commerce questions and answers instead of Shopify's generic template copy. Actual FAQ content configured in the store settings always takes priority.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-24",
+        headline: "Custom fonts load in the background without delaying content",
+        summary:
+            "The store's custom typefaces previously blocked the browser from rendering anything until the font files finished downloading. Fonts now load in the background after the initial paint, so text, images, and layout appear immediately and the font swaps in smoothly once ready.",
+        category: "Performance"
+    },
+    {
+        date: "2026-04-24",
+        headline: "Navigation and footer links begin loading the next page on hover",
+        summary:
+            "Every link in the top navigation bar and footer now starts fetching the destination page the moment you hover over it. By the time you click, the page is already partially loaded — making browsing between sections of the store feel nearly instant.",
+        category: "Performance"
+    },
+    {
         date: "2026-04-24",
         headline: "Product pages request less data so they open faster",
         summary:
