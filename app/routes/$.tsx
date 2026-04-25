@@ -87,7 +87,7 @@ export function ErrorBoundary() {
                                 <Link to="/">Back to Home</Link>
                             </Button>
                         </div>
-                        <div className="sr-only">
+                        <div className="sr-only" suppressHydrationWarning>
                             <h3>Error 404</h3>
                             <p>Navigate to: Homepage, Collections</p>
                         </div>

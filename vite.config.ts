@@ -32,7 +32,20 @@ export default defineConfig({
     build: {
         // Don't inline assets as base64 - this allows strict CSP headers
         // All assets are served as separate files with proper caching
-        assetsInlineLimit: 0
+        assetsInlineLimit: 0,
+        rollupOptions: {
+            // Suppress "Can't resolve original location of error" noise from
+            // Radix UI / Vaul / Embla sourcemaps that reference non-existent map files.
+            // onLog covers Rollup 4; onwarn is the Rollup 3 / Vite 5 fallback.
+            onLog(level, log, handler) {
+                if (log.message?.includes("Can't resolve original location of error")) return;
+                handler(level, log);
+            },
+            onwarn(warning, warn) {
+                if (warning.message?.includes("Can't resolve original location of error")) return;
+                warn(warning);
+            }
+        }
     },
 
     // -------------------------------------------------------------------------

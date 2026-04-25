@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-25",
+        headline: "Resolve accessibility gaps and suppress build warnings",
+        summary:
+            "The mobile menu and share dialog are now properly labelled for screen readers, resolving two accessibility gaps. A 404 page hydration mismatch and a drawer overlay reference warning have also been corrected, and the production build no longer emits spurious sourcemap warnings from third-party dependencies.",
+        category: "Maintenance"
+    },
+    {
+        date: "2026-04-25",
         headline: "Fixed crashes on homepage, product, and collection pages",
         summary:
             "Pages could crash or show an error screen on first visit. Homepage, product, and collection pages now load reliably every time. The blog listing page also had a display glitch that has been corrected.",

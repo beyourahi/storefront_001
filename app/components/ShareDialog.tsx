@@ -54,11 +54,13 @@ export const ShareDialog = ({url, title, onClose}: ShareDialogProps) => {
             <div
                 className="bg-card text-card-foreground border-border w-full max-w-md rounded-lg border p-6 shadow-2xl"
                 role="dialog"
+                aria-labelledby="share-dialog-title"
+                aria-modal="true"
                 onClick={e => e.stopPropagation()}
                 onKeyDown={e => e.stopPropagation()}
             >
                 <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-xl font-bold">{title}</h2>
+                    <h2 id="share-dialog-title" className="text-xl font-bold">{title}</h2>
                     <button
                         onClick={onClose}
                         className="text-muted-foreground hover:bg-muted rounded-lg p-2 transition-colors"

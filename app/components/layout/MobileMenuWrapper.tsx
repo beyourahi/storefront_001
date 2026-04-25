@@ -1,5 +1,5 @@
 import type {ReactNode} from "react";
-import {Drawer, DrawerContent} from "~/components/ui/drawer";
+import {Drawer, DrawerContent, DrawerTitle} from "~/components/ui/drawer";
 
 type MobileMenuWrapperProps = {
     open: boolean;
@@ -11,7 +11,7 @@ export const MobileMenuWrapper = ({open, onOpenChange, children}: MobileMenuWrap
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
             <DrawerContent className="flex max-h-[70vh] flex-col" overlayClassName="bg-overlay-dark backdrop-blur-md" id="mobile-menu">
-                <h2 className="sr-only">Menu</h2>
+                <DrawerTitle className="sr-only">Menu</DrawerTitle>
                 {children}
             </DrawerContent>
         </Drawer>
