@@ -75,7 +75,8 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     ];
 };
 
-export function links({ data }: { data: Awaited<ReturnType<typeof loader>> | null }) {
+export function links(args?: { data: Awaited<ReturnType<typeof loader>> | null }) {
+    const data = args?.data;
     // Preload first product's featured image for LCP — first card in collection grid
     const href = (data?.products as any[] | undefined)?.[0]?.featuredImage?.url;
     if (!href) return [];

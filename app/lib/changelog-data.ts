@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-25",
+        headline: "Fixed crashes on homepage, product, and collection pages",
+        summary:
+            "Pages could crash or show an error screen on first visit. Homepage, product, and collection pages now load reliably every time. The blog listing page also had a display glitch that has been corrected.",
+        category: "Fix"
+    },
+    {
         date: "2026-04-24",
         headline: "Product pages request less data so they open faster",
         summary:

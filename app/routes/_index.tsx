@@ -66,7 +66,8 @@ export const meta: Route.MetaFunction = ({matches}) => {
     ];
 };
 
-export function links({ data }: { data: Awaited<ReturnType<typeof loader>> | null }) {
+export function links(args?: { data: Awaited<ReturnType<typeof loader>> | null }) {
+    const data = args?.data;
     // Preload first product image for LCP — hero is video-based, first image below fold
     const firstProduct = (data?.allProducts as any[] | undefined)?.[0];
     const firstMediaImage = firstProduct?.media?.nodes?.find(

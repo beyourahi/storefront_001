@@ -11,9 +11,9 @@ import type {
     HeroMedia,
     ThemeFonts,
     ThemeCoreColors,
-    ThemeConfig
+    ThemeConfig,
+    GeneratedTheme
 } from "types";
-import type {GeneratedTheme} from "types";
 import {DEFAULT_SITE_SETTINGS, DEFAULT_THEME_CONFIG} from "~/lib/metaobject-parsers";
 import {generateTheme} from "~/lib/theme-utils";
 import {getSwatchBorderColor, getSmartSwatchBorderColor} from "~/lib/color";
