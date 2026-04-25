@@ -172,8 +172,8 @@ export const Footer = ({shopName}: {shopName: string}) => {
                 {/* ── Bottom Bar: Copyright + Developer Credit ── */}
                 <div className="mt-6 flex flex-col items-center justify-between space-y-3 text-center md:flex-row md:space-y-0">
                     <p className="text-muted-foreground/70 text-sm font-medium">
-                        &copy; <span>{new Date().getFullYear()}</span>{" "}
-                        <span className="font-serif">{shopName}</span>. All rights reserved.
+                        &copy; <span>{new Date().getFullYear()}</span> <span className="font-serif">{shopName}</span>.
+                        All rights reserved.
                     </p>
                     {/* Developer credit — primary-tinted badge. Off-site link so ExternalLink icon
                          signals destination. Primary hue is merchant-configurable at runtime;
@@ -195,7 +195,6 @@ export const Footer = ({shopName}: {shopName: string}) => {
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 font-semibold text-primary transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-primary">
                             {DEVELOPER_CONFIG.name}
-                            <span aria-hidden="true">🔥</span>
                         </span>
                     </a>
                 </div>
