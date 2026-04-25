@@ -126,7 +126,8 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent
                 side="bottom"
-                className="max-h-[85dvh]"
+                overlayClassName="z-[var(--z-nested-overlay)]"
+                className="z-[var(--z-nested-modal)] max-h-[85dvh]"
                 hideCloseButton
                 onClick={stopPropagation}
                 onPointerDown={stopPropagation}

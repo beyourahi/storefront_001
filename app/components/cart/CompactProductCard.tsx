@@ -1,9 +1,8 @@
-import {useMemo, useState, useEffect} from "react";
+import {useMemo} from "react";
 import {Plus} from "lucide-react";
 import {Badge} from "~/components/ui/badge";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
-import {QuickAddDialog} from "~/components/QuickAddDialog";
-import {QuickAddSheet} from "~/components/QuickAddSheet";
+import {QuickAddButton} from "~/components/QuickAddButton";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {PrimaryProductMedia} from "~/components/common/PrimaryProductMedia";
 import {cn} from "~/lib/utils";
@@ -28,17 +27,7 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
         return primary;
     }, [primary]);
 
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const check = () => setIsMobile(window.matchMedia("(max-width: 767px)").matches);
-        check();
-        window.addEventListener("resize", check);
-        return () => window.removeEventListener("resize", check);
-    }, []);
-
-    // Convert ShopifyProduct variant/image edges to the nodes format QuickAddDialog/QuickAddSheet expect.
+    // Convert ShopifyProduct variant/image edges to the nodes format QuickAddButton expects.
     // Falls back to null for ProductCardData (no variant edges), which keeps ProductVariantDialog as fallback.
     // We also forward the normalized card media so the dialog/sheet can render
     // video in its hero slot when the product's first media is a Shopify Video.
@@ -49,6 +38,7 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
             id: p.id,
             title: p.title,
             handle: p.handle,
+            availableForSale: p.availableForSale,
             tags: p.tags,
             featuredImage: p.images.edges[0]?.node ?? null,
             images: {nodes: p.images.edges.map(e => e.node)},
@@ -148,32 +138,12 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
                         {OUT_OF_STOCK_LABEL}
                     </button>
                 ) : quickAddProduct ? (
-                    <>
-                        <button
-                            type="button"
-                            onClick={() => setIsDialogOpen(true)}
-                            disabled={isMutating}
-                            className="border-foreground/20 bg-card text-card-foreground sleek hover:bg-muted hover:border-foreground/40 hover:scale-[1.02] active:scale-[0.98] inline-flex h-8 w-full shrink-0 items-center justify-center rounded-md border-2 px-4 text-xs font-medium whitespace-nowrap"
-                        >
-                            <div className="flex w-full items-center justify-center gap-1.5">
-                                <Plus className="h-3 w-3" />
-                                <span>{isPreorder ? "PRE ORDER" : "Get Now"}</span>
-                            </div>
-                        </button>
-                        {isMobile ? (
-                            <QuickAddSheet
-                                product={quickAddProduct}
-                                open={isDialogOpen}
-                                onOpenChange={setIsDialogOpen}
-                            />
-                        ) : (
-                            <QuickAddDialog
-                                product={quickAddProduct}
-                                open={isDialogOpen}
-                                onOpenChange={setIsDialogOpen}
-                            />
-                        )}
-                    </>
+                    <QuickAddButton
+                        product={quickAddProduct}
+                        fullWidth
+                        skipCartOpen
+                        className="h-8 rounded-md border-2 border-foreground/20 bg-card text-card-foreground text-xs hover:bg-muted hover:border-foreground/40"
+                    />
                 ) : (
                     <ProductVariantDialog
                         productHandle={product.handle}

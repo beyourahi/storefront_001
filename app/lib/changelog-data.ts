@@ -37,6 +37,34 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-25",
+        headline: "FAQ page redesigned with storefront-specific visual identity",
+        summary:
+            "FAQ page now uses the light editorial design system with numbered questions, replacing the previous dark-theme layout. Questions are displayed in a clean single-column layout with serif typography and mono-spaced index numbers.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-25",
+        headline: "Quick Add sheet now blurs background when opened from cart",
+        summary:
+            "The backdrop blur on the Quick Add sheet now correctly overlays the cart drawer when triggered from cart suggestions.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-25",
+        headline: "Cart suggestions Quick Add now matches product grid behavior",
+        summary:
+            "Quick Add in cart suggestions now uses the same button, label logic, and interaction model as product grid cards.",
+        category: "Improvement"
+    },
+    {
+        date: "2026-04-25",
+        headline: "Product images now render correctly across all homepage sections",
+        summary:
+            "Media from homepage collection queries now displays properly instead of falling back to placeholders.",
+        category: "Fix"
+    },
+    {
+        date: "2026-04-25",
         headline: "Resolve accessibility gaps and suppress build warnings",
         summary:
             "The mobile menu and share dialog are now properly labelled for screen readers, resolving two accessibility gaps. A 404 page hydration mismatch and a drawer overlay reference warning have also been corrected, and the production build no longer emits spurious sourcemap warnings from third-party dependencies.",

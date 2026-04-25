@@ -55,21 +55,35 @@ export const getProductCardMedia = (product: ShopifyProduct | ProductCardData): 
     }
 
     const shopifyProduct = product as ShopifyProduct;
-    const mediaEdges = shopifyProduct.media?.edges ?? [];
-    if (mediaEdges.length > 0) {
-        const normalized = mediaEdges
-            .map(edge => mediaNodeToCardMedia(edge.node))
+
+    // Support both connection (.edges) and shorthand (.nodes) formats —
+    // homepage queries return `media { nodes { ... } }` while PDP and collection
+    // queries return `media { edges { node { ... } } }`.
+    const media = shopifyProduct.media as any;
+    const mediaItems: ShopifyMediaNode[] =
+        media?.edges?.length > 0
+            ? (media.edges as Array<{node: ShopifyMediaNode}>).map(e => e.node)
+            : (media?.nodes as ShopifyMediaNode[] ?? []);
+
+    if (mediaItems.length > 0) {
+        const normalized = mediaItems
+            .map(node => mediaNodeToCardMedia(node))
             .filter((item): item is ProductCardMedia => item !== null);
         if (normalized.length > 0) return normalized;
     }
 
-    const imageEdges = shopifyProduct.images?.edges ?? [];
-    return imageEdges
-        .filter(edge => edge.node?.url)
-        .map(edge => ({
+    const images = shopifyProduct.images as any;
+    const imageItems: Array<{url: string; altText?: string | null}> =
+        images?.edges?.length > 0
+            ? (images.edges as Array<{node: {url: string; altText?: string | null}}> ).map(e => e.node)
+            : (images?.nodes as Array<{url: string; altText?: string | null}> ?? []);
+
+    return imageItems
+        .filter(img => img?.url)
+        .map(img => ({
             type: "image" as const,
-            url: edge.node.url,
-            altText: edge.node.altText ?? null
+            url: img.url,
+            altText: img.altText ?? null
         }));
 };
 
