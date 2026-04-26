@@ -3,7 +3,7 @@ import {useLoaderData, useRouteLoaderData, Await} from "react-router";
 import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {buildCanonicalUrl, generateFAQPageSchema, generateWebsiteSchema, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
     bestSellers: "best-sellers",
@@ -41,6 +41,7 @@ export const meta: Route.MetaFunction = ({matches}) => {
     const siteUrl = getSiteUrlFromMatches(matches);
     const brandName = getBrandNameFromMatches(matches);
     const logoUrl = siteSettings?.brandLogo?.url;
+    const faqItems = (siteSettings as {faqItems?: Array<{question: string; answer: string}>} | undefined)?.faqItems;
 
     const enrichedOrgSchema = {
         "@context": "https://schema.org",
@@ -51,6 +52,7 @@ export const meta: Route.MetaFunction = ({matches}) => {
         description: description || undefined,
         sameAs: socialLinks?.map(l => l.url).filter(Boolean) ?? []
     };
+    const websiteSchema = generateWebsiteSchema(siteSettings);
 
     return [
         ...(getSeoMeta({
@@ -61,7 +63,9 @@ export const meta: Route.MetaFunction = ({matches}) => {
             media: logoUrl ? {url: logoUrl, type: "image" as const} : undefined
         }) ?? []),
         ...getRequiredSocialMeta("website", brandName, logoUrl),
-        {"script:ld+json": enrichedOrgSchema as any}
+        {"script:ld+json": enrichedOrgSchema as any},
+        {"script:ld+json": websiteSchema as any},
+        ...(faqItems && faqItems.length > 0 ? [{"script:ld+json": generateFAQPageSchema(faqItems) as any}] : [])
     ];
 };
 

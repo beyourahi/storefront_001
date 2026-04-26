@@ -2,7 +2,9 @@ import {CartForm} from "@shopify/hydrogen";
 import type {OptimisticCart} from "@shopify/hydrogen";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {useEffect, useRef, useState, useCallback} from "react";
-import {useFetcher} from "react-router";
+import {useFetcher, useRouteLoaderData} from "react-router";
+import type {RootLoader} from "~/root";
+import {appendAiAttribution} from "~/lib/ai-attribution";
 import {CART_FETCHER_KEY, useCartMutationPending} from "~/lib/cart-utils";
 import {FileText, Check, Cloud, CreditCard, Trash2, AlertTriangle} from "lucide-react";
 import {toast} from "sonner";
@@ -264,12 +266,17 @@ function CartCheckoutActions({
 }) {
     const isMobile = useIsMobile();
     const isMutating = useCartMutationPending();
+    const rootData = useRouteLoaderData<RootLoader>("root");
 
     if (!checkoutUrl) return null;
 
+    const taggedCheckoutUrl = rootData?.aiAttribution
+        ? appendAiAttribution(checkoutUrl, rootData.aiAttribution)
+        : checkoutUrl;
+
     return (
         <a
-            href={checkoutUrl}
+            href={taggedCheckoutUrl}
             target="_self"
             aria-disabled={isMutating || undefined}
             onClick={isMutating ? e => e.preventDefault() : undefined}

@@ -78,7 +78,7 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       type: "image" as const
                   }
                 : undefined,
-            jsonLd: generateProductSchema(product, variant, siteUrl) as any
+            jsonLd: generateProductSchema(product, variant, null, siteUrl) as any
         }) ?? []),
         ...getRequiredSocialMeta("product", brandName, image?.url ?? undefined)
     ];
@@ -436,6 +436,8 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       value
     }
     sku
+    barcode
+    currentlyNotInStock
     title
     unitPrice {
       amount
@@ -500,6 +502,7 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     tags
     productType
+    publishedAt
     encodedVariantExistence
     encodedVariantAvailability
     sizeChart: metafield(namespace: "custom", key: "size_chart") {

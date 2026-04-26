@@ -51,6 +51,7 @@ import {useFooterClearance} from "~/hooks/useFooterClearance";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
 import {generateWebsiteSchema, getSeoDefaults} from "~/lib/seo";
+import {detectAiAttribution} from "~/lib/ai-attribution";
 import {STORE_LANGUAGE_CODE} from "~/lib/store-locale";
 import appCss from "./styles/app.css?url";
 
@@ -119,6 +120,7 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context, request}: Route.LoaderArgs) {
     const {storefront, dataAdapter, env} = context;
     const requestUrl = new URL(request.url);
+    const aiAttribution = detectAiAttribution(request.headers, requestUrl.searchParams);
 
     const [header, menuCollectionsData, shopData, themeSettingsData, siteContentData, blogData] = await Promise.all([
         dataAdapter.query(HEADER_QUERY, {
@@ -247,7 +249,8 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
             language: storefront.i18n.language
         },
         gtmContainerId: env.PUBLIC_GTM_CONTAINER_ID || "",
-        websiteSchema
+        websiteSchema,
+        aiAttribution
     };
 }
 

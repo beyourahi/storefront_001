@@ -36,6 +36,27 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-26",
+        headline: "AI assistants can now browse and shop the store in natural language",
+        summary:
+            "The store now supports Shopify's Storefront MCP — the open agentic commerce protocol rolling out across Shopify's entire merchant network. AI assistants like ChatGPT, Claude, and Perplexity can search the product catalog, ask about store policies, and build a cart through natural conversation, with no manual configuration required. The store also publishes a Universal Commerce Protocol profile at a standard discovery address, so any UCP-compliant AI agent can find and interact with it automatically.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-26",
+        headline: "Revenue from AI referrals is now tracked per source",
+        summary:
+            "When a shopper arrives from an AI assistant — ChatGPT, Claude, Perplexity, Google AI Mode, Bing Copilot, and others — their checkout session is automatically tagged with the referring source. Every AI-referred sale shows up in your analytics under its own channel, so you can see exactly which AI assistants are driving orders and by how much.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-26",
+        headline: "Products now publish precision data that AI agents can act on",
+        summary:
+            "Product pages now include a richer set of machine-readable structured data: precise availability status (in stock, running low, backordered, or sold out), barcodes and GTINs, original versus current pricing, publish dates, tags, and category. AI shopping agents use this to make accurate recommendations and build carts with confidence — reducing the chance of suggesting an out-of-stock item or quoting the wrong price.",
+        category: "Improvement"
+    },
+    {
         date: "2026-04-25",
         headline: "All carousels now scroll with natural momentum drag",
         summary:
