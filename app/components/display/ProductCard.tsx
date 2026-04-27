@@ -109,7 +109,9 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                 </div>
 
                 <div
+                    role="presentation"
                     className="absolute right-1 bottom-1 z-20"
+                    onClick={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                 >
                     {isOutOfStock ? (
