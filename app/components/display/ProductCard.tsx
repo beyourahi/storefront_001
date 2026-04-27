@@ -108,7 +108,10 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                     />
                 </div>
 
-                <div className="absolute right-1 bottom-1 z-20">
+                <div
+                    className="absolute right-1 bottom-1 z-20"
+                    onPointerDown={(e) => e.stopPropagation()}
+                >
                     {isOutOfStock ? (
                         <button
                             disabled

@@ -233,7 +233,10 @@ export function ProductVariantDialog({
             <Button
                 type="button"
                 variant="outline"
-                onClick={() => void handleButtonClick()}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    void handleButtonClick();
+                }}
                 disabled={triggerDisabled}
                 className={cn(
                     "sleek !border-foreground/20 !bg-card !text-card-foreground hover:!bg-muted hover:!text-card-foreground hover:!border-foreground/40 inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-md !border-2 px-4 text-sm font-medium whitespace-nowrap !opacity-100 shadow-xs outline-none hover:!scale-[1.02] hover:!shadow-md focus-visible:ring-[3px] active:!scale-[0.98]",
@@ -589,6 +592,8 @@ function ProductVariantDialogContent({
                         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
                         "sm:max-w-[480px] md:w-[700px] md:max-w-2xl lg:w-[900px] xl:w-[1100px] 2xl:w-[1300px]"
                     )}
+                    onClick={(e) => e.stopPropagation()}
+                    onPointerDown={(e) => e.stopPropagation()}
                 >
                     <DialogPrimitive.Title className="sr-only">{product.title}</DialogPrimitive.Title>
                     <DialogPrimitive.Description className="sr-only">
