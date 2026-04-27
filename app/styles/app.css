@@ -731,6 +731,14 @@ select {
     transform: scale(var(--motion-press-scale));
 }
 
+/* intent-press: JS-driven scale feedback for large touch targets (product cards).
+   Activated via data-pressing="true" by useIntentPress hook, which cancels the
+   press state if pointer movement exceeds the scroll threshold — preventing the
+   scale-down from firing during passive scroll-through gestures. */
+.intent-press[data-pressing="true"] {
+    transform: scale(var(--motion-press-scale));
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -740,7 +748,8 @@ select {
     }
 
     .motion-lift:hover,
-    .motion-press:active {
+    .motion-press:active,
+    .intent-press[data-pressing="true"] {
         transform: none !important;
     }
 }

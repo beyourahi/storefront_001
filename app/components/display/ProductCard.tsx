@@ -7,6 +7,7 @@ import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDisc
 import {PreorderBadge} from "~/components/product/PreorderBadge";
 import {WishlistButton} from "~/components/WishlistButton";
 import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
+import {useIntentPress} from "~/hooks/useIntentPress";
 import {getProductCardMedia, getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
@@ -17,6 +18,7 @@ const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "squ
 
 export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false}: UnifiedProductCardProps) => {
     const {canHover} = usePointerCapabilities();
+    const {isPressing, handlers: pressHandlers} = useIntentPress(canHover);
     const productData = useMemo(() => getProductDataForCard(product, {showPriceRange: true}), [product]);
     const {price, compareAtPrice, discountPercentage, priceRange} = productData;
     const cardMedia = useMemo(() => getProductCardMedia(product), [product]);
@@ -59,8 +61,10 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
         <div
             className={cn(
                 "motion-surface product-card overflow-hidden rounded-lg",
-                canHover ? "group" : "motion-press"
+                canHover ? "group" : "intent-press"
             )}
+            data-pressing={isPressing ? "true" : undefined}
+            {...pressHandlers}
         >
             <div className={`relative ${aspectRatioClass} overflow-hidden rounded-b-lg`}>
                 {discountPercentage && (

@@ -36,6 +36,44 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-28",
+        category: "Improvement",
+        headline: "Product cards no longer scale during scrolling",
+        summary: "Tapping a product card used to show a scale-down effect even when you were just scrolling past it. That feedback now only appears when you deliberately tap or click a card — scrolling through the grid stays smooth and distraction-free."
+    },
+    {
+        date: "2026-04-28",
+        category: "New Feature",
+        headline: "Smart policy search for AI shopping agents",
+        summary: "AI assistants can now search shipping, return, and privacy policies along with FAQs to answer customer questions in natural language. Uses BM25-ranked search across all policy documents and FAQ content."
+    },
+    {
+        date: "2026-04-28",
+        category: "Improvement",
+        headline: "Richer breadcrumb navigation in search results",
+        summary: "Product, collection, and blog pages now include structured breadcrumb data, making them eligible for breadcrumb-enhanced Google search results. Added BreadcrumbList structured data (Schema.org) to every page that displays visual breadcrumbs."
+    },
+    {
+        date: "2026-04-28",
+        category: "Improvement",
+        headline: "Enhanced product information for AI agents",
+        summary: "Gift card badges, digital product indicators, and subscription plan chips now appear on product pages when applicable. Product pages now surface extended catalog fields: gift card detection, digital-product shipping status, available subscription plans, and collection membership."
+    },
+    {
+        date: "2026-04-27",
+        headline: "New: Stories — shop the latest as a full-screen experience",
+        summary:
+            "Visiting /stories brings up a full-screen story viewer — similar to Instagram Stories but for products. Each newest arrival is shown as a cinematic full-bleed card with auto-advance every 5 seconds, a progress bar, and product thumbnails you can tap to jump ahead. Tap the left or right half of the screen (or use arrow keys) to navigate. Each story ends with a direct Shop Now link.",
+        category: "New Feature"
+    },
+    {
+        date: "2026-04-27",
+        headline: "New: side-by-side product comparison at /compare",
+        summary:
+            "You can now compare up to four products at once by visiting /compare?ids=… with Shopify product GIDs. The page shows each product's image, price, brand, type, and availability in a clean sticky-column table. A Remove button lets you drop a product from the comparison, and each column has direct Add to Cart and View Product links.",
+        category: "New Feature"
+    },
+    {
         date: "2026-04-26",
         headline: "AI assistants can now browse and shop the store in natural language",
         summary:
