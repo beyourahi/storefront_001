@@ -38,6 +38,10 @@ type ProductCardMediaCarouselProps = {
     /** Passed to <Image> for LCP-critical cards on the homepage. */
     loading?: "eager" | "lazy";
     className?: string;
+    /** When true, disables internal media scrolling and renders only the first media
+     *  asset statically. Set this whenever the card is inside a horizontal carousel
+     *  to prevent nested Embla instances from conflicting on the same drag axis. */
+    insideCarousel?: boolean;
 };
 
 /**
@@ -207,7 +211,8 @@ export function ProductCardMediaCarousel({
     isOutOfStock = false,
     canHover = true,
     loading = "lazy",
-    className
+    className,
+    insideCarousel = false
 }: ProductCardMediaCarouselProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [cardInView, setCardInView] = useState(false);
@@ -272,6 +277,37 @@ export function ProductCardMediaCarousel({
             <div ref={containerRef} className={cn("relative h-full w-full", className)}>
                 <SlideLink productHandle={productHandle} productTitle={productTitle}>
                     <ProductImagePlaceholder className="h-full w-full rounded-lg" />
+                </SlideLink>
+            </div>
+        );
+    }
+
+    // Inside a parent carousel — show only the first asset statically.
+    // Prevents two Embla instances from sharing the same drag axis and
+    // conflicting on swipe gestures.
+    if (insideCarousel && media.length > 1) {
+        const item = media[0];
+        return (
+            <div ref={containerRef} className={cn("relative h-full w-full", className)}>
+                <SlideLink productHandle={productHandle} productTitle={productTitle}>
+                    {item.type === "video" ? (
+                        <CardVideo
+                            media={item}
+                            productTitle={productTitle}
+                            isActive={true}
+                            cardInView={cardInView}
+                            canHover={canHover}
+                            isOutOfStock={isOutOfStock}
+                        />
+                    ) : (
+                        <CardImage
+                            media={item}
+                            productTitle={productTitle}
+                            loading={loading}
+                            canHover={canHover}
+                            isOutOfStock={isOutOfStock}
+                        />
+                    )}
                 </SlideLink>
             </div>
         );

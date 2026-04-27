@@ -133,6 +133,10 @@ export type ProductCardViewMode = "grid1" | "grid2" | "grid3" | "grid4";
 export type UnifiedProductCardProps = {
     product: ShopifyProduct | ProductCardData;
     viewMode?: ProductCardViewMode | string;
+    /** When true, disables internal media scrolling and shows only the first media asset.
+     *  Use whenever the card is rendered inside a horizontal carousel to prevent
+     *  nested Embla instances from conflicting on the same drag axis. */
+    insideCarousel?: boolean;
 };
 
 export type CompactProductCardProps = {

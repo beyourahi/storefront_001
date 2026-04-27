@@ -43,7 +43,7 @@ export const ProductRelatedSection = ({
                                     key={relatedProduct.id}
                                     className="basis-3/5 pl-2 sm:basis-1/2 md:basis-1/3 md:pl-3 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5"
                                 >
-                                    <ProductCard product={fromStorefrontNode(relatedProduct)} />
+                                    <ProductCard product={fromStorefrontNode(relatedProduct)} insideCarousel />
                                 </CarouselItem>
                             ))}
                         </CarouselContent>

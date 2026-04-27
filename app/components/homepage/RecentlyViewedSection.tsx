@@ -118,7 +118,7 @@ export const RecentlyViewedSection = ({loading = false, allProducts = []}: Recen
                                                 key={product.id}
                                                 className="basis-3/5 pl-2 md:basis-2/5 md:pl-4 lg:basis-1/3 xl:basis-1/4"
                                             >
-                                                <ProductCard product={product} />
+                                                <ProductCard product={product} insideCarousel />
                                             </CarouselItem>
                                         ))}
                                     </CarouselContent>

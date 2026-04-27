@@ -15,7 +15,7 @@ import {ProductCardMediaCarousel} from "~/components/display/ProductCardMediaCar
 import type {UnifiedProductCardProps} from "~/lib/types/product-card";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 
-export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardProps) => {
+export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false}: UnifiedProductCardProps) => {
     const {canHover} = usePointerCapabilities();
     const productData = useMemo(() => getProductDataForCard(product, {showPriceRange: true}), [product]);
     const {price, compareAtPrice, discountPercentage, priceRange} = productData;
@@ -91,8 +91,9 @@ export const ProductCard = ({product, viewMode = "grid3"}: UnifiedProductCardPro
                     productHandle={product.handle}
                     isOutOfStock={isOutOfStock}
                     canHover={canHover}
+                    insideCarousel={insideCarousel}
                 />
-                {cardMedia.length > 1 && (
+                {!insideCarousel && cardMedia.length > 1 && (
                     <span className="sr-only">
                         {cardMedia.length} media items. Use arrow buttons to browse.
                     </span>
