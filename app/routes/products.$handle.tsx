@@ -33,8 +33,6 @@ import {ProductMobileTitlePrice} from "~/components/product/ProductMobileTitlePr
 import {ProductPurchaseSection} from "~/components/product/ProductPurchaseSection";
 import {ProductMobileStickyButtons} from "~/components/product/ProductMobileStickyButtons";
 import {ProductRelatedSection} from "~/components/product/ProductRelatedSection";
-import {ComplementaryProducts} from "~/components/product/ComplementaryProducts";
-import {SimilarItems} from "~/components/product/SimilarItems";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {ProductReviews, type ReviewNode} from "~/components/product/ProductReviews";
@@ -211,29 +209,11 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
         .then((data: any) => (data.product?.reviews?.references?.nodes ?? []) as ReviewNode[])
         .catch(() => [] as ReviewNode[]);
 
-    // Complementary products (frequently bought together via COMPLEMENTARY intent)
-    const complementary = dataAdapter
-        .query(COMPLEMENTARY_PRODUCTS_QUERY, {
-            variables: {productId},
-            cache: dataAdapter.CacheShort()
-        })
-        .then(data => data.productRecommendations ?? [])
-        .catch(() => null);
-
-    // Similar products (more like this via RELATED intent)
-    const similar = dataAdapter
-        .query(SIMILAR_PRODUCTS_QUERY, {
-            variables: {productId},
-            cache: dataAdapter.CacheShort()
-        })
-        .then(data => data.productRecommendations ?? [])
-        .catch(() => null);
-
-    return {recommendations, reviews, complementary, similar};
+    return {recommendations, reviews};
 };
 
 const Product = () => {
-    const {product, recommendations, reviews, complementary, similar, selectedSellingPlan, activeCollectionHandle} = useLoaderData<typeof loader>();
+    const {product, recommendations, reviews, selectedSellingPlan, activeCollectionHandle} = useLoaderData<typeof loader>();
     const [quantity, setQuantity] = useState(1);
     const {addProduct} = useRecentlyViewedContext();
 
@@ -412,30 +392,6 @@ const Product = () => {
                         {resolvedRecs =>
                             resolvedRecs && resolvedRecs.length > 0 ? (
                                 <ProductRelatedSection relatedProducts={resolvedRecs} />
-                            ) : null
-                        }
-                    </Await>
-                </Suspense>
-            </AnimatedSection>
-
-            <AnimatedSection animation="fade" threshold={0.08}>
-                <Suspense fallback={null}>
-                    <Await resolve={complementary}>
-                        {resolvedComp =>
-                            resolvedComp && resolvedComp.length > 0 ? (
-                                <ComplementaryProducts products={resolvedComp} />
-                            ) : null
-                        }
-                    </Await>
-                </Suspense>
-            </AnimatedSection>
-
-            <AnimatedSection animation="slide-up" threshold={0.12}>
-                <Suspense fallback={null}>
-                    <Await resolve={similar}>
-                        {resolvedSim =>
-                            resolvedSim && resolvedSim.length > 0 ? (
-                                <SimilarItems products={resolvedSim} />
                             ) : null
                         }
                     </Await>
@@ -882,30 +838,3 @@ const RECOMMENDATIONS_QUERY = `#graphql
   ${RECOMMENDED_PRODUCT_FRAGMENT}
 ` as const;
 
-// Uses intent: COMPLEMENTARY — "frequently bought together"
-const COMPLEMENTARY_PRODUCTS_QUERY = `#graphql
-  query ProductPageComplementary(
-    $productId: ID!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    productRecommendations(productId: $productId, intent: COMPLEMENTARY) {
-      ...RecommendedProduct
-    }
-  }
-  ${RECOMMENDED_PRODUCT_FRAGMENT}
-` as const;
-
-// Uses intent: RELATED — "similar items / more like this"
-const SIMILAR_PRODUCTS_QUERY = `#graphql
-  query ProductPageSimilar(
-    $productId: ID!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    productRecommendations(productId: $productId, intent: RELATED) {
-      ...RecommendedProduct
-    }
-  }
-  ${RECOMMENDED_PRODUCT_FRAGMENT}
-` as const;

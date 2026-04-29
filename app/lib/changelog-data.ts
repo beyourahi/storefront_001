@@ -49,12 +49,6 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     },
     {
         date: "2026-04-29",
-        category: "New Feature",
-        headline: "Product pages now show similar styles you might like",
-        summary: "A new 'Similar styles' section appears below the main product details, suggesting items from the same product category. Recommendations load in the background after the page is ready so the main content always appears first."
-    },
-    {
-        date: "2026-04-29",
         category: "Improvement",
         headline: "Search now suggests alternatives when nothing is found",
         summary: "When a search returns no results, the page now offers up to three alternative search terms drawn from the store's own search suggestions. Tap any suggestion to run that search instantly — no need to retype."
