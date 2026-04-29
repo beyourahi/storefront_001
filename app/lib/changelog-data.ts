@@ -36,6 +36,24 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-04-29",
+        category: "Maintenance",
+        headline: "Size guide removed from product pages",
+        summary: "The size guide button and dialog have been removed from product pages. Sizing information is still available through product descriptions and any size-related content set up by the store."
+    },
+    {
+        date: "2026-04-28",
+        category: "New Feature",
+        headline: "AI shopping agents can now build carts for you",
+        summary: "AI shopping assistants can now create a ready-to-checkout cart on your behalf and send you a direct link. When you arrive via an agent link, a banner lets you review the items before proceeding — nothing goes to checkout without your confirmation."
+    },
+    {
+        date: "2026-04-28",
+        category: "Improvement",
+        headline: "Cart and checkout always load fresh, never cached",
+        summary: "Cart and checkout pages now bypass browser and CDN caches on every visit, so the item count, prices, and availability you see are always accurate and up to date."
+    },
+    {
         date: "2026-04-28",
         category: "Improvement",
         headline: "Product cards no longer scale during scrolling",

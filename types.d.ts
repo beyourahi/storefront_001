@@ -1017,8 +1017,6 @@ export interface ProductContent {
     // ─────────────────────────────────────────────────────────────────────────
     // PRODUCT PAGE UI
     // ─────────────────────────────────────────────────────────────────────────
-    /** Link text for size chart */
-    sizeGuideCta: string;
     /** Label for quantity selector */
     quantityLabel: string;
 

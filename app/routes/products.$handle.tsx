@@ -23,8 +23,6 @@ import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateDiscount, formatShopifyMoney} from "~/lib/currency-formatter";
 import {formatProductTitleForMeta} from "~/lib/product";
 import {generateProductSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
-import {parseSizeChart} from "~/lib/size-chart";
-import {SizeChartButton} from "~/components/product/SizeChartButton";
 import {useRecentlyViewedContext} from "~/components/RecentlyViewedProvider";
 import {ProductImageSection} from "~/components/product/ProductImageSection";
 import {ProductInfoSection} from "~/components/product/ProductInfoSection";
@@ -134,9 +132,6 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
         }
     }
 
-    const sizeChartResult = parseSizeChart(product.sizeChart?.value);
-    const sizeChartData = sizeChartResult.isValid && sizeChartResult.data ? sizeChartResult.data : null;
-
     // Pre-compute truncated SEO description in the loader so the serialized value
     // is identical on server and client, preventing hydration mismatches in the meta function.
     const rawSeoDescription = product.seo?.description || product.description || "";
@@ -148,7 +143,6 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
         product,
         selectedSellingPlan,
         activeCollectionHandle,
-        sizeChartData,
         seoDescription
     };
 };
@@ -179,7 +173,7 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
 };
 
 const Product = () => {
-    const {product, recommendations, reviews, selectedSellingPlan, sizeChartData, activeCollectionHandle} = useLoaderData<typeof loader>();
+    const {product, recommendations, reviews, selectedSellingPlan, activeCollectionHandle} = useLoaderData<typeof loader>();
     const [quantity, setQuantity] = useState(1);
     const {addProduct} = useRecentlyViewedContext();
 
@@ -290,11 +284,6 @@ const Product = () => {
                                     quantity={quantity}
                                     onQuantityChange={setQuantity}
                                     discountPercentage={discountPercentage}
-                                    sizeChartButton={
-                                        sizeChartData ? (
-                                            <SizeChartButton sizeChart={sizeChartData} variant="link" />
-                                        ) : undefined
-                                    }
                                 />
                             </div>
 
@@ -315,11 +304,6 @@ const Product = () => {
                                     quantity={quantity}
                                     onQuantityChange={setQuantity}
                                     discountPercentage={discountPercentage}
-                                    sizeChartButton={
-                                        sizeChartData ? (
-                                            <SizeChartButton sizeChart={sizeChartData} variant="link" />
-                                        ) : undefined
-                                    }
                                 />
                             </div>
                         </div>
@@ -505,9 +489,6 @@ const PRODUCT_FRAGMENT = `#graphql
     publishedAt
     encodedVariantExistence
     encodedVariantAvailability
-    sizeChart: metafield(namespace: "custom", key: "size_chart") {
-      value
-    }
     collections(first: 1) {
       nodes {
         handle

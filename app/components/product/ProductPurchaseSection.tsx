@@ -18,7 +18,6 @@ type ProductPurchaseSectionProps = {
     discountPercentage?: number;
     isLoading?: boolean;
     isVariantTransitioning?: boolean;
-    sizeChartButton?: React.ReactNode;
 };
 
 export const ProductPurchaseSection = ({
@@ -30,8 +29,7 @@ export const ProductPurchaseSection = ({
     onQuantityChange,
     discountPercentage,
     isLoading = false,
-    isVariantTransitioning = false,
-    sizeChartButton
+    isVariantTransitioning = false
 }: ProductPurchaseSectionProps) => {
     const isPreorder =
         product?.tags?.some((tag: string) => tag.toLowerCase() === "preorder" || tag.toLowerCase() === "pre-order") ??
@@ -88,8 +86,6 @@ export const ProductPurchaseSection = ({
                         />
 
                         <OptionSelector productOptions={productOptions} />
-
-                        {sizeChartButton && <div>{sizeChartButton}</div>}
 
                         <SellingPlanSelector
                             sellingPlanGroups={product.sellingPlanGroups}

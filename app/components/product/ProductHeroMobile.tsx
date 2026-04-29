@@ -16,7 +16,6 @@ interface ProductHeroMobileProps {
     selectedSellingPlan?: {id: string} | null;
     title: string;
     id?: string;
-    sizeChartButton?: React.ReactNode;
     tags?: string[];
 }
 
@@ -26,7 +25,6 @@ export function ProductHeroMobile({
     selectedSellingPlan,
     title,
     id = "product-hero-mobile",
-    sizeChartButton,
     tags
 }: ProductHeroMobileProps) {
     const navigate = useNavigate();
@@ -70,8 +68,6 @@ export function ProductHeroMobile({
             className="md:hidden flex flex-col bg-primary px-3 sm:px-4 pb-8 sm:pb-10 pt-6 sm:pt-8 overflow-y-auto"
         >
             <p className="font-serif text-2xl sm:text-3xl text-primary-foreground mb-6" aria-hidden={true}>{title}</p>
-
-            {sizeChartButton && <div className="mb-4">{sizeChartButton}</div>}
 
             {filteredOptions.length > 0 && (
                 <div className="space-y-3 mb-8">
