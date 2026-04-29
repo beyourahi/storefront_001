@@ -393,6 +393,9 @@ const SHOP_FRAGMENT = `#graphql
         }
       }
     }
+    paymentSettings {
+      currencyCode
+    }
   }
 ` as const;
 
@@ -686,32 +689,3 @@ export const SIDEBAR_COLLECTIONS_QUERY = `#graphql
   }
 ` as const;
 
-// =============================================================================
-// SHOP QUERIES
-// =============================================================================
-
-/**
- * Shop shipping configuration query.
- *
- * Fetches the free shipping threshold from shop metafields.
- * The threshold is configured in Shopify Admin under:
- * Settings > Custom data > Shop > custom.free_shipping_threshold
- *
- * @returns Shop metafield with free shipping threshold value
- */
-export const SHOP_SHIPPING_CONFIG_QUERY = `#graphql
-  query ShopShippingConfig(
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    shop {
-      freeShippingThreshold: metafield(namespace: "custom", key: "free_shipping_threshold") {
-        value
-        type
-      }
-      paymentSettings {
-        currencyCode
-      }
-    }
-  }
-` as const;

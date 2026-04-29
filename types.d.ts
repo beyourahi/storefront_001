@@ -328,6 +328,8 @@ export interface ProductImageGalleryProps {
      * Accepts raw Shopify media which will be filtered to supported types
      */
     media?: unknown[];
+    /** Whether the product is available for sale. Suppresses hover effects when false. */
+    isAvailableForSale?: boolean;
 }
 
 // =============================================================================
@@ -339,19 +341,20 @@ export interface ProductImageGalleryProps {
  *
  * @description
  * Uses discriminated union pattern with __typename for type-safe rendering.
- * Supports both MediaImage (static images) and Video (product videos).
+ * Supports all four Shopify media types: MediaImage, Video, ExternalVideo, Model3d.
  *
  * @usage
  * ```typescript
- * if (media.__typename === "MediaImage") {
- *   // Render image using media.image
- * } else if (media.__typename === "Video") {
- *   // Render video using media.sources
+ * switch (media.__typename) {
+ *   case "MediaImage":  // render image using media.image
+ *   case "Video":       // render video using media.sources
+ *   case "ExternalVideo": // render iframe using media.embedUrl
+ *   case "Model3d":     // render previewImage as fallback
  * }
  * ```
  *
  * @see ProductLightbox - Full-screen media viewer
- * @see ProductImageGallery - Product page gallery with lightbox trigger
+ * @see ProductImageGallery - Product page gallery with inline video support
  */
 export type ProductMediaItem =
     | {
@@ -374,6 +377,32 @@ export type ProductMediaItem =
               url: string;
               mimeType: string;
           }>;
+          previewImage?: {
+              url: string;
+              altText?: string | null;
+              width?: number;
+              height?: number;
+          } | null;
+      }
+    | {
+          /** YouTube or Vimeo videos hosted externally. Use embedUrl for the iframe src. */
+          __typename: "ExternalVideo";
+          id: string;
+          alt?: string | null;
+          /** The embed URL for the iframe (preferred over deprecated embeddedUrl). */
+          embedUrl: string;
+          previewImage?: {
+              url: string;
+              altText?: string | null;
+              width?: number;
+              height?: number;
+          } | null;
+      }
+    | {
+          /** Shopify-hosted 3D model. Render previewImage as a fallback (3D viewer out of scope). */
+          __typename: "Model3d";
+          id: string;
+          alt?: string | null;
           previewImage?: {
               url: string;
               altText?: string | null;
@@ -697,6 +726,29 @@ export interface SiteSettings {
     googleMapsEmbed: string[];
     /** Google Maps share links (https://maps.app.goo.gl/…) for CTA buttons */
     googleMapsLink: string[];
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // AGENTIC COMMERCE FIELDS (Phase 1 — agent-discoverability foundation)
+    // These fields are surfaced via MCP tools in Phase 2+
+    // ─────────────────────────────────────────────────────────────────────────
+    /** Short brand voice / tone description for AI agents (e.g. "friendly, direct, no jargon") */
+    agentPersona: string | null;
+    /** Extended machine-readable policy key/value pairs for the Policies MCP tool */
+    policyExtension: PolicyExtension[] | null;
+    /** Additional FAQ entries injected into the FAQ MCP tool response */
+    faqExtension: FAQItem[];
+    /** Agent-only promotional message (not shown to human visitors) */
+    agentOnlyPromo: string | null;
+    /** Minimum order amount (in store currency) to qualify for free shipping */
+    freeShippingMinimumOrder: number | null;
+    /** Banner overrides keyed by utm_source value (Phase 5) */
+    trafficSourceBanners: TrafficSourceBanner[] | null;
+    /** Hero variant overrides keyed by visitor segment (Phase 5) */
+    homepageVariants: HomepageVariant[] | null;
+    /** VIP tier benefit list (Phase 5) */
+    vipPerks: VipPerk[] | null;
+    /** Time-limited promotional offers with optional countdown (Phase 3) */
+    limitedOffers: LimitedOffer[] | null;
 }
 
 /**
@@ -749,6 +801,51 @@ export interface FAQItem {
     id: string;
     question: string;
     answer: string;
+}
+
+/** Extended machine-readable policy key/value pair (Policies MCP, Phase 3) */
+export interface PolicyExtension {
+    key: string;
+    value: string;
+    context?: string;
+}
+
+/** Traffic-source hero banner override keyed by utm_source (Phase 5) */
+export interface TrafficSourceBanner {
+    source: string;
+    heading?: string;
+    text?: string;
+    ctaLabel?: string;
+    ctaUrl?: string;
+}
+
+/** Segment-based homepage hero variant (Phase 5) */
+export interface HomepageVariant {
+    id: string;
+    segment?: string;
+    heroHeading?: string;
+    heroDescription?: string;
+    ctaLabel?: string;
+    ctaUrl?: string;
+}
+
+/** VIP tier benefit/perk displayed to qualified visitors (Phase 5) */
+export interface VipPerk {
+    id: string;
+    tier?: string;
+    title: string;
+    description: string;
+    iconUrl?: string;
+}
+
+/** Time-limited promotional offer with optional countdown (Phase 3) */
+export interface LimitedOffer {
+    id: string;
+    title: string;
+    description?: string;
+    discountCode?: string;
+    expiresAt?: string;
+    badgeText?: string;
 }
 
 /**

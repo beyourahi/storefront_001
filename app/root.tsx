@@ -16,8 +16,7 @@ import {
     HEADER_QUERY,
     CART_SUGGESTIONS_QUERY,
     FOOTER_QUERY,
-    MENU_COLLECTIONS_QUERY,
-    SHOP_SHIPPING_CONFIG_QUERY
+    MENU_COLLECTIONS_QUERY
 } from "~/lib/fragments";
 import {THEME_SETTINGS_QUERY, SITE_CONTENT_QUERY} from "~/lib/metaobject-queries";
 import {parseSiteContent} from "~/lib/metaobject-parsers";
@@ -52,6 +51,10 @@ import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
 import {generateWebsiteSchema, getSeoDefaults} from "~/lib/seo";
 import {detectAiAttribution} from "~/lib/ai-attribution";
+import {AgentSurfaceProvider} from "~/lib/agent-surface-context";
+import {deriveAgentSurface, type AgentSurface} from "~/lib/agentic/agent-surface";
+import {emitAgentEvent, routeFromRequest} from "~/lib/agentic/observability";
+import {AGENT_SESSION_ID_KEY} from "~/lib/session";
 import {STORE_LANGUAGE_CODE} from "~/lib/store-locale";
 import appCss from "./styles/app.css?url";
 
@@ -121,8 +124,19 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
     const {storefront, dataAdapter, env} = context;
     const requestUrl = new URL(request.url);
     const aiAttribution = detectAiAttribution(request.headers, requestUrl.searchParams);
+    const hasAgentSession = Boolean(context.session.get(AGENT_SESSION_ID_KEY));
+    const agentSurface = deriveAgentSurface({aiAttribution, hasAgentSession});
 
-    const [header, menuCollectionsData, shopData, themeSettingsData, siteContentData, blogData] = await Promise.all([
+    if (agentSurface.isAgent && (agentSurface.source === "referer" || agentSurface.source === "permalink")) {
+        emitAgentEvent(context.env as Env, {
+            evt: "agent_arrival",
+            route: routeFromRequest(request),
+            requestType: "agent",
+            responseCategory: "ok"
+        });
+    }
+
+    const [header, menuCollectionsData, themeSettingsData, siteContentData, blogData] = await Promise.all([
         dataAdapter.query(HEADER_QUERY, {
             variables: {headerMenuHandle: "main-menu"},
             cache: dataAdapter.CacheLong()
@@ -132,10 +146,6 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
         }),
         dataAdapter.query(MENU_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
             console.error("Failed to load menu collections:", error);
-            return null;
-        }),
-        dataAdapter.query(SHOP_SHIPPING_CONFIG_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
-            console.error("Failed to load shipping config:", error);
             return null;
         }),
         dataAdapter.query(THEME_SETTINGS_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
@@ -161,8 +171,8 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
     const hasBlog = (blogData as any)?.articles?.nodes?.length > 0;
     const websiteSchema = generateWebsiteSchema(siteContent.siteSettings);
     const shippingConfig = parseShippingConfig(
-        shopData?.shop?.freeShippingThreshold?.value,
-        shopData?.shop?.paymentSettings?.currencyCode
+        siteContent.siteSettings.freeShippingMinimumOrder,
+        header?.shop?.paymentSettings?.currencyCode
     );
 
     // Capture raw total before filtering — used for "All Collections" count in FullScreenMenu
@@ -250,7 +260,8 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
         },
         gtmContainerId: env.PUBLIC_GTM_CONTAINER_ID || "",
         websiteSchema,
-        aiAttribution
+        aiAttribution,
+        agentSurface
     };
 }
 
@@ -472,6 +483,7 @@ export default function App() {
     const shopName = data.siteContent.siteSettings.brandName?.trim() || "Store";
 
     return (
+        <AgentSurfaceProvider value={data.agentSurface ?? {isAgent: false, source: "none"}}>
         <SiteContentProvider siteContent={data.siteContent}>
             <WishlistProvider>
                 <Analytics.Provider cart={data.cart} shop={data.shop} consent={data.consent}>
@@ -503,6 +515,7 @@ export default function App() {
                 </Analytics.Provider>
             </WishlistProvider>
         </SiteContentProvider>
+        </AgentSurfaceProvider>
     );
 }
 
