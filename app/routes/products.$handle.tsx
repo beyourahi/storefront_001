@@ -22,7 +22,10 @@ import {
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateDiscount, formatShopifyMoney} from "~/lib/currency-formatter";
 import {formatProductTitleForMeta} from "~/lib/product";
-import {generateProductSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {generateProductSchema, generateBreadcrumbListSchema, generateBrandSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {deriveProductBreadcrumbs} from "~/lib/seo-breadcrumbs";
+import {getCatalogExtensionMeta} from "~/lib/agentic/structured-data";
+import {normalizeProductAttributes} from "~/lib/agentic/attribute-normalizer";
 import {useRecentlyViewedContext} from "~/components/RecentlyViewedProvider";
 import {ProductImageSection} from "~/components/product/ProductImageSection";
 import {ProductInfoSection} from "~/components/product/ProductInfoSection";
@@ -30,9 +33,14 @@ import {ProductMobileTitlePrice} from "~/components/product/ProductMobileTitlePr
 import {ProductPurchaseSection} from "~/components/product/ProductPurchaseSection";
 import {ProductMobileStickyButtons} from "~/components/product/ProductMobileStickyButtons";
 import {ProductRelatedSection} from "~/components/product/ProductRelatedSection";
+import {ComplementaryProducts} from "~/components/product/ComplementaryProducts";
+import {SimilarItems} from "~/components/product/SimilarItems";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {ProductReviews, type ReviewNode} from "~/components/product/ProductReviews";
+import {CatalogExtensionDisplay} from "~/components/product/CatalogExtensionDisplay";
+import {AgentProductBrief} from "~/components/product/AgentProductBrief";
+import {useAgentSurface} from "~/lib/agent-surface-context";
 
 // Revalidate this route's loader whenever the URL search params change (e.g. variant selection).
 // Without this, React Router may skip re-running the loader on search-param-only navigations,
@@ -62,6 +70,37 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const url = buildCanonicalUrl(`/products/${product.handle}`, siteUrl);
 
     const brandName = getBrandNameFromMatches(matches);
+
+    const rootMatch = matches.find((m): m is (typeof matches)[number] & {id: "root"} => m?.id === "root");
+    const siteSettings = (rootMatch?.data as any)?.siteContent?.siteSettings;
+
+    // SCE fields for 5th arg
+    const extensionFields = {
+        isGiftCard: product.isGiftCard,
+        collections: product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title})),
+        requiresShipping: variant?.requiresShipping,
+        sellingPlans: variant?.sellingPlanAllocations?.nodes?.map((a: any) => ({name: a.sellingPlan?.name ?? "Subscription", recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false}))
+    };
+
+    // Normalized attributes for 6th arg
+    const normalizedAttributes = normalizeProductAttributes(
+        variant?.selectedOptions ?? [],
+        product.metafields?.filter(Boolean) ?? undefined
+    );
+
+    const productSchema = generateProductSchema(product, variant, null, siteUrl, extensionFields, normalizedAttributes);
+    const breadcrumbs = deriveProductBreadcrumbs(product);
+    const breadcrumbSchema = generateBreadcrumbListSchema(breadcrumbs, siteUrl);
+    const brandSchema = generateBrandSchema(siteSettings, product.vendor);
+    const sceMeta = getCatalogExtensionMeta({
+        isGiftCard: product.isGiftCard,
+        requiresShipping: variant?.requiresShipping,
+        sellingPlans: variant?.sellingPlanAllocations?.nodes?.map((a: any) => ({name: a.sellingPlan?.name ?? "Subscription"})),
+        collections: product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title})),
+        quantityAvailable: variant?.quantityAvailable,
+        currentlyNotInStock: variant?.currentlyNotInStock
+    });
+
     return [
         ...(getSeoMeta({
             title,
@@ -76,8 +115,11 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       type: "image" as const
                   }
                 : undefined,
-            jsonLd: generateProductSchema(product, variant, null, siteUrl) as any
+            jsonLd: productSchema as any
         }) ?? []),
+        {"script:ld+json": breadcrumbSchema as any},
+        {"script:ld+json": brandSchema as any},
+        ...sceMeta,
         ...getRequiredSocialMeta("product", brandName, image?.url ?? undefined)
     ];
 };
@@ -169,11 +211,29 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
         .then((data: any) => (data.product?.reviews?.references?.nodes ?? []) as ReviewNode[])
         .catch(() => [] as ReviewNode[]);
 
-    return {recommendations, reviews};
+    // Complementary products (frequently bought together via COMPLEMENTARY intent)
+    const complementary = dataAdapter
+        .query(COMPLEMENTARY_PRODUCTS_QUERY, {
+            variables: {productId},
+            cache: dataAdapter.CacheShort()
+        })
+        .then(data => data.productRecommendations ?? [])
+        .catch(() => null);
+
+    // Similar products (more like this via RELATED intent)
+    const similar = dataAdapter
+        .query(SIMILAR_PRODUCTS_QUERY, {
+            variables: {productId},
+            cache: dataAdapter.CacheShort()
+        })
+        .then(data => data.productRecommendations ?? [])
+        .catch(() => null);
+
+    return {recommendations, reviews, complementary, similar};
 };
 
 const Product = () => {
-    const {product, recommendations, reviews, selectedSellingPlan, activeCollectionHandle} = useLoaderData<typeof loader>();
+    const {product, recommendations, reviews, complementary, similar, selectedSellingPlan, activeCollectionHandle} = useLoaderData<typeof loader>();
     const [quantity, setQuantity] = useState(1);
     const {addProduct} = useRecentlyViewedContext();
 
@@ -188,6 +248,8 @@ const Product = () => {
         ...product,
         selectedOrFirstAvailableVariant: selectedVariant
     });
+
+    const agentSurface = useAgentSurface();
 
     const productImages = useMemo(
         () => product?.images?.nodes?.map((node: any) => ({id: node.id, url: node.url, altText: node.altText})) ?? [],
@@ -260,6 +322,17 @@ const Product = () => {
         return items;
     }, [product.collections?.nodes, activeCollectionHandle, product.title]);
 
+    // Agent path: spec-first dense view — no image gallery, no carousels.
+    if (agentSurface.isAgent) {
+        return (
+            <AgentProductBrief
+                product={product}
+                selectedVariant={selectedVariant}
+                productOptions={productOptions}
+            />
+        );
+    }
+
     return (
         <div className="min-h-screen bg-background text-foreground">
             {/* Breadcrumbs */}
@@ -289,10 +362,24 @@ const Product = () => {
 
                             <div className="hidden lg:col-span-4 lg:block">
                                 <ProductInfoSection product={product} discountPercentage={discountPercentage} productId={product.id} />
+                                <CatalogExtensionDisplay
+                                    isGiftCard={product.isGiftCard}
+                                    requiresShipping={selectedVariant?.requiresShipping}
+                                    sellingPlans={selectedVariant?.sellingPlanAllocations?.nodes?.map((a: any) => ({name: a.sellingPlan?.name ?? "Subscription", recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false}))}
+                                    collections={product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title}))}
+                                    className="mt-3"
+                                />
                             </div>
 
                             <div className="lg:hidden">
                                 <ProductInfoSection product={product} discountPercentage={discountPercentage} productId={product.id} />
+                                <CatalogExtensionDisplay
+                                    isGiftCard={product.isGiftCard}
+                                    requiresShipping={selectedVariant?.requiresShipping}
+                                    sellingPlans={selectedVariant?.sellingPlanAllocations?.nodes?.map((a: any) => ({name: a.sellingPlan?.name ?? "Subscription", recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false}))}
+                                    collections={product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title}))}
+                                    className="mt-3"
+                                />
                             </div>
 
                             <div className="hidden lg:col-span-4 lg:block">
@@ -325,6 +412,30 @@ const Product = () => {
                         {resolvedRecs =>
                             resolvedRecs && resolvedRecs.length > 0 ? (
                                 <ProductRelatedSection relatedProducts={resolvedRecs} />
+                            ) : null
+                        }
+                    </Await>
+                </Suspense>
+            </AnimatedSection>
+
+            <AnimatedSection animation="fade" threshold={0.08}>
+                <Suspense fallback={null}>
+                    <Await resolve={complementary}>
+                        {resolvedComp =>
+                            resolvedComp && resolvedComp.length > 0 ? (
+                                <ComplementaryProducts products={resolvedComp} />
+                            ) : null
+                        }
+                    </Await>
+                </Suspense>
+            </AnimatedSection>
+
+            <AnimatedSection animation="slide-up" threshold={0.12}>
+                <Suspense fallback={null}>
+                    <Await resolve={similar}>
+                        {resolvedSim =>
+                            resolvedSim && resolvedSim.length > 0 ? (
+                                <SimilarItems products={resolvedSim} />
                             ) : null
                         }
                     </Await>
@@ -422,6 +533,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
     sku
     barcode
     currentlyNotInStock
+    requiresShipping
     title
     unitPrice {
       amount
@@ -487,10 +599,12 @@ const PRODUCT_FRAGMENT = `#graphql
     tags
     productType
     publishedAt
+    isGiftCard
     encodedVariantExistence
     encodedVariantAvailability
-    collections(first: 1) {
+    collections(first: 5) {
       nodes {
+        id
         handle
         title
       }
@@ -762,6 +876,34 @@ const RECOMMENDATIONS_QUERY = `#graphql
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     productRecommendations(productId: $productId) {
+      ...RecommendedProduct
+    }
+  }
+  ${RECOMMENDED_PRODUCT_FRAGMENT}
+` as const;
+
+// Uses intent: COMPLEMENTARY — "frequently bought together"
+const COMPLEMENTARY_PRODUCTS_QUERY = `#graphql
+  query ProductPageComplementary(
+    $productId: ID!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    productRecommendations(productId: $productId, intent: COMPLEMENTARY) {
+      ...RecommendedProduct
+    }
+  }
+  ${RECOMMENDED_PRODUCT_FRAGMENT}
+` as const;
+
+// Uses intent: RELATED — "similar items / more like this"
+const SIMILAR_PRODUCTS_QUERY = `#graphql
+  query ProductPageSimilar(
+    $productId: ID!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    productRecommendations(productId: $productId, intent: RELATED) {
       ...RecommendedProduct
     }
   }

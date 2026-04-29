@@ -6,7 +6,7 @@ import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {cn} from "~/lib/utils";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateBreadcrumbListSchema} from "~/lib/seo";
 import {CHANGELOG_ENTRIES, type ChangelogEntry} from "~/lib/changelog-data";
 import type {Route} from "./+types/changelog";
 
@@ -22,6 +22,10 @@ export const meta: Route.MetaFunction = ({matches}) => {
                 "See what's new. We're constantly improving your shopping experience — here's a plain-language look at everything we've shipped.",
             url: buildCanonicalUrl("/changelog", siteUrl)
         }) ?? []),
+        {"script:ld+json": generateBreadcrumbListSchema([
+            {name: "Home", url: "/"},
+            {name: "Changelog", url: "/changelog"}
+        ], siteUrl) as any},
         ...getRequiredSocialMeta("website", brandName)
     ];
 };

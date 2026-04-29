@@ -3,7 +3,8 @@ import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import type {Route} from "./+types/collections.$handle";
 import {Analytics, getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateCollectionSchema} from "~/lib/seo";
+import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateCollectionSchema, generateBreadcrumbListSchema} from "~/lib/seo";
+import {deriveCollectionBreadcrumbs} from "~/lib/seo-breadcrumbs";
 import {CollectionHero} from "~/components/sections/CollectionHero";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
 import {CollectionPagination} from "~/components/custom/CollectionPagination";
@@ -22,6 +23,7 @@ import {parseSortFilterParams} from "~/lib/sort-filter-helpers";
 import {sortWithPinnedFirst} from "~/lib/product-tags";
 import {SIDEBAR_COLLECTIONS_QUERY} from "~/lib/fragments";
 import {withTimeoutAndFallback, TIMEOUT_DEFAULTS} from "~/lib/promise-utils";
+import {scoreProducts, extractAffinitySignals} from "~/lib/agentic/affinity";
 
 const redirectIfHandleIsLocalized = (
     request: Request,
@@ -71,6 +73,7 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                 : undefined,
             jsonLd: collectionSchema as any
         }) ?? []),
+        {"script:ld+json": generateBreadcrumbListSchema(deriveCollectionBreadcrumbs(collection), siteUrl) as any},
         ...getRequiredSocialMeta("website", brandName, collection.image?.url ?? undefined)
     ];
 };
@@ -128,8 +131,42 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     redirectIfHandleIsLocalized(request, {handle, data: collection});
 
     // Products are already filtered and sorted by GraphQL; apply pin sorting on top
-    const products = sortWithPinnedFirst(collection.products.nodes);
+    let productNodes = sortWithPinnedFirst(collection.products.nodes);
     const pagination = buildPaginationData(collection.products.pageInfo, page);
+
+    // SmartCollections: server-side affinity re-ranking for authenticated customers.
+    // Fetch the customer's recent order history and surface previously-purchased-brand
+    // products first, then fall back to the original GraphQL order for anonymous users.
+    try {
+        const {customerAccount} = context;
+        const isAuthenticated = await customerAccount.isLoggedIn();
+
+        if (isAuthenticated) {
+            const ordersResponse = await customerAccount.query(CUSTOMER_AFFINITY_ORDERS_QUERY, {
+                variables: {first: 10}
+            }) as any;
+
+            const orderNodes: any[] = ordersResponse?.data?.customer?.orders?.nodes ?? [];
+
+            // Flatten all order line items into AffinitySignal-compatible objects
+            const orderLines = orderNodes.flatMap((order: any) =>
+                (order.lineItems?.nodes ?? []).map((line: any) => ({
+                    productId: line.variant?.product?.id ?? "",
+                    quantity: line.quantity as number,
+                    processedAt: order.processedAt as string
+                }))
+            ).filter((line: any) => line.productId !== "");
+
+            if (orderLines.length > 0) {
+                const signals = extractAffinitySignals(orderLines);
+                // Cast required: ProductWithTags uses [key: string]: unknown index signature,
+                // which is incompatible with {id: string} despite id being present at runtime.
+                productNodes = scoreProducts(productNodes as any, signals) as typeof productNodes;
+            }
+        }
+    } catch {
+        // Graceful degradation: any auth or API failure leaves the original product order intact
+    }
 
     const canonicalRedirect = getCanonicalRedirect(url, page, pagination.hasNextPage, pageParam);
     if (canonicalRedirect) {
@@ -143,7 +180,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 
     return {
         collection,
-        products,
+        products: productNodes,
         pagination,
         sort,
         sortLabel,
@@ -427,6 +464,31 @@ const COLLECTION_QUERY = `#graphql
           hasPreviousPage
           startCursor
           endCursor
+        }
+      }
+    }
+  }
+` as const;
+
+// Minimal Customer Account API query for affinity signal extraction.
+// Fetches only the fields needed to build AffinitySignal[]: product IDs, quantities,
+// and order timestamps. Kept lightweight on purpose — 10 orders × 20 line items max.
+const CUSTOMER_AFFINITY_ORDERS_QUERY = `
+  query CustomerAffinityOrders($first: Int!) {
+    customer {
+      orders(first: $first, sortKey: PROCESSED_AT, reverse: true) {
+        nodes {
+          processedAt
+          lineItems(first: 20) {
+            nodes {
+              quantity
+              variant {
+                product {
+                  id
+                }
+              }
+            }
+          }
         }
       }
     }

@@ -238,7 +238,8 @@ export function generateWebsiteSchema(
 
 /**
  * Generate Product schema for product pages
- * Enhanced for Shopify Agentic Commerce: GTIN, aggregateRating, LimitedAvailability, compareAtPrice spec
+ * Enhanced for Shopify Agentic Commerce: GTIN, aggregateRating, LimitedAvailability, compareAtPrice spec,
+ * SCE extension fields (isGiftCard, requiresShipping, sellingPlans, collections), and normalized attributes
  */
 export function generateProductSchema(
     product: {
@@ -263,7 +264,19 @@ export function generateProductSchema(
         image?: {url: string; altText?: string | null; width?: number | null; height?: number | null} | null;
     } | null,
     reviews?: Array<{rating?: {value: string | null} | null}> | null,
-    siteUrl?: string
+    siteUrl?: string,
+    extensionFields?: {
+        isGiftCard?: boolean;
+        requiresShipping?: boolean;
+        sellingPlans?: Array<{name: string; recurringDeliveries?: boolean}>;
+        collections?: Array<{handle: string; title: string}>;
+    } | null,
+    normalizedAttributes?: Array<{
+        propertyID: string;
+        name: string;
+        value: string;
+        normalizedValue?: string | null;
+    }> | null
 ): JsonLdSchema {
     const mediaImages = extractImagesFromMedia(product.media?.nodes).map(img => img.url);
     const productImages = product.images?.nodes?.map(img => img.url) ?? [];
@@ -316,6 +329,45 @@ export function generateProductSchema(
         })
     };
 
+    const additionalProperty: Array<Record<string, unknown>> = [];
+
+    // SCE extension fields → additionalProperty
+    if (extensionFields?.isGiftCard) {
+        additionalProperty.push({"@type": "PropertyValue", propertyID: "isGiftCard", name: "Gift Card", value: true});
+    }
+    if (extensionFields?.requiresShipping === false) {
+        additionalProperty.push({"@type": "PropertyValue", propertyID: "requiresShipping", name: "Requires Shipping", value: false});
+    }
+    if (extensionFields?.sellingPlans?.length) {
+        additionalProperty.push({"@type": "PropertyValue", propertyID: "sellingPlans", name: "Subscription Plans", value: extensionFields.sellingPlans.map(p => p.name).join(", ")});
+    }
+    if (extensionFields?.collections?.length) {
+        additionalProperty.push({"@type": "PropertyValue", propertyID: "collections", name: "Collections", value: extensionFields.collections.map(c => c.title).join(", ")});
+    }
+
+    // Tag-based price explanation
+    if (product.tags && (product.tags.includes("sale") || product.tags.includes("bundle") || product.tags.includes("member-only"))) {
+        const priceTag = product.tags.find(t => ["sale", "bundle", "member-only"].includes(t));
+        additionalProperty.push({"@type": "PropertyValue", propertyID: "priceExplanation", name: "Price Explanation", value: priceTag === "sale" ? "On sale — reduced from original price" : priceTag === "bundle" ? "Bundle pricing — multiple items included" : "Member exclusive pricing"});
+    }
+
+    // Staff pick tag
+    if (product.tags && product.tags.includes("staff-pick")) {
+        additionalProperty.push({"@type": "PropertyValue", propertyID: "isStaffPick", name: "Staff Pick", value: true});
+    }
+
+    // Normalized attributes (color/size/material/fit/pattern etc.)
+    if (normalizedAttributes?.length) {
+        for (const attr of normalizedAttributes) {
+            additionalProperty.push({
+                "@type": "PropertyValue",
+                propertyID: attr.propertyID,
+                name: attr.name,
+                value: attr.normalizedValue ?? attr.value
+            });
+        }
+    }
+
     return {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -337,7 +389,8 @@ export function generateProductSchema(
                 propertyID: "SKU",
                 value: variant.sku
             }]
-        })
+        }),
+        ...(additionalProperty.length > 0 && {additionalProperty})
     };
 }
 
@@ -412,8 +465,8 @@ export function generateBlogPostingSchema(
         description: article.excerpt || undefined,
         image: article.image?.url || undefined,
         datePublished: article.publishedAt ? formatSchemaDate(article.publishedAt) : undefined,
-        // dateModified intentionally omitted — Shopify Storefront API does not expose
-        // Article.updatedAt, so we cannot provide an accurate value.
+        // dateModified = datePublished: Shopify only exposes `publishedAt` on articles, not a separate `updatedAt`
+        dateModified: article.publishedAt ? formatSchemaDate(article.publishedAt) : undefined,
         author: article.author?.name
             ? {
                   "@type": "Person",
@@ -521,4 +574,77 @@ export function getRequiredSocialMeta(
         {name: "twitter:card", content: imageUrl ? "summary_large_image" : "summary"},
         ...(imageUrl ? [{name: "twitter:image", content: imageUrl}] : [])
     ];
+}
+
+/**
+ * Get meta tags for account/auth pages.
+ * Returns title + robots:noindex,nofollow
+ */
+export function getAccountMeta(label: string): Array<Record<string, string>> {
+    return [
+        {title: label},
+        {name: "robots", content: "noindex, nofollow"}
+    ];
+}
+
+// ============================================
+// Phase 3: Agentic Commerce Schema Generators
+// ============================================
+
+/**
+ * Generate BreadcrumbList schema for structured navigation data
+ * Phase 3: Emitted on every route that has visual breadcrumbs
+ */
+export function generateBreadcrumbListSchema(
+    items: Array<{name: string; url: string}>,
+    siteUrl?: string
+): JsonLdSchema {
+    return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: items.map((item, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: item.name,
+            item: buildCanonicalUrl(item.url, siteUrl)
+        }))
+    };
+}
+
+/**
+ * Generate standalone Brand schema (referenced by Product schema on PDP)
+ * Phase 3: Emitted as a separate @graph entry on PDP alongside Product schema
+ */
+export function generateBrandSchema(
+    siteSettings?: SeoSiteSettings | null,
+    vendor?: string | null
+): JsonLdSchema {
+    const defaults = getSeoDefaults(siteSettings);
+    const brandName = vendor || defaults.brandName;
+    const slugified = brandName.toLowerCase().replace(/\s+/g, "-");
+    return {
+        "@context": "https://schema.org",
+        "@type": "Brand",
+        "@id": `${defaults.siteUrl}#brand-${slugified}`,
+        name: brandName,
+        ...(siteSettings?.brandLogo?.url && {logo: siteSettings.brandLogo.url})
+    };
+}
+
+/**
+ * Generate WebPage schema for standalone pages (e.g. policy pages)
+ * Phase 3: Emitted on policy routes to provide page-level structured data
+ */
+export function generateWebPageSchema(
+    title: string,
+    url: string,
+    dateModified?: string | null
+): JsonLdSchema {
+    return {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: title,
+        url,
+        ...(dateModified && {dateModified: formatSchemaDate(dateModified)})
+    };
 }

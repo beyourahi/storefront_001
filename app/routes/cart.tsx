@@ -1,8 +1,14 @@
 import {data, type HeadersFunction} from "react-router";
+import {Suspense} from "react";
+import {Await, useRouteLoaderData} from "react-router";
 import type {Route} from "./+types/cart";
 import type {CartQueryDataReturn} from "@shopify/hydrogen";
 import {CartForm} from "@shopify/hydrogen";
+import {isAgentRequest} from "~/lib/agentic/agent-request";
 import {RouteErrorBoundary} from "~/components/RouteErrorBoundary";
+import {CartMain, CartLoadingSkeleton} from "~/components/cart/CartMain";
+import type {RootLoader} from "~/root";
+import type {CartApiQueryFragment} from "storefrontapi.generated";
 
 export const meta: Route.MetaFunction = () => [
     {title: "Cart"},
@@ -19,7 +25,10 @@ export const action = async ({request, context}: Route.ActionArgs) => {
     const {action, inputs} = CartForm.getFormInput(formData);
 
     if (!action) {
-        throw new Error("No action provided");
+        return data(
+            {cart: null, errors: ["No cart action provided"], warnings: [], analytics: {}},
+            {status: 400}
+        );
     }
 
     let status = 200;
@@ -90,6 +99,16 @@ export const action = async ({request, context}: Route.ActionArgs) => {
     const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();
     const {cart: cartResult, errors, warnings} = result;
 
+    if (isAgentRequest(request)) {
+        const agentHeaders = new Headers(headers);
+        agentHeaders.set("Content-Type", "application/x-ucp+json");
+        agentHeaders.set("Cache-Control", "no-cache, no-store, must-revalidate");
+        return new Response(
+            JSON.stringify({cart: cartResult, errors, warnings}),
+            {status: errors?.length ? 422 : 200, headers: agentHeaders}
+        );
+    }
+
     // Validate redirectTo to prevent open redirect attacks.
     // Only allow: the special "__checkout_url__" token, or relative paths starting with "/"
     // (but not "//" which is a protocol-relative URL). Reject external URLs, javascript:, data:, etc.
@@ -102,13 +121,14 @@ export const action = async ({request, context}: Route.ActionArgs) => {
         } else if (redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
             destination = redirectTo;
         }
-        // All other values (external URLs, javascript:, data:, etc.) are silently ignored
 
         if (destination) {
             status = 303;
             headers.set("Location", destination);
         }
     }
+
+    headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
 
     return data(
         {
@@ -124,11 +144,58 @@ export const action = async ({request, context}: Route.ActionArgs) => {
 };
 
 export async function loader({context, request}: Route.LoaderArgs) {
-    const {cart} = context;
-    if (request.headers.get("Accept")?.includes("text/html")) {
-        return new Response(null, {status: 302, headers: {Location: "/"}});
+    const {cart, session} = context;
+
+    // Detect AI agent cart arrival via session key written by cart.$lines.tsx.
+    // When hasAgentSession=true, render the cart page so AgentArrivalBanner is shown.
+    const hasAgentSession = Boolean(session.get("agentSessionId"));
+
+    if (request.headers.get("Accept")?.includes("text/html") && !hasAgentSession) {
+        return new Response(null, {status: 302, headers: {Location: "/", "Cache-Control": "no-cache, no-store, must-revalidate"}});
     }
-    return await cart.get();
+
+    const cartData = await cart.get();
+
+    return data(
+        {...cartData},
+        {headers: {"Cache-Control": "no-cache, no-store, must-revalidate"}}
+    );
+}
+
+// =============================================================================
+// CART PAGE — rendered only when ?_agent=1 is present
+// =============================================================================
+
+/**
+ * CartPage — full-page cart view rendered exclusively for agent-arrival sessions.
+ *
+ * Normal cart navigation redirects to "/" (the aside drawer handles cart display).
+ * When `cart.$lines.tsx` detects an AI agent arrival, it writes session keys and
+ * redirects to /cart (clean URL), which bypasses the redirect and renders this page
+ * so the buyer can review the cart with the AgentArrivalBanner before checkout.
+ *
+ * CartMain handles AgentArrivalBanner rendering via useAgentSurface() from the
+ * AgentSurfaceProvider — no URL flag or explicit banner placement is needed here.
+ */
+export default function CartPage() {
+    const rootData = useRouteLoaderData<RootLoader>("root");
+
+    if (!rootData) return null;
+
+    return (
+        <main className="container mx-auto max-w-3xl px-4 py-8 sm:py-12">
+            <Suspense fallback={<CartLoadingSkeleton />}>
+                <Await resolve={rootData.cart}>
+                    {cart => (
+                        <CartMain
+                            cart={cart as CartApiQueryFragment | null}
+                            layout="page"
+                        />
+                    )}
+                </Await>
+            </Suspense>
+        </main>
+    );
 }
 
 export {RouteErrorBoundary as ErrorBoundary};

@@ -3,7 +3,7 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {useFaqItems} from "~/lib/site-content-context";
-import {generateFAQPageSchema, getBrandNameFromMatches, getRequiredSocialMeta, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
+import {generateFAQPageSchema, generateBreadcrumbListSchema, getBrandNameFromMatches, getRequiredSocialMeta, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
 import {GiantText} from "~/components/common/GiantText";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {cn} from "~/lib/utils";
@@ -26,6 +26,10 @@ export const meta: Route.MetaFunction = ({matches}) => {
             url: buildCanonicalUrl("/faq", siteUrl),
             jsonLd: faqSchema as any
         }) ?? []),
+        {"script:ld+json": generateBreadcrumbListSchema([
+            {name: "Home", url: "/"},
+            {name: "FAQ", url: "/faq"}
+        ], siteUrl) as any},
         ...getRequiredSocialMeta("website", brandName)
     ];
 };

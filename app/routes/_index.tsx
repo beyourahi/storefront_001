@@ -3,7 +3,7 @@ import {useLoaderData, useRouteLoaderData, Await} from "react-router";
 import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, generateFAQPageSchema, generateWebsiteSchema, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {buildCanonicalUrl, generateFAQPageSchema, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
     bestSellers: "best-sellers",
@@ -25,6 +25,8 @@ import {OrderHistorySection} from "~/components/account/OrderHistorySection";
 import {HomepageBlogSection} from "~/components/homepage/HomepageBlogSection";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {NewsletterSignup} from "~/components/common/NewsletterSignup";
+import {useTrafficSourceBanners, useHomepageVariants} from "~/lib/site-content-context";
+import {useAgentSurface} from "~/lib/agent-surface-context";
 import {
     CUSTOMER_ORDER_HISTORY_QUERY,
     extractOrderHistoryProducts,
@@ -52,8 +54,6 @@ export const meta: Route.MetaFunction = ({matches}) => {
         description: description || undefined,
         sameAs: socialLinks?.map(l => l.url).filter(Boolean) ?? []
     };
-    const websiteSchema = generateWebsiteSchema(siteSettings);
-
     return [
         ...(getSeoMeta({
             title: shopName,
@@ -64,7 +64,6 @@ export const meta: Route.MetaFunction = ({matches}) => {
         }) ?? []),
         ...getRequiredSocialMeta("website", brandName, logoUrl),
         {"script:ld+json": enrichedOrgSchema as any},
-        {"script:ld+json": websiteSchema as any},
         ...(faqItems && faqItems.length > 0 ? [{"script:ld+json": generateFAQPageSchema(faqItems) as any}] : [])
     ];
 };
@@ -212,10 +211,27 @@ export default function Homepage() {
     const sectionNumbers = featuredProduct
         ? {bestSellers: "04", newArrivals: "05", trending: "06"}
         : {bestSellers: "03", newArrivals: "04", trending: "05"};
+    const trafficSourceBanners = useTrafficSourceBanners();
+    const homepageVariants = useHomepageVariants();
+    const {isAgent} = useAgentSurface();
+    const agentVariant = homepageVariants?.find(v => v.segment === "agent") ?? null;
+    void trafficSourceBanners; // consumed by server-rendered banner components when configured
 
     return (
         <div className="-mt-[var(--total-header-height)] min-h-screen bg-background text-foreground">
-            <VideoHero shopName={shopName} />
+            {isAgent ? (
+                <section className="px-6 py-16 max-w-3xl mx-auto">
+                    <h1 className="text-3xl font-bold mb-4">{agentVariant?.heroHeading ?? "Explore our catalog"}</h1>
+                    <p className="text-muted-foreground mb-8">{agentVariant?.heroDescription ?? "Browse products, collections, and policies below."}</p>
+                    {agentVariant?.ctaUrl ? (
+                        <a href={agentVariant.ctaUrl} className="text-primary underline underline-offset-4">
+                            {agentVariant.ctaLabel ?? "Browse catalog"}
+                        </a>
+                    ) : null}
+                </section>
+            ) : (
+                <VideoHero shopName={shopName} />
+            )}
 
             <AnimatedSection animation="slide-up" threshold={0.1}>
                 <Suspense fallback={<DiscountedProductsSection products={[]} loading />}>

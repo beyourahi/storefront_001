@@ -10,6 +10,7 @@ import "@total-typescript/ts-reset";
 declare global {
     interface Env {
         PUBLIC_GTM_CONTAINER_ID?: string;
+        AGENT_ANALYTICS?: AnalyticsEngineDataset;
     }
 
     interface Window {

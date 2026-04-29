@@ -4,8 +4,10 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import type {Shop} from "@shopify/hydrogen/storefront-api-types";
 import {LegalPageLayout} from "~/components/legal";
 import {POLICY_CONTENT_QUERY} from "~/lib/queries/policy";
-import {getBrandNameFromMatches, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
+import {getBrandNameFromMatches, buildCanonicalUrl, getSiteUrlFromMatches, generateBreadcrumbListSchema, generateWebPageSchema, generateFAQPageSchema} from "~/lib/seo";
+import {derivePolicyBreadcrumbs} from "~/lib/seo-breadcrumbs";
 import {kebabToCamelCase} from "~/lib/string-utils";
+import {useSiteSettings} from "~/lib/site-content-context";
 
 type PolicyKey = keyof Pick<Shop, "privacyPolicy" | "shippingPolicy" | "termsOfService" | "refundPolicy">;
 
@@ -31,7 +33,26 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
         : `Read our ${policy.title.toLowerCase()} at ${brandName}.`;
 
     const siteUrl = getSiteUrlFromMatches(matches);
-    return getSeoMeta({title: policy.title, description, url: buildCanonicalUrl(`/policies/${policy.handle}`, siteUrl)}) ?? [];
+    const policyUrl = buildCanonicalUrl(`/policies/${policy.handle}`, siteUrl);
+
+    const breadcrumbs = derivePolicyBreadcrumbs(policy.handle, policy.title);
+    const breadcrumbSchema = generateBreadcrumbListSchema(breadcrumbs, siteUrl);
+    const webPageSchema = generateWebPageSchema(policy.title, policyUrl);
+
+    // Check if root has policyExtension for this policy handle
+    const rootData = (matches.find(m => m?.id === "root") as any)?.data;
+    const policyExtensions: Array<{key: string; value: string; context?: string}> = rootData?.siteContent?.siteSettings?.policyExtension ?? [];
+    const matchingExtensions = policyExtensions.filter(ext => !ext.context || ext.context === policy.handle);
+    const faqSchema = matchingExtensions.length > 0
+        ? generateFAQPageSchema(matchingExtensions.map(ext => ({question: ext.key, answer: ext.value})))
+        : null;
+
+    return [
+        ...(getSeoMeta({title: policy.title, description, url: policyUrl}) ?? []),
+        {"script:ld+json": breadcrumbSchema as any},
+        {"script:ld+json": webPageSchema as any},
+        ...(faqSchema ? [{"script:ld+json": faqSchema as any}] : [])
+    ];
 };
 
 export async function loader({params, context}: Route.LoaderArgs) {
@@ -63,12 +84,18 @@ export async function loader({params, context}: Route.LoaderArgs) {
 
 export default function PolicyRoute() {
     const {policy} = useLoaderData<typeof loader>();
+    const siteSettings = useSiteSettings();
 
     const policyKey = kebabToCamelCase(policy.handle) as PolicyKey;
     const descriptionFn = POLICY_DESCRIPTIONS[policyKey];
     const description = descriptionFn ? descriptionFn("our store") : undefined;
 
-    return <LegalPageLayout title={policy.title} description={description} content={policy.body} />;
+    // Filter policyExtension entries for this policy handle
+    const policyExtension = siteSettings?.policyExtension?.filter(
+        ext => !ext.context || ext.context === policy.handle
+    ) ?? null;
+
+    return <LegalPageLayout title={policy.title} description={description} content={policy.body} policyExtension={policyExtension} />;
 }
 
 export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

@@ -21,6 +21,7 @@ import type {ShopifyProduct, ShopifyProductVariant} from "~/lib/types/product-ca
 import {ProductImagePlaceholder} from "~/components/ProductImagePlaceholder";
 import {cn} from "~/lib/utils";
 import {useLockBodyScroll} from "~/lib/LenisProvider";
+import {CheckoutKitEmbed} from "~/components/checkout/CheckoutKitEmbed";
 
 const productCache = new Map<string, ShopifyProduct>();
 
@@ -310,6 +311,9 @@ function ProductVariantDialogContent({
     const [isBuyingNow, setIsBuyingNow] = useState(false);
     const [addToCartState, setAddToCartState] = useState<"idle" | "adding" | "success" | "returning">("idle");
     const [buyNowState, setBuyNowState] = useState<"idle" | "adding" | "redirecting">("idle");
+    // Checkout URL resolved after the buyNow fetcher completes — passed to
+    // CheckoutKitEmbed with autoOpen so the popup launches without full-page navigation.
+    const [buyNowCheckoutUrl, setBuyNowCheckoutUrl] = useState<string | null>(null);
     const addSuccessTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const addWasSubmittingRef = useRef(false);
@@ -353,6 +357,8 @@ function ProductVariantDialogContent({
         setIsAddingToCart(false);
         setBuyNowState("idle");
         setIsBuyingNow(false);
+        // Clear the checkout URL so it doesn't re-trigger on next dialog open.
+        setBuyNowCheckoutUrl(null);
 
         if (addSuccessTimerRef.current) {
             clearTimeout(addSuccessTimerRef.current);
@@ -428,15 +434,22 @@ function ProductVariantDialogContent({
             const checkoutUrl = buyNowFetcher.data?.cart?.checkoutUrl;
 
             if (checkoutUrl) {
-                window.location.href = checkoutUrl;
+                // Store the URL so CheckoutKitEmbed can open the popup.
+                // The embed's auto-open effect fires once buyNowCheckoutUrl is set.
+                setBuyNowCheckoutUrl(checkoutUrl);
+                redirectTimerRef.current = null;
                 return;
             }
 
+            // No checkout URL returned (unexpected) — fall back to idle.
             setBuyNowState("idle");
             setIsBuyingNow(false);
             redirectTimerRef.current = null;
         }, 500);
     }, [buyNowFetcher.data, buyNowFetcher.state]);
+
+    // Note: when buyNowCheckoutUrl is set, CheckoutKitEmbed with autoOpen=true
+    // handles opening the popup automatically — no additional effect needed here.
 
     const activeVariant = selectedVariant ?? allVariants[0];
     const currentPrice = useMemo(() => {
@@ -824,27 +837,51 @@ function ProductVariantDialogContent({
                                 </Button>
 
                                 {!isPreorder ? (
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={handleBuyNow}
-                                        className={cn(
-                                            "sleek h-10 w-full font-medium active:scale-[0.98] sm:h-10",
-                                            buyNowState === "adding" || buyNowState === "redirecting"
-                                                ? "cursor-wait"
-                                                : ""
-                                        )}
-                                        disabled={!selectedVariant || isBuyingNow || isAddingToCart}
-                                    >
-                                        {buyNowState === "adding" || buyNowState === "redirecting" ? (
-                                            <ButtonSpinner />
-                                        ) : (
-                                            <>
-                                                <CreditCard className="mr-2 h-4 w-4" />
-                                                BUY NOW
-                                            </>
-                                        )}
-                                    </Button>
+                                    <>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={handleBuyNow}
+                                            className={cn(
+                                                "sleek h-10 w-full font-medium active:scale-[0.98] sm:h-10",
+                                                buyNowState === "adding" || buyNowState === "redirecting"
+                                                    ? "cursor-wait"
+                                                    : ""
+                                            )}
+                                            disabled={!selectedVariant || isBuyingNow || isAddingToCart}
+                                        >
+                                            {buyNowState === "adding" || buyNowState === "redirecting" ? (
+                                                <ButtonSpinner />
+                                            ) : (
+                                                <>
+                                                    <CreditCard className="mr-2 h-4 w-4" />
+                                                    BUY NOW
+                                                </>
+                                            )}
+                                        </Button>
+
+                                        {/*
+                                         * CheckoutKitEmbed for Buy Now flow.
+                                         * Rendered hidden once the buyNow fetcher resolves with a checkoutUrl.
+                                         * autoOpen=true causes the popup to open automatically on mount.
+                                         * The visible trigger above remains the user-facing button; this embed
+                                         * only serves as the Checkout Kit popup host.
+                                         */}
+                                        {buyNowCheckoutUrl ? (
+                                            <CheckoutKitEmbed
+                                                checkoutUrl={buyNowCheckoutUrl}
+                                                mode="popup"
+                                                autoOpen={true}
+                                                className="sr-only"
+                                                onComplete={() => {
+                                                    setBuyNowCheckoutUrl(null);
+                                                }}
+                                            >
+                                                {/* Hidden — popup is opened programmatically via autoOpen. */}
+                                                <span>Buy Now</span>
+                                            </CheckoutKitEmbed>
+                                        ) : null}
+                                    </>
                                 ) : null}
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 import {useOptimisticCart} from "@shopify/hydrogen";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Link} from "react-router";
+import {useAgentSurface} from "~/lib/agent-surface-context";
 import {ShoppingCart} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {Skeleton} from "~/components/ui/skeleton";
@@ -8,6 +9,8 @@ import {useCartDrawer} from "~/hooks/useCartDrawer";
 import {CartLineItem} from "~/components/cart/CartLineItem";
 import {CartSummary} from "~/components/cart/CartSummary";
 import {CartSuggestions} from "~/components/cart/CartSuggestions";
+import {AgentArrivalBanner} from "~/components/cart/AgentArrivalBanner";
+import {AgentCartView} from "~/components/cart/AgentCartView";
 
 export function CartMain({
     cart: originalCart,
@@ -20,6 +23,11 @@ export function CartMain({
     const linesCount = cart?.lines?.nodes?.length ?? 0;
     const isEmpty = linesCount === 0;
 
+    // Detect agent context — covers both permalink arrivals and active MCP sessions.
+    const agentSurface = useAgentSurface();
+    const isAgent = agentSurface.isAgent;
+    const isAgentCart = agentSurface.source === "permalink";
+
     if (isEmpty) {
         return (
             <div className="flex h-full min-h-0 flex-col">
@@ -27,6 +35,11 @@ export function CartMain({
                 <CartEmpty />
             </div>
         );
+    }
+
+    // Agent path: compact monochrome view with JSON-LD, no upsell carousel.
+    if (isAgent && cart) {
+        return <AgentCartView cart={cart} />;
     }
 
     return (
@@ -39,6 +52,12 @@ export function CartMain({
             <div className="flex min-h-0 flex-1 flex-col">
                 <div className="min-h-0 overflow-y-auto px-4 md:px-6" data-lenis-prevent>
                     <div className="space-y-4 py-4">
+                        {/*
+                         * AgentArrivalBanner — shown when buyer arrived via an AI agent's cart link.
+                         * Session-scoped, dismissible. Only shown on the human cart path (agents see AgentCartView).
+                         */}
+                        {isAgentCart && <AgentArrivalBanner />}
+
                         {(cart?.lines?.nodes ?? []).map(line => (
                             <CartLineItem key={line.id} line={line} />
                         ))}

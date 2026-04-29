@@ -1,7 +1,7 @@
 import {redirect, useLoaderData} from "react-router";
 import type {Route} from "./+types/collections.all-products";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateBreadcrumbListSchema} from "~/lib/seo";
 import {ShopAllHero} from "~/components/sections/ShopAllHero";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
 import {CollectionPagination} from "~/components/custom/CollectionPagination";
@@ -32,6 +32,10 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                     : "Browse our complete collection of products.",
             url: buildCanonicalUrl("/collections/all-products", siteUrl)
         }) ?? []),
+        {"script:ld+json": generateBreadcrumbListSchema([
+            {name: "Home", url: "/"},
+            {name: "All Products", url: "/collections/all-products"}
+        ], siteUrl) as any},
         ...getRequiredSocialMeta("website", brandName)
     ];
 };

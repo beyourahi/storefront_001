@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Link, useLoaderData, useNavigate, useRouteError, isRouteErrorResponse, useRouteLoaderData, useSearchParams} from "react-router";
+import {Link, useLoaderData, useNavigate, useRouteError, isRouteErrorResponse, useRouteLoaderData, useSearchParams, useFetcher} from "react-router";
 import type {Route} from "./+types/search";
 import {Analytics, Image, getSeoMeta} from "@shopify/hydrogen";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
@@ -26,9 +26,13 @@ const FALLBACK_POPULAR_SEARCHES = ["new arrivals", "best sellers", "gift ideas",
 import {cn} from "~/lib/utils";
 import type {RootLoader} from "~/root";
 import {Search, SearchX, AlertCircle, Package, FolderOpen, Newspaper, Clock, TrendingUp, Calendar} from "lucide-react";
+import {isAgentRequest} from "~/lib/agentic/agent-request";
+import {toUcpProductPage, toUcpProduct} from "~/lib/agentic/catalog-shapes";
+import {SearchEmptyState} from "~/components/search/SearchEmptyState";
+import {useAgentSurface} from "~/lib/agent-surface-context";
 
 export const meta: Route.MetaFunction = ({data}) => {
-    const term = data && "term" in data ? data.term : "";
+    const term = data && typeof data === "object" && "term" in data ? (data as {term: string}).term : "";
     const title = term ? `Search results for "${term}"` : "Search";
 
     return (
@@ -229,6 +233,7 @@ export async function loader({request, context}: Route.LoaderArgs) {
     const isPredictive = url.searchParams.has("predictive");
     const isFetcherRequest = url.searchParams.has("index");
     const fetchType = url.searchParams.get("fetchType");
+    const isAgent = isAgentRequest(request);
 
     if (isFetcherRequest && !isPredictive) {
         if (fetchType === "articles") {
@@ -238,13 +243,29 @@ export async function loader({request, context}: Route.LoaderArgs) {
     }
 
     if (isPredictive) {
-        return await predictiveSearch({request, context}).catch((error: Error) => {
+        const predictiveData = await predictiveSearch({request, context}).catch((error: Error) => {
             console.error(error);
             return {type: "predictive" as const, term: "", result: getEmptyPredictiveSearchResult()};
         });
+
+        // Agent path: return UCP-shaped products without styledText/UI noise
+        if (isAgent) {
+            const products = predictiveData.result?.items?.products ?? [];
+            const storeUrl = getStoreUrl(context.env);
+            const ucpProducts = products.map((p: any) => toUcpProduct(p, storeUrl));
+            return new Response(JSON.stringify({products: ucpProducts}), {
+                headers: {
+                    "Content-Type": "application/x-ucp+json",
+                    "Cache-Control": "no-store"
+                }
+            });
+        }
+
+        return predictiveData;
     }
 
-    return await regularSearch({request, context}).catch((error: Error) => {
+    // Regular search — run first so we can branch on agent before returning UI data
+    const searchData = await regularSearch({request, context}).catch((error: Error) => {
         console.error(error);
         return {
             type: "categorized" as const,
@@ -255,6 +276,28 @@ export async function loader({request, context}: Route.LoaderArgs) {
             articles: {nodes: [], pageInfo: {hasNextPage: false, endCursor: null}, totalCount: 0}
         } satisfies CategorizedSearchResult;
     });
+
+    // Agent path: return UCP-shaped product page, skipping UI rendering overhead
+    if (isAgent) {
+        const term = String(url.searchParams.get("q") ?? "").trim();
+        if (!term) {
+            return new Response(
+                JSON.stringify({products: [], pageInfo: {hasNextPage: false, endCursor: null}}),
+                {headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}}
+            );
+        }
+        const productsConnection = searchData.products;
+        const storeUrl = getStoreUrl(context.env);
+        const ucpPage = toUcpProductPage(productsConnection, storeUrl);
+        return new Response(JSON.stringify(ucpPage), {
+            headers: {
+                "Content-Type": "application/x-ucp+json",
+                "Cache-Control": "no-store"
+            }
+        });
+    }
+
+    return searchData;
 }
 
 export default function SearchPage() {
@@ -272,6 +315,7 @@ export default function SearchPage() {
     const [articlesLayoutMode, setArticlesLayoutMode] = React.useState<LayoutMode>("grid");
 
     const searchInputRef = React.useRef<HTMLInputElement | null>(null);
+    const agentSurface = useAgentSurface();
 
     React.useEffect(() => {
         const savedProductsGrid = localStorage.getItem("search-products-grid-columns");
@@ -314,6 +358,11 @@ export default function SearchPage() {
     const categorized = data as CategorizedSearchResult;
     const {term, error, products, collections, articles} = categorized;
     const totalResults = products.totalCount + collections.totalCount + articles.totalCount;
+
+    // Agent path: machine-readable list with JSON-LD, no tabs/carousels.
+    if (agentSurface.isAgent) {
+        return <AgentSearchResults term={term} products={products.nodes} />;
+    }
 
     const menuCollections = rootData?.menuCollections ?? [];
     const featuredCollections = menuCollections
@@ -697,25 +746,6 @@ function SearchPageInitialState({
                     Type above to search for products, collections, or articles
                 </p>
             </div>
-        </div>
-    );
-}
-
-function SearchEmptyState({term}: {term: string}) {
-    return (
-        <div className="px-4 py-10 text-center sm:py-16">
-            <div className="bg-[var(--brand-primary-subtle)] mb-4 inline-flex rounded-full p-4 shadow-sm backdrop-blur-sm">
-                <SearchX className="text-primary size-6" />
-            </div>
-            <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground sm:mb-3 sm:text-3xl">
-                No results found
-            </h2>
-            <p className="mx-auto max-w-sm text-sm leading-relaxed text-muted-foreground sm:max-w-md sm:text-base">
-                We couldn&apos;t find anything for &ldquo;{term}&rdquo;.
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground/80">
-                Try a different search term or browse our collections.
-            </p>
         </div>
     );
 }
@@ -1849,6 +1879,15 @@ function getEmptyPredictiveSearchResult() {
     };
 }
 
+/**
+ * Derives the store's public origin URL from environment variables.
+ * Used to build absolute product URLs in UCP responses for agent consumers.
+ */
+function getStoreUrl(env: { PUBLIC_STORE_DOMAIN?: string }): string {
+    const domain = env.PUBLIC_STORE_DOMAIN;
+    return domain ? `https://${domain}` : "";
+}
+
 async function predictiveSearch({
     request,
     context
@@ -1912,4 +1951,107 @@ async function predictiveSearch({
             result: getEmptyPredictiveSearchResult()
         } as PredictiveSearchResult;
     }
+}
+
+function AgentSearchResults({term, products}: {term: string; products: SearchProduct[]}) {
+    const scriptRef = React.useRef<HTMLScriptElement | null>(null);
+
+    React.useEffect(() => {
+        const jsonLd = {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": term ? `Search results for "${term}"` : "Search Results",
+            "numberOfItems": products.length,
+            "itemListElement": products.map((p, i) => ({
+                "@type": "ListItem",
+                "position": i + 1,
+                "item": {
+                    "@type": "Product",
+                    "name": p.title,
+                    "url": `/products/${p.handle}`,
+                    ...(p.featuredImage?.url ? {image: p.featuredImage.url} : {}),
+                    "offers": {
+                        "@type": "Offer",
+                        "price": p.priceRange.minVariantPrice.amount,
+                        "priceCurrency": p.priceRange.minVariantPrice.currencyCode,
+                        "availability": p.availableForSale
+                            ? "https://schema.org/InStock"
+                            : "https://schema.org/OutOfStock"
+                    }
+                }
+            }))
+        };
+
+        const existing = document.getElementById("agent-search-ld");
+        if (existing) existing.remove();
+
+        const el = document.createElement("script");
+        el.id = "agent-search-ld";
+        el.type = "application/ld+json";
+        el.textContent = JSON.stringify(jsonLd);
+        document.head.appendChild(el);
+        scriptRef.current = el;
+
+        return () => {
+            scriptRef.current?.remove();
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [products.length, term]);
+
+    return (
+        <div className="min-h-screen bg-background font-mono text-foreground">
+            <div className="mx-auto max-w-2xl px-4 py-10">
+                {/* Header */}
+                <div className="mb-8 flex items-center gap-2 border-b border-border pb-4">
+                    <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                        Agent Search Results
+                    </span>
+                    {term && (
+                        <span className="ml-auto text-[11px] text-muted-foreground">
+                            &ldquo;{term}&rdquo; &mdash; {products.length} products
+                        </span>
+                    )}
+                </div>
+
+                {products.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">No products found.</p>
+                ) : (
+                    <div className="border border-border">
+                        <div className="grid grid-cols-12 border-b border-border bg-muted/30 px-3 py-1.5">
+                            <span className="col-span-7 text-[10px] uppercase tracking-widest text-muted-foreground">Product</span>
+                            <span className="col-span-3 text-right text-[10px] uppercase tracking-widest text-muted-foreground">Price</span>
+                            <span className="col-span-2 text-right text-[10px] uppercase tracking-widest text-muted-foreground">Stock</span>
+                        </div>
+                        {products.map(p => (
+                            <div
+                                key={p.id}
+                                className="grid grid-cols-12 items-center border-b border-border/50 px-3 py-2.5 last:border-b-0"
+                            >
+                                <div className="col-span-7 min-w-0 pr-3">
+                                    <div className="truncate text-xs font-medium">{p.title}</div>
+                                    <div className="truncate text-[10px] text-muted-foreground">{p.handle}</div>
+                                </div>
+                                <div className="col-span-3 text-right text-xs tabular-nums">
+                                    {p.priceRange.minVariantPrice.amount !== p.priceRange.maxVariantPrice.amount
+                                        ? `${p.priceRange.minVariantPrice.amount}–${p.priceRange.maxVariantPrice.amount}`
+                                        : p.priceRange.minVariantPrice.amount}{" "}
+                                    <span className="text-[9px] text-muted-foreground">
+                                        {p.priceRange.minVariantPrice.currencyCode}
+                                    </span>
+                                </div>
+                                <div className="col-span-2 text-right text-[10px]">
+                                    {p.availableForSale ? (
+                                        <span className="text-foreground">yes</span>
+                                    ) : (
+                                        <span className="text-muted-foreground/50">no</span>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 }

@@ -1,7 +1,7 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/blogs.$blogHandle._index";
 import {getPaginationVariables, getSeoMeta, Pagination} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
+import {buildCanonicalUrl, getSiteUrlFromMatches, generateBreadcrumbListSchema} from "~/lib/seo";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {ArticleCard, type ArticleCardData} from "~/components/blog/ArticleCard";
 import {ArticleHero} from "~/components/blog/ArticleHero";
@@ -28,8 +28,8 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const title = blog.seo?.title || `${blog.title} | Blog`;
     const description = blog.seo?.description || `Explore articles from ${blog.title}.`;
 
-    return (
-        getSeoMeta({
+    return [
+        ...(getSeoMeta({
             title,
             description,
             url: buildCanonicalUrl(`/blogs/${blog.handle}`, siteUrl),
@@ -42,8 +42,13 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                       type: "image" as const
                   }
                 : undefined
-        }) ?? []
-    );
+        }) ?? []),
+        {"script:ld+json": generateBreadcrumbListSchema([
+            {name: "Home", url: "/"},
+            {name: "Blog", url: "/blogs"},
+            {name: blog.title, url: `/blogs/${blog.handle}`}
+        ], siteUrl) as any}
+    ];
 };
 
 export async function loader({context, request, params}: Route.LoaderArgs) {

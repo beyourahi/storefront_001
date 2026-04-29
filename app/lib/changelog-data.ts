@@ -37,6 +37,42 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-29",
+        category: "New Feature",
+        headline: "Gift Finder quiz helps you pick the perfect present",
+        summary: "Visit /gift-finder to answer a few quick questions about who you're shopping for, the occasion, their interests, and your budget. The quiz maps your answers to a tailored search and redirects you to matching products — no more scrolling through the entire catalogue looking for inspiration."
+    },
+    {
+        date: "2026-04-29",
+        category: "New Feature",
+        headline: "Style Quiz gives you a personalised product shortlist",
+        summary: "Visit /style-quiz to answer three questions about your preferred fit, aesthetic, and colour palette. The quiz builds a style profile and sends you directly to a filtered search for products that match. Takes under a minute."
+    },
+    {
+        date: "2026-04-29",
+        category: "New Feature",
+        headline: "All store policies now listed on a single page",
+        summary: "Shipping, return, refund, privacy, and all other store policies are now collected at /policies. Each entry links to the full policy text, so you never have to hunt through the footer to find the right one."
+    },
+    {
+        date: "2026-04-29",
+        category: "Improvement",
+        headline: "Policy pages now show a Quick Answers panel",
+        summary: "Shipping, returns, and other policy pages can now display a collapsible Q&A section at the top, surfacing the most common questions with direct answers before the full policy text. Each entry expands on tap — no need to read the whole document to find what you need."
+    },
+    {
+        date: "2026-04-29",
+        category: "New Feature",
+        headline: "Product pages now show similar styles you might like",
+        summary: "A new 'Similar styles' section appears below the main product details, suggesting items from the same product category. Recommendations load in the background after the page is ready so the main content always appears first."
+    },
+    {
+        date: "2026-04-29",
+        category: "Improvement",
+        headline: "Search now suggests alternatives when nothing is found",
+        summary: "When a search returns no results, the page now offers up to three alternative search terms drawn from the store's own search suggestions. Tap any suggestion to run that search instantly — no need to retype."
+    },
+    {
+        date: "2026-04-29",
         category: "Maintenance",
         headline: "Size guide removed from product pages",
         summary: "The size guide button and dialog have been removed from product pages. Sizing information is still available through product descriptions and any size-related content set up by the store."

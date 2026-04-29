@@ -7,6 +7,7 @@ import type {RootLoader} from "~/root";
 import {appendAiAttribution} from "~/lib/ai-attribution";
 import {CART_FETCHER_KEY, useCartMutationPending} from "~/lib/cart-utils";
 import {FileText, Check, Cloud, CreditCard, Trash2, AlertTriangle} from "lucide-react";
+import {CheckoutKitEmbed} from "~/components/checkout/CheckoutKitEmbed";
 import {toast} from "sonner";
 import {Button} from "~/components/ui/button";
 import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "~/components/ui/dialog";
@@ -275,11 +276,13 @@ function CartCheckoutActions({
         : checkoutUrl;
 
     return (
-        <a
-            href={taggedCheckoutUrl}
-            target="_self"
-            aria-disabled={isMutating || undefined}
-            onClick={isMutating ? e => e.preventDefault() : undefined}
+        // CheckoutKitEmbed upgrades the checkout link to a Shopify popup overlay
+        // while preserving the href fallback for SEO and no-JS environments.
+        // `taggedCheckoutUrl` already carries AI attribution UTM params when applicable.
+        <CheckoutKitEmbed
+            checkoutUrl={taggedCheckoutUrl}
+            disabled={isMutating}
+            mode="popup"
             className={cn(
                 "cta-primary-emphasis inline-flex items-center justify-center gap-2 font-bold",
                 "bg-primary text-primary-foreground hover:bg-primary/90 rounded-md",
@@ -291,7 +294,7 @@ function CartCheckoutActions({
             <CreditCard className="h-4 w-4" />
             Checkout{totalAmount ? " - " : ""}
             {totalAmount && (isMutating ? <PriceLoadingIndicator className="ml-0.5" /> : formatShopifyMoney(totalAmount))}
-        </a>
+        </CheckoutKitEmbed>
     );
 }
 

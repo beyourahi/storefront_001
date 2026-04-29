@@ -4,7 +4,7 @@ import {Image, getSeoMeta} from "@shopify/hydrogen";
 import {ArrowLeft} from "lucide-react";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateReadingTime, formatArticleDate, filterRelatedArticles} from "~/lib/blog-utils";
-import {generateBlogPostingSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {generateBlogPostingSchema, generateBreadcrumbListSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {TagList} from "~/components/blog/TagBadge";
 import {ShareButtons} from "~/components/blog/ShareButtons";
@@ -49,6 +49,12 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                 : undefined,
             jsonLd: generateBlogPostingSchema(article, blogHandle || "news", shopName, siteUrl) as any
         }) ?? []),
+        {"script:ld+json": generateBreadcrumbListSchema([
+            {name: "Home", url: "/"},
+            {name: "Blog", url: "/blogs"},
+            {name: blogHandle || "news", url: `/blogs/${blogHandle || "news"}`},
+            {name: article.title, url: `/blogs/${blogHandle || "news"}/${article.handle}`}
+        ], siteUrl) as any},
         ...getRequiredSocialMeta("article", brandName, article.image?.url ?? undefined)
     ];
 };
