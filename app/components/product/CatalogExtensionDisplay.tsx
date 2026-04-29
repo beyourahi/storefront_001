@@ -1,4 +1,5 @@
 import {Gift, Package, RefreshCw, Layers} from "lucide-react";
+import {Link} from "react-router";
 import {Badge} from "~/components/ui/badge";
 import {cn} from "~/lib/utils";
 
@@ -31,7 +32,7 @@ export const CatalogExtensionDisplay = ({
         isGiftCard ||
         requiresShipping === false ||
         (sellingPlans && sellingPlans.length > 0) ||
-        (collections && collections.length > 1);
+        (collections && collections.length > 0);
 
     if (!hasContent) return null;
 
@@ -67,15 +68,23 @@ export const CatalogExtensionDisplay = ({
                     {sellingPlans.length === 1 ? sellingPlans[0].name : `${sellingPlans.length} Plans`}
                 </Badge>
             )}
-            {collections && collections.length > 1 && (
-                <Badge
-                    variant="outline"
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium"
-                    aria-label={`Part of collections: ${collections.map(c => c.title).join(", ")}`}
+            {collections && collections.length > 0 && (
+                <div
+                    className="flex flex-wrap items-center gap-1.5 w-full"
+                    aria-label={`Also in: ${collections.map(c => c.title).join(", ")}`}
                 >
-                    <Layers className="h-3 w-3" aria-hidden="true" />
-                    {collections.length} Collections
-                </Badge>
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                        <Layers className="h-3 w-3" aria-hidden="true" />
+                        Also in
+                    </span>
+                    {collections.map(c => (
+                        <Badge key={c.handle} asChild variant="outline" className="text-xs font-normal cursor-pointer">
+                            <Link to={`/collections/${c.handle}`} prefetch="intent" viewTransition>
+                                {c.title}
+                            </Link>
+                        </Badge>
+                    ))}
+                </div>
             )}
         </div>
     );
