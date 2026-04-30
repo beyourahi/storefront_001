@@ -415,3 +415,7 @@ lsof -i :3000-4999 | grep LISTEN   # Scan active ports
 - Take at multiple viewport sizes for responsive work (mobile + desktop)
 - **MANDATORY CLEANUP**: After every successful task implementation, if the `tmp_screenshots/` directory was created during the work, it must be deleted before the task is considered complete.
 - **MANDATORY CLEANUP**: After every successful task implementation, if the `.playwright-mcp/` directory exists in the project root, it must be deleted before the task is considered complete.
+
+### Commit Message Rules
+
+- **Never include AI agent co-authors** — commit messages must not reference any AI agent (Claude, ChatGPT, Gemini, GitHub Copilot, or similar) in `Co-Authored-By` trailers or any other form.
