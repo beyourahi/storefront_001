@@ -216,7 +216,7 @@ const COLLECTIONS_PAGE_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    collections(first: 50) {
+    collections(first: 250) {
       nodes {
         id
         handle
@@ -240,7 +240,7 @@ const COLLECTIONS_PAGE_QUERY = `#graphql
         }
       }
     }
-    allProducts: products(first: 50, query: "available_for_sale:true") {
+    allProducts: products(first: 250, query: "available_for_sale:true") {
       nodes {
         id
         availableForSale
