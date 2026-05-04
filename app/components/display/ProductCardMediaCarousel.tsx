@@ -351,7 +351,7 @@ export function ProductCardMediaCarousel({
                     loop: true,
                     skipSnaps: false,
                     containScroll: "trimSnaps",
-                    dragFree: true
+                    dragFree: false
                 }}
                 className="h-full w-full"
             >
