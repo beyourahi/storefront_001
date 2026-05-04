@@ -36,6 +36,20 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-05-05",
+        category: "Performance",
+        headline: "Product and collection listings load more completely on first visit",
+        summary:
+            "The store now fetches up to 250 products and collections in each catalog query — up from a lower limit. Pages with large catalogs show more items without requiring extra pagination on first load."
+    },
+    {
+        date: "2026-05-05",
+        category: "Fix",
+        headline: "Product card image gallery now snaps cleanly between photos",
+        summary:
+            "Swiping through images on a product card now always snaps precisely to the next or previous photo instead of stopping between them. Browsing product images feels more deliberate and predictable on both mobile and desktop."
+    },
+    {
         date: "2026-04-29",
         category: "New Feature",
         headline: "All store policies now listed on a single page",
@@ -938,6 +952,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         category: "Fix"
     },
     {
+        date: "2026-03-29",
+        category: "Improvement",
+        headline: "Viewport height now adjusts correctly on mobile browsers",
+        summary:
+            "Full-height sections like the homepage hero and product galleries now use the browser's dynamic viewport height. On mobile devices where the address bar shrinks as you scroll, layouts no longer overflow or show empty gaps at the bottom of the screen."
+    },
+    {
         date: "2026-03-26",
         headline: "Buttons lock while a request is processing to prevent accidental double-taps",
         summary:
@@ -946,10 +967,24 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     },
     {
         date: "2026-03-23",
+        category: "Improvement",
+        headline: "Wishlist, social sharing, and account features fully rebuilt",
+        summary:
+            "The wishlist, social share dialog, and customer account sections have been rearchitected for greater reliability and speed. Adding items to your wishlist, sharing a list, and managing your account are all faster and more consistent across devices."
+    },
+    {
+        date: "2026-03-23",
         headline: "Navigation breadcrumbs added to the sale page",
         summary:
             "The sale page now shows a breadcrumb trail at the top so you always know where you are in the store and can navigate back in one tap. Previously the sale page had no breadcrumb navigation.",
         category: "Improvement"
+    },
+    {
+        date: "2026-03-12",
+        category: "Performance",
+        headline: "Hover and tap animations made more efficient across the site",
+        summary:
+            "Hover transitions on product cards, navigation links, buttons, and other interactive elements now use a single optimised animation class. The effect is smoother, more consistent, and has less impact on page performance during busy interactions."
     },
     {
         date: "2026-03-11",
@@ -980,6 +1015,27 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         category: "Improvement"
     },
     {
+        date: "2026-03-08",
+        category: "Improvement",
+        headline: "Broad UI and interaction polish across the entire storefront",
+        summary:
+            "A wide-ranging set of refinements was applied to product cards, the navigation menu, the cart drawer, and the checkout flow. Typography, spacing, and interactive feedback are now more consistent and polished throughout the store."
+    },
+    {
+        date: "2026-03-06",
+        category: "New Feature",
+        headline: "Storefront design and features fully built out",
+        summary:
+            "A comprehensive first-version design has been applied across the entire storefront — refreshed typography, a cohesive color system, product cards, navigation, the cart drawer, account area, and checkout flow. This is the initial feature-complete release of the template."
+    },
+    {
+        date: "2026-03-06",
+        category: "Improvement",
+        headline: "Promotional banner redesigned for the new storefront layout",
+        summary:
+            "The promotional section displayed above the homepage hero has been updated to match the new storefront design system. Layout, typography, and call-to-action placement have been refined for stronger visual impact across all screen sizes."
+    },
+    {
         date: "2026-03-04",
         headline: "\"Buy Now\" and \"Proceed to Checkout\" now go to the correct checkout page",
         summary:
@@ -992,5 +1048,12 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         summary:
             "The brand logo is now displayed in the top navigation bar, pulled directly from the store's settings. Stores without an uploaded logo fall back to displaying the store name as text.",
         category: "New Feature"
+    },
+    {
+        date: "2026-03-03",
+        category: "New Feature",
+        headline: "Storefront launched",
+        summary:
+            "The storefront template is live. Built on Shopify Hydrogen with React Router 7, it runs on Shopify Oxygen and Cloudflare Workers. Core features include product browsing, cart management, customer accounts, wishlist, blog, full PWA support, and smooth scroll animations."
     }
 ];
