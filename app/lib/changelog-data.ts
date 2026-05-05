@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-05-06",
+        category: "Improvement",
+        headline: "Out-of-stock products now show muted media with no hover effects",
+        summary:
+            "Product images and videos for out-of-stock items are now displayed in grayscale with reduced opacity, making it immediately clear that the item isn't available. All interactive hover effects — like image zoom and carousel arrows — are also disabled for out-of-stock products, keeping the experience focused on items you can actually buy."
+    },
+    {
         date: "2026-05-05",
         category: "New Feature",
         headline: "Low-stock indicator badge added to product cards",

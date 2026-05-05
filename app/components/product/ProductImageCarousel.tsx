@@ -254,7 +254,7 @@ export const ProductImageCarousel = ({
                 {item.image && (
                     <Image
                         data={{url: item.image.url, altText: item.alt || item.image.altText || `${productTitle} image ${index + 1}`}}
-                        className={cn("sleek h-full w-full object-cover", availableForSale && "hover:scale-105")}
+                        className={cn("sleek h-full w-full object-cover", availableForSale ? "hover:scale-105" : "grayscale opacity-60")}
                         sizes="(min-width: 1024px) 40vw, 100vw"
                     />
                 )}
@@ -276,7 +276,7 @@ export const ProductImageCarousel = ({
                         <video
                             src={source.url}
                             poster={item.previewImage?.url}
-                            className="w-full h-auto block"
+                            className={cn("w-full h-auto block", !availableForSale && "grayscale opacity-60")}
                             autoPlay
                             loop
                             muted
@@ -328,7 +328,7 @@ export const ProductImageCarousel = ({
                     <Image
                         data={item.previewImage}
                         alt={item.alt || `Video thumbnail ${index + 1}`}
-                        className={cn("sleek h-full w-full object-cover", availableForSale && "hover:scale-105")}
+                        className={cn("sleek h-full w-full object-cover", availableForSale ? "hover:scale-105" : "grayscale opacity-60")}
                         loading="lazy"
                         sizes="(min-width: 1024px) 50vw, 100vw"
                     />
@@ -336,7 +336,7 @@ export const ProductImageCarousel = ({
                     <div className="h-full w-full bg-muted" />
                 )}
                 {/* Centred play circle */}
-                <div className="absolute inset-0 flex items-center justify-center bg-dark/20 group-hover:bg-dark/35 sleek pointer-events-none">
+                <div className={cn("absolute inset-0 flex items-center justify-center bg-dark/20 sleek pointer-events-none", availableForSale && "group-hover:bg-dark/35")}>
                     <div className="size-16 rounded-full bg-dark/70 flex items-center justify-center">
                         <svg width="20" height="24" viewBox="0 0 20 24" aria-hidden="true" className="text-light ml-1.5">
                             <path d="M0 0L20 12L0 24V0Z" fill="currentColor" />
@@ -369,7 +369,7 @@ export const ProductImageCarousel = ({
                     <Image
                         data={item.previewImage}
                         alt={item.alt || `3D model ${index + 1}`}
-                        className={cn("sleek h-full w-full object-cover", availableForSale && "hover:scale-105")}
+                        className={cn("sleek h-full w-full object-cover", availableForSale ? "hover:scale-105" : "grayscale opacity-60")}
                         loading="lazy"
                         sizes="(min-width: 1024px) 50vw, 100vw"
                     />
@@ -441,7 +441,7 @@ export const ProductImageCarousel = ({
                                 alt=""
                                 width={128}
                                 height={160}
-                                className={cn("sleek h-full w-full", availableForSale && "hover:scale-110", "object-cover")}
+                                className={cn("sleek h-full w-full object-cover", availableForSale ? "hover:scale-110" : "grayscale opacity-60")}
                                 loading="lazy"
                                 sizes="128px"
                             />

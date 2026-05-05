@@ -121,17 +121,16 @@ function CardVideo({
     const posterUrl = media.previewImage?.url;
 
     return (
-        <div className="relative h-full w-full">
+        // Grayscale + opacity wrapper for OOS — placed here so the isReady opacity
+        // transition on the <video> element isn't overridden by a conflicting utility.
+        <div className={cn("relative h-full w-full", isOutOfStock && "grayscale opacity-60")}>
             {/* Poster layer: always rendered so the slot has a stable image
                 even before the video can paint its first frame. */}
             {posterUrl && !isReady && (
                 <Image
                     src={posterUrl}
                     alt={media.altText ?? productTitle}
-                    className={cn(
-                        "absolute inset-0 h-full w-full rounded-lg object-cover",
-                        isOutOfStock && "opacity-60"
-                    )}
+                    className="absolute inset-0 h-full w-full rounded-lg object-cover"
                     loading="lazy"
                     decoding="async"
                 />
@@ -141,7 +140,7 @@ function CardVideo({
                     ref={videoRef}
                     className={cn(
                         "sleek product-image h-full w-full rounded-lg object-cover",
-                        isOutOfStock ? "opacity-60" : canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]",
+                        !isOutOfStock && (canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]"),
                         isReady ? "opacity-100" : "opacity-0"
                     )}
                     muted
@@ -195,7 +194,7 @@ function CardImage({
             data={{url: media.url, altText: media.altText || productTitle}}
             className={cn(
                 "sleek product-image h-full w-full rounded-lg object-cover",
-                isOutOfStock ? "opacity-60" : canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]"
+                isOutOfStock ? "grayscale opacity-60" : canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]"
             )}
             sizes="(min-width: 1280px) 320px, (min-width: 1024px) 350px, (min-width: 768px) 280px, 200px"
             width={400}
@@ -404,7 +403,7 @@ export function ProductCardMediaCarousel({
                 }}
                 className={cn(
                     "absolute left-1.5 top-1/2 z-[15] hidden size-7 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground shadow-sm backdrop-blur-md transition-opacity duration-200 hover:bg-background md:flex",
-                    canHover ? "opacity-0 group-hover:opacity-100" : "opacity-90"
+                    isOutOfStock ? "opacity-0 pointer-events-none" : canHover ? "opacity-0 group-hover:opacity-100" : "opacity-90"
                 )}
             >
                 <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
@@ -419,7 +418,7 @@ export function ProductCardMediaCarousel({
                 }}
                 className={cn(
                     "absolute right-1.5 top-1/2 z-[15] hidden size-7 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground shadow-sm backdrop-blur-md transition-opacity duration-200 hover:bg-background md:flex",
-                    canHover ? "opacity-0 group-hover:opacity-100" : "opacity-90"
+                    isOutOfStock ? "opacity-0 pointer-events-none" : canHover ? "opacity-0 group-hover:opacity-100" : "opacity-90"
                 )}
             >
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
