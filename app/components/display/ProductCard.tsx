@@ -1,6 +1,7 @@
 import {useMemo} from "react";
 import {Link} from "react-router";
-import {Plus} from "lucide-react";
+import {Plus, Ban} from "lucide-react";
+import {Badge} from "~/components/ui/badge";
 import {ProductCardTitle} from "~/components/common/ProductCardTitle";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
@@ -88,9 +89,14 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                 {/* OOS > preorder > low stock — exclusive right-side badge slot */}
                 {isOutOfStock ? (
                     <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
-                        <div className="bg-destructive text-destructive-foreground border-transparent rounded-[var(--radius-xl)] border px-0.5 pr-1 text-xs">
-                            {OUT_OF_STOCK_LABEL}
-                        </div>
+                        <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius-xl)] px-0.5 pr-1 py-0 text-xs">
+                            <span className="text-destructive-foreground flex items-center gap-1.5 font-medium">
+                                <span className="bg-destructive/80 flex items-center justify-center rounded-[var(--radius-xl)] p-0.5 text-sm">
+                                    <Ban size={12} className="pointer-events-none" aria-hidden="true" />
+                                </span>
+                                <span className="font-medium uppercase">{OUT_OF_STOCK_LABEL}</span>
+                            </span>
+                        </Badge>
                     </div>
                 ) : isPreorder ? (
                     <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">

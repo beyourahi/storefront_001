@@ -332,7 +332,7 @@ const Product = () => {
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-12">
                             <ProductImageSection productImages={productImages} product={product} onSale={onSale} availableForSale={selectedVariant?.availableForSale ?? true} media={(product as any).media?.nodes ?? []} />
 
-                            <ProductMobileTitlePrice product={product} discountPercentage={discountPercentage} productId={product.id} />
+                            <ProductMobileTitlePrice product={product} discountPercentage={discountPercentage} productId={product.id} availableForSale={selectedVariant?.availableForSale ?? product.availableForSale} />
 
                             <div className="lg:hidden">
                                 <ProductPurchaseSection
@@ -347,7 +347,7 @@ const Product = () => {
                             </div>
 
                             <div className="hidden lg:col-span-4 lg:block">
-                                <ProductInfoSection product={product} discountPercentage={discountPercentage} productId={product.id} />
+                                <ProductInfoSection product={product} discountPercentage={discountPercentage} productId={product.id} availableForSale={selectedVariant?.availableForSale ?? product.availableForSale} />
                                 <CatalogExtensionDisplay
                                     isGiftCard={product.isGiftCard}
                                     requiresShipping={selectedVariant?.requiresShipping}
@@ -358,7 +358,7 @@ const Product = () => {
                             </div>
 
                             <div className="lg:hidden">
-                                <ProductInfoSection product={product} discountPercentage={discountPercentage} productId={product.id} />
+                                <ProductInfoSection product={product} discountPercentage={discountPercentage} productId={product.id} availableForSale={selectedVariant?.availableForSale ?? product.availableForSale} />
                                 <CatalogExtensionDisplay
                                     isGiftCard={product.isGiftCard}
                                     requiresShipping={selectedVariant?.requiresShipping}

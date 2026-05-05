@@ -1,3 +1,4 @@
+import {Ban} from "lucide-react";
 import {ProductPageTitle} from "~/components/common/ProductPageTitle";
 import {ProductDescriptionAccordion} from "~/components/product/ProductDescriptionAccordion";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
@@ -7,6 +8,7 @@ import {WishlistButton} from "~/components/WishlistButton";
 import {Badge} from "~/components/ui/badge";
 import {Skeleton} from "~/components/ui/skeleton";
 import {getSpecialTags} from "~/lib/product-tags";
+import {OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
 
 type ProductInfoSectionProps = {
     isLoading?: boolean;
@@ -19,10 +21,12 @@ type ProductInfoSectionProps = {
     };
     discountPercentage?: number;
     productId?: string;
+    availableForSale?: boolean;
 };
 
-export const ProductInfoSection = ({isLoading = false, product, discountPercentage, productId}: ProductInfoSectionProps) => {
+export const ProductInfoSection = ({isLoading = false, product, discountPercentage, productId, availableForSale = true}: ProductInfoSectionProps) => {
     const {badgeTypes} = getSpecialTags(product.tags);
+    const isOutOfStock = !availableForSale;
 
     return (
         <div className="space-y-2 lg:col-span-4 lg:space-y-4">
@@ -41,6 +45,16 @@ export const ProductInfoSection = ({isLoading = false, product, discountPercenta
                         )}
                         <ProductPageDiscountIndicator discountPercentage={discountPercentage} />
                         <ProductBadgeStack types={badgeTypes} />
+                        {isOutOfStock && (
+                            <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius-xl)] px-0.5 pr-1.5 py-0 text-xs">
+                                <span className="text-destructive-foreground flex items-center gap-1.5 font-medium">
+                                    <span className="bg-destructive/80 flex items-center justify-center rounded-[var(--radius-xl)] p-0.5">
+                                        <Ban size={12} className="pointer-events-none" aria-hidden="true" />
+                                    </span>
+                                    <span className="font-medium uppercase">{OUT_OF_STOCK_LABEL}</span>
+                                </span>
+                            </Badge>
+                        )}
                     </>
                 )}
             </div>
