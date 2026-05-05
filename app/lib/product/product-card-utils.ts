@@ -400,17 +400,16 @@ export const isProductCardData = (product: ShopifyProduct | ProductCardData): pr
 
 export const LOW_STOCK_THRESHOLD = 10 as const;
 
-/** Returns true when the product's tracked, available inventory totals 10 or fewer units.
- * Handles both `variants.nodes` and `variants.edges` access patterns. */
+/** Returns true when any available, inventory-tracked variant has 1–10 units remaining.
+ * Mirrors the PDP per-variant check. Handles both `variants.nodes` and `variants.edges` access patterns. */
 export const isProductLowStock = (product: ShopifyProduct | ProductCardData): boolean => {
     if (isProductCardData(product)) return false;
     const p = product as any;
     const variantNodes: Array<{availableForSale: boolean; quantityAvailable: number | null}> =
         p.variants?.nodes ?? p.variants?.edges?.map((e: any) => e.node) ?? [];
-    const trackedAvailable = variantNodes.filter(v => v.availableForSale && v.quantityAvailable != null);
-    if (trackedAvailable.length === 0) return false;
-    const total = trackedAvailable.reduce((sum, v) => sum + v.quantityAvailable!, 0);
-    return total > 0 && total <= LOW_STOCK_THRESHOLD;
+    return variantNodes.some(
+        v => v.availableForSale && v.quantityAvailable != null && v.quantityAvailable > 0 && v.quantityAvailable <= LOW_STOCK_THRESHOLD
+    );
 };
 
 /**

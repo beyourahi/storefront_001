@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-05",
+        category: "Fix",
+        headline: "Low-stock badge now reliably appears on product cards",
+        summary:
+            "The 'Low Stock' indicator on product cards was not showing even for items with limited inventory. It now correctly appears whenever any purchasable size or option is running low — matching the warning shown on the product page."
+    },
+    {
+        date: "2026-05-05",
         category: "New Feature",
         headline: "Low-stock badge on product cards",
         summary:
