@@ -128,7 +128,7 @@ export const ProductSection = ({
 
                 {collection?.handle && (
                     <div className="flex justify-center">
-                        <Button size="lg" asChild className="w-[80vw] sm:w-auto">
+                        <Button size="lg" asChild className="w-full sm:w-auto">
                             <Link
                                 to={`/collections/${collection.handle}`}
                                 className="flex items-center gap-2 px-10 leading-none"

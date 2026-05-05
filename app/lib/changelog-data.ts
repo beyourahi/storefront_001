@@ -38,6 +38,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-05",
         category: "Improvement",
+        headline: "Featured product section CTAs are full width on mobile",
+        summary:
+            "The 'View All' buttons in the featured product sections on the homepage now stretch to full width on mobile devices, making them easier to tap. On tablet and desktop they retain their original compact size."
+    },
+    {
+        date: "2026-05-05",
+        category: "Improvement",
         headline: "Variant buttons are larger and easier to tap on all screens",
         summary:
             "Size and color option buttons on product pages now have a wider minimum size, making them easier to read and select — especially on smaller screens where options like 'S' or 'XS' could feel cramped."
