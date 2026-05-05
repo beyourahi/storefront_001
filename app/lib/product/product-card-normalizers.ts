@@ -1,3 +1,12 @@
+/**
+ * Entry-point normalizers that convert raw Shopify GraphQL nodes (or partial objects from
+ * order history, wish-list, sale, and cart-suggestion responses) into the canonical
+ * `ShopifyProduct` shape used by product card components.
+ *
+ * Each `from*` export is scoped to a specific data-source context so differences in field
+ * availability can be handled without polluting the shared normalization pipeline.
+ */
+
 import type {
     ShopifyImage,
     ShopifyMediaNode,
@@ -207,10 +216,15 @@ const normalizeProduct = (product: RawProduct): ShopifyProduct => {
     };
 };
 
+/** Normalize a standard Storefront API product node (collection, search, etc.). */
 export const fromStorefrontNode = (product: object): ShopifyProduct => {
     return normalizeProduct(product as RawProduct);
 };
 
+/**
+ * Normalize a sale-route product node. Promotes `featuredImage` to the image
+ * list when `images` is empty — sale GraphQL fragments often omit the images connection.
+ */
 export const fromSaleProduct = (product: object): ShopifyProduct => {
     const raw = product as RawProduct;
     const base = normalizeProduct(raw);
@@ -223,6 +237,7 @@ export const fromSaleProduct = (product: object): ShopifyProduct => {
     return base;
 };
 
+/** Normalize a wishlist product node, keeping only variants that have a price. */
 export const fromWishlistProduct = (product: object): ShopifyProduct => {
     const base = normalizeProduct(product as RawProduct);
     const variantsWithPrice = base.variants.edges.filter(edge => edge.node.price);
@@ -230,6 +245,11 @@ export const fromWishlistProduct = (product: object): ShopifyProduct => {
     return base;
 };
 
+/**
+ * Normalize an order-history line-item into a minimal `ShopifyProduct`.
+ * Order-line data is sparse: no description, tags, or vendor. Price comes from
+ * the line-item `price` field rather than a `priceRange`.
+ */
 export const fromOrderHistoryProduct = (product: object): ShopifyProduct => {
     const raw = product as RawProduct;
     const money = normalizeMoney(raw?.price as Maybe<Partial<ShopifyMoney>>, DEFAULT_MONEY);
@@ -275,6 +295,10 @@ export const fromOrderHistoryProduct = (product: object): ShopifyProduct => {
     };
 };
 
+/**
+ * Normalize a cart-suggestion product. Same as `fromSaleProduct` — promotes
+ * `featuredImage` when the suggestion fragment omits the images connection.
+ */
 export const fromCartSuggestionProduct = (product: object): ShopifyProduct => {
     const raw = product as RawProduct;
     const base = normalizeProduct(raw);
@@ -287,6 +311,7 @@ export const fromCartSuggestionProduct = (product: object): ShopifyProduct => {
     return base;
 };
 
+/** Normalize a recently-viewed product node (same as a standard storefront node). */
 export const fromRecentlyViewedAllProducts = (product: object): ShopifyProduct => {
     return normalizeProduct(product as RawProduct);
 };

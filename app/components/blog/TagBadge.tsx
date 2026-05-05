@@ -12,6 +12,11 @@ interface TagBadgeProps {
     blogHandle?: string;
 }
 
+/**
+ * Blog tag badge — renders as a `<Link>` when `href` or `blogHandle` is provided,
+ * otherwise as a static `<Badge>`. When `blogHandle` is set, the link points to the
+ * blog filtered by that tag using a slugified query param.
+ */
 export const TagBadge = ({tag, href, variant = "outline", size = "default", className, blogHandle}: TagBadgeProps) => {
     const linkHref = href ?? (blogHandle ? `/blogs/${blogHandle}?tag=${slugify(tag)}` : undefined);
 

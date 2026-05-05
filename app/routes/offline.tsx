@@ -30,6 +30,12 @@ const FALLBACK_ERROR_CONTENT = {
 };
 import type {GeneratedTheme} from "types";
 
+/**
+ * Applies the last-known brand theme while offline.
+ * Reads the `GeneratedTheme` from localStorage (written by the online flow) and
+ * injects the CSS variables + Google Fonts link into the document head so the
+ * offline page renders with the correct brand colors and typography.
+ */
 const useOfflineTheme = () => {
     const [theme, setTheme] = useState<GeneratedTheme | null>(null);
 

@@ -21,6 +21,14 @@ export type CatalogExtensionDisplayProps = {
     className?: string;
 };
 
+/**
+ * Supplementary PDP badges for non-standard product attributes: gift card,
+ * digital delivery, subscription plans, and cross-collection membership.
+ * `requiresShipping === false` (strict equality) is intentional — `undefined`
+ * (tracking disabled by Shopify) must not trigger the "Digital — No Shipping" badge.
+ * Collection links use `prefetch="intent"` + `viewTransition` for smooth
+ * cross-collection navigation directly from the product page.
+ */
 export const CatalogExtensionDisplay = ({
     isGiftCard,
     requiresShipping,

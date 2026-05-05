@@ -7,7 +7,9 @@
  */
 
 interface RateLimitConfig {
+    /** Window duration in milliseconds */
     windowMs: number;
+    /** Maximum number of requests allowed per window */
     maxRequests: number;
 }
 
@@ -19,12 +21,21 @@ interface RateLimitEntry {
 interface RateLimitResult {
     allowed: boolean;
     remaining: number;
+    /** Milliseconds until the current window resets, or null if the request was allowed */
     retryAfterMs: number | null;
 }
 
+/** Maximum number of tracked keys before LRU eviction kicks in */
 const MAX_ENTRIES = 10_000;
 let checkCount = 0;
 
+/**
+ * Create a sliding-window rate limiter for a given configuration.
+ *
+ * @returns An object with a `check(key)` method. Call `check` with a per-client
+ * key (e.g., IP address) on each incoming request. The key space is bounded by
+ * `MAX_ENTRIES`; oldest entries are evicted when the cap is exceeded.
+ */
 export function createRateLimiter(config: RateLimitConfig) {
     const store = new Map<string, RateLimitEntry>();
 
@@ -65,6 +76,11 @@ export function createRateLimiter(config: RateLimitConfig) {
     return {check};
 }
 
+/**
+ * Extract the client IP from a request.
+ * Prefers the Cloudflare `CF-Connecting-IP` header (set by the Workers runtime),
+ * then falls back to the first value in `X-Forwarded-For`, then `"unknown"`.
+ */
 export function getClientIP(request: Request): string {
     return (
         request.headers.get("CF-Connecting-IP") ??
@@ -73,6 +89,11 @@ export function getClientIP(request: Request): string {
     );
 }
 
+/**
+ * Convert a `RateLimitResult` into an HTTP 429 `Response`, or `null` if the
+ * request was allowed. Sets the `Retry-After` header to the rounded-up seconds
+ * remaining in the current window.
+ */
 export function getRateLimitResponse(result: RateLimitResult): Response | null {
     if (result.allowed) return null;
 

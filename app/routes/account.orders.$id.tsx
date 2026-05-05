@@ -24,6 +24,9 @@ export const loader = async ({params, context}: Route.LoaderArgs) => {
 
     await context.customerAccount.handleAuthStatus();
 
+    // Order IDs from the Customer Account API arrive as full GIDs. When the URL
+    // contains a raw numeric segment (e.g., from a legacy link), reconstruct the GID.
+    // The ?key= query param is required by Shopify's Customer Account API to validate the ID.
     const orderId = params.id.startsWith("gid://") ? params.id : `gid://shopify/Order/${params.id}?key=${params.id}`;
 
     const {data, errors} = await context.customerAccount.query(CUSTOMER_ORDER_QUERY, {

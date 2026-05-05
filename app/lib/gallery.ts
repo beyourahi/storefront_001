@@ -1,3 +1,4 @@
+/** Normalized image record used by the gallery masonry grid. */
 export interface GalleryImageData {
     id?: string;
     url: string;
@@ -11,11 +12,17 @@ export interface GalleryImageData {
     collectionTitle?: string | null;
 }
 
+/** Cursor-pagination metadata for the gallery route. */
 export interface GalleryPageInfo {
     hasNextPage: boolean;
     endCursor: string | null;
 }
 
+/**
+ * Flattens product + image pairs from the Shopify response into a consistent
+ * `GalleryImageData[]` array. Associates each image with its source product
+ * handle/title and first-collection handle/title for filtering.
+ */
 export const transformToGalleryImages = (
     products: Array<{
         handle: string;

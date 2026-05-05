@@ -1,5 +1,11 @@
 import {useState, useEffect} from "react";
 
+/**
+ * Returns the current scroll progress as a percentage (0–100).
+ * Uses `requestAnimationFrame` to batch DOM reads and a passive scroll listener
+ * to avoid blocking the main thread. Used by the reading-progress bar on blog
+ * article pages.
+ */
 export function useScrollProgress(): number {
     const [progress, setProgress] = useState(0);
 

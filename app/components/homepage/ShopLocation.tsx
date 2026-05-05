@@ -27,6 +27,13 @@ const buildPairs = (embedUrls: string[], shareLinks: string[]): LocationPair[] =
     return pairs;
 };
 
+/**
+ * Embeds Google Maps iframe(s) for physical store locations. For multi-location
+ * merchants, zips `embedUrls` and `shareLinks` arrays by position via `buildPairs`
+ * and labels each store alphabetically ("Store A", "Store B", …) using
+ * `String.fromCharCode(65 + i)`. A tab-switcher swaps the active iframe and
+ * the "Get directions" link without re-mounting.
+ */
 export const ShopLocation = () => {
     const {embedUrls, shareLinks} = useShopLocation();
     const pairs = useMemo(() => buildPairs(embedUrls, shareLinks), [embedUrls, shareLinks]);

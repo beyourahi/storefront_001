@@ -31,6 +31,14 @@ type DiscountedProductsSectionProps = {
     loading?: boolean;
 };
 
+/**
+ * Carousel of up to 8 on-sale products derived entirely on the client.
+ * Filters variants with `compareAtPrice > price`, computes the discount
+ * percentage from the first discounted variant of each product, sorts by
+ * discount percentage desc (then by absolute savings as tiebreaker), and
+ * slices the top 8. The subtitle shows the highest discount across all
+ * filtered products.
+ */
 export const DiscountedProductsSection = ({products, loading = false}: DiscountedProductsSectionProps) => {
     const discountedProducts = useMemo(() => {
         if (!products || products.length === 0) return [];

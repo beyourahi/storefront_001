@@ -16,6 +16,20 @@ type ParallaxLayerProps = {
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
+/**
+ * Scroll-driven parallax wrapper powered by Lenis. The inner content element
+ * is pre-scaled by `scale` (default 1.06) to keep the edges hidden as the
+ * layer shifts — without this the background edges become visible at the extremes.
+ *
+ * `translateY` is computed from how far the element's center is from the viewport
+ * center (normalized against a "travel window" of 75% viewport height), so the
+ * effect is proportional to the element's position in the scroll, not a raw pixel
+ * offset. Clipped to ±1 to prevent over-translation on very short pages.
+ *
+ * Animation is fully suppressed when `prefers-reduced-motion` is set, and the
+ * amplitude defaults to 0 on touch/mobile devices (`mobileAmplitude` override
+ * available for cases where light parallax on mobile is intentional).
+ */
 export function ParallaxLayer({
     children,
     className,

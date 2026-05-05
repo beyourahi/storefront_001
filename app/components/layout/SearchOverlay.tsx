@@ -67,6 +67,15 @@ type SearchOverlayProps = {
     popularProducts?: PopularProduct[];
 };
 
+/**
+ * Command-palette style search dialog, opened via `useSearchController` or `⌘K`.
+ * Predictive results are fetched via `fetcher.load` with a 300ms debounce.
+ * The fetcher is stored in a ref (`fetcherRef`) so the debounced function always
+ * uses the latest fetcher instance without being recreated each render — recreating
+ * it would restart the debounce timer and lose the stable reference.
+ * Shows a default view (recent searches, popular terms, collections) when the
+ * query is empty; switches to predictive results once the user starts typing.
+ */
 export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = [], popularProducts = []}: SearchOverlayProps) => {
     const navigate = useNavigate();
     const fetcher = useFetcher<PredictiveSearchData>();

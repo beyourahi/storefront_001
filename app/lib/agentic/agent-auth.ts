@@ -1,3 +1,11 @@
+/**
+ * Agent bearer token verification via JWKS.
+ *
+ * Validates a compact JWS (JWT) against the JWKS at `opts.jwksUrl`.
+ * Supports RSA (RSASSA-PKCS1-v1_5 / SHA-256) and EC (ECDSA / P-256) keys.
+ * When `opts.permissive` is true and JWKS is not configured, the token is
+ * accepted without signature verification — useful during local development.
+ */
 import type {AgentJwtClaims} from "./types";
 import {getJwks} from "./jwks-cache";
 
@@ -32,6 +40,18 @@ function resolveAlgorithm(kty: string, crv?: string): RsaHashedImportParams | Ec
     throw new Error(`Unsupported key type: kty=${kty} crv=${crv ?? "none"}`);
 }
 
+/**
+ * Verify an agent bearer token (compact JWS / JWT).
+ *
+ * Validates structure, expiry, audience claim, and cryptographic signature in
+ * that order. Returns `{ok: false, reason}` at the first failure so callers can
+ * log a precise rejection code without exposing token internals.
+ *
+ * @param token - Raw `Authorization: Bearer <token>` value (without the prefix)
+ * @param opts.jwksUrl - JWKS endpoint to fetch public keys from (optional)
+ * @param opts.expectedAudience - Expected `aud` claim; pass `""` to skip audience check
+ * @param opts.permissive - If true, accept unsigned tokens when JWKS is unconfigured
+ */
 export async function verifyAgentBearer(
     token: string,
     opts: {jwksUrl?: string; expectedAudience: string; permissive: boolean}

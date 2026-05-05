@@ -24,6 +24,12 @@ type CollectionsSectionProps = {
     loading?: boolean;
 };
 
+/**
+ * Horizontal scroll carousel of collection cards.
+ * Distinguishes between `collections === null` (still loading/deferred) and
+ * `collections === []` (no collections, hide section). The skeleton carousel
+ * renders whenever `loading === true` OR `collections` is null.
+ */
 export const CollectionsSection = ({collections, loading = false}: CollectionsSectionProps) => {
     const filteredCollections = useMemo(() => collections ?? [], [collections]);
 

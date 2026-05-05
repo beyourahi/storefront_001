@@ -12,6 +12,14 @@ type BuyNowButtonProps = {
     className?: string;
 };
 
+/**
+ * "Buy Now" variant of the add-to-cart form. Submits to `/cart` with a hidden
+ * `redirectTo=__checkout_url__` field which the cart action interprets as a
+ * signal to redirect to the Shopify checkout URL after adding the line.
+ * Handles bfcache restoration: when the user navigates back from checkout,
+ * the fetcher can be frozen in a non-idle state; the `pageshow` listener resets
+ * `forceIdle` so the button renders as available rather than stuck in "Processing...".
+ */
 export const BuyNowButton = ({lines, disabled = false, className}: BuyNowButtonProps) => {
     // When the browser restores this page from bfcache (back/forward navigation from checkout),
     // the fetcher with fetcherKey="buy-now" can be frozen in a non-idle state. We override it

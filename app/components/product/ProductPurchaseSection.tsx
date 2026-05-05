@@ -20,6 +20,14 @@ type ProductPurchaseSectionProps = {
     isVariantTransitioning?: boolean;
 };
 
+/**
+ * Composes the full purchase block: variant options, selling-plan selector,
+ * quantity picker, price display, shopping summary, and Add/Buy buttons.
+ * Low-stock threshold: shows a "X left" indicator when `quantityAvailable` is
+ * tracked (non-null) and is 10 or fewer. `null` means Shopify inventory tracking
+ * is off for that variant and never triggers the indicator.
+ * Max quantity is capped at 999 regardless of available stock.
+ */
 export const ProductPurchaseSection = ({
     product,
     selectedVariant,

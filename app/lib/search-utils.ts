@@ -1,3 +1,8 @@
+/**
+ * Client-side search filtering helpers used by the instant-search overlay.
+ * Returns at most 5 results per category; empty arrays when the query is blank.
+ * `policyPages` is the static registry of policy routes searched alongside products.
+ */
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
     bestSellers: "best-sellers",

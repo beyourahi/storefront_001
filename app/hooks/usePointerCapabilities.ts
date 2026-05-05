@@ -9,6 +9,13 @@ type PointerCapabilities = {
     isHydrated: boolean;
 };
 
+/**
+ * Detects whether the primary input device supports hover and whether it is
+ * a coarse pointer (touch). Defaults to `{canHover: false, isCoarsePointer: true}`
+ * before hydration to match the most common mobile-first use case.
+ *
+ * Used to conditionally enable CSS hover effects and intent-press detection.
+ */
 export const usePointerCapabilities = (): PointerCapabilities => {
     const [state, setState] = useState<PointerCapabilities>({
         canHover: false,

@@ -42,6 +42,14 @@ interface ArticleCardProps {
     showAuthor?: boolean;
 }
 
+/**
+ * Multi-variant blog article card.
+ * - `"default"`: card with 16:9 image header, tags, excerpt, and reading time.
+ * - `"featured"`: wide image (16:10) with large title and full excerpt — used as the lead post.
+ * - `"compact"`: horizontal thumbnail + title/date row for sidebar or related-posts lists.
+ * Reading time is derived from `contentHtml` → `content` → `excerpt` in order of preference.
+ * Stagger animation delay is capped at index 11 (440ms) to avoid long delays in long lists.
+ */
 export const ArticleCard = ({
     article,
     loading,

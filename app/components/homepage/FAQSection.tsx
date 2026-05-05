@@ -18,6 +18,15 @@ type FAQSectionProps = {
 
 const isContactInfoValid = (value?: string | null): boolean => Boolean(value && value.trim().length > 0);
 
+/**
+ * Accordion FAQ section with a contact CTA.
+ * Props take precedence over `useSiteSettings` values so the same component can
+ * be rendered standalone on the `/faq` route with explicitly supplied data, or
+ * on the homepage where it falls back to the metaobject-driven site settings.
+ * FAQ answers are passed through `parseMarkdownLinks` which converts markdown-style
+ * links to `<a>` tags before being set as inner HTML — content originates from
+ * Shopify metaobjects, not user input.
+ */
 export const FAQSection = ({faqItems, contactEmail, contactPhone}: FAQSectionProps = {}) => {
     const {faqItems: settingsFaqItems, contactEmail: settingsEmail, contactPhone: settingsPhone} = useSiteSettings();
     const faqs = faqItems ?? settingsFaqItems;

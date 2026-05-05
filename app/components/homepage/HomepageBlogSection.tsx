@@ -53,6 +53,11 @@ const ArticleCardSkeleton = () => (
     </div>
 );
 
+/**
+ * Homepage blog preview — shows up to 6 articles in a 3-column grid.
+ * First 3 images load eagerly (above-the-fold candidates); indices 3–5 are
+ * lazy-loaded. Hides entirely when `loading` is false and no articles exist.
+ */
 export const HomepageBlogSection = ({articles, loading = false}: HomepageBlogSectionProps) => {
     if (!loading && articles.length === 0) return null;
 

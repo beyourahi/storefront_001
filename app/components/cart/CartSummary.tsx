@@ -53,6 +53,12 @@ export function CartSummary({cart}: {cart: Cart}) {
     );
 }
 
+/**
+ * Order note editor with different UX per device:
+ * - Desktop: auto-saves on a 800ms debounce while the textarea is open.
+ * - Mobile: explicit "Add/Update Note" submit button (avoids keyboard dismissal issues).
+ * The "saved" indicator auto-dismisses after 1.5s.
+ */
 function CartOrderNote({noteValue}: {noteValue?: string | null}) {
     const isMobile = useIsMobile();
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -298,6 +304,14 @@ function CartCheckoutActions({
     );
 }
 
+/**
+ * "Clear cart" button with an rAF-driven hold interaction on mobile:
+ * a progress fill animates while the button is held for 1.5s, then fires without
+ * the confirmation dialog. On desktop it always shows the AlertDialog first.
+ * After clearing, a toast with an "Undo" action re-adds the saved line items
+ * via `LinesAdd` — the backup is kept in `backupRef` until the user undoes or
+ * the component unmounts.
+ */
 function CartClearConfirmation({
     productCount,
     totalAmount,

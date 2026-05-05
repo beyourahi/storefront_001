@@ -1,9 +1,15 @@
+/**
+ * Thin localStorage wrapper for PWA installation state.
+ * Persists whether the app has been installed so subsequent visits can
+ * skip the `beforeinstallprompt` flow and set `isAppDetectedAsInstalled`.
+ */
 const STORAGE_KEYS = {
     APP_INSTALLED: "pwa-app-installed"
 } as const;
 
 const isBrowser = typeof window !== "undefined";
 
+/** Returns `true` if a previous session recorded a successful PWA installation. */
 export function isAppMarkedAsInstalled(): boolean {
     if (!isBrowser) return false;
 
@@ -14,6 +20,7 @@ export function isAppMarkedAsInstalled(): boolean {
     }
 }
 
+/** Persists the installed flag. Called from `usePwaInstall` after the `appinstalled` event fires. */
 export function setAppInstalled(): void {
     if (!isBrowser) return;
 
@@ -24,6 +31,7 @@ export function setAppInstalled(): void {
     }
 }
 
+/** Clears the installed flag (useful for testing or re-prompting). */
 export function clearAppInstalled(): void {
     if (!isBrowser) return;
 

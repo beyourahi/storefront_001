@@ -196,6 +196,7 @@ const DEFAULT_THEME_FONTS: ThemeFonts = {
 // OKLCH HELPERS
 // =============================================================================
 
+/** Parse any CSS color string to an OKLCH triple. Returns null for invalid input. */
 export function parseOklch(color: string): OklchColor | null {
     const parsed = toOklch(color);
     if (!parsed) return null;
@@ -207,10 +208,12 @@ export function parseOklch(color: string): OklchColor | null {
     };
 }
 
+/** Serialize an `OklchColor` triple to a CSS `oklch(...)` string (4 decimal places). */
 export function toOklchString(color: OklchColor): string {
     return `oklch(${color.l.toFixed(4)} ${color.c.toFixed(4)} ${normalizeHue(color.h).toFixed(4)})`;
 }
 
+/** Shift the lightness of a color by `delta` (clamped to [0, 1]). */
 export function adjustLightness(color: string, delta: number): string {
     const parsed = parseOklch(color);
     if (!parsed) return color;
@@ -221,6 +224,7 @@ export function adjustLightness(color: string, delta: number): string {
     });
 }
 
+/** Multiply the chroma of a color by `factor` (result clamped to [0, 0.4]). */
 export function adjustChroma(color: string, factor: number): string {
     const parsed = parseOklch(color);
     if (!parsed) return color;
@@ -231,6 +235,7 @@ export function adjustChroma(color: string, factor: number): string {
     });
 }
 
+/** Rotate the hue of a color by `degrees`, normalizing the result to [0, 360). */
 export function rotateHue(color: string, degrees: number): string {
     const parsed = parseOklch(color);
     if (!parsed) return color;
@@ -241,6 +246,7 @@ export function rotateHue(color: string, degrees: number): string {
     });
 }
 
+/** Desaturate a color strongly and nudge lightness away from the canvas to produce a muted tint. */
 export function toMuted(color: string): string {
     const parsed = parseOklch(color);
     if (!parsed) return color;
@@ -252,6 +258,7 @@ export function toMuted(color: string): string {
     });
 }
 
+/** Returns true if the string can be parsed to a valid OKLCH color. */
 export function isValidOklch(color: string): boolean {
     return parseOklch(color) !== null;
 }
@@ -266,6 +273,11 @@ function roundRadius(value: number): number {
     return Math.round(value);
 }
 
+/**
+ * Coerce an unknown border-radius seed value to a pixel integer clamped to
+ * [`MIN_BORDER_RADIUS_SEED`, `MAX_BORDER_RADIUS_SEED`]. Falls back to `fallback`
+ * when the input is non-finite.
+ */
 export function sanitizeBorderRadiusSeed(
     value: unknown,
     fallback = DEFAULT_BORDER_RADIUS_SEED
@@ -284,6 +296,10 @@ export function sanitizeBorderRadiusSeed(
     return clamp(roundRadius(numeric), MIN_BORDER_RADIUS_SEED, MAX_BORDER_RADIUS_SEED);
 }
 
+/**
+ * Compute the full `ThemeRadiusScale` from a base radius seed.
+ * Each step is a proportional multiple of `seed`, clamped to a sensible max.
+ */
 export function deriveRadiusScale(seed: number): ThemeRadiusScale {
     const base = sanitizeBorderRadiusSeed(seed);
 
@@ -797,6 +813,10 @@ function buildDerivedTheme(scheme: SemanticScheme): DerivedTheme {
     };
 }
 
+/**
+ * Derive a `DerivedTheme` from five core brand colors without generating CSS or font data.
+ * Useful for per-component color calculations that don't need the full `ResolvedTheme`.
+ */
 export function deriveThemeColors(core: ThemeCoreColors): DerivedTheme {
     return resolveTheme(core, DEFAULT_THEME_FONTS)?.colors ?? buildDerivedTheme(buildSemanticScheme(normalizeSeeds(toThemeSeedInputs(core)).seeds));
 }
@@ -805,10 +825,19 @@ export function deriveThemeColors(core: ThemeCoreColors): DerivedTheme {
 // FONT UTILITIES
 // =============================================================================
 
+/**
+ * Strip characters that are not safe in CSS font-family or Google Fonts URL strings.
+ * Allows alphanumerics, spaces, hyphens, and underscores.
+ */
 export function sanitizeFontName(fontName: string): string {
     return fontName.replace(/[^a-zA-Z0-9\s\-_]/g, "").trim();
 }
 
+/**
+ * Build a single Google Fonts CSS2 URL for the three theme font slots.
+ * Sans uses the full variable-weight range; serif and mono use fixed weight ranges.
+ * Returns an empty string when all font names are empty.
+ */
 export function generateGoogleFontsUrl(fonts: ThemeFonts): string {
     const fontFamilies: string[] = [];
 
@@ -838,6 +867,10 @@ export function generateGoogleFontsUrl(fonts: ThemeFonts): string {
     return `https://fonts.googleapis.com/css2?${fontFamilies.join("&")}&display=swap`;
 }
 
+/**
+ * Produce a complete CSS `font-family` declaration with appropriate system fallbacks
+ * for the given font slot type.
+ */
 export function generateFontFamily(fontName: string, type: "sans" | "serif" | "mono"): string {
     const fallbacks = {
         sans: "ui-sans-serif, system-ui, sans-serif",
@@ -868,6 +901,10 @@ function deriveThemeShadowColor(colors: DerivedTheme): string {
     });
 }
 
+/**
+ * Generate the `:root { ... }` CSS block containing all semantic tokens, legacy aliases,
+ * system semantics, radius scale, and font-family declarations.
+ */
 export function generateThemeCssVariables(
     colors: DerivedTheme,
     fonts: ThemeFonts,
@@ -973,6 +1010,11 @@ function toThemeSeedInputs(coreColors: ThemeCoreColors | ThemeSeedInputs): Theme
     };
 }
 
+/**
+ * Lower-level theme resolver that accepts either `ThemeCoreColors` or `ThemeSeedInputs`.
+ * Returns null only when both `coreColors` and `fonts` are null.
+ * Prefer `generateTheme()` for typical call sites.
+ */
 export function resolveTheme(
     coreColors: ThemeCoreColors | ThemeSeedInputs | null,
     fonts: ThemeFonts | null,
@@ -1001,6 +1043,11 @@ export function resolveTheme(
     };
 }
 
+/**
+ * Primary public entry point. Produces a complete `GeneratedTheme` (CSS variables, Google
+ * Fonts URL, semantic scheme, radius scale) from the five core merchant brand colors.
+ * Missing color fields are filled with safe defaults before processing.
+ */
 export function generateTheme(
     coreColors: ThemeCoreColors | null,
     fonts: ThemeFonts | null,

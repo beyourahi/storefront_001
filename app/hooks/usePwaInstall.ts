@@ -65,6 +65,21 @@ const getPlatform = (): "ios" | "android" | "desktop" => {
     return "desktop";
 };
 
+/**
+ * PWA install prompt management hook.
+ *
+ * Detects browser install eligibility, iOS standalone instructions,
+ * and existing installation state. Exposes `triggerInstall()` to show
+ * the native `beforeinstallprompt` dialog on supported browsers.
+ *
+ * Platform notes:
+ * - Chrome/Edge/Android: uses `beforeinstallprompt` event (native dialog)
+ * - iOS: no native prompt — callers should show manual add-to-home-screen instructions
+ * - Desktop: same as Chrome, detected via `isDesktop`
+ *
+ * GTM events emitted: `pwa_install_prompt_shown`, `pwa_installed`,
+ * `pwa_install_prompt_dismissed`, `pwa_app_installed`, `pwa_launched_standalone`
+ */
 export const usePwaInstall = (): UsePwaInstallReturn => {
     const [canInstall, setCanInstall] = useState(false);
     const [isIOS, setIsIOS] = useState(false);

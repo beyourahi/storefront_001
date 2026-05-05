@@ -29,6 +29,12 @@ function CartMutationOverlay() {
     );
 }
 
+/**
+ * Core cart view that adapts to agent vs. human context.
+ * Agent requests receive `AgentCartView` (compact monochrome with JSON-LD).
+ * Human users see the full cart with line items, upsell carousel, and summary.
+ * Applies `useOptimisticCart` so UI updates immediately before the server confirms.
+ */
 export function CartMain({
     cart: originalCart,
     layout: _layout

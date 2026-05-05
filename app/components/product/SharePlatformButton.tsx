@@ -15,6 +15,17 @@ type SharePlatformButtonProps = {
     onShare?: (platformId: string, shareData: ShareData) => void;
 };
 
+/**
+ * Generic share action button. Two execution paths:
+ * - `platform.customHandler` present (e.g. "copy link"): called with success/error
+ *   callbacks; handles the clipboard API or any async action internally.
+ * - No `customHandler`: calls `platform.url(shareData)` and opens the result in a
+ *   popup window via `openShareWindow`.
+ *
+ * Success and error states auto-dismiss after 2 seconds. The icon slot cycles
+ * through: platform icon → spinner (while loading) → checkmark (success) →
+ * X icon (error). The "copy" platform gets distinct label copy for all three states.
+ */
 export const SharePlatformButton = ({platform, shareData, loading = false, onShare}: SharePlatformButtonProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);

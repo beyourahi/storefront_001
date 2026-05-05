@@ -27,6 +27,13 @@ const StarIcon = () => (
     </svg>
 );
 
+/**
+ * Deferred cross-sell carousel shown below cart line items.
+ * Reads `rootData.cartSuggestions` (a Promise) via `<Await>` — resolves
+ * without blocking the cart render. Products already in the cart are filtered
+ * out. The heading is chosen randomly from context-sensitive pools
+ * (`EMPTY_HEADINGS` when the cart is empty, `POPULATED_HEADINGS` otherwise).
+ */
 export function CartSuggestions({cartLines, className}: {cartLines: CartLineNode[]; className?: string}) {
     const rootData = useRouteLoaderData<RootLoader>("root");
 

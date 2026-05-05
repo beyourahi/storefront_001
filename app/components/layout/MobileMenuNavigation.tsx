@@ -9,6 +9,12 @@ type MobileMenuNavigationProps = {
     onLinkClick: () => void;
 };
 
+/**
+ * Primary navigation list for the mobile menu. Filters out `/collections`,
+ * `/gallery`, and `/collections/all-products` from `NAVIGATION_LINKS` because
+ * those routes have dedicated UI sections in `MobileMenuCollections` and are
+ * not repeated here to avoid duplication.
+ */
 export const MobileMenuNavigation = ({currentPath, onLinkClick}: MobileMenuNavigationProps) => {
     const {canHover} = usePointerCapabilities();
 

@@ -44,18 +44,15 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     const {dataAdapter} = context;
     const url = new URL(request.url);
 
-    // Parse pagination params
     const {cursor, page, direction} = parsePaginationParams(url);
     const pageParam = url.searchParams.get("page");
 
-    // Parse sort param; map CREATED → CREATED_AT (ProductSortKeys vs ProductCollectionSortKeys)
+    // Map CREATED → CREATED_AT: this route uses ProductSortKeys, not ProductCollectionSortKeys.
     const {sort, sortKey, reverse, sortLabel} = parseSortFilterParams(url);
     const productSortKey = sortKey === "CREATED" ? "CREATED_AT" : sortKey;
 
-    // Build GraphQL variables for cursor-based pagination
     const variables = buildPaginationVariables(cursor, direction, 48);
 
-    // Single query for products with cursor pagination
     const {products} = await dataAdapter.query(SALE_PRODUCTS_QUERY, {
         variables: {
             sortKey: productSortKey,
@@ -65,18 +62,14 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
         cache: dataAdapter.CacheShort()
     });
 
-    // Filter to discounted products only; Shopify handles sort order
     const discountedProducts = filterAndSortDiscountedProducts(products.nodes as RawDiscountProduct[]);
     const sortedProducts = discountedProducts;
 
-    // Build pagination data
     const pagination = buildPaginationData(products.pageInfo, page);
 
-    // Calculate total count and max discount from current page
     const totalCount = sortedProducts.length;
     const maxDiscount = totalCount > 0 ? Math.max(...sortedProducts.map(p => p.maxDiscountPercentage)) : 0;
 
-    // Check for canonical redirect
     const canonicalRedirect = getCanonicalRedirect(url, page, pagination.hasNextPage, pageParam);
     if (canonicalRedirect) {
         throw redirect(canonicalRedirect);
@@ -95,7 +88,6 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
 export default function Sale() {
     const {products, totalCount, maxDiscount, pagination, sort, sortLabel} = useLoaderData<typeof loader>();
 
-    // Normalize products for display
     const normalizedProducts = products.map(fromSaleProduct);
 
     const showPagination = pagination.hasNextPage || pagination.hasPreviousPage;
@@ -103,7 +95,6 @@ export default function Sale() {
     return (
         <div className="min-h-screen bg-background text-foreground">
             <PageBreadcrumbs customTitle="Special Offers" />
-            {/* Hero Section */}
             <AnimatedSection animation="fade" threshold={0.08}>
                 <SaleHero totalCount={totalCount} maxDiscount={maxDiscount} products={products} />
             </AnimatedSection>
@@ -116,10 +107,9 @@ export default function Sale() {
 
             {totalCount > 0 && (
                 <>
-                    {/* Sort and Filter Controls — outside AnimatedSection so it's always visible */}
+                    {/* Sort filter bar intentionally outside AnimatedSection so it renders immediately */}
                     <SortFilterBar currentSort={sort} totalProducts={totalCount} />
 
-                    {/* Mobile Pagination (Above Grid) */}
                     {showPagination && (
                         <AnimatedSection animation="fade" threshold={0.12}>
                             <div className="mx-auto max-w-[2000px] px-4 sm:px-6 lg:hidden lg:px-8">

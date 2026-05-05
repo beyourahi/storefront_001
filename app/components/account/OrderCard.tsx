@@ -26,6 +26,11 @@ const statusBorderMap: Record<OrderStatusVariant, string> = {
     destructive: "border-l-destructive"
 };
 
+/**
+ * Order summary card with a left-border color that reflects fulfillment status.
+ * The "View Details" link extracts the numeric ID from the Shopify GID
+ * (`gid://shopify/Order/123`) so the route receives the bare ID segment.
+ */
 export const OrderCard = ({order}: OrderCardProps) => {
     const lineItemCount = order.lineItems?.nodes?.length ?? 0;
     const variant = getOrderStatusVariant(order.fulfillmentStatus);

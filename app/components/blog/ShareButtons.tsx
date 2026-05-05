@@ -16,6 +16,14 @@ interface ShareButtonsProps {
     shopName?: string;
 }
 
+/**
+ * Article share buttons with two variants:
+ * - `"inline"`: a card with icon-only buttons on mobile (48×48 WCAG-compliant tap targets)
+ *   that expand to icon+label on sm+ screens.
+ * - `"dialog"`: a compact trigger button that opens a full share dialog.
+ * The copy-link button shows a transient "Copied" state for 2 seconds.
+ * `window.location.origin` is read client-side only (guarded by `typeof window`).
+ */
 export const ShareButtons = ({article, variant = "inline", className, shopName}: ShareButtonsProps) => {
     const [copied, setCopied] = useState(false);
 

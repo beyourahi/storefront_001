@@ -136,6 +136,11 @@ export const loader = async (args: Route.LoaderArgs) => {
     return {...criticalData, ...deferredData};
 };
 
+/**
+ * Loads the product, resolves the selected variant from URL options, and derives
+ * the active collection handle for breadcrumbs. Pre-truncates the SEO description
+ * server-side to prevent hydration mismatches in the meta function.
+ */
 const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) => {
     const {handle} = params;
     const {dataAdapter} = context;
@@ -187,6 +192,7 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
     };
 };
 
+/** Loads product recommendations and metafield-based reviews without blocking the render. */
 const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
     const {dataAdapter} = context;
 

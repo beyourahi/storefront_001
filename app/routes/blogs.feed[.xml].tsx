@@ -69,6 +69,7 @@ type FeedArticle = {
     author: {name: string} | null;
 };
 
+/** Escapes characters that would break well-formed XML in attribute values and text content. */
 function escapeXml(str: string): string {
     return str
         .replace(/&/g, "&amp;")

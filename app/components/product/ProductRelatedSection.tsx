@@ -11,6 +11,13 @@ type ProductRelatedSectionProps = {
     subtitle?: string;
 };
 
+/**
+ * Horizontal scrollable carousel of related products below the PDP. Renders nothing
+ * when the product list is empty (avoids an orphaned section heading).
+ * `insideCarousel={true}` is passed to each `ProductCard` to suppress the card's
+ * internal Embla media carousel, preventing conflicting drag gesture handlers on the
+ * same horizontal axis as the parent carousel.
+ */
 export const ProductRelatedSection = ({
     isLoading = false,
     relatedProducts,

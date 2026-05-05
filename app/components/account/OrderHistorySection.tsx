@@ -67,6 +67,13 @@ type OrderHistorySectionProps =
           products: ExtractedProduct[];
       };
 
+/**
+ * Carousel of previously purchased products, surfaced on the account dashboard.
+ * Accepts either raw `orders` (Customer Account API) or pre-extracted `products`
+ * via a discriminated union prop — call sites that have already flattened line items
+ * use `products` to avoid re-processing. Capped at 16 items. Renders null when
+ * there are no displayable products (items missing a handle or image are filtered out).
+ */
 export const OrderHistorySection = ({orders, products}: OrderHistorySectionProps) => {
     let productsFromOrders: Array<{
         id: string;

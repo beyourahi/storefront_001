@@ -1,3 +1,8 @@
+/**
+ * Numeric utility singleton — safe parsing, clamping, rounding, and discount
+ * arithmetic. Use the module-level convenience exports (`clamp`, `roundToDecimals`,
+ * etc.) rather than instantiating the class directly.
+ */
 export class NumberUtils {
     private static instance: NumberUtils;
 

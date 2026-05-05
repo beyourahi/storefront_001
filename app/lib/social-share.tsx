@@ -71,7 +71,7 @@ export interface SocialSharePlatform {
     customHandler?: (shareData: ShareData, onSuccess?: () => void, onError?: () => void) => Promise<void>;
 }
 
-// Format price from Shopify Money type
+/** Format a Shopify Money object into a locale-aware currency string. */
 function formatPrice(price: {amount: string; currencyCode: string}): string {
     const amount = parseFloat(price.amount);
     return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
@@ -80,7 +80,10 @@ function formatPrice(price: {amount: string; currencyCode: string}): string {
     }).format(amount);
 }
 
-// Create share data from product
+/**
+ * Build a `ShareData` object from a Shopify product and the current page URL.
+ * Falls back to a generic description when the product has no `description`.
+ */
 export function createShareData(
     product: Pick<ProductFragment, "title" | "description" | "images">,
     variant: ProductFragment["selectedOrFirstAvailableVariant"],
@@ -102,7 +105,7 @@ export function createShareData(
     };
 }
 
-// Generate URL with query parameters
+/** Append key/value pairs to `baseUrl` as query parameters, skipping empty values. */
 export function generateShareUrl(baseUrl: string, params: Record<string, string>): string {
     const url = new URL(baseUrl);
     Object.entries(params).forEach(([key, value]) => {
@@ -113,12 +116,16 @@ export function generateShareUrl(baseUrl: string, params: Record<string, string>
     return url.toString();
 }
 
-// Generate share message
+/** Compose a multi-line share message for WhatsApp and similar plain-text platforms. */
 export function generateShareMessage(shareData: ShareData): string {
     return `Checkout the ${shareData.title}${shareData.shopName ? ` by ${shareData.shopName}` : ""} only at ${shareData.price}\n\nProduct Link:\n${shareData.url}`;
 }
 
-// Copy to clipboard with fallback
+/**
+ * Copy `text` to the clipboard.
+ * Tries the Clipboard API first, then falls back to `document.execCommand("copy")`
+ * for older browsers. Returns `true` on success.
+ */
 export async function copyToClipboard(text: string, onSuccess?: () => void, onError?: () => void): Promise<boolean> {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
         try {
@@ -156,7 +163,7 @@ export async function copyToClipboard(text: string, onSuccess?: () => void, onEr
     return false;
 }
 
-// Check if device is mobile
+/** Returns true on mobile devices, used to pick `whatsapp://` vs `wa.me` deep-link. */
 export function isMobileDevice(): boolean {
     if (typeof window === "undefined") return false;
 
@@ -166,7 +173,7 @@ export function isMobileDevice(): boolean {
     );
 }
 
-// Open share window (centered popup)
+/** Open a centered browser popup for platform share URLs (Facebook, X, etc.). */
 export function openShareWindow(url: string, title: string = "Share"): void {
     const width = 600;
     const height = 400;
@@ -176,7 +183,7 @@ export function openShareWindow(url: string, title: string = "Share"): void {
     window.open(url, title, `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
 }
 
-// Track share event via API
+/** POST share analytics to `/api/share/track`. Fails silently to avoid disrupting the UX. */
 export async function trackShareEvent(analytics: ShareAnalytics): Promise<void> {
     try {
         await fetch("/api/share/track", {
@@ -191,7 +198,7 @@ export async function trackShareEvent(analytics: ShareAnalytics): Promise<void> 
     }
 }
 
-// Create analytics data
+/** Build a `ShareAnalytics` payload stamped with the current timestamp and browser context. */
 export function createShareAnalytics(platform: string, productId: string, productHandle: string): ShareAnalytics {
     return {
         platform,
@@ -273,7 +280,7 @@ interface ShareDataInit {
 // SOCIAL PLATFORM ICONS
 // =============================================================================
 
-// Social platform icons as inline SVG components
+/** Inline SVG icon components for social platforms not covered by Lucide. */
 export const FacebookIcon = ({className}: {className?: string}) => (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -313,7 +320,7 @@ export const LinkIcon = ({className}: {className?: string}) => (
     </svg>
 );
 
-// Platform brand colors
+/** Official brand colors for each share platform, used for button styling. */
 export const PLATFORM_COLORS = {
     facebook: "rgb(24, 119, 242)",
     x: "rgb(0, 0, 0)",
@@ -322,7 +329,7 @@ export const PLATFORM_COLORS = {
     copy: "rgb(107, 114, 128)"
 } as const;
 
-// Get all social share platforms
+/** Returns the ordered list of share platform descriptors used to render share buttons. */
 export function getSocialSharePlatforms(): SocialSharePlatform[] {
     return [
         {

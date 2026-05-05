@@ -58,6 +58,14 @@ interface QuickAddButtonProps {
     orderHistoryContext?: boolean;
 }
 
+/**
+ * Smart add-to-cart button that adapts to the product's variant structure.
+ * - Sold-out: renders a disabled "Out of Stock" button.
+ * - Single displayable variant: submits directly via `CartForm` (no dialog).
+ * - Multiple displayable variants: opens `QuickAddSheet` on mobile or
+ *   `QuickAddDialog` on desktop for variant selection.
+ * Mobile breakpoint is detected client-side via `matchMedia` to avoid SSR mismatches.
+ */
 export function QuickAddButton({
     product,
     className,
@@ -229,6 +237,10 @@ export function QuickAddButton({
     );
 }
 
+/**
+ * Returns true when the variant list has more than one distinct option value
+ * across any option axis — used to decide whether a variant picker is needed.
+ */
 function hasDisplayableVariants(variants: QuickAddVariant[]): boolean {
     if (variants.length <= 1) return false;
 

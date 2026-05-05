@@ -42,6 +42,13 @@ type ProductSectionProps = {
     sectionNumber?: string;
 };
 
+/**
+ * Reusable homepage product carousel section.
+ * `collection === null` means the deferred data hasn't resolved yet — the
+ * skeleton stays visible. `collection` with no products (length 0) hides the
+ * section. At most 4 products are shown; all cards pass `insideCarousel` to
+ * prevent nested Embla conflicts.
+ */
 export const ProductSection = ({
     products,
     collection,

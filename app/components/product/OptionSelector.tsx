@@ -9,6 +9,18 @@ type OptionSelectorProps = {
     productOptions: MappedProductOptions[];
 };
 
+/**
+ * Variant option picker for the PDP. Two filtering passes apply before render:
+ * 1. Removes option values that are unavailable across all variants.
+ * 2. Hides entire option axes where only one value is available (no meaningful choice).
+ *
+ * Two rendering paths per value:
+ * - `isDifferentProduct === true`: renders a `<Link>` to a separate product URL
+ *   (used for combined-listing products that share option names across different SKUs).
+ * - Otherwise: navigates within the same product by updating `variantUriQuery` search params.
+ *
+ * Color options with swatch data (Shopify color metafield or image) render a `<ColorSwatch>`.
+ */
 export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
     const navigate = useNavigate();
 

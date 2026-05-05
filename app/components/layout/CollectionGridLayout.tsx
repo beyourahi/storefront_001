@@ -9,6 +9,12 @@ type CollectionGridLayoutProps = {
     renderCollection: (collection: CollectionCardData) => React.ReactNode;
 };
 
+/**
+ * Responsive 2–4 column grid for collection pages. Filters out collections with
+ * `productCount === 0` so empty collections are never shown to shoppers.
+ * Uses a render-prop (`renderCollection`) to let callers supply the card component,
+ * keeping the layout decoupled from the card implementation.
+ */
 export const CollectionGridLayout = ({
     collections,
     isLoading = false,

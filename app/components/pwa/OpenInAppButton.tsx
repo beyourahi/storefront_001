@@ -10,6 +10,19 @@ interface OpenInAppButtonProps {
     variant?: "desktop-fixed" | "menu-item" | "navbar";
 }
 
+/**
+ * Adaptive PWA install trigger rendered in three visual variants:
+ * `"desktop-fixed"` (floating pill, desktop-only), `"navbar"` (compact pill for nav
+ * bar), and `"menu-item"` (full-width button for the mobile menu).
+ * Renders nothing when already in standalone mode or when there is no install action
+ * to take (no native prompt, not iOS, not a detected-installed-but-browser session).
+ *
+ * Click handler has three branches:
+ * 1. iOS Safari — native `beforeinstallprompt` is not fired; shows manual instructions.
+ * 2. `canInstall` — triggers the deferred `beforeinstallprompt` native dialog.
+ * 3. `isAppDetectedAsInstalled` — app is installed but user is in the browser; shows
+ *    a "switch to home screen" nudge.
+ */
 export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) => {
     const {canInstall, isIOS, isStandalone, isAppDetectedAsInstalled, triggerInstall, appName, appIcon} = usePwaInstall();
     const [showIosInstructions, setShowIosInstructions] = useState(false);

@@ -19,6 +19,12 @@ import {pickPrimaryMedia} from "~/lib/product/primary-media";
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
 
+/**
+ * Renders a single optimistic cart line item with quantity controls, pricing,
+ * remove button, and inline error/warning feedback.
+ * Child lines (bundle add-ons) are indented and show read-only quantities.
+ * Errors and warnings from cart mutations auto-dismiss after 5 seconds.
+ */
 export function CartLineItem({line}: {line: CartLine}) {
     const {id, merchandise, quantity, cost} = line;
     const {product, image, title: variantTitle, quantityAvailable} = merchandise;

@@ -7,6 +7,13 @@
 const COOKIE_KEY = "recently_viewed";
 const MAX_IDS = 10;
 
+/**
+ * Reads recently-viewed product IDs from the request's `recently_viewed` cookie.
+ * Returns at most 10 IDs, filtering out entries that lack an `id` field.
+ * Returns an empty array on parse failure or missing cookie.
+ *
+ * @param request - Incoming HTTP request from which the cookie header is read
+ */
 export function getRecentlyViewedIds(request: Request): string[] {
     const cookie = request.headers.get("cookie") ?? "";
     const match = cookie

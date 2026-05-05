@@ -87,6 +87,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         }
     }
 
+    // Returns are flattened across all orders; sort newest-first by return creation date.
     allReturns.sort((a, b) => {
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;

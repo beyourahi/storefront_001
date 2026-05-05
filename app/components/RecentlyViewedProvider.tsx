@@ -16,12 +16,18 @@ interface RecentlyViewedContextValue {
 
 const RecentlyViewedContext = createContext<RecentlyViewedContextValue | null>(null);
 
+/**
+ * Wraps the app (or a subtree) with the recently-viewed product context.
+ * Delegates all state management to `useRecentlyViewed` — this component
+ * is purely a context bridge.
+ */
 export function RecentlyViewedProvider({children}: {children: ReactNode}) {
     const recentlyViewed = useRecentlyViewed();
 
     return <RecentlyViewedContext.Provider value={recentlyViewed}>{children}</RecentlyViewedContext.Provider>;
 }
 
+/** Returns the recently-viewed context. Throws when called outside `RecentlyViewedProvider`. */
 export function useRecentlyViewedContext(): RecentlyViewedContextValue {
     const context = useContext(RecentlyViewedContext);
     if (!context) {

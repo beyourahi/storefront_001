@@ -95,6 +95,8 @@ const ConfirmDialog = ({
 const AccountWishlist = () => {
     const {ids, count, clear} = useWishlist();
     const fetcher = useFetcher<{products: WishlistProduct[]}>();
+    // Tracks the last-submitted wishlist key (sorted IDs joined) to prevent
+    // duplicate API requests when the component re-renders without an IDs change.
     const requestedWishlistKeyRef = useRef<string | null>(null);
 
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -288,7 +290,6 @@ const AccountWishlist = () => {
                     )}
 
                     <div className="mb-6 flex flex-wrap items-center justify-between gap-3 py-3">
-                        {/* Left: product count + view toggles (matches SortFilterBar left side) */}
                         <div className="flex items-center gap-3">
                             <p className="text-muted-foreground text-sm">
                                 {products.length} {products.length === 1 ? "product" : "products"}
@@ -337,7 +338,6 @@ const AccountWishlist = () => {
                             </div>
                         </div>
 
-                        {/* Right: sort + share + clear (sort matches SortFilterBar right side) */}
                         <div className="flex flex-wrap items-center gap-4">
                             <div className="flex items-center gap-2">
                                 <ArrowUpDown className="text-muted-foreground hidden size-4 sm:block" aria-hidden="true" />

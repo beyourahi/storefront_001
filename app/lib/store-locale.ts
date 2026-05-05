@@ -1,5 +1,8 @@
-// TEMPLATE CONFIGURATION: Update these values per client deployment.
-// These constants define the store's locale for analytics, SEO, and i18n.
+/**
+ * Per-deployment locale configuration. Update all constants here when
+ * onboarding a new client — they drive currency formatting, SEO, sitemap
+ * locale tags, and the Hydrogen i18n context.
+ */
 export const STORE_COUNTRY_NAME = "Bangladesh" as const;
 export const STORE_COUNTRY_CODE = "BD" as const;
 export const STORE_LANGUAGE_CODE = "EN" as const;

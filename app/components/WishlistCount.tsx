@@ -3,6 +3,11 @@ import {useWishlist} from "~/lib/wishlist-context";
 import {Heart} from "lucide-react";
 import {cn} from "~/lib/utils";
 
+/**
+ * Inline parenthetical count "(3)" appended to a "Wishlist" nav label.
+ * Renders nothing until hydrated or when the count is zero, preventing flicker.
+ * Caps at "99+" to avoid layout shifts for large wishlists.
+ */
 export const WishlistCountInline = ({className}: {className?: string}) => {
     const {count, isHydrated} = useWishlist();
     if (!isHydrated || count === 0) return null;
@@ -16,6 +21,11 @@ interface WishlistCountProps {
     iconSize?: number;
 }
 
+/**
+ * Navbar wishlist icon with an animated badge count. Links to `/account/wishlist`.
+ * Badge only renders after hydration to avoid a mismatch between SSR (no count)
+ * and client (localStorage count). Caps at "99+".
+ */
 export const WishlistCount = ({className, iconSize = 24}: WishlistCountProps) => {
     const {count, isHydrated} = useWishlist();
 

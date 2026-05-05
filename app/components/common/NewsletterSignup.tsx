@@ -16,6 +16,13 @@ interface NewsletterSignupProps {
     className?: string;
 }
 
+/**
+ * Email capture form with two layouts: `"compact"` (footer inline row) and
+ * `"expanded"` (standalone section with heading, privacy note, and login link).
+ * POSTs to `/api/newsletter`. Success clears the input and shows a status message
+ * for 5 seconds, then hides it. `displayData` is set to `undefined` after the
+ * timeout so the status message disappears without a flash on the next render.
+ */
 export const NewsletterSignup = ({variant = "compact", className}: NewsletterSignupProps) => {
     const fetcher = useFetcher<NewsletterResponse>();
     const [email, setEmail] = useState("");

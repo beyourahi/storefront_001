@@ -19,6 +19,22 @@ interface ProductHeroMobileProps {
     tags?: string[];
 }
 
+/**
+ * Full-bleed mobile-only (`md:hidden`) purchase section overlaid in primary brand
+ * color. Mirrors the option-selector logic from `OptionSelector.tsx` (same
+ * `isDifferentProduct` routing split, same available-only + multi-value filtering),
+ * but renders larger pill buttons on the primary background.
+ *
+ * Detects subscription mode via a `selling_plan` URL param and adapts the CTA:
+ * - Out of stock → "Out of Stock"
+ * - Subscription mode, no plan selected → "Select frequency"
+ * - Subscription mode, plan selected → "Subscribe"
+ * - Preorder tag → "Pre Order"
+ * - Default → "Get it Now"
+ *
+ * Quantity is capped at 10 in this component (mobile UX; desktop uses `maxQuantity`
+ * derived from `quantityAvailable` in `ProductPurchaseSection`).
+ */
 export function ProductHeroMobile({
     productOptions,
     selectedVariant,

@@ -20,6 +20,14 @@ type RecentlyViewedSectionProps = {
     allProducts?: any[];
 };
 
+/**
+ * Carousel of up to 8 recently-viewed products. `allProducts` is a pre-fetched
+ * catalog snapshot from the server; the component cross-references it against
+ * the locally-stored `productIds` from `useRecentlyViewedContext` to resolve
+ * full product data (the context itself only stores IDs).
+ * `historyCleared` is a local boolean that hides the section immediately after
+ * the user confirms clearing, before the context state update propagates.
+ */
 export const RecentlyViewedSection = ({loading = false, allProducts = []}: RecentlyViewedSectionProps) => {
     const {productIds, clear, hasProducts} = useRecentlyViewedContext();
     const [dialogOpen, setDialogOpen] = useState(false);

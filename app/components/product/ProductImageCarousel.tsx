@@ -109,6 +109,15 @@ function getThumbnailUrl(item: ProductMediaItem): string | null {
 // COMPONENT
 // =============================================================================
 
+/**
+ * PDP image carousel with thumbnail strip, lightbox, and all four Shopify media types.
+ * When `media` is provided, it takes precedence over the `images` array — media nodes
+ * are filtered through `isKnownMediaItem` and normalized to a consistent shape. The
+ * fallback converts the `images` array to `MediaImage` media items so the same render
+ * path handles both inputs.
+ * Clicking any slide opens `ProductLightbox` (fullscreen) with the same `galleryMedia`
+ * array so indices always match between the carousel and the lightbox.
+ */
 export const ProductImageCarousel = ({
     images,
     productTitle,

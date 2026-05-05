@@ -1,3 +1,13 @@
+/**
+ * JSON-RPC 2.0 dispatcher for registered MCP tools.
+ *
+ * Handles two MCP methods:
+ * - `tools/list` — returns the full tool manifest from the registry
+ * - `tools/call` — invokes the named tool handler and emits observability events
+ *
+ * All error responses use standard JSON-RPC error codes. Tool handler errors are
+ * caught and returned as INTERNAL_ERROR (-32603) to prevent unhandled rejections.
+ */
 import type {JsonRpcRequest, JsonRpcResponse, McpToolRegistry, AgentContext} from "./types";
 import {emitAgentEvent} from "./observability";
 
@@ -14,6 +24,14 @@ function errorResponse(id: string | number | null, code: number, message: string
     return {jsonrpc: "2.0", id, error: {code, message}};
 }
 
+/**
+ * Dispatch a raw JSON-RPC 2.0 payload to the appropriate MCP tool.
+ *
+ * @param payload - Parsed request body (validated inside this function)
+ * @param registry - Map of tool name → tool definition + handler
+ * @param ctx - Agent context passed to each tool handler
+ * @param env - Optional Workers env for Analytics Engine observability
+ */
 export async function handleMcpRequest(
     payload: unknown,
     registry: McpToolRegistry,

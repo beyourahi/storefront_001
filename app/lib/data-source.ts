@@ -1,3 +1,11 @@
+/**
+ * Data adapter abstraction over the Shopify Storefront API.
+ *
+ * Wraps the Hydrogen storefront client behind a uniform interface so that MCP
+ * tool implementations and agent-server handlers can query the catalog without
+ * importing Hydrogen directly. Currently "shopify" is the only source; the
+ * interface is kept generic to allow future sources (mock, alternative CMS).
+ */
 import {CacheCustom} from "@shopify/hydrogen";
 import {AGENT_SEARCH_QUERY} from "~/lib/queries/search";
 import {LOOKUP_NODES_QUERY} from "~/lib/queries/lookup";
@@ -53,6 +61,10 @@ type EnvLike = {
 const DOMAIN_PATTERN = /^(?!https?:\/\/)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
 const TOKEN_PATTERN = /^[A-Za-z0-9_=-]{20,}$/;
 
+/**
+ * Create the primary data adapter for the given Hydrogen storefront client.
+ * Validates env credentials in development (warns but does not throw).
+ */
 export function createDataAdapter(storefront: StorefrontLike, env: EnvLike): DataAdapter {
     validateShopifyEnv(env);
     return createShopifyAdapter(storefront);

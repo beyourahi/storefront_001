@@ -15,6 +15,18 @@ type ProductMobileStickyButtonsProps = {
     isVariantTransitioning?: boolean;
 };
 
+/**
+ * Fixed bottom CTA bar for mobile (`lg:hidden`). Displays the projected line total
+ * (price × quantity), a sale badge when applicable, and Add-to-Cart / Buy Now buttons.
+ * Returns `null` until `isMobile` is true and a variant with a resolved price is available.
+ *
+ * Publishes the bar's rendered height as `--product-sticky-bar-height` on `:root`
+ * via a `ResizeObserver` so other fixed/absolute elements can offset above it without
+ * coupling to this component. The variable is removed on unmount.
+ *
+ * `useMemo` (for `lines`) is declared before the price-guard early return to satisfy
+ * the Rules of Hooks.
+ */
 export const ProductMobileStickyButtons = ({
     product,
     selectedVariant,

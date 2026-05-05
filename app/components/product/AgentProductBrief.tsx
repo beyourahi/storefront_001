@@ -24,6 +24,14 @@ type AgentProductBriefProps = {
     productOptions: MappedProductOptions[];
 };
 
+/**
+ * Monospace data-table layout optimised for AI agent consumption. Rendered in place
+ * of the normal PDP when the agentic layer detects an agent request (see
+ * `agent-server.ts`). Presents product identity, pricing, variant availability, and
+ * description in a scannable key/value grid. Tags are capped at 8 items. Available
+ * variant values are visually distinct from selected and struck-through unavailable
+ * ones so an agent can read option state at a glance.
+ */
 export function AgentProductBrief({product, selectedVariant, productOptions}: AgentProductBriefProps) {
     const price = selectedVariant?.price;
     const compareAtPrice = selectedVariant?.compareAtPrice;

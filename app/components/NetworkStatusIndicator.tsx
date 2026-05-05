@@ -7,6 +7,12 @@ interface NetworkStatusIndicatorProps {
     className?: string;
 }
 
+/**
+ * Full-width top banner that surfaces network connectivity changes.
+ * Shows a destructive banner while offline and a brief "Back online" confirmation
+ * for 3 seconds after reconnecting (only when the session was previously offline,
+ * so the banner never appears on initial load for connected users).
+ */
 export const NetworkStatusIndicator = ({className}: NetworkStatusIndicatorProps) => {
     const {isOnline} = useNetworkStatus();
     const [showOnlineMessage, setShowOnlineMessage] = useState(false);

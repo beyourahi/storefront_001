@@ -39,6 +39,12 @@ const RelatedArticlesSkeleton = ({className}: {className?: string}) => {
     );
 };
 
+/**
+ * Deferred-data-aware related articles carousel.
+ * `articles` may be a resolved array or a Promise (deferred loader data) —
+ * `<Await>` handles both. Shows skeleton cards while the Promise resolves.
+ * Capped at 8 articles; renders nothing when the resolved list is empty.
+ */
 export const RelatedArticles = ({articles, title = "Related Articles", className}: RelatedArticlesProps) => {
     return (
         <Suspense fallback={<RelatedArticlesSkeleton className={className} />}>

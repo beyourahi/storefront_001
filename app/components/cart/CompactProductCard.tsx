@@ -10,6 +10,13 @@ import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import type {CompactProductCardProps} from "~/lib/types/product-card";
 
+/**
+ * Compact cart-suggestion card (180px wide) with thumbnail, price, and quick-add.
+ * Navigates via `window.location.href` rather than `<Link>` so the drawer closes
+ * before the navigation (prevents focus-trap issues with the sheet overlay).
+ * Out-of-stock products show a disabled button; in-stock products open
+ * `ProductVariantDialog` with `autoAddSingleVariant` for one-tap adds.
+ */
 export function CompactProductCard({product, className = "", onCartAdd, onProductClick, isMutating = false}: CompactProductCardProps) {
     const productData = useMemo(() => getProductDataForCard(product), [product]);
     const {price, compareAtPrice, discountPercentage} = productData;

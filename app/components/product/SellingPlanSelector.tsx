@@ -22,6 +22,14 @@ type SellingPlanSelectorProps = {
     className?: string;
 };
 
+/**
+ * Subscription / selling-plan picker for the PDP.
+ * Filters the product's `sellingPlanGroups` to only the plans that are available
+ * for the *currently selected variant* (via `sellingPlanAllocations`), so unavailable
+ * plans are never shown for a given size/color selection.
+ * Each plan gets a pre-computed URL (current pathname + `selling_plan` param) so
+ * selection triggers a `navigate(plan.url, {replace: true})` rather than a fetcher call.
+ */
 export const SellingPlanSelector = ({
     sellingPlanGroups,
     selectedSellingPlan,

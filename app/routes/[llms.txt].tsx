@@ -79,6 +79,11 @@ export async function loader({request, context}: Route.LoaderArgs) {
     });
 }
 
+/**
+ * Builds the llms.txt body from resolved shop data.
+ * Outputs a Markdown document describing the store identity, MCP endpoints,
+ * and crawling guidelines for AI agents and indexers.
+ */
 function buildLlmsTxt({
     storeName,
     storeDescription,

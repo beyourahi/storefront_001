@@ -22,6 +22,17 @@ type ProductImageGalleryDialogProps = {
     availableForSale?: boolean;
 };
 
+/**
+ * Fullscreen image gallery lightbox rendered inside a `<Dialog>`. Uses Embla
+ * (looping, drag-free) with the `WheelGesturesPlugin` for trackpad/scroll-wheel
+ * horizontal swipe. Arrow-key and Escape keyboard shortcuts are attached on open
+ * and removed on close to avoid conflicts with other keyboard listeners.
+ *
+ * The 100ms `setTimeout` in the `open` effect gives Embla time to mount into the
+ * DOM before calling `scrollTo(initialIndex)` + `reInit()` — without the delay,
+ * the carousel may not have rendered yet and the scroll would be a no-op.
+ * Images at indices 0–1 are eager-loaded; the rest are lazy.
+ */
 export const ProductImageGalleryDialog = ({
     open,
     onOpenChange,

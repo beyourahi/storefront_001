@@ -34,6 +34,12 @@ export const loader = async ({params, context, request}: Route.LoaderArgs) => {
     });
 };
 
+/**
+ * Converts a raw Shopify GraphQL product response into the normalized ShopifyProduct
+ * shape expected by QuickAdd components. Handles missing fields defensively — all
+ * string/boolean/array fields default to safe fallbacks so callers can rely on
+ * a fully-typed object regardless of what the API returns.
+ */
 function normalizeQuickAddProduct(product: any): ShopifyProduct {
     const imageNodes = Array.isArray(product?.images?.nodes)
         ? product.images.nodes.filter(Boolean)

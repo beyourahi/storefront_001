@@ -147,6 +147,13 @@ export const loader = async ({context}: Route.LoaderArgs) => {
     };
 };
 
+/**
+ * Loads recently-purchased products for authenticated customers.
+ * First queries order history via the Customer Account API, then resolves
+ * product handles via the Storefront API (a second query) because the
+ * Customer Account API does not expose `handle` on line item products.
+ * Returns empty products array for unauthenticated users without throwing.
+ */
 async function loadOrderHistory(context: Route.LoaderArgs["context"]): Promise<{products: OrderHistoryProduct[]; isLoggedIn: boolean}> {
     let orderHistoryProducts: OrderHistoryProduct[] = [];
     let isLoggedIn = false;

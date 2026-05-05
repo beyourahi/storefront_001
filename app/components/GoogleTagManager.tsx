@@ -1,6 +1,13 @@
 import {useAnalytics} from "@shopify/hydrogen";
 import {useEffect} from "react";
 
+/**
+ * Registers with Hydrogen's analytics bus and forwards standard storefront events
+ * (page view, product view, collection view, cart view/update, search) to `window.dataLayer`
+ * in GA4 ecommerce format. `cart_updated` computes per-item quantity deltas so GTM receives
+ * accurate `add_to_cart` / `remove_from_cart` events rather than full-cart snapshots.
+ * Renders nothing — purely side-effect.
+ */
 export const GoogleTagManager = () => {
     const {subscribe, register} = useAnalytics();
     const {ready} = register("Google Tag Manager");

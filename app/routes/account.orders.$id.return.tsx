@@ -48,6 +48,7 @@ export const loader = async ({params, context}: Route.LoaderArgs) => {
         throw redirect("/account/orders");
     }
 
+    // Order IDs are base64-encoded in the URL (encoded by the orders list route via btoa).
     const orderId = atob(params.id);
     const {data, errors}: {data: OrderQuery; errors?: Array<{message: string}>} = await customerAccount.query(
         CUSTOMER_ORDER_QUERY,

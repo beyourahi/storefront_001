@@ -15,6 +15,13 @@ type AddToCartButtonProps = {
     className?: string;
 };
 
+/**
+ * Inner button that reads the shared `"cart-mutation"` fetcher to track state.
+ * `prevFetcherStateRef` detects the transition from a non-idle state back to idle
+ * (i.e. the action completed) without triggering on the initial idle render.
+ * On success: shows a "ADDED!" flash for 1.5s and opens the cart drawer.
+ * On error/warning: shows a sonner toast with the server-returned message.
+ */
 const AddToCartButtonInner = ({
     disabled = false,
     isPreorder = false,

@@ -30,6 +30,12 @@ interface WishlistButtonProps
     className?: string;
 }
 
+/**
+ * Toggle button for wishlisting a product. Disabled until the wishlist context
+ * hydrates from localStorage to prevent flicker. Plays a brief burst-ring
+ * animation on click and a glow animation for 2 seconds after adding.
+ * Uses `useWishlistSafe` so it renders in contexts outside the full wishlist provider.
+ */
 export const WishlistButton = ({
     productId,
     size,

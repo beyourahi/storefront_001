@@ -7,6 +7,15 @@ declare global {
     }
 }
 
+/**
+ * Registers `/sw.js` after the page has loaded and sets up SW lifecycle handling.
+ * - Dispatches a `"sw-update-available"` custom event when a new worker finishes installing
+ *   so the PWA update banner can prompt the user to reload.
+ * - Listens for `"controllerchange"` to trigger a page reload when a waiting worker activates
+ *   (prevents serving stale assets after a SW update).
+ * - Forwards `CACHE_MISS` messages from the SW to `trackCacheMiss` for analytics.
+ * Renders nothing — purely side-effect.
+ */
 export const ServiceWorkerRegistration = () => {
     useEffect(() => {
         if (typeof window === "undefined") return;

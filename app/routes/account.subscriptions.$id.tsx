@@ -62,6 +62,7 @@ export const loader = async ({params, context}: Route.LoaderArgs) => {
         throw new Response("Subscription ID is required", {status: 400});
     }
 
+    // Subscription IDs are base64-encoded in the URL (encoded by the index route via btoa).
     const subscriptionId = atob(params.id);
 
     const {data, errors} = await customerAccount.query(CUSTOMER_SUBSCRIPTION_QUERY, {

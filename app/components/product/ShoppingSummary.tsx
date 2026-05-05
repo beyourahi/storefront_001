@@ -159,6 +159,17 @@ const LoadingSkeleton = () => (
     </div>
 );
 
+/**
+ * Pre-purchase order summary for the PDP. Reads the deferred cart promise from the
+ * root loader via `useRouteLoaderData` and renders inside `<Await>` + `<Suspense>`,
+ * so the cart total is available without blocking the page render.
+ * `SummaryContent` shows the projected "New Total" by adding the selected variant's
+ * line total to the existing cart subtotal. When no cart exists the label reads
+ * "Total"; when items already exist it reads "New Total" and shows the current cart
+ * line above the new item for context.
+ * Renders a skeleton when `isLoading` is true (initial variant fetch) and a spinner
+ * inside `SummaryContent` when `isVariantTransitioning` with no price yet resolved.
+ */
 export const ShoppingSummary = ({
     product,
     selectedVariant,

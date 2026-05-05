@@ -13,6 +13,12 @@ interface ProductDiscountBadgeProps {
     className?: string;
 }
 
+/**
+ * PDP-specific discount badge (inline, no absolute positioning).
+ * Prefers the selected variant's exact discount; falls back to the product-level
+ * discount analysis when the variant has no compare-at price. Renders nothing
+ * when there is no discount to show.
+ */
 export const ProductDiscountBadge = ({selectedVariant, product, className}: ProductDiscountBadgeProps) => {
     const variantDiscount = calculateVariantDiscountPercentage(selectedVariant);
 

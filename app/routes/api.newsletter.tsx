@@ -28,6 +28,11 @@ const CUSTOMER_CREATE_MUTATION = `#graphql
   }
 ` as const;
 
+/**
+ * Generates a 24-character cryptographically random password using the Web Crypto API.
+ * Required because Shopify's customerCreate mutation requires a password even for
+ * newsletter-only registrations where the customer never logs in.
+ */
 const generateSecurePassword = (): string => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
     const randomBytes = new Uint8Array(24);

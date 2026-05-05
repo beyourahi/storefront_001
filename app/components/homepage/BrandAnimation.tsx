@@ -35,6 +35,14 @@ const ANIMATION_DAMPING_UP = 0.12;
 
 const BrandAnimationContext = createContext<BrandAnimationContextValue | null>(null);
 
+/**
+ * Provides scroll-driven brand text animation state to its subtree.
+ * Tracks a `progress` value (0→1) tied to how far the hero has been scrolled past.
+ * Uses frame-rate-independent exponential damping (`1 - (1 - k)^(dt/16.67)`) so the
+ * animation feels consistent at both 60fps and 120fps; the damping constants are
+ * symmetric (same value for scroll-down and scroll-up) so it eases the same way
+ * in both directions.
+ */
 export function BrandAnimationProvider({children}: {children: ReactNode}) {
     const heroRef = useRef<HTMLElement>(null!);
     const [heroHeight, setHeroHeight] = useState(0);
@@ -151,6 +159,19 @@ function calculateOptimalFontSize(element: HTMLElement, maxWidth: number): numbe
     return max;
 }
 
+/**
+ * Animates the brand name from a full-width hero fill to the navbar wordmark
+ * position as the user scrolls. Rendered as a `position: fixed` element so it
+ * can move outside its DOM parent.
+ *
+ * Two-phase measurement:
+ * 1. Binary-search font size so the text fills the hero container width exactly.
+ * 2. Calculate start (hero) and end (navbar) coordinates in viewport space, then
+ *    lerp between them using eased scroll progress from `useBrandAnimation`.
+ *
+ * The 50ms/100ms `setTimeout` delays before measurement let layout settle after
+ * fonts and images load before the binary search runs.
+ */
 export function AnimatedBrandText() {
     const {progress, heroRef} = useBrandAnimation();
     const {brandName} = useSiteSettings();

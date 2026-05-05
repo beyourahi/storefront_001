@@ -15,6 +15,11 @@ type ShareDialogProps = {
     onClose: () => void;
 };
 
+/**
+ * Full-screen share dialog with platform buttons (Facebook, X, WhatsApp, Pinterest, copy-link).
+ * Locks body scroll via Lenis while open. Clicking the backdrop closes the dialog.
+ * The copy-link button shows a transient "Copied!" label for 2 seconds.
+ */
 export const ShareDialog = ({url, title, onClose}: ShareDialogProps) => {
     useLockBodyScroll(true);
     const [copied, setCopied] = useState(false);

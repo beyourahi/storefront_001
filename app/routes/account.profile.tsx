@@ -59,6 +59,7 @@ export const meta: Route.MetaFunction = () => [{title: "Account Details"}, {name
 
 export const shouldRevalidate = () => true;
 
+/** Debounce delay (ms) before submitting a profile update after the user stops typing. */
 const AUTO_SAVE_DELAY = 800;
 
 export const loader = async ({context}: Route.LoaderArgs) => {
@@ -457,6 +458,11 @@ const AccountProfile = () => {
 
     const isProfileSaving = profileFetcher.state !== "idle";
 
+    /**
+     * Debounced profile save — resets the timer on each keystroke, then submits
+     * a PUT via profileFetcher after AUTO_SAVE_DELAY ms of inactivity.
+     * No-ops when neither field has changed from the server value.
+     */
     const autoSaveProfile = (newFirstName: string, newLastName: string) => {
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 

@@ -87,6 +87,7 @@ export const getProductCardMedia = (product: ShopifyProduct | ProductCardData): 
         }));
 };
 
+/** Computed price display data for a collection card or search result. */
 export interface PriceRangeDisplay {
     displayPrice: string;
     hasRange: boolean;
@@ -99,6 +100,10 @@ export interface PriceRangeDisplay {
     hasMultipleDiscounts?: boolean;
 }
 
+/**
+ * Compute the full `PriceRangeDisplay` for a collection card, scanning all available variants
+ * to find the real min/max prices and the highest discount percentage among on-sale variants.
+ */
 export const getPriceRangeForCard = (product: ShopifyProduct): PriceRangeDisplay => {
     const allVariants = product.variants?.edges?.map(edge => edge.node) || [];
     const availableVariants = allVariants.filter(v => v.availableForSale && Boolean(v.price.amount));
@@ -196,6 +201,12 @@ export const getPriceRangeForCard = (product: ShopifyProduct): PriceRangeDisplay
     };
 };
 
+/**
+ * Convert a raw `ShopifyProduct` into the leaner `ProductCardData` shape.
+ * Selects the variant with the highest discount percentage as the primary variant
+ * so price badges and images reflect the best deal, falling back to the first
+ * available variant and then the first variant regardless of availability.
+ */
 export const transformProductToCardData = (product: ShopifyProduct): ProductCardData => {
     const allVariants = product.variants?.edges?.map(edge => edge.node) || [];
     const availableVariants = allVariants.filter(v => v.availableForSale && Boolean(v.price.amount));
@@ -267,6 +278,10 @@ const hasVariantDiscount = (variant: ShopifyProductVariant): boolean => {
     );
 };
 
+/**
+ * Derive the display price, optional compare-at price, and discount percentage
+ * from a `ProductCardData` object. Returns the `minPrice` when there is no primary variant.
+ */
 export const getCardProductPrice = (
     product: ProductCardData
 ): {
@@ -301,6 +316,11 @@ export const getCardProductPrice = (
     };
 };
 
+/**
+ * Derive display price and discount data directly from a `ShopifyProduct`.
+ * Mirrors `getCardProductPrice` but operates on raw product data — used when
+ * `ProductCardData` has not yet been derived (e.g. PDP price display).
+ */
 export const getProductPriceWithDiscount = (
     product: ShopifyProduct
 ): {
@@ -356,6 +376,11 @@ export const getProductPriceWithDiscount = (
     };
 };
 
+/**
+ * Resolve the best available image for a product card.
+ * Prefers the primary variant's image (e.g. a color-matched swatch image),
+ * falling back to the product's first image and then null.
+ */
 export const getCardProductImage = (product: ProductCardData): {url: string; altText: string | null} | null => {
     const variantImage = product.primaryVariant?.image;
     if (variantImage) return variantImage;
@@ -363,14 +388,20 @@ export const getCardProductImage = (product: ProductCardData): {url: string; alt
     return product.primaryImage || null;
 };
 
+/** Returns true only when both the product and its primary variant are marked available for sale. */
 export const isCardProductInStock = (product: ProductCardData): boolean => {
     return product.availableForSale && (product.primaryVariant?.availableForSale ?? false);
 };
 
+/** Type guard — returns true when `product` is a `ProductCardData` (already transformed). */
 export const isProductCardData = (product: ShopifyProduct | ProductCardData): product is ProductCardData => {
     return "primaryVariant" in product && "primaryImage" in product && "minPrice" in product;
 };
 
+/**
+ * Pick the single best variant to feature: highest discount percentage wins,
+ * or the cheapest variant when no discounts are present. Returns null for empty arrays.
+ */
 export const selectBestVariant = (variants: ShopifyProductVariant[]): ShopifyProductVariant | null => {
     if (variants.length === 0) return null;
 
@@ -405,6 +436,12 @@ export const selectBestVariant = (variants: ShopifyProductVariant[]): ShopifyPro
     return sortedByPrice[0];
 };
 
+/**
+ * Unified accessor for all data a product card needs to render.
+ * Accepts either a raw `ShopifyProduct` or a pre-transformed `ProductCardData`
+ * so callers don't need to branch. Pass `showPriceRange: true` to include the
+ * full `PriceRangeDisplay` (collection cards with range labels).
+ */
 export const getProductDataForCard = (
     product: ShopifyProduct | ProductCardData,
     options?: {showPriceRange?: boolean}

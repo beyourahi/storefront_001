@@ -13,6 +13,16 @@ type MasonryImageGridProps = {
     pageInfo: GalleryPageInfo;
 };
 
+/**
+ * Infinite-scroll masonry gallery. Uses two separate IntersectionObservers:
+ * 1. A sentinel element at the bottom triggers a `fetcher.load` to append the
+ *    next Shopify cursor page (200px lead-in so loading starts before the user
+ *    reaches the end).
+ * 2. Per-image observers control a CSS fade-in, decoupled from the native lazy
+ *    load so the shimmer placeholder hides cleanly after the image paints.
+ * A post-mount `img.complete` check catches images already in the browser cache,
+ * which fire `onLoad` before React attaches the handler.
+ */
 export const MasonryImageGrid = ({initialImages, pageInfo}: MasonryImageGridProps) => {
     const {canHover} = usePointerCapabilities();
     const fetcher = useFetcher<{productImages: GalleryImageData[]; pageInfo: GalleryPageInfo}>({

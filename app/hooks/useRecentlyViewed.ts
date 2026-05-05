@@ -105,6 +105,15 @@ function persistToStorage(items: RecentlyViewedProduct[], config: RecentlyViewed
     }
 }
 
+/**
+ * Manage the recently-viewed product list persisted in `localStorage`.
+ *
+ * Also writes a cookie mirror (max 3.5 KB ≈ 6 products) so server-side loaders
+ * can read the list without waiting for client hydration. Legacy entries that
+ * predate the title/price enrichment are silently dropped on first load.
+ *
+ * @param config - Storage key, max product count, and expiry window (defaults fine for most uses)
+ */
 export function useRecentlyViewed(config: RecentlyViewedConfig = DEFAULT_CONFIG) {
     const [products, setProducts] = useState<RecentlyViewedProduct[]>([]);
     const [isHydrated, setIsHydrated] = useState(false);
@@ -187,6 +196,11 @@ export function useRecentlyViewed(config: RecentlyViewedConfig = DEFAULT_CONFIG)
     }), [products, productIds, productHandles, isHydrated, addProduct, removeProduct, clear, hasProduct]);
 }
 
+/**
+ * Parse the recently-viewed product list from a raw `Cookie` request header.
+ * Used in server-side loaders (e.g., the affinity tool bridge) to access the
+ * list before client hydration. Returns at most 10 products (cookie budget).
+ */
 export function parseRecentlyViewedFromCookie(
     cookieHeader: string | null,
     config: RecentlyViewedConfig = DEFAULT_CONFIG
@@ -229,6 +243,10 @@ export function parseRecentlyViewedFromCookie(
     }
 }
 
+/**
+ * Convenience wrapper: extract just the product GIDs from the cookie.
+ * Used by the `lookup_catalog` agent tool to resolve recently-viewed products.
+ */
 export function getRecentlyViewedIds(
     cookieHeader: string | null,
     config: RecentlyViewedConfig = DEFAULT_CONFIG

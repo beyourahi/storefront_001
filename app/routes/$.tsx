@@ -38,12 +38,10 @@ export function ErrorBoundary() {
         message = error.message;
     }
 
-    // If no root data available, fall back to the offline-aware error page
     if (!rootData) {
         return <OfflineAwareErrorPage statusCode={status} title={undefined} message={message} />;
     }
 
-    // Map menuCollections to CollectionCardData format
     const collections: CollectionCardData[] = (rootData.menuCollections ?? []).map(
         (col: {
             id: string;

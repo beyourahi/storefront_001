@@ -87,6 +87,12 @@ export interface PriceCalculationError {
 
 export type ProductCalculationResult = PriceCalculationResult | PriceCalculationError;
 
+/**
+ * Calculate full pricing (unit, total, savings) for a variant + quantity pair.
+ * Returns a discriminated union: `{error: null, ...}` on success or
+ * `{error: "invalid_variant" | "price_unavailable" | "invalid_price"}` on failure.
+ * All formatted strings use the store's locale via `formatShopifyMoney`.
+ */
 export const calculateProductPricing = (
     selectedVariant: ShopifyProductVariant | null,
     quantity: number
@@ -151,6 +157,10 @@ export const calculateProductPricing = (
     };
 };
 
+/**
+ * Calculate discount percentage from original and sale price.
+ * Returns 0 when there is no discount or the inputs are invalid.
+ */
 export const calculateDiscountPercentage = (originalPrice: number, salePrice: number): number => {
     if (originalPrice <= salePrice || originalPrice <= 0) {
         return 0;
@@ -159,6 +169,10 @@ export const calculateDiscountPercentage = (originalPrice: number, salePrice: nu
     return calculateSavings(originalPrice, salePrice).percentage;
 };
 
+/**
+ * Return formatted price, optional compare-at price, sale flag, and discount
+ * percentage for a single variant. Used by quick-add and compact card surfaces.
+ */
 export const calculatePriceComparison = (
     variant: ShopifyProductVariant
 ): {
@@ -184,6 +198,11 @@ export const calculatePriceComparison = (
     return {price, compareAtPrice, onSale, discountPercentage};
 };
 
+/**
+ * Derive min/max/step constraints for the quantity selector.
+ * Caps `max` at 999 to avoid absurdly large inputs; uses `quantityAvailable`
+ * when known, otherwise defaults to 999.
+ */
 export const calculateQuantityConstraints = (
     variant: ShopifyProductVariant | null
 ): {min: number; max: number; step: number} => {
@@ -196,11 +215,19 @@ export const calculateQuantityConstraints = (
     };
 };
 
+/**
+ * Clamp a raw quantity input to the variant's valid min/max range.
+ * Use before submitting quantity to the cart action.
+ */
 export const validateQuantityInput = (quantity: number, variant: ShopifyProductVariant | null): number => {
     const constraints = calculateQuantityConstraints(variant);
     return Math.max(constraints.min, Math.min(quantity, constraints.max));
 };
 
+/**
+ * Check whether applying `adjustment` to the current `quantity` stays within
+ * the variant's min/max bounds. Used to enable/disable the +/− stepper buttons.
+ */
 export const canAdjustQuantity = (
     quantity: number,
     adjustment: number,
@@ -212,6 +239,10 @@ export const canAdjustQuantity = (
     return newQuantity >= constraints.min && newQuantity <= constraints.max;
 };
 
+/**
+ * Return formatted price info for a product using its first variant.
+ * Falls back to `priceRange.minVariantPrice` when no variants are present.
+ */
 export const formatProductPrice = (
     product: ShopifyProduct
 ): {price: string; compareAtPrice?: string; onSale: boolean} => {

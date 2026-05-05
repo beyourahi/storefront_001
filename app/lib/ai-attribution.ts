@@ -1,3 +1,9 @@
+/**
+ * Utilities for detecting AI-originated traffic from request headers and URL params.
+ * Used by the agentic layer to inject UTM attribution when redirecting AI visitors.
+ * Server-side only — never imported by client components.
+ */
+
 // Known AI surface referrer domains — mapped to their utm_source values
 const AI_REFERRER_MAP: Record<string, string> = {
     "chatgpt.com": "chatgpt",

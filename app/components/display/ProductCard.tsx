@@ -16,6 +16,13 @@ import {ProductCardMediaCarousel} from "~/components/display/ProductCardMediaCar
 import type {UnifiedProductCardProps} from "~/lib/types/product-card";
 const FALLBACK_THEME_PRODUCT_IMAGE_ASPECT_RATIO: "portrait" | "landscape" | "square" = "portrait";
 
+/**
+ * Grid product card with inline quick-add and wishlist controls.
+ * `insideCarousel` suppresses `ProductCardMediaCarousel`'s internal Embla instance
+ * so it does not conflict with a parent horizontal carousel on the same drag axis.
+ * The quick-add area stops pointer and click propagation to prevent the parent
+ * `<Link>` from navigating when the add-to-cart button is tapped.
+ */
 export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false}: UnifiedProductCardProps) => {
     const {canHover} = usePointerCapabilities();
     const {isPressing, handlers: pressHandlers} = useIntentPress(canHover);

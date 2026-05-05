@@ -5,6 +5,12 @@ interface GtmScriptProps {
     gtmContainerId: string;
 }
 
+/**
+ * Injects the GTM snippet and `<noscript>` iframe into the document.
+ * Renders client-side only (guarded by `isClient`) to avoid SSR hydration mismatches.
+ * The container ID is validated against the `GTM-[A-Z0-9]+` pattern before injection
+ * to prevent script injection through malformed environment values.
+ */
 export const GtmScript = ({gtmContainerId}: GtmScriptProps) => {
     const nonce = useNonce();
     const [isClient, setIsClient] = useState(false);

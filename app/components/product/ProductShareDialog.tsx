@@ -15,6 +15,14 @@ type ProductShareDialogProps = {
     shopName?: string;
 };
 
+/**
+ * Share sheet for a product. Constructs `shareData` (URL, title, price) from the
+ * selected variant and delegates to `SharePlatformButton` for each platform.
+ * The "copy link" platform is rendered separately — full-width below the 2-column
+ * social grid — to match its distinct UX (clipboard action vs external link).
+ * Image fades in from a shimmer placeholder to avoid flash when the dialog reopens
+ * with the same product image still in cache.
+ */
 export const ProductShareDialog = ({product, variant, open = false, onOpenChange, shopName}: ProductShareDialogProps) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const location = useLocation();

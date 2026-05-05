@@ -49,6 +49,12 @@ interface WishlistProduct {
     seo: {title: string | null; description: string | null};
 }
 
+/**
+ * Homepage section that fetches and carousels the current user's wishlisted products.
+ * Reads IDs from the wishlist context, reconstructs full GIDs, then POSTs them to
+ * `/api/wishlist-products` via a fetcher. Renders nothing when the wishlist is empty.
+ * Capped at 8 products; shows skeleton cards while loading.
+ */
 export const HomepageWishlistSection = () => {
     const {ids, count} = useWishlist();
     const fetcher = useFetcher<{products: WishlistProduct[]}>();

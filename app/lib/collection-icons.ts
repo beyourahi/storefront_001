@@ -1,3 +1,8 @@
+/**
+ * Maps a collection to a Lucide icon by matching its title and handle
+ * against common product category keywords. Falls back to `Archive`
+ * when no category pattern matches.
+ */
 import type {LucideIcon} from "lucide-react";
 import {
     Archive,

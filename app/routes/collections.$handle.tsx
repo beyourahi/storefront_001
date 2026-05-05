@@ -92,6 +92,11 @@ export async function loader(args: Route.LoaderArgs) {
     return {...deferredData, ...criticalData};
 }
 
+/**
+ * Loads collection metadata and the first page of products. Applies server-side
+ * affinity re-ranking for authenticated customers on top of the GraphQL sort order.
+ * Throws a redirect if the handle is localized or the page param is out of range.
+ */
 async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     const {handle} = params;
     const {dataAdapter} = context;
@@ -188,6 +193,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     };
 }
 
+/** Loads sidebar collection data without blocking the render. Falls back to null on timeout or error. */
 function loadDeferredData({context}: Route.LoaderArgs) {
     const {dataAdapter} = context;
 
@@ -209,14 +215,12 @@ export default function CollectionPage() {
     const {collection, products, pagination, sort, sortLabel} =
         useLoaderData<typeof loader>();
 
-    // Normalize products for display
     const normalizedProducts = products.map(fromStorefrontNode);
 
     const showPagination = pagination.hasNextPage || pagination.hasPreviousPage;
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            {/* Breadcrumbs */}
             <PageBreadcrumbs customTitle={collection.title} />
 
             <AnimatedSection animation="fade" threshold={0.08}>
@@ -229,7 +233,6 @@ export default function CollectionPage() {
                 </div>
             </AnimatedSection>
 
-            {/* Sort and Filter Controls */}
             <SortFilterBar
                 currentSort={sort}
                 totalProducts={normalizedProducts.length}

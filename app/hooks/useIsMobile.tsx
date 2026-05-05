@@ -1,5 +1,13 @@
 import {useState, useEffect} from "react";
 
+/**
+ * Returns `true` when the viewport is narrower than `breakpoint` pixels.
+ * Uses `window.matchMedia` so the listener fires only at the boundary,
+ * not on every pixel change. Defaults to `false` before hydration.
+ *
+ * @param breakpoint - Viewport width in pixels below which the device is
+ *                     considered mobile (default: 1024, matching Tailwind `lg`)
+ */
 export const useIsMobile = (breakpoint = 1024) => {
     const [isMobile, setIsMobile] = useState(false);
 

@@ -13,6 +13,12 @@ type CollectionPaginationProps = {
     inline?: boolean;
 };
 
+/**
+ * Cursor-based paginator for collection routes. Encodes `cursor` and `direction`
+ * as URL search params so the loader can resume from the correct Shopify page-info
+ * cursor. Page 1 removes all cursor params to reset to a clean URL.
+ * Scrolls to the top of the page on every navigation.
+ */
 export const CollectionPagination = ({
     currentPage,
     hasNextPage,

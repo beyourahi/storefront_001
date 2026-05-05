@@ -30,6 +30,14 @@ type MobileMenuProps = {
     shopName: string;
 };
 
+/**
+ * Orchestrator for the mobile navigation overlay. Splits the `collections` prop
+ * into "special" (featured, best-sellers, new-arrivals, trending) and "regular"
+ * arrays for distinct presentation slots in `MobileMenuCollections`.
+ * Applies `useLockBodyScroll` only on desktop — the mobile Drawer primitive
+ * handles scroll-lock automatically, but the desktop overlay (no Radix primitive)
+ * requires a manual lock.
+ */
 export const MobileMenu = ({show, onClose, collections = [], shopName}: MobileMenuProps) => {
     const {pathname: currentPath} = useLocation();
     const isMobile = useIsMobile();

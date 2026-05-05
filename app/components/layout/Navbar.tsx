@@ -28,6 +28,14 @@ type NavbarProps = {
     collections?: CollectionCardData[];
 };
 
+/**
+ * Floating quantity badge rendered inside the cart icon button.
+ * Must be used inside `<Await resolve={data?.cart}>` so `useAsyncValue` can
+ * read the deferred cart. `useOptimisticCart` applies pending mutations
+ * immediately so the count updates before the server confirms.
+ * Shows an `animate-ping` pulse when idle; suppresses it while a mutation is
+ * in-flight to avoid visual noise during rapid adds/removes.
+ */
 function CartBadge() {
     const originalCart = useAsyncValue() as CartApiQueryFragment | null;
     const cart = useOptimisticCart(originalCart);

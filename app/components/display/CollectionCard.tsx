@@ -11,6 +11,15 @@ type CollectionCardProps = {
     collection: CollectionCardData;
 };
 
+/**
+ * Collection card with three rendering paths for the image area:
+ * 1. Regular collections — display the Shopify collection image.
+ * 2. "Shop All" (`handle === "all"`, synthetic `id === "shop-all-special-collection"`) —
+ *    shows a real image when available, falls back to an animated icon grid.
+ * 3. "Special Offers" (`handle === "discounts"`, synthetic `id`) — animated discount
+ *    visual; parses `maxDiscountPercentage` from the collection description.
+ * Hover scale is suppressed on pointer-less devices via `usePointerCapabilities`.
+ */
 export const CollectionCard = ({collection}: CollectionCardProps) => {
     const {canHover} = usePointerCapabilities();
     const productCount = collection.productCount || 0;

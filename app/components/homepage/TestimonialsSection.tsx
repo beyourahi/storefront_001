@@ -32,6 +32,13 @@ const StarRating = ({rating}: {rating: number}) => (
     </div>
 );
 
+/**
+ * Auto-scrolling testimonials carousel sourced from props or site-settings context.
+ * `StarRating` renders fractional stars via CSS `clipPath` — `getStarFill` computes
+ * the right-edge clip percentage for each star position so partial fills look smooth.
+ * Autoplay is configured with `stopOnInteraction: false` to keep scrolling even after
+ * a user swipe.
+ */
 export const TestimonialsSection = ({testimonials: externalTestimonials}: TestimonialsSectionProps) => {
     const {testimonials: settingsTestimonials} = useSiteSettings();
     const testimonials = externalTestimonials || settingsTestimonials;

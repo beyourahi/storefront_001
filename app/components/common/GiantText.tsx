@@ -16,6 +16,13 @@ type GiantTextProps = Omit<HTMLAttributes<HTMLDivElement>, "className" | "style"
     as?: "div" | "h1" | "h2" | "h3" | "p";
 };
 
+/**
+ * Fills the full width of its container by binary-searching for the largest font
+ * size (between 1px and 2500px) at which the text still fits without wrapping.
+ * Uses a `ResizeObserver` and `document.fonts.ready` to re-run the search when
+ * the container resizes or custom fonts load. A `mountedRef` guard prevents
+ * stale rAF callbacks from firing after unmount.
+ */
 export const GiantText = ({text, className, textClass, style, as: Tag = "div", ...restProps}: GiantTextProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const textRef = useRef<HTMLSpanElement>(null);

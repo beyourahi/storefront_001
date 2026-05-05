@@ -44,27 +44,20 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     const {dataAdapter} = context;
     const url = new URL(request.url);
 
-    // Parse pagination params
     const {cursor, page, direction} = parsePaginationParams(url);
     const pageParam = url.searchParams.get("page");
-
-    // Parse sort and filter params from URL
     const {sort, sortKey, reverse, sortLabel} = parseSortFilterParams(url);
 
-    // Build GraphQL variables for cursor-based pagination
-    // Note: QueryRoot.products doesn't support filters/sortKey like Collection.products,
-    // so we sort client-side.
+    // QueryRoot.products does not support sortKey or filters like Collection.products — sort client-side.
     const variables = {
         ...buildPaginationVariables(cursor, direction, 48)
     };
 
-    // Query all products with pagination
     const {products} = await dataAdapter.query(CATALOG_QUERY, {
         variables,
         cache: dataAdapter.CacheShort()
     });
 
-    // Client-side sorting based on sort param
     const productsToSort = [...products.nodes];
     productsToSort.sort((a: any, b: any) => {
         let cmp = 0;
@@ -100,7 +93,6 @@ export const loader = async ({context, request}: Route.LoaderArgs) => {
     // Build pagination data
     const pagination = buildPaginationData(products.pageInfo, page);
 
-    // Check for canonical redirect
     const canonicalRedirect = getCanonicalRedirect(url, page, pagination.hasNextPage, pageParam);
     if (canonicalRedirect) {
         throw redirect(canonicalRedirect);
@@ -119,17 +111,13 @@ export default function AllProductsPage() {
     const {products, totalProductCount, pagination, sort, sortLabel} =
         useLoaderData<typeof loader>();
 
-    // Normalize products for display
     const normalizedProducts = products.map(fromStorefrontNode);
 
     const showPagination = pagination.hasNextPage || pagination.hasPreviousPage;
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            {/* Breadcrumbs */}
             <PageBreadcrumbs customTitle="All Products" />
-
-            {/* Shop All Hero */}
             <ShopAllHero
                 title="All Products"
                 subtitle={

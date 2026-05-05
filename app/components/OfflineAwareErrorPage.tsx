@@ -10,6 +10,13 @@ interface OfflineAwareErrorPageProps {
     message?: string;
 }
 
+/**
+ * Error page that is aware of the user's network state.
+ * When offline, it overrides the HTTP error UI with a connectivity-loss message
+ * regardless of `statusCode`. For online users it delegates to `NotFoundErrorUI`
+ * (404) or `GenericErrorUI` (all other codes). Network state is observed via
+ * `window.online` / `window.offline` events — safe-guarded for SSR.
+ */
 export const OfflineAwareErrorPage = ({statusCode, title, message}: OfflineAwareErrorPageProps) => {
     const [isOffline, setIsOffline] = useState(false);
 

@@ -50,6 +50,7 @@ interface CachedTheme {
     timestamp: number;
 }
 
+/** Persist the generated theme to localStorage for offline page use. */
 export function saveThemeToStorage(theme: GeneratedTheme): void {
     if (typeof window === "undefined") return;
 
@@ -64,6 +65,7 @@ export function saveThemeToStorage(theme: GeneratedTheme): void {
     }
 }
 
+/** Read the cached theme from localStorage. Returns null in SSR, on parse error, or when not yet saved. */
 export function getThemeFromStorage(): GeneratedTheme | null {
     if (typeof window === "undefined") return null;
 
@@ -92,6 +94,7 @@ export function getThemeFromStorage(): GeneratedTheme | null {
     }
 }
 
+/** Returns the Unix timestamp (ms) when the theme was last cached, or null if unavailable. */
 export function getThemeCacheTimestamp(): number | null {
     if (typeof window === "undefined") return null;
 
@@ -116,20 +119,27 @@ export function getThemeCacheTimestamp(): number | null {
     }
 }
 
+/** Remove the cached theme from localStorage. No-op in SSR. */
 export function clearThemeStorage(): void {
     if (typeof window === "undefined") return;
 
     try {
         localStorage.removeItem(STORAGE_KEY);
     } catch {
-        // Silent fail
+        // Ignore quota or permission errors
     }
 }
 
+/** Returns true if a valid cached theme exists in localStorage. */
 export function hasThemeInStorage(): boolean {
     return getThemeFromStorage() !== null;
 }
 
+/**
+ * Ask the active service worker to refresh the `/offline` route cache.
+ * Ensures the offline page SSR renders the latest theme CSS.
+ * No-op when the SW is not registered or not yet active.
+ */
 export async function updateOfflinePageCache(): Promise<void> {
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;

@@ -12,6 +12,19 @@ type ProductDescriptionAccordionProps = {
     className?: string;
 };
 
+/**
+ * Description renderer with two distinct layouts:
+ * - **Mobile (<768px)**: collapsible accordion with a 70-char preview snippet and
+ *   a one-time animated "Tap to explore details" hint. The hint persists until first
+ *   tap, then is permanently suppressed via `localStorage` key
+ *   `"product-description-accordion-interacted"` so it never appears again.
+ * - **Desktop**: description rendered inline without accordion chrome.
+ *
+ * `descriptionHtml` is preferred over `description`; falls back to plain text when
+ * HTML is absent. The `<` presence check guards the HTML rendering path so plain-text
+ * descriptions are never passed through as HTML. Content originates from Shopify's
+ * Storefront API and is not user-supplied.
+ */
 export const ProductDescriptionAccordion = ({product, className = ""}: ProductDescriptionAccordionProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [openItems, setOpenItems] = useState<string[]>([]);

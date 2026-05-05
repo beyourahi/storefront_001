@@ -54,6 +54,12 @@ const getGreeting = (hours: number): string => {
     return greetings.fallback;
 };
 
+/**
+ * Full-viewport hero with a live clock and time-of-day greeting.
+ * Uses two separate intervals to minimize re-renders: a 1-second interval
+ * updates the time display only, while a 60-second interval updates both the
+ * date string and the greeting (which is derived from the current hour).
+ */
 export const HeroSection = ({shopName}: HeroSectionProps) => {
     const {heroDescription} = useSiteSettings();
     const mediaConfig = FALLBACK_HERO_MEDIA_CONFIG;

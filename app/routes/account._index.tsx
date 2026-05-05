@@ -81,6 +81,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
     );
 };
 
+/** Returns a time-appropriate greeting based on the server's local hour. */
 const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 6) return "Good night";
@@ -90,6 +91,7 @@ const getGreeting = () => {
     return "Good night";
 };
 
+/** Extracts first + last initial from the customer fragment for the avatar fallback. */
 const getInitials = (customer: CustomerFragment | null) => {
     if (!customer) return "?";
     const first = customer.firstName?.charAt(0) ?? "";
@@ -97,6 +99,7 @@ const getInitials = (customer: CustomerFragment | null) => {
     return (first + last).toUpperCase() || "?";
 };
 
+/** Formats the customer's creation date as "Month YYYY" for the stats widget. Returns null if absent. */
 const formatMemberSince = (dateString: string | null | undefined) => {
     if (!dateString) return null;
     return new Date(dateString).toLocaleDateString(STORE_FORMAT_LOCALE, {

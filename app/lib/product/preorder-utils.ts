@@ -79,12 +79,17 @@ type ProductCardData = {
     maxDiscountSavings: number;
 };
 
+/** Lowercase and strip hyphens/spaces so tag comparison is format-agnostic. */
 const normalizeTag = (tag: string): string => {
     return tag.toLowerCase().replace(/[-\s]/g, "");
 };
 
 const PREORDER_TAG_NORMALIZED = "preorder";
 
+/**
+ * Returns true when any of the product's tags normalizes to "preorder".
+ * Accepts partial product shapes — safe to call with card data or order-line items.
+ */
 export const isPreorderProduct = (product: ShopifyProduct | ProductCardData | {tags?: string[]}): boolean => {
     if (!product) return false;
 

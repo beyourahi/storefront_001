@@ -35,10 +35,7 @@
 
 import Lenis from "lenis";
 
-/**
- * Smooth scroll configuration constants
- * Matching the exact values from mindframe-media
- */
+/** Smooth scroll configuration constants. */
 export const SMOOTH_SCROLL = {
     DURATION: 1.2,
     WHEEL_MULTIPLIER: 1,
@@ -51,10 +48,7 @@ export const SMOOTH_SCROLL = {
  */
 const expoEaseOut = (t: number): number => Math.min(1, 1.001 - Math.pow(2, -10 * t));
 
-/**
- * Initialize Lenis smooth scrolling
- * Configuration matches mindframe-media project exactly
- */
+/** Initialize and return a configured Lenis smooth-scroll instance. */
 export const initSmoothScroll = (): Lenis => {
     const lenis = new Lenis({
         duration: SMOOTH_SCROLL.DURATION,

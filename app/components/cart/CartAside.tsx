@@ -7,6 +7,12 @@ import {useIsMobile} from "~/hooks/useIsMobile";
 import {CartMain, CartLoadingSkeleton} from "~/components/cart/CartMain";
 import type {RootLoader} from "~/root";
 
+/**
+ * Responsive cart overlay: renders a bottom `Drawer` on mobile and a side `Sheet`
+ * on desktop. Resolves the deferred `rootData.cart` promise with `<Await>` so the
+ * cart contents stream in without blocking the page. Shows `CartLoadingSkeleton`
+ * during the resolve.
+ */
 export function CartAside() {
     const {isOpen, close} = useCartDrawer();
     const isMobile = useIsMobile();

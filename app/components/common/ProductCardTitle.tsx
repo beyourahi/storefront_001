@@ -7,6 +7,12 @@ type ProductCardTitleProps = {
     searchMode?: boolean;
 };
 
+/**
+ * Responsive product title block that splits the product name into primary/secondary
+ * parts via `parseProductTitle` and scales font sizes per grid density (`viewMode`).
+ * `searchMode` applies a tighter size table so titles don't overflow in the
+ * denser search-results grid.
+ */
 export const ProductCardTitle = ({productTitle, viewMode = "grid3", searchMode = false}: ProductCardTitleProps) => {
     const {primary, secondary} = useMemo(() => parseProductTitle(productTitle), [productTitle]);
 

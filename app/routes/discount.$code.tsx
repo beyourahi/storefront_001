@@ -6,6 +6,13 @@ export const meta: Route.MetaFunction = () => [
     {name: "robots", content: "noindex"}
 ];
 
+/**
+ * Applies a discount code to the cart and redirects to the destination URL.
+ * Validates the redirect target against the request origin to prevent open-redirect
+ * attacks; defaults to "/" if the target is absent or cross-origin.
+ * Appends `?discount_applied=<code>` or `?discount_error=invalid` so the
+ * destination page can surface a notification to the customer.
+ */
 export const loader = async ({request, context, params}: Route.LoaderArgs) => {
     const {cart} = context;
     const {code} = params;

@@ -62,6 +62,12 @@ interface QuickAddSheetProps {
     onOpenChange: (open: boolean) => void;
 }
 
+/**
+ * Variant selection bottom sheet for mobile quick-add flows.
+ * Mobile counterpart to `QuickAddDialog`: renders a compact thumbnail header,
+ * scrollable option chips, quantity picker, wishlist, share, and cart action.
+ * Resets quantity and selection on close.
+ */
 export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps) {
     const [quantity, setQuantity] = useState(1);
     const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
@@ -360,6 +366,11 @@ function QuickAddCartButton({
     );
 }
 
+/**
+ * Group variants into per-option-name buckets, tracking availability.
+ * Only option groups with more than one available value are included —
+ * single-value axes offer no selection choice and are omitted.
+ */
 function groupVariantsByOption(
     variants: QuickAddVariant[]
 ): Array<{name: string; values: Array<{value: string; variantId: string; hasAvailableVariant: boolean}>}> {
@@ -399,6 +410,7 @@ function groupVariantsByOption(
     return result;
 }
 
+/** Flatten a variant's `selectedOptions` array into a `{optionName: value}` map. */
 function getSelectedOptionsFromVariant(variant: QuickAddVariant | undefined): Record<string, string> {
     if (!variant?.selectedOptions) return {};
     const selections: Record<string, string> = {};
@@ -406,6 +418,7 @@ function getSelectedOptionsFromVariant(variant: QuickAddVariant | undefined): Re
     return selections;
 }
 
+/** Find the first variant that matches all entries in `selections`. */
 function findVariantByOptions(
     variants: QuickAddVariant[],
     selections: Record<string, string>
