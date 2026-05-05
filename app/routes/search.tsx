@@ -1321,11 +1321,12 @@ const SEARCH_PRODUCT_FRAGMENT = `#graphql
         currencyCode
       }
     }
-    variants(first: 1) {
+    variants(first: 5) {
       nodes {
         id
         title
         availableForSale
+        quantityAvailable
         price {
           amount
           currencyCode

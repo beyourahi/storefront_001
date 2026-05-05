@@ -252,6 +252,7 @@ const CATALOG_QUERY = `#graphql
             id
             title
             availableForSale
+            quantityAvailable
             selectedOptions {
               name
               value
