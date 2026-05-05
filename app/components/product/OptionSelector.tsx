@@ -84,7 +84,7 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                             key={option.name + name}
                                             variant={selected ? "default" : "secondary"}
                                             size="sm"
-                                            className="min-w-20 h-11 sm:h-8"
+                                            className="min-w-24 h-11 sm:h-8"
                                             asChild
                                         >
                                             <Link
@@ -104,7 +104,7 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                         key={option.name + name}
                                         variant={selected ? "default" : "secondary"}
                                         size="sm"
-                                        className="min-w-20 h-11 sm:h-8"
+                                        className="min-w-24 h-11 sm:h-8"
                                         disabled={!exists || !available}
                                         type="button"
                                         onClick={() => {
