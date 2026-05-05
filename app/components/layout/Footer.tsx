@@ -1,5 +1,5 @@
 import {Link, useLocation} from "react-router";
-import {FileText, RefreshCw, Shield, Truck, type LucideIcon} from "lucide-react";
+import {ArrowUpRight, FileText, RefreshCw, Shield, Truck, type LucideIcon} from "lucide-react";
 import {POLICY_LINKS, DEVELOPER_CONFIG} from "~/lib/navigation";
 import {useSiteSettings} from "~/lib/site-content-context";
 import {NewsletterSignup} from "~/components/common/NewsletterSignup";
@@ -195,6 +195,7 @@ export const Footer = ({shopName}: {shopName: string}) => {
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 font-semibold text-primary transition-colors duration-[220ms] ease-[var(--motion-ease-standard)] group-hover:text-primary">
                             {DEVELOPER_CONFIG.name}
+                            <ArrowUpRight className="size-3.5 shrink-0" aria-hidden="true" />
                         </span>
                     </a>
                 </div>
