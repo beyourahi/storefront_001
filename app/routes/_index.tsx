@@ -454,6 +454,7 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
                 id
                 title
                 availableForSale
+                quantityAvailable
                 selectedOptions { name value }
                 price { amount currencyCode }
                 compareAtPrice { amount currencyCode }
@@ -505,6 +506,7 @@ const ALL_PRODUCTS_QUERY = `#graphql
               id
               title
               availableForSale
+              quantityAvailable
               selectedOptions { name value }
               price { amount currencyCode }
               compareAtPrice { amount currencyCode }

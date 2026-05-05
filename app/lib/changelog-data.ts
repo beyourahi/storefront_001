@@ -40,7 +40,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         category: "Fix",
         headline: "Low-stock badge now reliably appears on product cards",
         summary:
-            "The 'Low Stock' indicator on product cards was not showing even for items with limited inventory. It now correctly appears whenever any purchasable size or option is running low — matching the warning shown on the product page."
+            "The 'Low Stock' badge was not appearing on product cards across the homepage and search results. The storefront now fetches live inventory data for all product listings, so the badge correctly shows whenever any size or option is running low — matching the warning on the product page."
     },
     {
         date: "2026-05-05",
