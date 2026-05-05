@@ -102,9 +102,15 @@ export const ProductPurchaseSection = ({
                         />
 
                         {quantityLeft !== null && (
-                            <p className="text-sm font-medium text-amber-700">
-                                Only {quantityLeft} left
-                            </p>
+                            <div className="inline-flex items-center gap-2 rounded-full border border-warning/20 bg-warning/10 px-3 py-1">
+                                <span className="relative flex size-2 shrink-0" aria-hidden="true">
+                                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-warning opacity-60 motion-reduce:animate-none" />
+                                    <span className="relative inline-flex size-2 rounded-full bg-warning" />
+                                </span>
+                                <span className="text-[11px] font-semibold uppercase tracking-widest text-warning-foreground">
+                                    Only {quantityLeft} left
+                                </span>
+                            </div>
                         )}
 
                         <QuantitySelector
