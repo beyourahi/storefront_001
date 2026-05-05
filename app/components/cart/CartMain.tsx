@@ -1,6 +1,7 @@
 import {useOptimisticCart} from "@shopify/hydrogen";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 import {Link} from "react-router";
+import {createPortal} from "react-dom";
 import {useAgentSurface} from "~/lib/agent-surface-context";
 import {ShoppingCart} from "lucide-react";
 import {Button} from "~/components/ui/button";
@@ -11,6 +12,22 @@ import {CartSummary} from "~/components/cart/CartSummary";
 import {CartSuggestions} from "~/components/cart/CartSuggestions";
 import {AgentArrivalBanner} from "~/components/cart/AgentArrivalBanner";
 import {AgentCartView} from "~/components/cart/AgentCartView";
+import {useCartMutationPending} from "~/lib/cart-utils";
+
+// Renders a fixed, full-viewport overlay via portal when any cart mutation is
+// in-flight. Escape-hatches the Sheet's stacking context (which has active CSS
+// transitions that can trap fixed children) by appending directly to document.body.
+function CartMutationOverlay() {
+    const isMutating = useCartMutationPending();
+    if (!isMutating || typeof document === "undefined") return null;
+    return createPortal(
+        <div
+            className="fixed inset-0 z-[101] cursor-wait"
+            aria-hidden="true"
+        />,
+        document.body
+    );
+}
 
 export function CartMain({
     cart: originalCart,
@@ -44,6 +61,7 @@ export function CartMain({
 
     return (
         <div className="flex h-full min-h-0 flex-col">
+            <CartMutationOverlay />
             <CartAsideHeader
                 lineCount={cart?.lines?.nodes?.length ?? 0}
                 totalQuantity={cart?.totalQuantity ?? 0}
