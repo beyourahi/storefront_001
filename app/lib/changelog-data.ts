@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-05",
+        category: "Fix",
+        headline: "Product page image gallery snaps cleanly between photos",
+        summary:
+            "Swiping or dragging through images on the product detail page now always snaps to a complete photo instead of stopping at a mid-slide position. Browsing product images feels more controlled and consistent on mobile and desktop."
+    },
+    {
+        date: "2026-05-05",
         category: "Performance",
         headline: "Product and collection listings load more completely on first visit",
         summary:
