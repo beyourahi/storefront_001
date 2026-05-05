@@ -81,6 +81,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         summary: "The size guide button and dialog have been removed from product pages. Sizing information is still available through product descriptions and any size-related content set up by the store."
     },
     {
+        date: "2026-04-30",
+        category: "New Feature",
+        headline: "Product pages now show which collections each item belongs to",
+        summary:
+            "Each product detail page now displays the collections it belongs to as small, tappable badge labels. Tapping a collection badge takes you directly to that category, making it easy to discover related products without navigating back through the store structure."
+    },
+    {
         date: "2026-04-28",
         category: "New Feature",
         headline: "AI shopping agents can now build carts for you",
@@ -117,6 +124,20 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         summary: "Gift card badges, digital product indicators, and subscription plan chips now appear on product pages when applicable. Product pages now surface extended catalog fields: gift card detection, digital-product shipping status, available subscription plans, and collection membership."
     },
     {
+        date: "2026-04-28",
+        category: "Fix",
+        headline: "Quick Add no longer accidentally navigates to the product page",
+        summary:
+            "Tapping the backdrop to dismiss a Quick Add sheet or dialog would occasionally open the full product page instead. All Quick Add interactions — variant selection, adding to cart, and closing — are now fully isolated from the product card's navigation."
+    },
+    {
+        date: "2026-04-28",
+        category: "Improvement",
+        headline: "Smoother browsing in product carousels",
+        summary:
+            "Product cards inside horizontal carousels (New Arrivals, You May Also Like, Recently Viewed, Cart Suggestions) now scroll cleanly without triggering the card's own media switcher. Cards displayed in the main grid still support swiping through all product photos."
+    },
+    {
         date: "2026-04-26",
         headline: "AI assistants can now browse and shop the store in natural language",
         summary:
@@ -150,6 +171,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         summary:
             "FAQ page now uses the light editorial design system with numbered questions, replacing the previous dark-theme layout. Questions are displayed in a clean single-column layout with serif typography and mono-spaced index numbers.",
         category: "Improvement"
+    },
+    {
+        date: "2026-04-25",
+        category: "Improvement",
+        headline: "FAQ answers are now open by default for easier browsing",
+        summary:
+            "All FAQ accordion items are now expanded when you arrive on the page so you can scan every answer at a glance without tapping to open each one. Multiple answers can be open at the same time. On stores with more than ten questions, the page shifts to a two-column layout for easier reading."
     },
     {
         date: "2026-04-25",
