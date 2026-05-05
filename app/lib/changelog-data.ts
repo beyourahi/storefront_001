@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-05",
+        category: "New Feature",
+        headline: "Low-stock badge on product cards",
+        summary:
+            "Products running low on inventory now show a 'Low Stock' badge directly on the product card, so you can spot limited-availability items while browsing — no need to open the product page first."
+    },
+    {
+        date: "2026-05-05",
         category: "Improvement",
         headline: "Featured product section CTAs are full width on mobile",
         summary:

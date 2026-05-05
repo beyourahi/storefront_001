@@ -398,6 +398,21 @@ export const isProductCardData = (product: ShopifyProduct | ProductCardData): pr
     return "primaryVariant" in product && "primaryImage" in product && "minPrice" in product;
 };
 
+export const LOW_STOCK_THRESHOLD = 10 as const;
+
+/** Returns true when the product's tracked, available inventory totals 10 or fewer units.
+ * Handles both `variants.nodes` and `variants.edges` access patterns. */
+export const isProductLowStock = (product: ShopifyProduct | ProductCardData): boolean => {
+    if (isProductCardData(product)) return false;
+    const p = product as any;
+    const variantNodes: Array<{availableForSale: boolean; quantityAvailable: number | null}> =
+        p.variants?.nodes ?? p.variants?.edges?.map((e: any) => e.node) ?? [];
+    const trackedAvailable = variantNodes.filter(v => v.availableForSale && v.quantityAvailable != null);
+    if (trackedAvailable.length === 0) return false;
+    const total = trackedAvailable.reduce((sum, v) => sum + v.quantityAvailable!, 0);
+    return total > 0 && total <= LOW_STOCK_THRESHOLD;
+};
+
 /**
  * Pick the single best variant to feature: highest discount percentage wins,
  * or the cheapest variant when no discounts are present. Returns null for empty arrays.

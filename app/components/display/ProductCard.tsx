@@ -5,10 +5,11 @@ import {ProductCardTitle} from "~/components/common/ProductCardTitle";
 import {ProductVariantDialog} from "~/components/ProductVariantDialog";
 import {ProductPageDiscountIndicator} from "~/components/product/ProductPageDiscountIndicator";
 import {PreorderBadge} from "~/components/product/PreorderBadge";
+import {LowStockBadge} from "~/components/product/LowStockBadge";
 import {WishlistButton} from "~/components/WishlistButton";
 import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
 import {useIntentPress} from "~/hooks/useIntentPress";
-import {getProductCardMedia, getProductDataForCard, OUT_OF_STOCK_LABEL} from "~/lib/product/product-card-utils";
+import {getProductCardMedia, getProductDataForCard, OUT_OF_STOCK_LABEL, isProductLowStock} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
@@ -31,6 +32,7 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
     const cardMedia = useMemo(() => getProductCardMedia(product), [product]);
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
     const isOutOfStock = !product.availableForSale;
+    const isLowStock = useMemo(() => !isOutOfStock && isProductLowStock(product), [product, isOutOfStock]);
 
     const {secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
     const hasSecondPart = !!secondary;
@@ -83,7 +85,7 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                     </div>
                 )}
 
-                {/* OOS badge takes priority over preorder — a product can't be preordered if it's OOS */}
+                {/* OOS > preorder > low stock — exclusive right-side badge slot */}
                 {isOutOfStock ? (
                     <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
                         <div className="bg-destructive text-destructive-foreground border-transparent rounded-[var(--radius-xl)] border px-0.5 pr-1 text-xs">
@@ -93,6 +95,10 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                 ) : isPreorder ? (
                     <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
                         <PreorderBadge />
+                    </div>
+                ) : isLowStock ? (
+                    <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
+                        <LowStockBadge />
                     </div>
                 ) : null}
 

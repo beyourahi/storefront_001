@@ -450,6 +450,7 @@ const COLLECTION_QUERY = `#graphql
                 url
                 altText
               }
+              quantityAvailable
             }
           }
           seo {
