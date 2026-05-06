@@ -84,10 +84,10 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                             size="sm"
                                             selected={selected}
                                         />
-                                        <span>{name}</span>
+                                        <span className="leading-none">{name}</span>
                                     </span>
                                 ) : (
-                                    name
+                                    <span className="leading-none">{name}</span>
                                 );
 
                                 if (isDifferentProduct) {

@@ -128,10 +128,10 @@ export function ProductHeroMobile({
                                             selected={selected}
                                             onPrimaryBackground={true}
                                         />
-                                        <span>{name}</span>
+                                        <span className="leading-none">{name}</span>
                                     </span>
                                 ) : (
-                                    <span>{name}</span>
+                                    <span className="leading-none">{name}</span>
                                 );
 
                                 if (isDifferentProduct) {
