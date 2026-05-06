@@ -74,7 +74,7 @@ export function CompactProductCard({
                     {discountPercentage && (
                         <Badge
                             variant="outline"
-                            className="bg-discount-bg text-discount-text border-discount-icon-bg absolute top-0 left-0 z-30 rounded-bl-none px-1 py-0 text-[10px] font-semibold"
+                            className="bg-discount-bg text-discount-text border-discount-icon-bg absolute top-0 left-0 z-30 rounded-full px-1 py-0 text-[10px] font-semibold"
                         >
                             -{Math.round(discountPercentage)}%
                         </Badge>
@@ -83,13 +83,13 @@ export function CompactProductCard({
                     {/* OOS badge takes priority over preorder */}
                     {isOutOfStock ? (
                         <div className="absolute top-0 right-0 z-30">
-                            <div className="bg-muted text-muted-foreground border-border rounded-bl-sm rounded-tr-sm border px-1 text-[9px]">
+                            <div className="bg-muted text-muted-foreground border-border rounded-full border px-1 text-[9px]">
                                 OOS
                             </div>
                         </div>
                     ) : isPreorder ? (
                         <div className="absolute top-0 right-0 z-30">
-                            <PreorderBadge className="rounded-tr-sm rounded-bl-none text-[9px]" />
+                            <PreorderBadge className="rounded-full text-[9px]" />
                         </div>
                     ) : null}
                 </div>

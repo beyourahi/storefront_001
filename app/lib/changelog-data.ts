@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-05-07",
+        category: "Improvement",
+        headline: "All product badges are now consistently pill-shaped",
+        summary:
+            "Discount, status, and product type badges are now fully rounded everywhere — on product cards, product pages, and in the cart. The pill shape is uniform across the entire store, regardless of theme settings."
+    },
+    {
         date: "2026-05-06",
         category: "Improvement",
         headline: "Product page badges now match your store's corner style",
