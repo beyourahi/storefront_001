@@ -38,6 +38,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-06",
         category: "Improvement",
+        headline: "Low stock badge is clearer and easier to read",
+        summary:
+            "The 'Only X left' badge on product pages now uses a solid light amber background instead of a near-transparent tint. Text contrast is now over 10:1 — well above accessibility requirements — making the badge reliably readable regardless of the page background."
+    },
+    {
+        date: "2026-05-06",
+        category: "Improvement",
         headline: "Products always show all options, images, and subscription plans",
         summary:
             "Products with large image galleries, many size or color variants, or multiple subscription frequency options now reliably show every available choice. Previously, items with more than a handful of options could appear incomplete, hiding valid variants or plans a shopper might want."

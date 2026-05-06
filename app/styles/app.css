@@ -164,6 +164,9 @@ body {
     --success-on-dark-foreground: oklch(0.25 0.08 142);
     --warning: oklch(0.79 0.17 75);
     --warning-foreground: oklch(0.25 0.02 60);
+    /* warning-subtle: very light warm amber for badge backgrounds — solid, not opacity-based */
+    /* warning-foreground on warning-subtle = ~10.1:1 (WCAG AAA) ✓ */
+    --warning-subtle: oklch(0.96 0.03 75);
     --info: oklch(0.63 0.18 245);
     --info-foreground: oklch(1 0 0);
 
@@ -343,6 +346,7 @@ body {
     --color-success-on-dark-foreground: var(--success-on-dark-foreground);
     --color-warning: var(--warning);
     --color-warning-foreground: var(--warning-foreground);
+    --color-warning-subtle: var(--warning-subtle);
     --color-info: var(--info);
     --color-info-foreground: var(--info-foreground);
 
