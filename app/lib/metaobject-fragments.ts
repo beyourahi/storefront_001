@@ -62,8 +62,6 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
     # ─────────────────────────────────────────────────────────────────────────
     # HERO SECTION
     # ─────────────────────────────────────────────────────────────────────────
-    heroHeading: field(key: "hero_main_heading") { value }
-    heroDescription: field(key: "hero_description_text") { value }
     featuredProductSection: field(key: "featured_product_section") {
       reference {
         ... on Product {
@@ -230,23 +228,6 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
     # ─────────────────────────────────────────────────────────────────────────
     googleMapsEmbed: field(key: "google_maps_embed") { value }
     googleMapsLink: field(key: "google_maps_link") { value }
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # SECTION HEADINGS
-    # ─────────────────────────────────────────────────────────────────────────
-    blogSectionTitle: field(key: "blog_section_heading") { value }
-    collectionsTitle: field(key: "collections_section_heading") { value }
-    relatedProductsTitle: field(key: "related_products_heading") { value }
-    recommendedTitle: field(key: "recommended_products_heading") { value }
-    instagramTitle: field(key: "instagram_section_heading") { value }
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # PAGE HEADINGS (Gallery & Blog)
-    # ─────────────────────────────────────────────────────────────────────────
-    galleryPageHeading: field(key: "gallery_page_heading") { value }
-    galleryPageDescription: field(key: "gallery_page_description") { value }
-    blogPageHeading: field(key: "blog_page_heading") { value }
-    blogPageDescription: field(key: "blog_page_description") { value }
 
     # ─────────────────────────────────────────────────────────────────────────
     # PROMOTIONAL BANNERS
