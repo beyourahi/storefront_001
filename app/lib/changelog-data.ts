@@ -38,6 +38,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-06",
         category: "Improvement",
+        headline: "Variant buttons are easier to tap across all sizes",
+        summary:
+            "Size and color option buttons on product pages now have a consistent minimum width so short labels like 'S' or 'XS' never produce a tiny, hard-to-tap chip. All variant buttons also meet the 44px minimum touch target on mobile, making option selection more comfortable on touchscreens."
+    },
+    {
+        date: "2026-05-06",
+        category: "Improvement",
         headline: "Product card badges no longer overlap on narrow screens",
         summary:
             "Discount and status badges (out of stock, pre-order, low stock) on product cards now share a single flex layout that wraps gracefully on small screens. Instead of the two badge groups potentially colliding on very narrow cards, they sit side by side when space allows and stack cleanly when it doesn't."

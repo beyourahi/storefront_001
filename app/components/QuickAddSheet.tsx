@@ -238,7 +238,7 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                                                                 setSelectedVariantId(variant.id);
                                                             }
                                                         }}
-                                                        className={cn(!isAvailable && "opacity-50 cursor-not-allowed")}
+                                                        className={cn("min-w-24 h-11 sm:h-8", !isAvailable && "opacity-50 cursor-not-allowed")}
                                                     >
                                                         {optionContent}
                                                     </Button>
