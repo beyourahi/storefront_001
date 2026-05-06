@@ -46,7 +46,7 @@ export const ProductInfoSection = ({isLoading = false, product, discountPercenta
                         <ProductPageDiscountIndicator discountPercentage={discountPercentage} />
                         <ProductBadgeStack types={badgeTypes} />
                         {isOutOfStock && (
-                            <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius-xl)] px-0.5 pr-1.5 py-0 text-xs">
+                            <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius-xl)] px-0.5 pr-1 py-0 text-xs">
                                 <span className="text-destructive-foreground flex items-center gap-1.5 font-medium">
                                     <span className="bg-destructive/80 flex items-center justify-center rounded-[var(--radius-xl)] p-0.5">
                                         <Ban size={12} className="pointer-events-none" aria-hidden="true" />
