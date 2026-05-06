@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-06",
+        category: "Fix",
+        headline: "Product card badges always align left when they wrap",
+        summary:
+            "When a product card shows both a discount badge and a status badge (such as out of stock or pre-order) and the card is narrow enough to push them onto separate lines, both lines now start from the left edge. Previously, the status badge could appear right-aligned on its own row, making the layout look inconsistent."
+    },
+    {
+        date: "2026-05-06",
         category: "Improvement",
         headline: "Variant buttons are easier to tap across all sizes",
         summary:

@@ -84,16 +84,16 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                     status badge to the trailing edge whether it is alone or
                     wrapped below the discount badge. */}
                 {(discountPercentage || isOutOfStock || isPreorder || isLowStock) && (
-                    <div className="absolute inset-x-1 top-1 z-10 sm:inset-x-1.5 sm:top-1.5 flex flex-wrap items-start gap-x-1.5 gap-y-1">
+                    <div className="absolute inset-x-1 top-1 z-10 sm:inset-x-1.5 sm:top-1.5 flex flex-wrap justify-start items-start gap-x-1.5 gap-y-1">
                         {discountPercentage && (
                             <ProductPageDiscountIndicator
                                 discountPercentage={discountPercentage}
                                 hasMultipleDiscounts={priceRange?.hasMultipleDiscounts}
                             />
                         )}
-                        {/* OOS > preorder > low stock — exclusive status slot, ml-auto keeps it at the trailing edge */}
+                        {/* OOS > preorder > low stock — exclusive status slot */}
                         {(isOutOfStock || isPreorder || isLowStock) && (
-                            <div className="ml-auto flex-shrink-0">
+                            <div className="flex-shrink-0">
                                 {isOutOfStock ? (
                                     <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius-xl)] px-0.5 pr-1 py-0 text-xs">
                                         <span className="text-destructive-foreground flex items-center gap-1.5 font-medium">
