@@ -26,6 +26,7 @@ import {HomepageWishlistSection} from "~/components/HomepageWishlistSection";
 import {ProductSection} from "~/components/homepage/ProductSection";
 import {TestimonialsSection} from "~/components/homepage/TestimonialsSection";
 import {FAQSection} from "~/components/homepage/FAQSection";
+import {ContactSection} from "~/components/homepage/ContactSection";
 import {ShopLocation} from "~/components/homepage/ShopLocation";
 import {OrderHistorySection} from "~/components/account/OrderHistorySection";
 import {HomepageBlogSection} from "~/components/homepage/HomepageBlogSection";
@@ -433,6 +434,10 @@ export default function Homepage() {
 
             <AnimatedSection animation="fade" threshold={0.08}>
                 <FAQSection />
+            </AnimatedSection>
+
+            <AnimatedSection animation="slide-up" threshold={0.1}>
+                <ContactSection />
             </AnimatedSection>
 
             <AnimatedSection animation="fade" threshold={0.08}>

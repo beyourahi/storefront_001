@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-07",
+        category: "New Feature",
+        headline: "Added a contact section to the homepage",
+        summary:
+            "The homepage now includes a 'Get in Touch' section that shows your store's email, phone, address, and business hours, along with links to your social media profiles and direct messaging channels like WhatsApp and Messenger."
+    },
+    {
+        date: "2026-05-07",
         category: "Improvement",
         headline: "All product badges are now consistently pill-shaped",
         summary:
