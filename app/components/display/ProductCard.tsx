@@ -77,36 +77,41 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
             {...pressHandlers}
         >
             <div className={`relative ${aspectRatioClass} overflow-hidden rounded-b-lg`}>
-                {discountPercentage && (
-                    <div className="absolute top-1 left-1 z-10 sm:top-1.5 sm:left-1.5">
-                        <ProductPageDiscountIndicator
-                            discountPercentage={discountPercentage}
-                            hasMultipleDiscounts={priceRange?.hasMultipleDiscounts}
-                        />
+                {/* Single badge container spanning the full card width.
+                    flex-wrap lets badges try to sit on one row first; when the
+                    card is too narrow for both sides they wrap to a second row
+                    instead of overlapping. ml-auto on the right-slot pushes the
+                    status badge to the trailing edge whether it is alone or
+                    wrapped below the discount badge. */}
+                {(discountPercentage || isOutOfStock || isPreorder || isLowStock) && (
+                    <div className="absolute inset-x-1 top-1 z-10 sm:inset-x-1.5 sm:top-1.5 flex flex-wrap items-start gap-x-1.5 gap-y-1">
+                        {discountPercentage && (
+                            <ProductPageDiscountIndicator
+                                discountPercentage={discountPercentage}
+                                hasMultipleDiscounts={priceRange?.hasMultipleDiscounts}
+                            />
+                        )}
+                        {/* OOS > preorder > low stock — exclusive status slot, ml-auto keeps it at the trailing edge */}
+                        {(isOutOfStock || isPreorder || isLowStock) && (
+                            <div className="ml-auto flex-shrink-0">
+                                {isOutOfStock ? (
+                                    <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius-xl)] px-0.5 pr-1 py-0 text-xs">
+                                        <span className="text-destructive-foreground flex items-center gap-1.5 font-medium">
+                                            <span className="bg-destructive/80 flex items-center justify-center rounded-[var(--radius-xl)] p-0.5 text-sm">
+                                                <Ban size={12} className="pointer-events-none" aria-hidden="true" />
+                                            </span>
+                                            <span className="font-medium uppercase">{OUT_OF_STOCK_LABEL}</span>
+                                        </span>
+                                    </Badge>
+                                ) : isPreorder ? (
+                                    <PreorderBadge />
+                                ) : isLowStock ? (
+                                    <LowStockBadge />
+                                ) : null}
+                            </div>
+                        )}
                     </div>
                 )}
-
-                {/* OOS > preorder > low stock — exclusive right-side badge slot */}
-                {isOutOfStock ? (
-                    <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
-                        <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius-xl)] px-0.5 pr-1 py-0 text-xs">
-                            <span className="text-destructive-foreground flex items-center gap-1.5 font-medium">
-                                <span className="bg-destructive/80 flex items-center justify-center rounded-[var(--radius-xl)] p-0.5 text-sm">
-                                    <Ban size={12} className="pointer-events-none" aria-hidden="true" />
-                                </span>
-                                <span className="font-medium uppercase">{OUT_OF_STOCK_LABEL}</span>
-                            </span>
-                        </Badge>
-                    </div>
-                ) : isPreorder ? (
-                    <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
-                        <PreorderBadge />
-                    </div>
-                ) : isLowStock ? (
-                    <div className="absolute top-1 right-1 z-10 sm:top-1.5 sm:right-1.5">
-                        <LowStockBadge />
-                    </div>
-                ) : null}
 
                 <ProductCardMediaCarousel
                     media={cardMedia}

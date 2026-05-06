@@ -38,6 +38,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-06",
         category: "Improvement",
+        headline: "Product card badges no longer overlap on narrow screens",
+        summary:
+            "Discount and status badges (out of stock, pre-order, low stock) on product cards now share a single flex layout that wraps gracefully on small screens. Instead of the two badge groups potentially colliding on very narrow cards, they sit side by side when space allows and stack cleanly when it doesn't."
+    },
+    {
+        date: "2026-05-06",
+        category: "Improvement",
         headline: "Out-of-stock badges now use bold, consistent destructive styling",
         summary:
             "The out-of-stock badge on product cards now matches the icon-pill structure of preorder and low-stock badges for a cohesive look. The product detail page also gains a dedicated out-of-stock badge near the title so stock status is unmistakable wherever you browse."
