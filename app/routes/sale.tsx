@@ -1,7 +1,13 @@
 import type {Route} from "./+types/sale";
 import {useLoaderData, redirect} from "react-router";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateBreadcrumbListSchema} from "~/lib/seo";
+import {
+    buildCanonicalUrl,
+    getBrandNameFromMatches,
+    getRequiredSocialMeta,
+    getSiteUrlFromMatches,
+    generateBreadcrumbListSchema
+} from "~/lib/seo";
 import {filterAndSortDiscountedProducts, type RawDiscountProduct} from "~/lib/discounts";
 import {fromSaleProduct} from "~/lib/product/product-card-normalizers";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
@@ -32,10 +38,15 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
 
     return [
         ...(getSeoMeta({title, description, url: buildCanonicalUrl("/sale", siteUrl)}) ?? []),
-        {"script:ld+json": generateBreadcrumbListSchema([
-            {name: "Home", url: "/"},
-            {name: "Sale", url: "/sale"}
-        ], siteUrl) as any},
+        {
+            "script:ld+json": generateBreadcrumbListSchema(
+                [
+                    {name: "Home", url: "/"},
+                    {name: "Sale", url: "/sale"}
+                ],
+                siteUrl
+            ) as any
+        },
         ...getRequiredSocialMeta("website", brandName)
     ];
 };

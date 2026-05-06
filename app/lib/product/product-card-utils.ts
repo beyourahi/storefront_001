@@ -1,6 +1,12 @@
 import {formatShopifyMoney, formatMinimalisticRange, calculateDiscount} from "~/lib/currency-formatter";
 import {parseNumber} from "~/lib/number-utils";
-import type {ProductCardData, ProductCardMedia, ShopifyMediaNode, ShopifyProduct, ShopifyProductVariant} from "~/lib/types/product-card";
+import type {
+    ProductCardData,
+    ProductCardMedia,
+    ShopifyMediaNode,
+    ShopifyProduct,
+    ShopifyProductVariant
+} from "~/lib/types/product-card";
 
 export const OUT_OF_STOCK_LABEL = "Out of Stock" as const;
 
@@ -45,11 +51,13 @@ export const getProductCardMedia = (product: ShopifyProduct | ProductCardData): 
             return [cardData.firstMedia];
         }
         if (cardData.primaryImage?.url) {
-            return [{
-                type: "image",
-                url: cardData.primaryImage.url,
-                altText: cardData.primaryImage.altText ?? null
-            }];
+            return [
+                {
+                    type: "image",
+                    url: cardData.primaryImage.url,
+                    altText: cardData.primaryImage.altText ?? null
+                }
+            ];
         }
         return [];
     }
@@ -63,7 +71,7 @@ export const getProductCardMedia = (product: ShopifyProduct | ProductCardData): 
     const mediaItems: ShopifyMediaNode[] =
         media?.edges?.length > 0
             ? (media.edges as Array<{node: ShopifyMediaNode}>).map(e => e.node)
-            : (media?.nodes as ShopifyMediaNode[] ?? []);
+            : ((media?.nodes as ShopifyMediaNode[]) ?? []);
 
     if (mediaItems.length > 0) {
         const normalized = mediaItems
@@ -75,8 +83,8 @@ export const getProductCardMedia = (product: ShopifyProduct | ProductCardData): 
     const images = shopifyProduct.images as any;
     const imageItems: Array<{url: string; altText?: string | null}> =
         images?.edges?.length > 0
-            ? (images.edges as Array<{node: {url: string; altText?: string | null}}> ).map(e => e.node)
-            : (images?.nodes as Array<{url: string; altText?: string | null}> ?? []);
+            ? (images.edges as Array<{node: {url: string; altText?: string | null}}>).map(e => e.node)
+            : ((images?.nodes as Array<{url: string; altText?: string | null}>) ?? []);
 
     return imageItems
         .filter(img => img?.url)
@@ -273,8 +281,7 @@ export const transformProductToCardData = (product: ShopifyProduct): ProductCard
 
 const hasVariantDiscount = (variant: ShopifyProductVariant): boolean => {
     return Boolean(
-        variant.compareAtPrice?.amount &&
-        parseFloat(variant.compareAtPrice.amount) > parseFloat(variant.price.amount)
+        variant.compareAtPrice?.amount && parseFloat(variant.compareAtPrice.amount) > parseFloat(variant.price.amount)
     );
 };
 
@@ -408,7 +415,11 @@ export const isProductLowStock = (product: ShopifyProduct | ProductCardData): bo
     const variantNodes: Array<{availableForSale: boolean; quantityAvailable: number | null}> =
         p.variants?.nodes ?? p.variants?.edges?.map((e: any) => e.node) ?? [];
     return variantNodes.some(
-        v => v.availableForSale && v.quantityAvailable != null && v.quantityAvailable > 0 && v.quantityAvailable <= LOW_STOCK_THRESHOLD
+        v =>
+            v.availableForSale &&
+            v.quantityAvailable != null &&
+            v.quantityAvailable > 0 &&
+            v.quantityAvailable <= LOW_STOCK_THRESHOLD
     );
 };
 

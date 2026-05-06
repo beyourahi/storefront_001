@@ -62,11 +62,11 @@ export function AgentProductBrief({product, selectedVariant, productOptions}: Ag
                     {product.vendor && <Row label="Vendor" value={product.vendor} />}
                     {product.productType && <Row label="Type" value={product.productType} />}
                     <div className="grid grid-cols-12 border-b border-border/50 px-3 py-2.5 last:border-b-0">
-                        <span className="col-span-4 text-[10px] uppercase tracking-widest text-muted-foreground">Price</span>
+                        <span className="col-span-4 text-[10px] uppercase tracking-widest text-muted-foreground">
+                            Price
+                        </span>
                         <div className="col-span-8 flex items-baseline gap-2">
-                            <span className="text-sm font-semibold">
-                                {price ? formatShopifyMoney(price) : "—"}
-                            </span>
+                            <span className="text-sm font-semibold">{price ? formatShopifyMoney(price) : "—"}</span>
                             {compareAtPrice && (
                                 <span className="text-[11px] text-muted-foreground line-through">
                                     {formatShopifyMoney(compareAtPrice)}
@@ -75,14 +75,9 @@ export function AgentProductBrief({product, selectedVariant, productOptions}: Ag
                         </div>
                     </div>
                     {collections.length > 0 && (
-                        <Row
-                            label="Collections"
-                            value={collections.map(c => c.title).join(", ")}
-                        />
+                        <Row label="Collections" value={collections.map(c => c.title).join(", ")} />
                     )}
-                    {tags.length > 0 && (
-                        <Row label="Tags" value={tags.slice(0, 8).join(", ")} />
-                    )}
+                    {tags.length > 0 && <Row label="Tags" value={tags.slice(0, 8).join(", ")} />}
                 </div>
 
                 {/* Variant options */}
@@ -121,7 +116,9 @@ export function AgentProductBrief({product, selectedVariant, productOptions}: Ag
                 {product.description && (
                     <div className="border border-border">
                         <div className="border-b border-border bg-muted/30 px-3 py-1.5">
-                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Description</span>
+                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                                Description
+                            </span>
                         </div>
                         <p className="px-3 py-2.5 text-xs leading-relaxed text-muted-foreground">
                             {product.description}

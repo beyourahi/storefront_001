@@ -32,16 +32,16 @@ const OPTION_PROPERTY_ID_MAP: Record<string, string> = {
 // Standard size normalization (display → canonical)
 const SIZE_NORMALIZATION: Record<string, string> = {
     "extra small": "XS",
-    "small": "S",
-    "medium": "M",
-    "large": "L",
+    small: "S",
+    medium: "M",
+    large: "L",
     "extra large": "XL",
     "xx-large": "XXL",
     "2xl": "XXL",
     "3xl": "3XL",
     "4xl": "4XL",
-    "xxl": "XXL",
-    "xxxl": "3XL"
+    xxl: "XXL",
+    xxxl: "3XL"
 };
 
 function normalizeOptionName(raw: string): string {
@@ -49,7 +49,11 @@ function normalizeOptionName(raw: string): string {
 }
 
 function slugify(str: string): string {
-    return str.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    return str
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
 }
 
 function normalizeSize(value: string): string | undefined {

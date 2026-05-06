@@ -177,11 +177,7 @@ export default function SharedWishlistPage() {
             )}
 
             {showShareDialog && (
-                <ShareDialog
-                    url={shareUrl}
-                    title="Check out this wishlist"
-                    onClose={() => setShowShareDialog(false)}
-                />
+                <ShareDialog url={shareUrl} title="Check out this wishlist" onClose={() => setShowShareDialog(false)} />
             )}
         </div>
     );
@@ -266,9 +262,7 @@ function SharedWishlistEmpty() {
             <div className="mb-8">
                 <Heart className="size-20 sm:size-24 text-muted-foreground/30" strokeWidth={1} />
             </div>
-            <h2 className="text-xl md:text-2xl font-semibold mb-4">
-                This wishlist is empty
-            </h2>
+            <h2 className="text-xl md:text-2xl font-semibold mb-4">This wishlist is empty</h2>
             <p className="text-muted-foreground max-w-md mb-8 px-4">
                 The shared wishlist does not contain any products, or the link may be invalid.
             </p>

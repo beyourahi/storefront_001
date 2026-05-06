@@ -37,9 +37,7 @@ export const StoreCreditWidget = ({balance, accounts}: StoreCreditWidgetProps) =
                                     {hasBalance ? formatShopifyMoney(balance) : "$0"}
                                 </p>
                                 {hasBalance && (
-                                    <p className="text-sm text-green-600 font-medium">
-                                        Available to use at checkout
-                                    </p>
+                                    <p className="text-sm text-green-600 font-medium">Available to use at checkout</p>
                                 )}
                             </div>
                         </div>
@@ -100,9 +98,7 @@ const TransactionItem = ({transaction}: {transaction: StoreCreditTransaction}) =
                 <div
                     className={cn(
                         "size-8 rounded-full flex items-center justify-center text-sm font-medium",
-                        credit
-                            ? "bg-green-500/20 text-green-600"
-                            : "bg-amber-500/20 text-amber-700"
+                        credit ? "bg-green-500/20 text-green-600" : "bg-amber-500/20 text-amber-700"
                     )}
                 >
                     {credit ? "+" : "-"}
@@ -113,16 +109,13 @@ const TransactionItem = ({transaction}: {transaction: StoreCreditTransaction}) =
                 </div>
             </div>
             <div className="text-right">
-                <p
-                    className={cn(
-                        "text-sm font-medium",
-                        credit ? "text-green-600" : "text-amber-700"
-                    )}
-                >
+                <p className={cn("text-sm font-medium", credit ? "text-green-600" : "text-amber-700")}>
                     {credit ? "+" : "-"}
                     {formatShopifyMoney(transaction.amount)}
                 </p>
-                <p className="text-sm text-muted-foreground">Bal: {formatShopifyMoney(transaction.balanceAfterTransaction)}</p>
+                <p className="text-sm text-muted-foreground">
+                    Bal: {formatShopifyMoney(transaction.balanceAfterTransaction)}
+                </p>
             </div>
         </div>
     );

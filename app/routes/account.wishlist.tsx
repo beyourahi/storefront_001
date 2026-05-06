@@ -14,9 +14,11 @@ import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
 
 export const meta: MetaFunction = ({matches}) => {
-    const rootData = matches.find(m => m.id === "root")?.data as {
-        siteContent?: {siteSettings?: {brandName?: string}};
-    } | undefined;
+    const rootData = matches.find(m => m.id === "root")?.data as
+        | {
+              siteContent?: {siteSettings?: {brandName?: string}};
+          }
+        | undefined;
     const shopName = rootData?.siteContent?.siteSettings?.brandName?.trim() || "Store";
     return [{title: `Wishlist | ${shopName}`}, {name: "robots", content: "noindex,nofollow"}];
 };
@@ -216,8 +218,7 @@ const AccountWishlist = () => {
         setShowClearDialog(false);
     };
 
-    const shareUrl =
-        typeof window !== "undefined" ? generateShareableWishlistUrl(window.location.origin, ids) : "";
+    const shareUrl = typeof window !== "undefined" ? generateShareableWishlistUrl(window.location.origin, ids) : "";
 
     const isLoading = fetcher.state === "loading" || fetcher.state === "submitting";
 
@@ -244,7 +245,9 @@ const AccountWishlist = () => {
         <div className="space-y-6">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
                 <div>
-                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">My Wishlist</h1>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                        My Wishlist
+                    </h1>
                     <p className="text-sm text-muted-foreground mt-1">
                         {count} {count === 1 ? "item" : "items"} saved
                     </p>
@@ -255,7 +258,9 @@ const AccountWishlist = () => {
                 <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
                     <Share2 className="mx-auto mb-4 size-10 text-muted-foreground" />
                     <h3 className="font-serif text-xl font-medium text-foreground">Your wishlist is empty</h3>
-                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">Start adding products you love</p>
+                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+                        Start adding products you love
+                    </p>
                     <Link
                         to="/collections/all-products"
                         className="bg-primary text-primary-foreground hover:bg-primary/90 mt-6 inline-block rounded-lg px-6 py-3 transition-colors"
@@ -274,7 +279,13 @@ const AccountWishlist = () => {
                                         disabled={cartLines.length === 0 || fetcher.state !== "idle"}
                                         className="bg-primary text-primary-foreground hover:bg-primary/90 relative flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                                     >
-                                        <span className={fetcher.state !== "idle" ? "flex items-center gap-2 opacity-0" : "flex items-center gap-2"}>
+                                        <span
+                                            className={
+                                                fetcher.state !== "idle"
+                                                    ? "flex items-center gap-2 opacity-0"
+                                                    : "flex items-center gap-2"
+                                            }
+                                        >
                                             <ShoppingCart className="h-5 w-5" />
                                             Add All to Cart
                                         </span>
@@ -340,7 +351,10 @@ const AccountWishlist = () => {
 
                         <div className="flex flex-wrap items-center gap-4">
                             <div className="flex items-center gap-2">
-                                <ArrowUpDown className="text-muted-foreground hidden size-4 sm:block" aria-hidden="true" />
+                                <ArrowUpDown
+                                    className="text-muted-foreground hidden size-4 sm:block"
+                                    aria-hidden="true"
+                                />
                                 <Select value={sortBy} onValueChange={value => setSortBy(value as SortOption)}>
                                     <SelectTrigger size="sm" className="w-[180px] text-sm" aria-label="Sort wishlist">
                                         <SelectValue placeholder="Sort by" />

@@ -23,33 +23,43 @@ export function buildUcpProfile(env: Record<string, string | undefined>, _reques
             },
             capabilities: {
                 // Catalog discovery via Storefront MCP — GA
-                "dev.ucp.shopping.discovery": [{
-                    version: "2026-04-08",
-                    spec: "https://ucp.dev/specification/discovery/",
-                    mcp_server: ucpMcpUrl
-                }],
+                "dev.ucp.shopping.discovery": [
+                    {
+                        version: "2026-04-08",
+                        spec: "https://ucp.dev/specification/discovery/",
+                        mcp_server: ucpMcpUrl
+                    }
+                ],
                 // Storefront Catalog Extension (gift cards, collections, selling plans) — GA
-                "dev.shopify.catalog.storefront": [{
-                    version: "2026-04-08",
-                    spec: "https://shopify.dev/docs/agents/catalog/storefront-mcp"
-                }],
+                "dev.shopify.catalog.storefront": [
+                    {
+                        version: "2026-04-08",
+                        spec: "https://shopify.dev/docs/agents/catalog/storefront-mcp"
+                    }
+                ],
                 // Policy & FAQs discovery — no auth required
-                "dev.ucp.shopping.policies": [{
-                    version: "2026-04-08",
-                    spec: "https://ucp.dev/specification/policies/",
-                    mcp_server: policiesMcpUrl
-                }],
+                "dev.ucp.shopping.policies": [
+                    {
+                        version: "2026-04-08",
+                        spec: "https://ucp.dev/specification/policies/",
+                        mcp_server: policiesMcpUrl
+                    }
+                ],
                 // Checkout MCP — Shopify-hosted, limited-partner preview as of 2026-04.
                 // Agents should call {shop}.myshopify.com/api/mcp for cart mutations
                 // (add_to_cart, update_cart, get_cart) — Shopify hosts these natively.
                 // For URL-based handoff, use the cart_permalink_pattern documented below.
-                "dev.ucp.shopping.checkout": [{
-                    version: "2026-04-08",
-                    spec: "https://ucp.dev/specification/checkout/",
-                    status: "preview",
-                    mcp_server: storeUrl ? `${storeUrl}/api/mcp` : undefined,
-                    cart_permalink_pattern: storeUrl ? `${storeUrl}/cart/{variant_id}:{quantity}[,{variant_id}:{quantity}...]` : undefined
-                }]
+                "dev.ucp.shopping.checkout": [
+                    {
+                        version: "2026-04-08",
+                        spec: "https://ucp.dev/specification/checkout/",
+                        status: "preview",
+                        mcp_server: storeUrl ? `${storeUrl}/api/mcp` : undefined,
+                        cart_permalink_pattern: storeUrl
+                            ? `${storeUrl}/cart/{variant_id}:{quantity}[,{variant_id}:{quantity}...]`
+                            : undefined
+                    }
+                ]
             }
         }
     };

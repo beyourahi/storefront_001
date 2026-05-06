@@ -1,10 +1,7 @@
 import {redirect} from "react-router";
 import type {Route} from "./+types/discount.$code";
 
-export const meta: Route.MetaFunction = () => [
-    {title: "Redirecting..."},
-    {name: "robots", content: "noindex"}
-];
+export const meta: Route.MetaFunction = () => [{title: "Redirecting..."}, {name: "robots", content: "noindex"}];
 
 /**
  * Applies a discount code to the cart and redirects to the destination URL.

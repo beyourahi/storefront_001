@@ -45,10 +45,7 @@ export const ProductMobileStickyButtons = ({
         if (!el) return;
 
         const update = () => {
-            document.documentElement.style.setProperty(
-                "--product-sticky-bar-height",
-                `${el.offsetHeight}px`
-            );
+            document.documentElement.style.setProperty("--product-sticky-bar-height", `${el.offsetHeight}px`);
         };
 
         const observer = new ResizeObserver(update);
@@ -95,7 +92,11 @@ export const ProductMobileStickyButtons = ({
     const isDisabled = !selectedVariant || !selectedVariant.availableForSale || isVariantTransitioning;
 
     return (
-        <div ref={containerRef} className="fixed right-0 bottom-0 left-0 z-[45] lg:hidden" style={{transform: "translateZ(0)"}}>
+        <div
+            ref={containerRef}
+            className="fixed right-0 bottom-0 left-0 z-[45] lg:hidden"
+            style={{transform: "translateZ(0)"}}
+        >
             <div className="bg-background/95 border-t shadow-lg backdrop-blur-md">
                 <div className="px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
                     <div className="mb-2.5 flex items-center justify-between">
@@ -110,7 +111,10 @@ export const ProductMobileStickyButtons = ({
                             )}
                         </div>
                         {isOnSale && savingsPercentage > 0 && (
-                            <Badge variant="secondary" className="bg-discount-bg text-discount-text border-discount-icon-bg">
+                            <Badge
+                                variant="secondary"
+                                className="bg-discount-bg text-discount-text border-discount-icon-bg"
+                            >
                                 Save {savingsPercentage}%
                             </Badge>
                         )}

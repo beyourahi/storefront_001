@@ -13,8 +13,7 @@ const COLLECTION_SORT_OPTIONS = [
 
 export const listSortOptionsTool: McpTool = {
     name: "list_sort_options",
-    description:
-        "Return all supported collection sort keys with human-readable labels. No API call — static response.",
+    description: "Return all supported collection sort keys with human-readable labels. No API call — static response.",
     inputSchema: {
         type: "object",
         properties: {}

@@ -17,10 +17,7 @@ export type ScoredProduct<T extends {id: string}> = T & {_affinityScore: number}
  * Products with no matching signal receive a score of 0 and fall to the bottom.
  * Products with more purchases (and a recent purchase date) score higher.
  */
-export function scoreProducts<T extends {id: string}>(
-    products: T[],
-    signals: AffinitySignal[]
-): ScoredProduct<T>[] {
+export function scoreProducts<T extends {id: string}>(products: T[], signals: AffinitySignal[]): ScoredProduct<T>[] {
     const signalMap = new Map<string, AffinitySignal>(signals.map(s => [s.productId, s]));
 
     return products
@@ -52,7 +49,7 @@ export function extractAffinitySignals(
             byProduct.set(line.productId, {
                 productId: line.productId,
                 purchaseCount: line.quantity,
-                lastPurchasedAt: line.processedAt,
+                lastPurchasedAt: line.processedAt
             });
         }
     }

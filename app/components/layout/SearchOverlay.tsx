@@ -76,7 +76,12 @@ type SearchOverlayProps = {
  * Shows a default view (recent searches, popular terms, collections) when the
  * query is empty; switches to predictive results once the user starts typing.
  */
-export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = [], popularProducts = []}: SearchOverlayProps) => {
+export const SearchOverlay = ({
+    shopName,
+    collections = [],
+    popularSearchTerms = [],
+    popularProducts = []
+}: SearchOverlayProps) => {
     const navigate = useNavigate();
     const fetcher = useFetcher<PredictiveSearchData>();
     const {open, openSearch, closeSearch, setOpen, restoreTriggerFocus} = useSearchController();
@@ -119,52 +124,59 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
         []
     );
 
-    const handleQueryChange = useCallback((value: string) => {
-        setQuery(value);
-        if (value.trim()) {
-            debouncedFetch(value);
-        }
-    }, [debouncedFetch]);
+    const handleQueryChange = useCallback(
+        (value: string) => {
+            setQuery(value);
+            if (value.trim()) {
+                debouncedFetch(value);
+            }
+        },
+        [debouncedFetch]
+    );
 
     const predictiveItems = fetcher.data?.type === "predictive" ? fetcher.data.result.items : null;
 
-    const filteredProducts = useMemo(() => (predictiveItems?.products ?? []).slice(0, 5).map(product => {
-        const variant = product.selectedOrFirstAvailableVariant;
-        const price = variant?.price;
+    const filteredProducts = useMemo(
+        () =>
+            (predictiveItems?.products ?? []).slice(0, 5).map(product => {
+                const variant = product.selectedOrFirstAvailableVariant;
+                const price = variant?.price;
 
-        return {
-            id: product.id,
-            title: product.title,
-            handle: product.handle,
-            priceRange: price
-                ? {
-                      minVariantPrice: price,
-                      maxVariantPrice: price
-                  }
-                : undefined,
-            variants: {
-                edges: [
-                    {
-                        node: {
-                            compareAtPrice: variant?.compareAtPrice ?? null
-                        }
-                    }
-                ]
-            },
-            images: {
-                edges: variant?.image
-                    ? [
-                          {
-                              node: {
-                                  url: variant.image.url,
-                                  altText: variant.image.altText
-                              }
+                return {
+                    id: product.id,
+                    title: product.title,
+                    handle: product.handle,
+                    priceRange: price
+                        ? {
+                              minVariantPrice: price,
+                              maxVariantPrice: price
                           }
-                      ]
-                    : []
-            }
-        };
-    }), [predictiveItems]);
+                        : undefined,
+                    variants: {
+                        edges: [
+                            {
+                                node: {
+                                    compareAtPrice: variant?.compareAtPrice ?? null
+                                }
+                            }
+                        ]
+                    },
+                    images: {
+                        edges: variant?.image
+                            ? [
+                                  {
+                                      node: {
+                                          url: variant.image.url,
+                                          altText: variant.image.altText
+                                      }
+                                  }
+                              ]
+                            : []
+                    }
+                };
+            }),
+        [predictiveItems]
+    );
 
     const filteredCollections = useMemo(() => (predictiveItems?.collections ?? []).slice(0, 5), [predictiveItems]);
     const filteredArticles = useMemo(() => (predictiveItems?.articles ?? []).slice(0, 5), [predictiveItems]);
@@ -172,9 +184,15 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
     const filteredSuggestions = useMemo(() => (predictiveItems?.queries ?? []).slice(0, 5), [predictiveItems]);
     const filteredPolicies = useMemo(() => filterPolicies(query), [query]);
 
-    const featuredCollections = useMemo(() => collections
-        .filter(collection => !["all", "all-collections", "frontpage"].includes(collection.handle.toLowerCase()))
-        .slice(0, 6), [collections]);
+    const featuredCollections = useMemo(
+        () =>
+            collections
+                .filter(
+                    collection => !["all", "all-collections", "frontpage"].includes(collection.handle.toLowerCase())
+                )
+                .slice(0, 6),
+        [collections]
+    );
 
     const isLoading = fetcher.state !== "idle";
 
@@ -183,12 +201,15 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
         restoreTriggerFocus();
     }, [closeSearch, restoreTriggerFocus]);
 
-    const handleOpenChange = useCallback((nextOpen: boolean) => {
-        setOpen(nextOpen);
-        if (!nextOpen) {
-            handleClose();
-        }
-    }, [setOpen, handleClose]);
+    const handleOpenChange = useCallback(
+        (nextOpen: boolean) => {
+            setOpen(nextOpen);
+            if (!nextOpen) {
+                handleClose();
+            }
+        },
+        [setOpen, handleClose]
+    );
 
     const navigateTo = useCallback(
         (path: string, termForHistory?: string, imageForHistory?: string) => {
@@ -207,12 +228,15 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
         navigateTo(`/search?q=${encodeURIComponent(trimmed)}`, trimmed);
     }, [query, navigateTo]);
 
-    const handleInputKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Escape") {
-            event.preventDefault();
-            handleClose();
-        }
-    }, [handleClose]);
+    const handleInputKeyDown = useCallback(
+        (event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === "Escape") {
+                event.preventDefault();
+                handleClose();
+            }
+        },
+        [handleClose]
+    );
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -246,7 +270,9 @@ export const SearchOverlay = ({shopName, collections = [], popularSearchTerms = 
                                 const firstImage = product.images?.edges?.[0]?.node?.url;
                                 navigateTo(`/products/${product.handle}`, query.trim(), firstImage);
                             }}
-                            onCollectionClick={collection => navigateTo(`/collections/${collection.handle}`, query.trim())}
+                            onCollectionClick={collection =>
+                                navigateTo(`/collections/${collection.handle}`, query.trim())
+                            }
                             onArticleClick={article =>
                                 navigateTo(`/blogs/${article.blog?.handle ?? "news"}/${article.handle}`, query.trim())
                             }

@@ -41,17 +41,12 @@ export function AgentFallbackBanner({alternatePath = "/search"}: AgentFallbackBa
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     {/* Icon + copy */}
                     <div className="flex items-start gap-3">
-                        <Bot
-                            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground"
-                            aria-hidden="true"
-                        />
+                        <Bot className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                         <div className="space-y-0.5">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-foreground">
                                 {copy.title}
                             </p>
-                            <p className="text-[10px] leading-relaxed text-muted-foreground">
-                                {copy.subtitle}
-                            </p>
+                            <p className="text-[10px] leading-relaxed text-muted-foreground">{copy.subtitle}</p>
                         </div>
                     </div>
 

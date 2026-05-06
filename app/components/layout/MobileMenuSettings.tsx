@@ -134,12 +134,7 @@ export const MobileMenuSettings = ({currentPath, onLinkClick}: MobileMenuSetting
                                     : "text-muted-foreground group-hover:text-accent-foreground"
                             )}
                         />
-                        <span
-                            className={cn(
-                                "sleek group-hover:translate-x-0.5",
-                                isBlogActive ? "drop-shadow-sm" : ""
-                            )}
-                        >
+                        <span className={cn("sleek group-hover:translate-x-0.5", isBlogActive ? "drop-shadow-sm" : "")}>
                             Blog
                         </span>
                     </Link>

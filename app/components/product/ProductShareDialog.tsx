@@ -23,7 +23,13 @@ type ProductShareDialogProps = {
  * Image fades in from a shimmer placeholder to avoid flash when the dialog reopens
  * with the same product image still in cache.
  */
-export const ProductShareDialog = ({product, variant, open = false, onOpenChange, shopName}: ProductShareDialogProps) => {
+export const ProductShareDialog = ({
+    product,
+    variant,
+    open = false,
+    onOpenChange,
+    shopName
+}: ProductShareDialogProps) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const location = useLocation();
 
@@ -34,7 +40,10 @@ export const ProductShareDialog = ({product, variant, open = false, onOpenChange
     }, [open]);
 
     const currentUrl = typeof window !== "undefined" ? window.location.href : `${location.pathname}`;
-    const shareData = useMemo(() => createShareData(product, variant, currentUrl, shopName), [product, variant, currentUrl, shopName]);
+    const shareData = useMemo(
+        () => createShareData(product, variant, currentUrl, shopName),
+        [product, variant, currentUrl, shopName]
+    );
     const platforms = useMemo(() => getSocialSharePlatforms(), []);
     const firstImage = product.images?.nodes?.[0];
     const {primary, secondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
@@ -73,18 +82,12 @@ export const ProductShareDialog = ({product, variant, open = false, onOpenChange
                             )}
 
                             <div className="min-w-0 flex-1">
-                                <h3 className="text-foreground text-left text-sm leading-5 font-medium">
-                                    {primary}
-                                </h3>
+                                <h3 className="text-foreground text-left text-sm leading-5 font-medium">{primary}</h3>
                                 {secondary && (
-                                    <p className="text-muted-foreground text-left text-xs font-medium">
-                                        {secondary}
-                                    </p>
+                                    <p className="text-muted-foreground text-left text-xs font-medium">{secondary}</p>
                                 )}
                                 {shareData.price && (
-                                    <p className="text-muted-foreground mt-1 text-left text-xs">
-                                        {shareData.price}
-                                    </p>
+                                    <p className="text-muted-foreground mt-1 text-left text-xs">{shareData.price}</p>
                                 )}
                                 {shopName && <p className="text-muted-foreground text-left text-xs">by {shopName}</p>}
                             </div>

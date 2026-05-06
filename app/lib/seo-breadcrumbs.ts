@@ -16,9 +16,13 @@ export function deriveBreadcrumbsFromPath(
     for (const [index, segment] of segments.entries()) {
         currentPath += `/${segment}`;
         const isLast = index === segments.length - 1;
-        const label = isLast && customLeafTitle
-            ? customLeafTitle
-            : segment.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+        const label =
+            isLast && customLeafTitle
+                ? customLeafTitle
+                : segment
+                      .split("-")
+                      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                      .join(" ");
         items.push({name: label, url: currentPath});
     }
 
@@ -43,9 +47,7 @@ export function deriveProductBreadcrumbs(product: {
         items.push({name: "Products", url: "/collections/all-products"});
     }
 
-    const cleanTitle = product.title.includes("+")
-        ? product.title.split("+")[0].trim()
-        : product.title;
+    const cleanTitle = product.title.includes("+") ? product.title.split("+")[0].trim() : product.title;
 
     items.push({name: cleanTitle, url: `/products/${product.handle}`});
     return items;
@@ -79,10 +81,7 @@ export function deriveArticleBreadcrumbs(
 }
 
 /** Derive breadcrumbs for a policy page: Home > Policies > Policy */
-export function derivePolicyBreadcrumbs(
-    policyHandle: string,
-    policyTitle: string
-): Array<{name: string; url: string}> {
+export function derivePolicyBreadcrumbs(policyHandle: string, policyTitle: string): Array<{name: string; url: string}> {
     return [
         {name: "Home", url: "/"},
         {name: "Policies", url: "/policies"},

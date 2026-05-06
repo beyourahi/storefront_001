@@ -40,7 +40,7 @@ import type {Route} from "./+types/[.]well-known.ucp";
 import {buildUcpProfile} from "~/lib/agentic/ucp-profile";
 
 export function loader({request, context}: Route.LoaderArgs) {
-    const profile = buildUcpProfile(context.env as unknown as Record<string, string | undefined> ?? {}, request);
+    const profile = buildUcpProfile((context.env as unknown as Record<string, string | undefined>) ?? {}, request);
 
     return new Response(JSON.stringify(profile), {
         status: 200,

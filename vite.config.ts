@@ -53,13 +53,7 @@ export default defineConfig({
     // -------------------------------------------------------------------------
     optimizeDeps: {
         // Pre-bundle React packages so Vite serves a single copy in dev
-        include: [
-            "react",
-            "react-dom",
-            "react/jsx-runtime",
-            "react/jsx-dev-runtime",
-            "react-dom/client"
-        ],
+        include: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "react-dom/client"],
         // Hydrogen ships pre-bundled ESM — excluding it avoids double-bundling
         // and prevents CJS/ESM boundary issues with its internal Workers-targeted code
         exclude: ["@shopify/hydrogen"]

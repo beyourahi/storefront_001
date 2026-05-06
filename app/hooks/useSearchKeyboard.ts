@@ -50,9 +50,7 @@ export function useSearchKeyboard(onOpen: () => void) {
         function handleKeyDown(event: KeyboardEvent) {
             // SSR guard — navigator may not exist during server render
             const isMac =
-                typeof navigator !== "undefined"
-                    ? navigator.platform?.toUpperCase().indexOf("MAC") >= 0
-                    : false;
+                typeof navigator !== "undefined" ? navigator.platform?.toUpperCase().indexOf("MAC") >= 0 : false;
 
             const modifier = isMac ? event.metaKey : event.ctrlKey;
 

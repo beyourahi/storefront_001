@@ -119,7 +119,12 @@ export function ProductLightbox({media, initialIndex, isOpen, onClose, available
                         </div>
                     </div>
 
-                    <LightboxThumbnails media={media} currentIndex={currentIndex} onSelect={goToIndex} availableForSale={availableForSale} />
+                    <LightboxThumbnails
+                        media={media}
+                        currentIndex={currentIndex}
+                        onSelect={goToIndex}
+                        availableForSale={availableForSale}
+                    />
                 </DialogPrimitive.Content>
             </DialogPrimitive.Portal>
         </DialogPrimitive.Root>

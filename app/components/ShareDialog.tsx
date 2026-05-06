@@ -65,7 +65,9 @@ export const ShareDialog = ({url, title, onClose}: ShareDialogProps) => {
                 onKeyDown={e => e.stopPropagation()}
             >
                 <div className="mb-4 flex items-center justify-between">
-                    <h2 id="share-dialog-title" className="text-xl font-bold">{title}</h2>
+                    <h2 id="share-dialog-title" className="text-xl font-bold">
+                        {title}
+                    </h2>
                     <button
                         onClick={onClose}
                         className="text-muted-foreground hover:bg-muted rounded-lg p-2 transition-colors"

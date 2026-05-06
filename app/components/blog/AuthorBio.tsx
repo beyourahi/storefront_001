@@ -42,9 +42,7 @@ export const AuthorBio = ({author, variant = "inline", className}: AuthorBioProp
                 <div className="space-y-1">
                     <p className="text-xs text-muted-foreground uppercase tracking-wider">Written by</p>
                     <h4 className="font-serif text-lg font-semibold">{displayName}</h4>
-                    {bio && (
-                        <p className="text-sm text-muted-foreground line-clamp-3">{bio}</p>
-                    )}
+                    {bio && <p className="text-sm text-muted-foreground line-clamp-3">{bio}</p>}
                 </div>
             </CardContent>
         </Card>

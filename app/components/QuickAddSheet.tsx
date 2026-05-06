@@ -367,11 +367,7 @@ function QuickAddCartButton({
                 (isLoading || !variant.availableForSale) && "opacity-50 cursor-not-allowed"
             )}
         >
-            {isLoading ? (
-                <ButtonSpinner />
-            ) : (
-                <span>{variant.availableForSale ? buttonLabel : OUT_OF_STOCK_LABEL}</span>
-            )}
+            {isLoading ? <ButtonSpinner /> : <span>{variant.availableForSale ? buttonLabel : OUT_OF_STOCK_LABEL}</span>}
         </Button>
     );
 }
@@ -412,8 +408,11 @@ function groupVariantsByOption(
 
     for (const [name, values] of optionMap) {
         // Include all values (OOS + in-stock) — single-value axes are hidden as they offer no choice
-        const allValues = Array.from(values.entries())
-            .map(([value, info]) => ({value, variantId: info.variantId, hasAvailableVariant: info.hasAvailableVariant}));
+        const allValues = Array.from(values.entries()).map(([value, info]) => ({
+            value,
+            variantId: info.variantId,
+            hasAvailableVariant: info.hasAvailableVariant
+        }));
         if (allValues.length > 1) result.push({name, values: allValues});
     }
 

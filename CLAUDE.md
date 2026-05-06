@@ -33,9 +33,9 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 
 ### Dual Deployment Targets
 
-| Target                             | Purpose                         | Data Source                               |
-| ---------------------------------- | ------------------------------- | ----------------------------------------- |
-| **Shopify Oxygen**                 | Client production deployments   | Client's own Shopify store (no fallback)  |
+| Target                             | Purpose                         | Data Source                                               |
+| ---------------------------------- | ------------------------------- | --------------------------------------------------------- |
+| **Shopify Oxygen**                 | Client production deployments   | Client's own Shopify store (no fallback)                  |
 | **Cloudflare Workers + local dev** | Portfolio showcase + dev server | Demo Shopify store credentials + in-repo content defaults |
 
 - On **Oxygen**: use the client's Shopify credentials only
@@ -44,37 +44,37 @@ Backend behavior, data flow, and Hydrogen conventions **must remain consistent**
 
 ## Tech Stack
 
-| Category      | Tech             | Version    | Notes                               |
-| ------------- | ---------------- | ---------- | ----------------------------------- |
-| **Framework** | React            | 18.3.1     |                                     |
-|               | React Router     | 7.12.0     | Hydrogen preset, file-based routing |
-|               | Shopify Hydrogen | 2026.4.1   | Storefront + Customer Account APIs  |
-|               | Storefront API   | 2026-04    | GraphQL API version                 |
-|               | TypeScript       | 5.9        | Strict mode, ES2022 target          |
-|               | Vite             | 6          | Build tooling                       |
-| **UI**        | Tailwind CSS     | v4         | CSS-first config via `@import`      |
-|               | shadcn/ui        | Latest     | Radix-backed components             |
-|               | Lucide React     | Latest     | Icons                               |
-|               | OKLCH colors     | -          | Theme + contrast pipeline           |
-|               | sonner           | ^2         | Toast notifications                 |
-|               | @unpic/react     | ^1         | Optimized image rendering           |
-|               | colorjs.io       | ^0.6       | Color science (OKLCH pipeline)      |
-|               | schema-dts       | ^1.1       | JSON-LD structured data types       |
-| **Features**  | Embla Carousel   | 8          | Product galleries, auto-scroll, trackpad/wheel scroll (wheel-gestures plugin) |
-|               | Lenis            | 1.3        | Smooth scrolling                    |
-|               | Vaul             | 1.1        | Drawer primitives                   |
-|               | react-intersection-observer | ^10 | Scroll/viewport-triggered rendering |
-|               | Wishlist         | Custom     | Account + share flows               |
-|               | Recently Viewed  | Custom     | History tracking + provider         |
-|               | Quick Add        | Custom     | Add-to-cart overlay (button/dialog/sheet) |
-|               | Newsletter Signup| Custom     | API endpoint + component + marketing mutation |
-|               | Blog             | Custom     | Article + author surfaces           |
-|               | PWA              | Custom     | Workbox 7 service worker, offline routes, install prompt |
-|               | Metaobjects      | Shopify    | Theme + content CMS                 |
-| **Dev**       | ESLint           | 9          | Flat config                         |
-|               | Workbox CLI      | 7          | Self-hosts SW runtime via `prebuild` into `public/workbox-v7/` |
-|               | npm              | Latest     | Package manager + scripts           |
-|               | Node.js          | >= 20.19.0 | **Strict requirement**              |
+| Category      | Tech                        | Version    | Notes                                                                         |
+| ------------- | --------------------------- | ---------- | ----------------------------------------------------------------------------- |
+| **Framework** | React                       | 18.3.1     |                                                                               |
+|               | React Router                | 7.12.0     | Hydrogen preset, file-based routing                                           |
+|               | Shopify Hydrogen            | 2026.4.1   | Storefront + Customer Account APIs                                            |
+|               | Storefront API              | 2026-04    | GraphQL API version                                                           |
+|               | TypeScript                  | 5.9        | Strict mode, ES2022 target                                                    |
+|               | Vite                        | 6          | Build tooling                                                                 |
+| **UI**        | Tailwind CSS                | v4         | CSS-first config via `@import`                                                |
+|               | shadcn/ui                   | Latest     | Radix-backed components                                                       |
+|               | Lucide React                | Latest     | Icons                                                                         |
+|               | OKLCH colors                | -          | Theme + contrast pipeline                                                     |
+|               | sonner                      | ^2         | Toast notifications                                                           |
+|               | @unpic/react                | ^1         | Optimized image rendering                                                     |
+|               | colorjs.io                  | ^0.6       | Color science (OKLCH pipeline)                                                |
+|               | schema-dts                  | ^1.1       | JSON-LD structured data types                                                 |
+| **Features**  | Embla Carousel              | 8          | Product galleries, auto-scroll, trackpad/wheel scroll (wheel-gestures plugin) |
+|               | Lenis                       | 1.3        | Smooth scrolling                                                              |
+|               | Vaul                        | 1.1        | Drawer primitives                                                             |
+|               | react-intersection-observer | ^10        | Scroll/viewport-triggered rendering                                           |
+|               | Wishlist                    | Custom     | Account + share flows                                                         |
+|               | Recently Viewed             | Custom     | History tracking + provider                                                   |
+|               | Quick Add                   | Custom     | Add-to-cart overlay (button/dialog/sheet)                                     |
+|               | Newsletter Signup           | Custom     | API endpoint + component + marketing mutation                                 |
+|               | Blog                        | Custom     | Article + author surfaces                                                     |
+|               | PWA                         | Custom     | Workbox 7 service worker, offline routes, install prompt                      |
+|               | Metaobjects                 | Shopify    | Theme + content CMS                                                           |
+| **Dev**       | ESLint                      | 9          | Flat config                                                                   |
+|               | Workbox CLI                 | 7          | Self-hosts SW runtime via `prebuild` into `public/workbox-v7/`                |
+|               | npm                         | Latest     | Package manager + scripts                                                     |
+|               | Node.js                     | >= 20.19.0 | **Strict requirement**                                                        |
 
 **GraphQL**: Dual-project (Storefront API + Customer Account API)  
 **Path Alias**: `~/` → `app/`
@@ -174,17 +174,17 @@ Prefer MCP documentation tools over web search for official docs. Run `npm run c
 
 ## Cart Actions Reference (`app/routes/cart.tsx`)
 
-| Action                                 | Method                          | Notes                                  |
-| -------------------------------------- | ------------------------------- | -------------------------------------- |
-| `CartForm.ACTIONS.LinesAdd`            | `cart.addLines()`               | Add line items                         |
-| `CartForm.ACTIONS.LinesUpdate`         | `cart.updateLines()`            | Update quantities / attributes         |
-| `CartForm.ACTIONS.LinesRemove`         | `cart.removeLines()`            | Remove line items                      |
-| `CartForm.ACTIONS.DiscountCodesUpdate` | `cart.updateDiscountCodes()`    | Replace all discount codes             |
-| `CartForm.ACTIONS.GiftCardCodesUpdate` | `cart.updateGiftCardCodes()`    | Replace all gift card codes            |
-| `CartForm.ACTIONS.GiftCardCodesAdd`    | `cart.addGiftCardCodes()`       | Append gift card codes (2026.1.0+)     |
-| `CartForm.ACTIONS.GiftCardCodesRemove` | `cart.removeGiftCardCodes()`    | Remove applied gift card codes         |
-| `CartForm.ACTIONS.NoteUpdate`          | `cart.updateNote()`             | Update cart note                       |
-| `CartForm.ACTIONS.BuyerIdentityUpdate` | `cart.updateBuyerIdentity()`    | Update buyer country / customer        |
+| Action                                 | Method                       | Notes                              |
+| -------------------------------------- | ---------------------------- | ---------------------------------- |
+| `CartForm.ACTIONS.LinesAdd`            | `cart.addLines()`            | Add line items                     |
+| `CartForm.ACTIONS.LinesUpdate`         | `cart.updateLines()`         | Update quantities / attributes     |
+| `CartForm.ACTIONS.LinesRemove`         | `cart.removeLines()`         | Remove line items                  |
+| `CartForm.ACTIONS.DiscountCodesUpdate` | `cart.updateDiscountCodes()` | Replace all discount codes         |
+| `CartForm.ACTIONS.GiftCardCodesUpdate` | `cart.updateGiftCardCodes()` | Replace all gift card codes        |
+| `CartForm.ACTIONS.GiftCardCodesAdd`    | `cart.addGiftCardCodes()`    | Append gift card codes (2026.1.0+) |
+| `CartForm.ACTIONS.GiftCardCodesRemove` | `cart.removeGiftCardCodes()` | Remove applied gift card codes     |
+| `CartForm.ACTIONS.NoteUpdate`          | `cart.updateNote()`          | Update cart note                   |
+| `CartForm.ACTIONS.BuyerIdentityUpdate` | `cart.updateBuyerIdentity()` | Update buyer country / customer    |
 
 ## Repository
 
@@ -251,41 +251,41 @@ This storefront implements a **Universal Commerce Protocol (UCP) + Model Context
 
 ### Key Files
 
-| File | Purpose |
-| ---- | ------- |
-| `app/lib/agentic/types.ts` | UCP/MCP type definitions — `UcpProfile`, `AgentContext`, `McpToolRegistry` |
-| `app/lib/agentic/agent-request.ts` | `isAgentRequest()` — detects agents via `?agent=true` or `Accept: application/x-ucp+json` |
-| `app/lib/agentic/agent-auth.ts` | `verifyAgentBearer()` — validates bearer tokens for authenticated MCP endpoints |
-| `app/lib/agentic/agent-context.ts` | `buildAgentContext()` — assembles agent context from Hydrogen context for MCP tool handlers |
-| `app/lib/agentic/agent-server.ts` | Server-level UCP handler — intercepts product page requests from agents in `server.ts` before React Router rendering |
-| `app/lib/agentic/ucp-profile.ts` | `buildUcpProfile()` — constructs the UCP merchant profile for `/.well-known/ucp` |
-| `app/lib/agentic/catalog-shapes.ts` | `toUcpProductPage()` — transforms Shopify GraphQL product responses into UCP-structured JSON |
-| `app/lib/agentic/affinity.ts` | Server-side affinity scoring — re-ranks products by customer order history; degrades for anon users |
-| `app/lib/agentic/attribute-normalizer.ts` | `normalizeAttribute()` — maps Shopify variant options and metafields to Schema.org-aligned vocabulary |
-| `app/lib/agentic/structured-data.ts` | Agent-readable meta-tag emission for SCE fields |
-| `app/lib/agentic/agent-id-hash.ts` | `agentIdHash()` — privacy-safe SHA-256 truncated hash of agent identity for observability; first 16 hex chars, not reversible |
-| `app/lib/agentic/agent-surface.ts` | `deriveAgentSurface()`, `AgentSurface` — classifies request origin as MCP session, AI referer, permalink, or human |
-| `app/lib/agentic/jwks-cache.ts` | `getJwks()` — in-memory 1-hour TTL JWKS cache used by agent-auth.ts for token verification |
-| `app/lib/agentic/observability.ts` | `emitAgentEvent()`, `routeFromRequest()` — dual-target structured event emitter (console + Analytics Engine); privacy-safe allowlist only, never logs PII |
-| `app/lib/agentic/ucp-catalog-types.ts` | `UcpProduct`, `UcpVariant`, `UcpMoney`, `UcpMedia`, `UcpProductPage`, `UcpLookupBatch` — UCP catalog type definitions |
-| `app/lib/agent-surface-context.tsx` | `AgentSurfaceProvider`, `useAgentSurface()` — React context for propagating `AgentSurface` state to banner and agent-adaptive components |
-| `app/lib/agentic/mcp-router.ts` | `routeMcpRequest()` — JSON-RPC 2.0 dispatcher for registered MCP tools |
-| `app/lib/agentic/mcp-tools/` | Tool implementations: `storefront/` (search-catalog, get-product, lookup-catalog, list-sort-options, search-suggest), `policies/` (policy-corpus, search-policies-and-faqs) |
-| `app/lib/agentic/quizzes/` | `style-fit.ts` + `resolveStyleQuery()` — style profile quiz logic |
-| `app/lib/queries/` | Agent-optimized GraphQL fragments: `product.ts`, `search.ts`, `predictive-search.ts`, `lookup.ts`, `policy-corpus.ts` |
-| `app/lib/cart-permalink.ts` | Pure helpers for building/parsing Shopify cart permalink URLs (agent checkout handoff + share flows) |
-| `app/lib/recently-viewed-tools.ts` | Agent tool bridge — reads recently-viewed product IDs from cookie for server-side `lookup_catalog` calls |
-| `app/lib/seo-breadcrumbs.ts` | `deriveBreadcrumbsFromPath()` — pure breadcrumb derivation shared by visual component and JSON-LD emitters |
+| File                                      | Purpose                                                                                                                                                                     |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/lib/agentic/types.ts`                | UCP/MCP type definitions — `UcpProfile`, `AgentContext`, `McpToolRegistry`                                                                                                  |
+| `app/lib/agentic/agent-request.ts`        | `isAgentRequest()` — detects agents via `?agent=true` or `Accept: application/x-ucp+json`                                                                                   |
+| `app/lib/agentic/agent-auth.ts`           | `verifyAgentBearer()` — validates bearer tokens for authenticated MCP endpoints                                                                                             |
+| `app/lib/agentic/agent-context.ts`        | `buildAgentContext()` — assembles agent context from Hydrogen context for MCP tool handlers                                                                                 |
+| `app/lib/agentic/agent-server.ts`         | Server-level UCP handler — intercepts product page requests from agents in `server.ts` before React Router rendering                                                        |
+| `app/lib/agentic/ucp-profile.ts`          | `buildUcpProfile()` — constructs the UCP merchant profile for `/.well-known/ucp`                                                                                            |
+| `app/lib/agentic/catalog-shapes.ts`       | `toUcpProductPage()` — transforms Shopify GraphQL product responses into UCP-structured JSON                                                                                |
+| `app/lib/agentic/affinity.ts`             | Server-side affinity scoring — re-ranks products by customer order history; degrades for anon users                                                                         |
+| `app/lib/agentic/attribute-normalizer.ts` | `normalizeAttribute()` — maps Shopify variant options and metafields to Schema.org-aligned vocabulary                                                                       |
+| `app/lib/agentic/structured-data.ts`      | Agent-readable meta-tag emission for SCE fields                                                                                                                             |
+| `app/lib/agentic/agent-id-hash.ts`        | `agentIdHash()` — privacy-safe SHA-256 truncated hash of agent identity for observability; first 16 hex chars, not reversible                                               |
+| `app/lib/agentic/agent-surface.ts`        | `deriveAgentSurface()`, `AgentSurface` — classifies request origin as MCP session, AI referer, permalink, or human                                                          |
+| `app/lib/agentic/jwks-cache.ts`           | `getJwks()` — in-memory 1-hour TTL JWKS cache used by agent-auth.ts for token verification                                                                                  |
+| `app/lib/agentic/observability.ts`        | `emitAgentEvent()`, `routeFromRequest()` — dual-target structured event emitter (console + Analytics Engine); privacy-safe allowlist only, never logs PII                   |
+| `app/lib/agentic/ucp-catalog-types.ts`    | `UcpProduct`, `UcpVariant`, `UcpMoney`, `UcpMedia`, `UcpProductPage`, `UcpLookupBatch` — UCP catalog type definitions                                                       |
+| `app/lib/agent-surface-context.tsx`       | `AgentSurfaceProvider`, `useAgentSurface()` — React context for propagating `AgentSurface` state to banner and agent-adaptive components                                    |
+| `app/lib/agentic/mcp-router.ts`           | `routeMcpRequest()` — JSON-RPC 2.0 dispatcher for registered MCP tools                                                                                                      |
+| `app/lib/agentic/mcp-tools/`              | Tool implementations: `storefront/` (search-catalog, get-product, lookup-catalog, list-sort-options, search-suggest), `policies/` (policy-corpus, search-policies-and-faqs) |
+| `app/lib/agentic/quizzes/`                | `style-fit.ts` + `resolveStyleQuery()` — style profile quiz logic                                                                                                           |
+| `app/lib/queries/`                        | Agent-optimized GraphQL fragments: `product.ts`, `search.ts`, `predictive-search.ts`, `lookup.ts`, `policy-corpus.ts`                                                       |
+| `app/lib/cart-permalink.ts`               | Pure helpers for building/parsing Shopify cart permalink URLs (agent checkout handoff + share flows)                                                                        |
+| `app/lib/recently-viewed-tools.ts`        | Agent tool bridge — reads recently-viewed product IDs from cookie for server-side `lookup_catalog` calls                                                                    |
+| `app/lib/seo-breadcrumbs.ts`              | `deriveBreadcrumbsFromPath()` — pure breadcrumb derivation shared by visual component and JSON-LD emitters                                                                  |
 
 ### Agentic Routes
 
-| Route | URL | Notes |
-| ----- | --- | ----- |
-| `app/routes/[llms.txt].tsx` | `/llms.txt` | AI transparency manifest — documents storefront capabilities for AI crawlers |
-| `app/routes/[.]well-known.ucp.tsx` | `/.well-known/ucp` | UCP merchant profile — capability negotiation discovery endpoint |
-| `app/routes/api.mcp.tsx` | `/api/mcp` | **Public** MCP endpoint — policy/FAQ tools; no auth required |
-| `app/routes/api.ucp.mcp.tsx` | `/api/ucp/mcp` | **Authenticated** MCP endpoint — catalog, cart, comparison, affinity tools |
-| `app/routes/policies._index.tsx` | `/policies` | Index listing all shop policies |
+| Route                              | URL                | Notes                                                                        |
+| ---------------------------------- | ------------------ | ---------------------------------------------------------------------------- |
+| `app/routes/[llms.txt].tsx`        | `/llms.txt`        | AI transparency manifest — documents storefront capabilities for AI crawlers |
+| `app/routes/[.]well-known.ucp.tsx` | `/.well-known/ucp` | UCP merchant profile — capability negotiation discovery endpoint             |
+| `app/routes/api.mcp.tsx`           | `/api/mcp`         | **Public** MCP endpoint — policy/FAQ tools; no auth required                 |
+| `app/routes/api.ucp.mcp.tsx`       | `/api/ucp/mcp`     | **Authenticated** MCP endpoint — catalog, cart, comparison, affinity tools   |
+| `app/routes/policies._index.tsx`   | `/policies`        | Index listing all shop policies                                              |
 
 ### Critical Pattern: Agent Detection
 
@@ -373,6 +373,7 @@ Read all comments before editing. Update comments when changing behavior. Add co
 Every meaningful commit — one that adds a feature, improves the shopping experience, or fixes something users would notice — **MUST** include a corresponding entry in `app/lib/changelog-data.ts`.
 
 **Rules:**
+
 - Add the entry in the **same commit** that ships the change (never as a follow-up)
 - Place the new entry at the **top** of `CHANGELOG_ENTRIES` (newest first)
 - Write in plain English for shoppers — no SHAs, file paths, variable names, branch names, or technical jargon

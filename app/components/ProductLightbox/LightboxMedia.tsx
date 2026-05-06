@@ -86,7 +86,15 @@ export function LightboxMedia({media}: LightboxMediaProps) {
                     </div>
                 )}
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-dark/60 text-light/80 text-xs font-medium">
-                    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1">
+                    <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        aria-hidden="true"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                    >
                         <path d="M6 0.5L11 3.25V8.75L6 11.5L1 8.75V3.25L6 0.5Z" />
                         <path d="M6 0.5V6M6 6L11 3.25M6 6L1 3.25M6 6V11.5" strokeWidth="0.75" />
                     </svg>

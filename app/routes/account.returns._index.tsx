@@ -7,14 +7,7 @@ import {Card, CardContent} from "~/components/ui/card";
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 import {AuthRequiredFallback} from "~/components/account/AuthRequiredFallback";
-import {
-    PackageX,
-    ArrowRightIcon,
-    CalendarIcon,
-    PackageIcon,
-    PackageSearchIcon,
-    ShoppingBagIcon
-} from "lucide-react";
+import {PackageX, ArrowRightIcon, CalendarIcon, PackageIcon, PackageSearchIcon, ShoppingBagIcon} from "lucide-react";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 import {parseProductTitle} from "~/lib/product";
 
@@ -154,10 +147,10 @@ const ReturnsHistoryRoute = () => {
         <div className="space-y-8">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
                 <div>
-                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Returns History</h1>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Track and manage your return requests
-                    </p>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                        Returns History
+                    </h1>
+                    <p className="text-sm text-muted-foreground mt-1">Track and manage your return requests</p>
                 </div>
                 {hasReturns && (
                     <div className="mt-3 sm:mt-0">
@@ -284,7 +277,10 @@ const ReturnCard = ({returnItem, index: _index = 0}: {returnItem: ReturnWithOrde
                             <p className="text-base font-semibold text-foreground truncate pt-1">
                                 {firstItemTitle.primary}
                                 {firstItemTitle.secondary && (
-                                    <span className="font-normal text-muted-foreground text-sm"> {firstItemTitle.secondary}</span>
+                                    <span className="font-normal text-muted-foreground text-sm">
+                                        {" "}
+                                        {firstItemTitle.secondary}
+                                    </span>
                                 )}
                                 {lineItems.length > 1 && (
                                     <span className="text-muted-foreground font-normal text-sm">

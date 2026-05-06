@@ -22,11 +22,7 @@ function setCache(key: string, value: string): void {
  * Derives a navbar/icon color that targets WCAG 4.5:1 while never dropping below 3:1.
  * The hook is memoized and cached by the input color pair to avoid repeated work.
  */
-export function useAccessibleIconColor(
-    baseColor: string,
-    backgroundColor: string,
-    targetRatio: number = 4.5
-): string {
+export function useAccessibleIconColor(baseColor: string, backgroundColor: string, targetRatio: number = 4.5): string {
     return useMemo(() => {
         const key = `${baseColor}|${backgroundColor}|${targetRatio}`;
         const cached = iconColorCache.get(key);

@@ -45,10 +45,7 @@ export const MobileMenu = ({show, onClose, collections = [], shopName}: MobileMe
     // Desktop path: uses a custom overlay (no Radix primitive), so lock manually.
     useLockBodyScroll(show && !isMobile);
 
-    const specialCollectionHandles = useMemo(
-        () => Object.values(FALLBACK_SPECIAL_COLLECTIONS) as string[],
-        []
-    );
+    const specialCollectionHandles = useMemo(() => Object.values(FALLBACK_SPECIAL_COLLECTIONS) as string[], []);
 
     const regularCollections = useMemo(
         () => collections.filter(col => !specialCollectionHandles.includes(col.handle) && col.productCount > 0),
@@ -109,7 +106,10 @@ export const MobileMenu = ({show, onClose, collections = [], shopName}: MobileMe
                 aria-label="Close menu"
             />
 
-            <div className="bg-background mobile-menu-enter fixed inset-x-0 top-[var(--total-header-height)] z-50 block max-h-[calc(100dvh-var(--total-header-height))] overflow-y-auto border-b shadow-xl" data-lenis-prevent>
+            <div
+                className="bg-background mobile-menu-enter fixed inset-x-0 top-[var(--total-header-height)] z-50 block max-h-[calc(100dvh-var(--total-header-height))] overflow-y-auto border-b shadow-xl"
+                data-lenis-prevent
+            >
                 <div className="mx-auto px-4 py-4 sm:py-6">
                     <MobileMenuHeader shopName={shopName} onClose={onClose} />
                     <MobileMenuNavigation currentPath={currentPath} onLinkClick={handleLinkClick} />

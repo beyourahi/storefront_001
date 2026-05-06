@@ -43,11 +43,16 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                   }
                 : undefined
         }) ?? []),
-        {"script:ld+json": generateBreadcrumbListSchema([
-            {name: "Home", url: "/"},
-            {name: "Blog", url: "/blogs"},
-            {name: blog.title, url: `/blogs/${blog.handle}`}
-        ], siteUrl) as any}
+        {
+            "script:ld+json": generateBreadcrumbListSchema(
+                [
+                    {name: "Home", url: "/"},
+                    {name: "Blog", url: "/blogs"},
+                    {name: blog.title, url: `/blogs/${blog.handle}`}
+                ],
+                siteUrl
+            ) as any
+        }
     ];
 };
 

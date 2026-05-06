@@ -69,7 +69,10 @@ export const CollectionsSection = ({collections, loading = false}: CollectionsSe
 
                 {isLoadingState ? (
                     <div>
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
+                        <Carousel
+                            opts={{align: "start", loop: false, dragFree: true}}
+                            plugins={[WheelGesturesPlugin()]}
+                        >
                             <CarouselContent className="-ml-2 md:-ml-4">
                                 {Array.from({length: 8}, (_, i) => i).map(i => (
                                     <CarouselItem
@@ -92,7 +95,10 @@ export const CollectionsSection = ({collections, loading = false}: CollectionsSe
                     </div>
                 ) : (
                     <div>
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
+                        <Carousel
+                            opts={{align: "start", loop: false, dragFree: true}}
+                            plugins={[WheelGesturesPlugin()]}
+                        >
                             <CarouselContent className="-ml-2 md:-ml-4">
                                 {filteredCollections.map(collection => (
                                     <CarouselItem

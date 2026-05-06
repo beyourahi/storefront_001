@@ -88,9 +88,10 @@ const normalizeVariants = (product: RawProduct, fallbackMoney: ShopifyMoney): Ar
     const variants = product?.variants as Record<string, unknown> | undefined;
     const edgesSource = Array.isArray(variants?.edges) ? (variants.edges as Record<string, unknown>[]) : [];
     const nodesSource = Array.isArray(variants?.nodes) ? (variants.nodes as Record<string, unknown>[]) : [];
-    const rawVariants = edgesSource.length > 0
-        ? edgesSource.map((edge: Record<string, unknown>) => edge?.node as Record<string, unknown>)
-        : nodesSource;
+    const rawVariants =
+        edgesSource.length > 0
+            ? edgesSource.map((edge: Record<string, unknown>) => edge?.node as Record<string, unknown>)
+            : nodesSource;
 
     return rawVariants
         .filter((variant: Record<string, unknown>) => variant?.id)
@@ -103,9 +104,10 @@ const normalizeImages = (product: RawProduct): Array<Edge<ShopifyImage>> => {
     const nodesSource = Array.isArray(images?.nodes) ? (images.nodes as Record<string, unknown>[]) : [];
     const featured = normalizeImage(product?.featuredImage as Maybe<Partial<ShopifyImage>>);
 
-    const rawImages = edgesSource.length > 0
-        ? edgesSource.map((edge: Record<string, unknown>) => edge?.node as Maybe<Partial<ShopifyImage>>)
-        : (nodesSource as Maybe<Partial<ShopifyImage>>[]);
+    const rawImages =
+        edgesSource.length > 0
+            ? edgesSource.map((edge: Record<string, unknown>) => edge?.node as Maybe<Partial<ShopifyImage>>)
+            : (nodesSource as Maybe<Partial<ShopifyImage>>[]);
     const normalized = rawImages.map(image => normalizeImage(image)).filter(Boolean) as ShopifyImage[];
 
     if (normalized.length > 0) {
@@ -131,9 +133,8 @@ const normalizeMediaNodes = (product: RawProduct): Array<{node: ShopifyMediaNode
     const media = product?.media as Record<string, unknown> | undefined;
     const edgesSource = Array.isArray(media?.edges) ? (media.edges as Record<string, unknown>[]) : [];
     const nodesSource = Array.isArray(media?.nodes) ? (media.nodes as Record<string, unknown>[]) : [];
-    const rawNodes = edgesSource.length > 0
-        ? edgesSource.map(edge => edge?.node as Record<string, unknown>)
-        : nodesSource;
+    const rawNodes =
+        edgesSource.length > 0 ? edgesSource.map(edge => edge?.node as Record<string, unknown>) : nodesSource;
 
     const entries: Array<{node: ShopifyMediaNode}> = [];
     for (const node of rawNodes) {
@@ -182,7 +183,10 @@ const normalizeOptions = (options: unknown): ShopifyProductOption[] => {
 const normalizeProduct = (product: RawProduct): ShopifyProduct => {
     const priceRange = product?.priceRange as Record<string, unknown> | undefined;
     const minVariantPrice = normalizeMoney(priceRange?.minVariantPrice as Maybe<Partial<ShopifyMoney>>, DEFAULT_MONEY);
-    const maxVariantPrice = normalizeMoney(priceRange?.maxVariantPrice as Maybe<Partial<ShopifyMoney>>, minVariantPrice);
+    const maxVariantPrice = normalizeMoney(
+        priceRange?.maxVariantPrice as Maybe<Partial<ShopifyMoney>>,
+        minVariantPrice
+    );
     const seo = product?.seo as Record<string, unknown> | undefined;
 
     const mediaEdges = normalizeMediaNodes(product);

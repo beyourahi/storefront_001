@@ -165,7 +165,10 @@ export const MasonryImageGrid = ({initialImages, pageInfo}: MasonryImageGridProp
                                     }}
                                     src={buildShopifyImageUrl(image.url, {format: "avif", width: 800, quality: 85})}
                                     srcSet={[400, 600, 800, 1200]
-                                        .map(w => `${buildShopifyImageUrl(image.url, {format: "avif", width: w, quality: 85})} ${w}w`)
+                                        .map(
+                                            w =>
+                                                `${buildShopifyImageUrl(image.url, {format: "avif", width: w, quality: 85})} ${w}w`
+                                        )
                                         .join(", ")}
                                     sizes={imageSizes}
                                     alt={image.altText || image.productTitle || `Gallery image ${index + 1}`}
@@ -186,10 +189,12 @@ export const MasonryImageGrid = ({initialImages, pageInfo}: MasonryImageGridProp
                                 )}
                             </div>
 
-                            <div className={cn(
-                                "sleek absolute inset-0 hidden flex-col items-center justify-center bg-black/50 p-4 text-center backdrop-blur-[1px] sm:flex",
-                                canHover ? "opacity-0 group-hover:opacity-100" : "opacity-100"
-                            )}>
+                            <div
+                                className={cn(
+                                    "sleek absolute inset-0 hidden flex-col items-center justify-center bg-black/50 p-4 text-center backdrop-blur-[1px] sm:flex",
+                                    canHover ? "opacity-0 group-hover:opacity-100" : "opacity-100"
+                                )}
+                            >
                                 {(() => {
                                     const {primary, secondary} = parseProductTitle(image.productTitle ?? "");
                                     return (

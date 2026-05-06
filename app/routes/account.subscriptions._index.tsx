@@ -111,15 +111,21 @@ export default function SubscriptionsIndex() {
         <div className="space-y-6">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
                 <div>
-                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Subscriptions</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Manage your recurring orders and subscription plans.</p>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                        Subscriptions
+                    </h1>
+                    <p className="text-sm text-muted-foreground mt-1">
+                        Manage your recurring orders and subscription plans.
+                    </p>
                 </div>
             </div>
 
             {subscriptions.length === 0 ? (
                 <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
                     <h2 className="font-serif text-xl font-medium text-foreground">No active subscriptions</h2>
-                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">You have no active subscriptions.</p>
+                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+                        You have no active subscriptions.
+                    </p>
                     <Button asChild variant="link" className="mt-4">
                         <Link to="/collections">Browse Products</Link>
                     </Button>

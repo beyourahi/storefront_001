@@ -4,7 +4,14 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import type {Shop} from "@shopify/hydrogen/storefront-api-types";
 import {LegalPageLayout} from "~/components/legal";
 import {POLICY_CONTENT_QUERY} from "~/lib/queries/policy";
-import {getBrandNameFromMatches, buildCanonicalUrl, getSiteUrlFromMatches, generateBreadcrumbListSchema, generateWebPageSchema, generateFAQPageSchema} from "~/lib/seo";
+import {
+    getBrandNameFromMatches,
+    buildCanonicalUrl,
+    getSiteUrlFromMatches,
+    generateBreadcrumbListSchema,
+    generateWebPageSchema,
+    generateFAQPageSchema
+} from "~/lib/seo";
 import {derivePolicyBreadcrumbs} from "~/lib/seo-breadcrumbs";
 import {kebabToCamelCase} from "~/lib/string-utils";
 import {useSiteSettings} from "~/lib/site-content-context";
@@ -12,13 +19,10 @@ import {useSiteSettings} from "~/lib/site-content-context";
 type PolicyKey = keyof Pick<Shop, "privacyPolicy" | "shippingPolicy" | "termsOfService" | "refundPolicy">;
 
 const POLICY_DESCRIPTIONS: Record<PolicyKey, (brandName: string) => string> = {
-    privacyPolicy: (brandName) =>
-        `Learn how ${brandName} collects, uses, and protects your personal information.`,
+    privacyPolicy: brandName => `Learn how ${brandName} collects, uses, and protects your personal information.`,
     shippingPolicy: () => "Find out about our shipping methods, delivery times, and shipping costs.",
-    termsOfService: (brandName) =>
-        `Read our terms and conditions for using the ${brandName} website and services.`,
-    refundPolicy: (brandName) =>
-        `Understand our return and refund policies for purchases made at ${brandName}.`
+    termsOfService: brandName => `Read our terms and conditions for using the ${brandName} website and services.`,
+    refundPolicy: brandName => `Understand our return and refund policies for purchases made at ${brandName}.`
 };
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
@@ -41,11 +45,13 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
 
     // Check if root has policyExtension for this policy handle
     const rootData = (matches.find(m => m?.id === "root") as any)?.data;
-    const policyExtensions: Array<{key: string; value: string; context?: string}> = rootData?.siteContent?.siteSettings?.policyExtension ?? [];
+    const policyExtensions: Array<{key: string; value: string; context?: string}> =
+        rootData?.siteContent?.siteSettings?.policyExtension ?? [];
     const matchingExtensions = policyExtensions.filter(ext => !ext.context || ext.context === policy.handle);
-    const faqSchema = matchingExtensions.length > 0
-        ? generateFAQPageSchema(matchingExtensions.map(ext => ({question: ext.key, answer: ext.value})))
-        : null;
+    const faqSchema =
+        matchingExtensions.length > 0
+            ? generateFAQPageSchema(matchingExtensions.map(ext => ({question: ext.key, answer: ext.value})))
+            : null;
 
     return [
         ...(getSeoMeta({title: policy.title, description, url: policyUrl}) ?? []),
@@ -91,11 +97,17 @@ export default function PolicyRoute() {
     const description = descriptionFn ? descriptionFn("our store") : undefined;
 
     // Filter policyExtension entries for this policy handle
-    const policyExtension = siteSettings?.policyExtension?.filter(
-        ext => !ext.context || ext.context === policy.handle
-    ) ?? null;
+    const policyExtension =
+        siteSettings?.policyExtension?.filter(ext => !ext.context || ext.context === policy.handle) ?? null;
 
-    return <LegalPageLayout title={policy.title} description={description} content={policy.body} policyExtension={policyExtension} />;
+    return (
+        <LegalPageLayout
+            title={policy.title}
+            description={description}
+            content={policy.body}
+            policyExtension={policyExtension}
+        />
+    );
 }
 
 export {RouteErrorBoundary as ErrorBoundary} from "~/components/RouteErrorBoundary";

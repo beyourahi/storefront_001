@@ -17,7 +17,13 @@ import type {CompactProductCardProps} from "~/lib/types/product-card";
  * Out-of-stock products show a disabled button; in-stock products open
  * `ProductVariantDialog` with `autoAddSingleVariant` for one-tap adds.
  */
-export function CompactProductCard({product, className = "", onCartAdd, onProductClick, isMutating = false}: CompactProductCardProps) {
+export function CompactProductCard({
+    product,
+    className = "",
+    onCartAdd,
+    onProductClick,
+    isMutating = false
+}: CompactProductCardProps) {
     const productData = useMemo(() => getProductDataForCard(product), [product]);
     const {price, compareAtPrice, discountPercentage} = productData;
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
@@ -37,7 +43,13 @@ export function CompactProductCard({product, className = "", onCartAdd, onProduc
     };
 
     return (
-        <div className={cn("sleek group w-[180px] shrink-0 overflow-hidden rounded-lg sm:w-[180px]", isMutating && "opacity-50 cursor-not-allowed pointer-events-none", className)}>
+        <div
+            className={cn(
+                "sleek group w-[180px] shrink-0 overflow-hidden rounded-lg sm:w-[180px]",
+                isMutating && "opacity-50 cursor-not-allowed pointer-events-none",
+                className
+            )}
+        >
             <div className="flex gap-3 p-3">
                 <div className="relative size-16 shrink-0 overflow-hidden rounded-sm">
                     <button className="block h-full w-full text-left" onClick={handleProductClick}>

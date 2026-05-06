@@ -18,7 +18,6 @@ import {pickPrimaryMedia} from "~/lib/product/primary-media";
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
-
 /**
  * Renders a single optimistic cart line item with quantity controls, pricing,
  * remove button, and inline error/warning feedback.
@@ -138,7 +137,11 @@ export function CartLineItem({line}: {line: CartLine}) {
                             variantTitle={variantTitle}
                             onNavigate={close}
                         />
-                        <CartLineRemoveButton lineId={id} productTitle={product.title} disabled={!!line.isOptimistic || isMutating} />
+                        <CartLineRemoveButton
+                            lineId={id}
+                            productTitle={product.title}
+                            disabled={!!line.isOptimistic || isMutating}
+                        />
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -245,7 +248,15 @@ function CartLineDetails({
     );
 }
 
-function CartLinePricing({cost, quantity, lineId}: {cost: CartLine["cost"] | undefined; quantity: number; lineId: string}) {
+function CartLinePricing({
+    cost,
+    quantity,
+    lineId
+}: {
+    cost: CartLine["cost"] | undefined;
+    quantity: number;
+    lineId: string;
+}) {
     const totalAmount = cost?.totalAmount;
     const isMutating = useCartLineMutating(lineId);
     if (!totalAmount) return null;

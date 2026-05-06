@@ -95,17 +95,13 @@ export function RouteErrorBoundary() {
                         </Badge>
                     </div>
                     <div className="space-y-4">
-                        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                            {title}
-                        </h1>
+                        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">{title}</h1>
                         <p className="mx-auto max-w-lg text-lg leading-relaxed text-muted-foreground">
                             {displayMessage}
                         </p>
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
-                        <Button onClick={() => window.location.reload()}>
-                            Try Again
-                        </Button>
+                        <Button onClick={() => window.location.reload()}>Try Again</Button>
                         <Button variant="outline" asChild>
                             <Link to="/">Return Home</Link>
                         </Button>

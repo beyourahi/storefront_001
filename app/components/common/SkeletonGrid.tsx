@@ -67,9 +67,7 @@ export const SkeletonGrid = ({
     }
 
     return (
-        <div
-            className={`pointer-events-none grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 ${containerClass}`}
-        >
+        <div className={`pointer-events-none grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 ${containerClass}`}>
             {items.map(item => (
                 <div key={item} className={`space-y-3 ${itemClass}`}>
                     {itemType === "collection" ? (

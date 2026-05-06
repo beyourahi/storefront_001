@@ -179,8 +179,8 @@ function HeroBackgroundMedia({
 
 /**
  * Full-viewport hero with parallax background, live clock, and time-of-day greeting.
- * The heading uses `suppressHydrationWarning` because `greeting` is empty during SSR
- * (no `window` access) and hydrates to a time-of-day string on the client — causing
+ * The heading uses `suppressHydrationWarning` because when no hero_heading is set,
+ * `greeting` is empty during SSR and hydrates to a time-of-day string on the client —
  * an intentional but harmless mismatch. `HeroBackgroundMedia` selects a responsive
  * `<picture>` when both mobile and desktop images are provided; otherwise renders a
  * single `<video>` or `<Image>` based on the active media type.
@@ -261,7 +261,7 @@ export function VideoHero({heroHeading, heroDescription, shopName}: VideoHeroPro
                             className="pb-3 text-center font-serif font-semibold break-words text-white drop-shadow-lg"
                             style={{fontSize: "clamp(1.5rem, 3.5vw, 4.5rem)", lineHeight: 0.9}}
                         >
-                            {greeting || heading}
+                            {heading || greeting}
                         </h1>
                     </div>
 

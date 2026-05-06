@@ -46,9 +46,7 @@ interface UseHeaderHeightOptions {
  * @param options - Configuration options
  * @returns A React ref to attach to the element you want to measure
  */
-export function useHeaderHeight<T extends HTMLElement = HTMLElement>(
-    options: UseHeaderHeightOptions
-) {
+export function useHeaderHeight<T extends HTMLElement = HTMLElement>(options: UseHeaderHeightOptions) {
     const {variableName, enabled = true, debounceMs = 0} = options;
     const ref = useRef<T>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -72,8 +70,7 @@ export function useHeaderHeight<T extends HTMLElement = HTMLElement>(
 
             const updateFn = () => {
                 // Use borderBoxSize for more accurate measurements when available
-                const height =
-                    entry.borderBoxSize?.[0]?.blockSize ?? entry.contentRect.height;
+                const height = entry.borderBoxSize?.[0]?.blockSize ?? entry.contentRect.height;
                 updateHeight(height);
             };
 

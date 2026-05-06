@@ -29,8 +29,7 @@ import {PolicySectionsGrid} from "./PolicySectionsGrid";
 import {parsePolicySections} from "~/lib/policy";
 
 /** Collapse inter-tag whitespace to prevent SSR/client hydration mismatches. */
-const normalizeHtml = (html: string): string =>
-    html.replace(/>\s+</g, "><").trim();
+const normalizeHtml = (html: string): string => html.replace(/>\s+</g, "><").trim();
 
 type PolicyContentSectionProps = {
     content: string;

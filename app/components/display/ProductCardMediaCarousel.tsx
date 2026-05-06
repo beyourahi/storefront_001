@@ -194,7 +194,11 @@ function CardImage({
             data={{url: media.url, altText: media.altText || productTitle}}
             className={cn(
                 "sleek product-image h-full w-full rounded-lg object-cover",
-                isOutOfStock ? "grayscale opacity-60" : canHover ? "group-hover:scale-[1.03]" : "group-active:scale-[1.02]"
+                isOutOfStock
+                    ? "grayscale opacity-60"
+                    : canHover
+                      ? "group-hover:scale-[1.03]"
+                      : "group-active:scale-[1.02]"
             )}
             sizes="(min-width: 1280px) 320px, (min-width: 1024px) 350px, (min-width: 768px) 280px, 200px"
             width={400}
@@ -357,7 +361,7 @@ export function ProductCardMediaCarousel({
                 <CarouselContent className="ml-0 h-full">
                     {media.map((item, index) => (
                         <CarouselItem
-                            key={item.type === "image" ? item.url : item.sources[0]?.url ?? `slide-${index}`}
+                            key={item.type === "image" ? item.url : (item.sources[0]?.url ?? `slide-${index}`)}
                             className="h-full basis-full pl-0"
                         >
                             <SlideLink productHandle={productHandle} productTitle={productTitle}>
@@ -403,7 +407,11 @@ export function ProductCardMediaCarousel({
                 }}
                 className={cn(
                     "absolute left-1.5 top-1/2 z-[15] hidden size-7 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground shadow-sm backdrop-blur-md transition-opacity duration-200 hover:bg-background md:flex",
-                    isOutOfStock ? "opacity-0 pointer-events-none" : canHover ? "opacity-0 group-hover:opacity-100" : "opacity-90"
+                    isOutOfStock
+                        ? "opacity-0 pointer-events-none"
+                        : canHover
+                          ? "opacity-0 group-hover:opacity-100"
+                          : "opacity-90"
                 )}
             >
                 <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
@@ -418,7 +426,11 @@ export function ProductCardMediaCarousel({
                 }}
                 className={cn(
                     "absolute right-1.5 top-1/2 z-[15] hidden size-7 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground shadow-sm backdrop-blur-md transition-opacity duration-200 hover:bg-background md:flex",
-                    isOutOfStock ? "opacity-0 pointer-events-none" : canHover ? "opacity-0 group-hover:opacity-100" : "opacity-90"
+                    isOutOfStock
+                        ? "opacity-0 pointer-events-none"
+                        : canHover
+                          ? "opacity-0 group-hover:opacity-100"
+                          : "opacity-90"
                 )}
             >
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -434,7 +446,7 @@ export function ProductCardMediaCarousel({
             >
                 {media.map((item, index) => (
                     <span
-                        key={item.type === "image" ? item.url : item.sources[0]?.url ?? `dot-${index}`}
+                        key={item.type === "image" ? item.url : (item.sources[0]?.url ?? `dot-${index}`)}
                         className={cn(
                             "h-1 rounded-full transition-all duration-200",
                             index === activeIndex ? "w-3 bg-foreground" : "w-1 bg-foreground/40"

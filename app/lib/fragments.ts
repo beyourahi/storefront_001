@@ -688,4 +688,3 @@ export const SIDEBAR_COLLECTIONS_QUERY = `#graphql
     }
   }
 ` as const;
-

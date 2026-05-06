@@ -106,9 +106,7 @@ export function AgentArrivalBanner() {
                 {/* Copy — sourced from useAgentArrivalCopy() → FALLBACK_AGENT_ARRIVAL_COPY. */}
                 <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold leading-snug">{title}</p>
-                    <p className="mt-0.5 text-xs font-normal leading-snug opacity-80">
-                        {subtitle}
-                    </p>
+                    <p className="mt-0.5 text-xs font-normal leading-snug opacity-80">{subtitle}</p>
                 </div>
 
                 {/* Dismiss button — WCAG 2.5.5: 44×44 px touch target via negative margin. */}

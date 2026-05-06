@@ -34,10 +34,7 @@ if (!workbox) {
     // Must be registered BEFORE any catch-all strategies that could intercept it.
     // The .webmanifest extension could otherwise match the static assets handler.
     // ==========================================================================
-    registerRoute(
-        ({url}) => url.pathname === "/manifest.webmanifest",
-        new NetworkOnly()
-    );
+    registerRoute(({url}) => url.pathname === "/manifest.webmanifest", new NetworkOnly());
 
     // ==========================================================================
     // OFFLINE FALLBACK PAGE

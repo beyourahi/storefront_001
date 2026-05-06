@@ -64,16 +64,16 @@ export type McpTool = {
 };
 
 // MCP tool handler signature
-export type McpToolHandler = (
-    params: Record<string, unknown>,
-    ctx: AgentContext
-) => Promise<unknown>;
+export type McpToolHandler = (params: Record<string, unknown>, ctx: AgentContext) => Promise<unknown>;
 
 // Registry of MCP tool handlers
-export type McpToolRegistry = Map<string, {
-    tool: McpTool;
-    handler: McpToolHandler;
-}>;
+export type McpToolRegistry = Map<
+    string,
+    {
+        tool: McpTool;
+        handler: McpToolHandler;
+    }
+>;
 
 // Verified JWT claims from a signed agent bearer token
 export type AgentJwtClaims = {

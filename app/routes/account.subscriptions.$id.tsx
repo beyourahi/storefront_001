@@ -33,7 +33,10 @@ import {
 } from "~/components/ui/alert-dialog";
 
 export const meta: Route.MetaFunction = ({data}) => {
-    return [{title: data?.subscription ? "Subscription Details" : "Subscription Not Found"}, {name: "robots", content: "noindex,nofollow"}];
+    return [
+        {title: data?.subscription ? "Subscription Details" : "Subscription Not Found"},
+        {name: "robots", content: "noindex,nofollow"}
+    ];
 };
 
 export const loader = async ({params, context}: Route.LoaderArgs) => {
@@ -324,7 +327,9 @@ export default function SubscriptionDetail() {
                 <div>
                     <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
                         Subscription Details
-                        <Badge variant={statusConfig.variant} className="ml-3 align-middle">{statusConfig.label}</Badge>
+                        <Badge variant={statusConfig.variant} className="ml-3 align-middle">
+                            {statusConfig.label}
+                        </Badge>
                     </h1>
                     <p className="text-sm text-muted-foreground mt-1">
                         {frequency} • Created {new Date(subscription.createdAt).toLocaleDateString()}
@@ -488,10 +493,7 @@ export default function SubscriptionDetail() {
                     </CardHeader>
                     <CardContent className="divide-y p-0">
                         {subscription.orders.nodes.map((order: SubscriptionOrder) => (
-                            <div
-                                key={order.id}
-                                className="flex items-center justify-between gap-4 px-5 py-4 md:px-6"
-                            >
+                            <div key={order.id} className="flex items-center justify-between gap-4 px-5 py-4 md:px-6">
                                 <div className="flex-1">
                                     <Link to="/account/orders" className="font-medium underline">
                                         {order.name}

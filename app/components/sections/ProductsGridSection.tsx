@@ -61,9 +61,7 @@ export const ProductsGridSection = ({
             {showPagination && pagination && (
                 <div className={cn("mx-auto max-w-[2000px] px-2 md:px-4", className)}>
                     <div className="mb-4 flex items-center justify-end gap-4">
-                        {sortLabel && (
-                            <p className="text-muted-foreground mr-auto text-sm">{sortLabel}</p>
-                        )}
+                        {sortLabel && <p className="text-muted-foreground mr-auto text-sm">{sortLabel}</p>}
                         <div className="hidden lg:block">
                             <CollectionPagination
                                 currentPage={pagination.currentPage}

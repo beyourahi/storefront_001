@@ -1,7 +1,13 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/blogs._index";
 import {getPaginationVariables, getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateBreadcrumbListSchema} from "~/lib/seo";
+import {
+    buildCanonicalUrl,
+    getBrandNameFromMatches,
+    getRequiredSocialMeta,
+    getSiteUrlFromMatches,
+    generateBreadcrumbListSchema
+} from "~/lib/seo";
 import {ArticleCard, type ArticleCardData} from "~/components/blog/ArticleCard";
 import {ArticleHero} from "~/components/blog/ArticleHero";
 import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
@@ -65,10 +71,15 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
                 : undefined
         }) ?? []),
         ...getRequiredSocialMeta("website", brandName, featuredArticle?.image?.url ?? undefined),
-        {"script:ld+json": generateBreadcrumbListSchema([
-            {name: "Home", url: "/"},
-            {name: "Blog", url: "/blogs"}
-        ], siteUrl || undefined) as any},
+        {
+            "script:ld+json": generateBreadcrumbListSchema(
+                [
+                    {name: "Home", url: "/"},
+                    {name: "Blog", url: "/blogs"}
+                ],
+                siteUrl || undefined
+            ) as any
+        },
         {rel: "alternate", type: "application/rss+xml", href: "/blogs/feed.xml"}
     ];
 };

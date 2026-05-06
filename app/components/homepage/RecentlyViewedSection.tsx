@@ -101,7 +101,10 @@ export const RecentlyViewedSection = ({loading = false, allProducts = []}: Recen
 
                     {isLoadingState ? (
                         <div className="mb-12">
-                            <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
+                            <Carousel
+                                opts={{align: "start", loop: false, dragFree: true}}
+                                plugins={[WheelGesturesPlugin()]}
+                            >
                                 <CarouselContent className="-ml-2 md:-ml-4">
                                     {Array.from({length: 6}, (_, i) => i).map(i => (
                                         <CarouselItem
@@ -119,7 +122,10 @@ export const RecentlyViewedSection = ({loading = false, allProducts = []}: Recen
                     ) : (
                         <>
                             <div>
-                                <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
+                                <Carousel
+                                    opts={{align: "start", loop: false, dragFree: true}}
+                                    plugins={[WheelGesturesPlugin()]}
+                                >
                                     <CarouselContent className="-ml-2 md:-ml-4">
                                         {recentlyViewedProducts.map(product => (
                                             <CarouselItem
@@ -168,7 +174,8 @@ export const RecentlyViewedSection = ({loading = false, allProducts = []}: Recen
                         </AlertDialogTitle>
                         <AlertDialogDescription className="text-muted-foreground text-sm">
                             Remove all {recentlyViewedProducts.length} recently viewed{" "}
-                            {recentlyViewedProducts.length === 1 ? "product" : "products"}? This action cannot be undone.
+                            {recentlyViewedProducts.length === 1 ? "product" : "products"}? This action cannot be
+                            undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 

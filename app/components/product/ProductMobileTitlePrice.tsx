@@ -67,11 +67,7 @@ export const ProductMobileTitlePrice = ({
                     <ProductPageTitle title={product.title} as="p" aria-hidden={true} />
                 ) : null}
                 {!isLoading && productId && (
-                    <WishlistButton
-                        productId={productId}
-                        size="lg"
-                        className="ml-3 shrink-0"
-                    />
+                    <WishlistButton productId={productId} size="lg" className="ml-3 shrink-0" />
                 )}
             </div>
         </div>

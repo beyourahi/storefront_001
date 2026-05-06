@@ -49,10 +49,8 @@ const buildIconsArray = (siteSettings: SiteSettings): ManifestIcon[] => {
     const logo = siteSettings.brandLogo?.url;
 
     // Prefer explicit icon URLs from metaobjects, then resize brand logo via Shopify CDN
-    const icon192 = siteSettings.icon192Url
-        ?? (logo ? `${logo}&width=192&height=192` : null);
-    const icon512 = siteSettings.icon512Url
-        ?? (logo ? `${logo}&width=512&height=512` : null);
+    const icon192 = siteSettings.icon192Url ?? (logo ? `${logo}&width=192&height=192` : null);
+    const icon512 = siteSettings.icon512Url ?? (logo ? `${logo}&width=512&height=512` : null);
 
     if (icon192) {
         icons.push({

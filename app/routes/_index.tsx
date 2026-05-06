@@ -3,7 +3,13 @@ import {useLoaderData, useRouteLoaderData, Await} from "react-router";
 import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
 import {getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, generateFAQPageSchema, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {
+    buildCanonicalUrl,
+    generateFAQPageSchema,
+    getBrandNameFromMatches,
+    getRequiredSocialMeta,
+    getSiteUrlFromMatches
+} from "~/lib/seo";
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
     bestSellers: "best-sellers",
@@ -35,7 +41,19 @@ import {
 
 export const meta: Route.MetaFunction = ({matches}) => {
     const rootMatch = matches.find((m): m is (typeof matches)[number] & {id: "root"} => m?.id === "root");
-    const rootData = rootMatch?.data as {siteContent?: {siteSettings?: {brandName?: string; missionStatement?: string; siteUrl?: string; brandLogo?: {url: string; width?: number; height?: number}}; socialLinks?: Array<{url: string}>}} | undefined;
+    const rootData = rootMatch?.data as
+        | {
+              siteContent?: {
+                  siteSettings?: {
+                      brandName?: string;
+                      missionStatement?: string;
+                      siteUrl?: string;
+                      brandLogo?: {url: string; width?: number; height?: number};
+                  };
+                  socialLinks?: Array<{url: string}>;
+              };
+          }
+        | undefined;
     const siteSettings = rootData?.siteContent?.siteSettings;
     const shopName = siteSettings?.brandName ?? "Store";
     const description = siteSettings?.missionStatement ?? "";
@@ -68,16 +86,14 @@ export const meta: Route.MetaFunction = ({matches}) => {
     ];
 };
 
-export function links(args?: { data: Awaited<ReturnType<typeof loader>> | null }) {
+export function links(args?: {data: Awaited<ReturnType<typeof loader>> | null}) {
     const data = args?.data;
     // Preload first product image for LCP — hero is video-based, first image below fold
     const firstProduct = (data?.allProducts as any[] | undefined)?.[0];
-    const firstMediaImage = firstProduct?.media?.nodes?.find(
-        (n: any) => n.__typename === "MediaImage"
-    );
+    const firstMediaImage = firstProduct?.media?.nodes?.find((n: any) => n.__typename === "MediaImage");
     const href = firstMediaImage?.image?.url;
     if (!href) return [];
-    return [{ rel: "preload", as: "image", href }] as const;
+    return [{rel: "preload", as: "image", href}] as const;
 }
 
 export const loader = async ({context}: Route.LoaderArgs) => {
@@ -93,19 +109,37 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 
     // START ALL DEFERRED QUERIES FIRST — they fire concurrently with the critical await below
     const bestSellers = dataAdapter
-        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.bestSellers}, cache: dataAdapter.CacheShort()})
+        .query(COLLECTION_WITH_PRODUCTS_QUERY, {
+            variables: {handle: specialCollections.bestSellers},
+            cache: dataAdapter.CacheShort()
+        })
         .then(filterCollectionProducts)
-        .catch((error: unknown) => { console.error("Failed to load best sellers:", error); return null; });
+        .catch((error: unknown) => {
+            console.error("Failed to load best sellers:", error);
+            return null;
+        });
 
     const newArrivals = dataAdapter
-        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.newArrivals}, cache: dataAdapter.CacheShort()})
+        .query(COLLECTION_WITH_PRODUCTS_QUERY, {
+            variables: {handle: specialCollections.newArrivals},
+            cache: dataAdapter.CacheShort()
+        })
         .then(filterCollectionProducts)
-        .catch((error: unknown) => { console.error("Failed to load new arrivals:", error); return null; });
+        .catch((error: unknown) => {
+            console.error("Failed to load new arrivals:", error);
+            return null;
+        });
 
     const trending = dataAdapter
-        .query(COLLECTION_WITH_PRODUCTS_QUERY, {variables: {handle: specialCollections.trending}, cache: dataAdapter.CacheShort()})
+        .query(COLLECTION_WITH_PRODUCTS_QUERY, {
+            variables: {handle: specialCollections.trending},
+            cache: dataAdapter.CacheShort()
+        })
         .then(filterCollectionProducts)
-        .catch((error: unknown) => { console.error("Failed to load trending products:", error); return null; });
+        .catch((error: unknown) => {
+            console.error("Failed to load trending products:", error);
+            return null;
+        });
 
     const recentArticles = dataAdapter
         .query(HOMEPAGE_BLOG_ARTICLES_QUERY, {variables: {first: 6}, cache: dataAdapter.CacheLong()})
@@ -119,10 +153,14 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 
     // THEN await critical data — deferred queries above are already in flight
     const [exploreCollectionsResponse, allProductsResponse] = await Promise.all([
-        dataAdapter.query(EXPLORE_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()})
-            .catch((error: unknown) => { console.error("Failed to load explore collections:", error); return null; }),
-        dataAdapter.query(ALL_PRODUCTS_QUERY, {cache: dataAdapter.CacheShort()})
-            .catch((error: unknown) => { console.error("Failed to load all products:", error); return null; })
+        dataAdapter.query(EXPLORE_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
+            console.error("Failed to load explore collections:", error);
+            return null;
+        }),
+        dataAdapter.query(ALL_PRODUCTS_QUERY, {cache: dataAdapter.CacheShort()}).catch((error: unknown) => {
+            console.error("Failed to load all products:", error);
+            return null;
+        })
     ]);
 
     const allProducts = allProductsResponse?.products?.nodes ?? [];
@@ -154,7 +192,9 @@ export const loader = async ({context}: Route.LoaderArgs) => {
  * Customer Account API does not expose `handle` on line item products.
  * Returns empty products array for unauthenticated users without throwing.
  */
-async function loadOrderHistory(context: Route.LoaderArgs["context"]): Promise<{products: OrderHistoryProduct[]; isLoggedIn: boolean}> {
+async function loadOrderHistory(
+    context: Route.LoaderArgs["context"]
+): Promise<{products: OrderHistoryProduct[]; isLoggedIn: boolean}> {
     let orderHistoryProducts: OrderHistoryProduct[] = [];
     let isLoggedIn = false;
 
@@ -229,7 +269,9 @@ export default function Homepage() {
             {isAgent ? (
                 <section className="px-6 py-16 max-w-3xl mx-auto">
                     <h1 className="text-3xl font-bold mb-4">{agentVariant?.heroHeading ?? "Explore our catalog"}</h1>
-                    <p className="text-muted-foreground mb-8">{agentVariant?.heroDescription ?? "Browse products, collections, and policies below."}</p>
+                    <p className="text-muted-foreground mb-8">
+                        {agentVariant?.heroDescription ?? "Browse products, collections, and policies below."}
+                    </p>
                     {agentVariant?.ctaUrl ? (
                         <a href={agentVariant.ctaUrl} className="text-primary underline underline-offset-4">
                             {agentVariant.ctaLabel ?? "Browse catalog"}

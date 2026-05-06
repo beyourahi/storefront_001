@@ -144,25 +144,29 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-29",
         category: "New Feature",
         headline: "All store policies now listed on a single page",
-        summary: "Shipping, return, refund, privacy, and all other store policies are now collected at /policies. Each entry links to the full policy text, so you never have to hunt through the footer to find the right one."
+        summary:
+            "Shipping, return, refund, privacy, and all other store policies are now collected at /policies. Each entry links to the full policy text, so you never have to hunt through the footer to find the right one."
     },
     {
         date: "2026-04-29",
         category: "Improvement",
         headline: "Policy pages now show a Quick Answers panel",
-        summary: "Shipping, returns, and other policy pages can now display a collapsible Q&A section at the top, surfacing the most common questions with direct answers before the full policy text. Each entry expands on tap — no need to read the whole document to find what you need."
+        summary:
+            "Shipping, returns, and other policy pages can now display a collapsible Q&A section at the top, surfacing the most common questions with direct answers before the full policy text. Each entry expands on tap — no need to read the whole document to find what you need."
     },
     {
         date: "2026-04-29",
         category: "Improvement",
         headline: "Search now suggests alternatives when nothing is found",
-        summary: "When a search returns no results, the page now offers up to three alternative search terms drawn from the store's own search suggestions. Tap any suggestion to run that search instantly — no need to retype."
+        summary:
+            "When a search returns no results, the page now offers up to three alternative search terms drawn from the store's own search suggestions. Tap any suggestion to run that search instantly — no need to retype."
     },
     {
         date: "2026-04-29",
         category: "Maintenance",
         headline: "Size guide removed from product pages",
-        summary: "The size guide button and dialog have been removed from product pages. Sizing information is still available through product descriptions and any size-related content set up by the store."
+        summary:
+            "The size guide button and dialog have been removed from product pages. Sizing information is still available through product descriptions and any size-related content set up by the store."
     },
     {
         date: "2026-04-30",
@@ -175,37 +179,43 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-28",
         category: "New Feature",
         headline: "AI shopping agents can now build carts for you",
-        summary: "AI shopping assistants can now create a ready-to-checkout cart on your behalf and send you a direct link. When you arrive via an agent link, a banner lets you review the items before proceeding — nothing goes to checkout without your confirmation."
+        summary:
+            "AI shopping assistants can now create a ready-to-checkout cart on your behalf and send you a direct link. When you arrive via an agent link, a banner lets you review the items before proceeding — nothing goes to checkout without your confirmation."
     },
     {
         date: "2026-04-28",
         category: "Improvement",
         headline: "Cart and checkout always load fresh, never cached",
-        summary: "Cart and checkout pages now bypass browser and CDN caches on every visit, so the item count, prices, and availability you see are always accurate and up to date."
+        summary:
+            "Cart and checkout pages now bypass browser and CDN caches on every visit, so the item count, prices, and availability you see are always accurate and up to date."
     },
     {
         date: "2026-04-28",
         category: "Improvement",
         headline: "Product cards no longer scale during scrolling",
-        summary: "Tapping a product card used to show a scale-down effect even when you were just scrolling past it. That feedback now only appears when you deliberately tap or click a card — scrolling through the grid stays smooth and distraction-free."
+        summary:
+            "Tapping a product card used to show a scale-down effect even when you were just scrolling past it. That feedback now only appears when you deliberately tap or click a card — scrolling through the grid stays smooth and distraction-free."
     },
     {
         date: "2026-04-28",
         category: "New Feature",
         headline: "Smart policy search for AI shopping agents",
-        summary: "AI assistants can now search shipping, return, and privacy policies along with FAQs to answer customer questions in natural language. Uses BM25-ranked search across all policy documents and FAQ content."
+        summary:
+            "AI assistants can now search shipping, return, and privacy policies along with FAQs to answer customer questions in natural language. Uses BM25-ranked search across all policy documents and FAQ content."
     },
     {
         date: "2026-04-28",
         category: "Improvement",
         headline: "Richer breadcrumb navigation in search results",
-        summary: "Product, collection, and blog pages now include structured breadcrumb data, making them eligible for breadcrumb-enhanced Google search results. Added BreadcrumbList structured data (Schema.org) to every page that displays visual breadcrumbs."
+        summary:
+            "Product, collection, and blog pages now include structured breadcrumb data, making them eligible for breadcrumb-enhanced Google search results. Added BreadcrumbList structured data (Schema.org) to every page that displays visual breadcrumbs."
     },
     {
         date: "2026-04-28",
         category: "Improvement",
         headline: "Enhanced product information for AI agents",
-        summary: "Gift card badges, digital product indicators, and subscription plan chips now appear on product pages when applicable. Product pages now surface extended catalog fields: gift card detection, digital-product shipping status, available subscription plans, and collection membership."
+        summary:
+            "Gift card badges, digital product indicators, and subscription plan chips now appear on product pages when applicable. Product pages now surface extended catalog fields: gift card detection, digital-product shipping status, available subscription plans, and collection membership."
     },
     {
         date: "2026-04-28",
@@ -323,12 +333,12 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-24",
         headline: "Out-of-stock product card overlay simplified to badge and tinted image",
         summary:
-            "The diagonal strikethrough line that previously overlaid out-of-stock product images has been removed. Unavailable products are still clearly indicated by the red \"Out of Stock\" badge and a subtly muted image — a cleaner look that no longer obscures the product photo.",
+            'The diagonal strikethrough line that previously overlaid out-of-stock product images has been removed. Unavailable products are still clearly indicated by the red "Out of Stock" badge and a subtly muted image — a cleaner look that no longer obscures the product photo.',
         category: "Improvement"
     },
     {
         date: "2026-04-24",
-        headline: "Account \"Returns\" link only appears when the feature is set up",
+        headline: 'Account "Returns" link only appears when the feature is set up',
         summary:
             "The Returns link inside the account navigation menu is now hidden unless the store has an active returns flow configured. This keeps the account area clean and prevents you from landing on a non-functional page when the feature is not yet enabled.",
         category: "Improvement"
@@ -364,7 +374,8 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-04-24",
         headline: "Pages load faster with leaner API queries and smarter image loading",
-        summary: "Product reviews now load after the main product details so prices and buy options appear sooner. Images across the site use Shopify's CDN to serve the right resolution for each screen. Navigating between products and collections now plays smooth native page transitions.",
+        summary:
+            "Product reviews now load after the main product details so prices and buy options appear sooner. Images across the site use Shopify's CDN to serve the right resolution for each screen. Navigating between products and collections now plays smooth native page transitions.",
         category: "Improvement"
     },
     {
@@ -462,20 +473,21 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-21",
         headline: "Quick-add panel redesigned to match the site's style",
         summary:
-            "The quick-add sheet that opens when you tap \"Get Now\" on a suggested product now uses the same buttons, typography, and spacing as the rest of the store. The add-to-cart button is now a full-width solid button, and variant selectors match the style found on product pages.",
+            'The quick-add sheet that opens when you tap "Get Now" on a suggested product now uses the same buttons, typography, and spacing as the rest of the store. The add-to-cart button is now a full-width solid button, and variant selectors match the style found on product pages.',
         category: "Improvement"
     },
     {
         date: "2026-04-21",
         headline: "Blog articles now available as an RSS feed",
-        summary: "All published blog posts are now syndicated at /blogs/feed.xml in RSS 2.0 format. Subscribe in any RSS reader to get new articles automatically, or share the feed link with newsletter tools and content aggregators.",
+        summary:
+            "All published blog posts are now syndicated at /blogs/feed.xml in RSS 2.0 format. Subscribe in any RSS reader to get new articles automatically, or share the feed link with newsletter tools and content aggregators.",
         category: "New Feature"
     },
     {
         date: "2026-04-21",
-        headline: "\"Get Now\" in cart suggestions now opens the product options panel",
+        headline: '"Get Now" in cart suggestions now opens the product options panel',
         summary:
-            "Tapping \"Get Now\" on a suggested product inside the cart now correctly opens the full quick-add panel, where you can pick a size or colour and add it in one step. Previously the button had no effect.",
+            'Tapping "Get Now" on a suggested product inside the cart now correctly opens the full quick-add panel, where you can pick a size or colour and add it in one step. Previously the button had no effect.',
         category: "Fix"
     },
     {
@@ -573,14 +585,14 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-19",
         headline: "Suggested products hide once you add them to cart",
         summary:
-            "The \"Frequently bought with\" panel no longer shows products you have already added to your cart. Tapping Quick Add removes the item from the suggestion list instantly — no page reload needed.",
+            'The "Frequently bought with" panel no longer shows products you have already added to your cart. Tapping Quick Add removes the item from the suggestion list instantly — no page reload needed.',
         category: "Improvement"
     },
     {
         date: "2026-04-19",
         headline: "Cart suggestions heading reflects what's in your cart",
         summary:
-            "The heading above the suggested products in your cart now changes based on whether your cart is empty or has items. It draws from a curated set of copy lines — things like \"Pairs well with your picks\" or \"You might like these\" — so it always feels relevant to where you are in your shopping journey.",
+            'The heading above the suggested products in your cart now changes based on whether your cart is empty or has items. It draws from a curated set of copy lines — things like "Pairs well with your picks" or "You might like these" — so it always feels relevant to where you are in your shopping journey.',
         category: "Improvement"
     },
     {
@@ -609,7 +621,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         headline: "Tapping any text field on mobile no longer zooms the page",
         summary:
             "iOS Safari was involuntarily zooming in whenever you tapped a search box, email field, or any other text input — a frustrating experience on phones. This is now fixed across every input on the site, including the search overlay, newsletter sign-up, cart notes, and account forms.",
-        category: "Fix",
+        category: "Fix"
     },
     {
         date: "2026-04-19",
@@ -629,21 +641,21 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-19",
         headline: "Order note editor opens reliably on all browsers",
         summary:
-            "The \"Add a note\" field inside the cart could silently fail to appear on certain browsers, leaving the area empty. It now shows up consistently every time, regardless of which browser you are using.",
+            'The "Add a note" field inside the cart could silently fail to appear on certain browsers, leaving the area empty. It now shows up consistently every time, regardless of which browser you are using.',
         category: "Fix"
     },
     {
         date: "2026-04-18",
-        headline: "\"Buy Now\" button resets after returning from checkout",
+        headline: '"Buy Now" button resets after returning from checkout',
         summary:
-            "Tapping \"Buy Now\" and then pressing the browser back button from the checkout page left the button stuck showing \"Processing…\" with no way to click it again. It now resets to its normal state whenever you navigate back, ready for another tap.",
+            'Tapping "Buy Now" and then pressing the browser back button from the checkout page left the button stuck showing "Processing…" with no way to click it again. It now resets to its normal state whenever you navigate back, ready for another tap.',
         category: "Fix"
     },
     {
         date: "2026-04-18",
         headline: "Quick Add dialog now appears above the cart panel",
         summary:
-            "Tapping \"Add to Cart\" on a product suggestion inside the cart no longer leaves the option picker hidden behind the cart itself. The selector now reliably opens on top of everything else, so you can choose a size or color without closing the cart first.",
+            'Tapping "Add to Cart" on a product suggestion inside the cart no longer leaves the option picker hidden behind the cart itself. The selector now reliably opens on top of everything else, so you can choose a size or color without closing the cart first.',
         category: "Fix"
     },
     {
@@ -657,14 +669,14 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-17",
         headline: "Products with no variant options no longer show a selector",
         summary:
-            "Simple products — those with no size, color, or other options — previously showed a pointless \"Default Title\" button on the product page and in the quick-add panel. That label is now suppressed everywhere it appeared. The product still adds to cart correctly; there's just nothing unnecessary to click.",
+            'Simple products — those with no size, color, or other options — previously showed a pointless "Default Title" button on the product page and in the quick-add panel. That label is now suppressed everywhere it appeared. The product still adds to cart correctly; there\'s just nothing unnecessary to click.',
         category: "Fix"
     },
     {
         date: "2026-04-16",
         headline: "Low stock warning appears when a variant is running low",
         summary:
-            "When a product variant has 10 or fewer units remaining, an \"Only X left\" notice now appears on the product page before you set your quantity. The indicator updates instantly when you switch between variants and disappears when stock is sufficient or untracked.",
+            'When a product variant has 10 or fewer units remaining, an "Only X left" notice now appears on the product page before you set your quantity. The indicator updates instantly when you switch between variants and disappears when stock is sufficient or untracked.',
         category: "New Feature"
     },
     {
@@ -721,7 +733,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         time: "3pm",
         headline: "Changelog dates now show the time of day each update shipped",
         summary:
-            "The date displayed on each changelog group now includes a short time indicator alongside it — like \"3pm\" or \"11am\" — so you can see not just the date, but roughly when during the day an update was released.",
+            'The date displayed on each changelog group now includes a short time indicator alongside it — like "3pm" or "11am" — so you can see not just the date, but roughly when during the day an update was released.',
         category: "Improvement"
     },
     {
@@ -800,7 +812,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         time: "2pm",
         headline: "App install button is now inside the mobile menu",
         summary:
-            "Moved the \"Add to Home Screen\" button into the mobile navigation menu so it no longer clutters the navigation bar. The button still appears prominently when you open the menu, making the install flow easy to discover without getting in the way of everyday browsing.",
+            'Moved the "Add to Home Screen" button into the mobile navigation menu so it no longer clutters the navigation bar. The button still appears prominently when you open the menu, making the install flow easy to discover without getting in the way of everyday browsing.',
         category: "Improvement"
     },
     {
@@ -824,7 +836,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         time: "2pm",
         headline: "Install button hides automatically once the app is installed",
         summary:
-            "The \"Add to Home Screen\" button now detects when the store is already installed and hides itself automatically. If you tap the button after installing, you see clear instructions instead of a confusing duplicate prompt.",
+            'The "Add to Home Screen" button now detects when the store is already installed and hides itself automatically. If you tap the button after installing, you see clear instructions instead of a confusing duplicate prompt.',
         category: "Improvement"
     },
     {
@@ -848,7 +860,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         time: "2pm",
         headline: "Install button in the menu meets accessibility contrast requirements",
         summary:
-            "The \"Install App\" button inside the mobile menu had insufficient color contrast, making it hard to read for users with low vision. It now uses a high-contrast style that passes WCAG 2.1 AA standards.",
+            'The "Install App" button inside the mobile menu had insufficient color contrast, making it hard to read for users with low vision. It now uses a high-contrast style that passes WCAG 2.1 AA standards.',
         category: "Fix"
     },
     {
@@ -990,7 +1002,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         date: "2026-04-04",
         headline: "Product listings now show only items you can actually buy",
         summary:
-            "All collection pages, search results, and the sale page now automatically filter out products that are unavailable or sold out. The \"In Stock Only\" checkbox that previously required manual toggling has been removed — you will only ever see products you can add to your cart.",
+            'All collection pages, search results, and the sale page now automatically filter out products that are unavailable or sold out. The "In Stock Only" checkbox that previously required manual toggling has been removed — you will only ever see products you can add to your cart.',
         category: "Improvement"
     },
     {
@@ -1156,7 +1168,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     },
     {
         date: "2026-03-04",
-        headline: "\"Buy Now\" and \"Proceed to Checkout\" now go to the correct checkout page",
+        headline: '"Buy Now" and "Proceed to Checkout" now go to the correct checkout page',
         summary:
             "The Buy Now and Proceed to Checkout buttons were not correctly navigating to the Shopify checkout page. They now send you to the right URL every time, so the purchase flow works as expected from end to end.",
         category: "Fix"

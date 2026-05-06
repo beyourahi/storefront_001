@@ -6,7 +6,13 @@ import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {cn} from "~/lib/utils";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateBreadcrumbListSchema} from "~/lib/seo";
+import {
+    buildCanonicalUrl,
+    getBrandNameFromMatches,
+    getRequiredSocialMeta,
+    getSiteUrlFromMatches,
+    generateBreadcrumbListSchema
+} from "~/lib/seo";
 import {CHANGELOG_ENTRIES, type ChangelogEntry} from "~/lib/changelog-data";
 import type {Route} from "./+types/changelog";
 
@@ -22,10 +28,15 @@ export const meta: Route.MetaFunction = ({matches}) => {
                 "See what's new. We're constantly improving your shopping experience — here's a plain-language look at everything we've shipped.",
             url: buildCanonicalUrl("/changelog", siteUrl)
         }) ?? []),
-        {"script:ld+json": generateBreadcrumbListSchema([
-            {name: "Home", url: "/"},
-            {name: "Changelog", url: "/changelog"}
-        ], siteUrl) as any},
+        {
+            "script:ld+json": generateBreadcrumbListSchema(
+                [
+                    {name: "Home", url: "/"},
+                    {name: "Changelog", url: "/changelog"}
+                ],
+                siteUrl
+            ) as any
+        },
         ...getRequiredSocialMeta("website", brandName)
     ];
 };
@@ -70,7 +81,6 @@ function getAbsoluteDate(dateStr: string): string {
         day: "numeric"
     });
 }
-
 
 function getCategoryBadgeClasses(category: ChangelogEntry["category"]): string {
     switch (category) {
@@ -267,68 +277,69 @@ export default function Changelog() {
                                     let globalStaggerIndex = 0;
                                     return groupEntriesByDate(filtered).map(group => {
                                         return (
-                                        <div key={group.date} className="mb-10 sm:mb-12 lg:flex">
-                                            {/* Mobile sticky date header — full-width, sticks below the navbar.
+                                            <div key={group.date} className="mb-10 sm:mb-12 lg:flex">
+                                                {/* Mobile sticky date header — full-width, sticks below the navbar.
                                                 Uses negative margin to bleed to padding edges so the background
                                                 covers content scrolling behind it. Hidden on desktop where the
                                                 side column handles date display. */}
-                                            <div className="sticky top-(--total-header-height) z-20 -mx-2 bg-background px-2 py-2 md:-mx-4 md:px-4 lg:hidden">
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <span className="text-xs text-muted-foreground">
-                                                        <time dateTime={group.date}>{getAbsoluteDate(group.date)}</time>
-                                                        {" · "}
+                                                <div className="sticky top-(--total-header-height) z-20 -mx-2 bg-background px-2 py-2 md:-mx-4 md:px-4 lg:hidden">
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <span className="text-xs text-muted-foreground">
+                                                            <time dateTime={group.date}>
+                                                                {getAbsoluteDate(group.date)}
+                                                            </time>
+                                                            {" · "}
+                                                            {getRelativeDate(group.date)}
+                                                        </span>
+                                                        <span className="shrink-0 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
+                                                            {group.entries.length}{" "}
+                                                            {group.entries.length === 1 ? "update" : "updates"}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Desktop date column — sticky side column, sticks below the navbar.
+                                                self-start prevents flex stretch so the sticky constraint activates
+                                                correctly: the element can slide up to top-(--total-header-height)
+                                                and releases when the group container's bottom passes it. */}
+                                                <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5 lg:sticky lg:top-(--total-header-height) lg:self-start lg:z-20">
+                                                    <time
+                                                        dateTime={group.date}
+                                                        className="text-right text-xs font-mono font-medium leading-tight text-foreground"
+                                                    >
+                                                        {getAbsoluteDate(group.date)}
+                                                    </time>
+                                                    <span className="mt-0.5 text-right text-xs text-muted-foreground">
                                                         {getRelativeDate(group.date)}
                                                     </span>
-                                                    <span className="shrink-0 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
+                                                    <span className="mt-2 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
                                                         {group.entries.length}{" "}
                                                         {group.entries.length === 1 ? "update" : "updates"}
                                                     </span>
                                                 </div>
-                                            </div>
 
-                                            {/* Desktop date column — sticky side column, sticks below the navbar.
-                                                self-start prevents flex stretch so the sticky constraint activates
-                                                correctly: the element can slide up to top-(--total-header-height)
-                                                and releases when the group container's bottom passes it. */}
-                                            <div className="hidden lg:flex lg:w-44 lg:shrink-0 lg:flex-col lg:items-end lg:pr-8 lg:pt-1.5 lg:sticky lg:top-(--total-header-height) lg:self-start lg:z-20">
-                                                <time
-                                                    dateTime={group.date}
-                                                    className="text-right text-xs font-mono font-medium leading-tight text-foreground"
-                                                >
-                                                    {getAbsoluteDate(group.date)}
-                                                </time>
-                                                <span className="mt-0.5 text-right text-xs text-muted-foreground">
-                                                    {getRelativeDate(group.date)}
-                                                </span>
-                                                <span className="mt-2 inline-flex items-center rounded-full border border-border/40 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/70 tabular-nums">
-                                                    {group.entries.length}{" "}
-                                                    {group.entries.length === 1 ? "update" : "updates"}
-                                                </span>
-                                            </div>
-
-                                            {/* Single vertical line + single dot span the full group */}
-                                            <div className="relative flex-1 lg:border-l-2 lg:border-border/40 lg:pl-8">
-                                                {/* Timeline dot — once per group */}
-                                                <div
-                                                    className="hidden lg:block absolute -left-[7px] top-4 h-3 w-3 rounded-full bg-primary ring-4 ring-background"
-                                                    aria-hidden="true"
-                                                />
-                                                <div className="space-y-5 lg:space-y-6">
-                                                    {group.entries.map(entry => (
-                                                        <ChangelogCard
-                                                            key={`${entry.date}-${entry.headline}`}
-                                                            entry={entry}
-                                                            index={globalStaggerIndex++}
-                                                        />
-                                                    ))}
+                                                {/* Single vertical line + single dot span the full group */}
+                                                <div className="relative flex-1 lg:border-l-2 lg:border-border/40 lg:pl-8">
+                                                    {/* Timeline dot — once per group */}
+                                                    <div
+                                                        className="hidden lg:block absolute -left-[7px] top-4 h-3 w-3 rounded-full bg-primary ring-4 ring-background"
+                                                        aria-hidden="true"
+                                                    />
+                                                    <div className="space-y-5 lg:space-y-6">
+                                                        {group.entries.map(entry => (
+                                                            <ChangelogCard
+                                                                key={`${entry.date}-${entry.headline}`}
+                                                                entry={entry}
+                                                                index={globalStaggerIndex++}
+                                                            />
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         );
                                     });
                                 })()}
                             </div>
-
                         </>
                     )}
                 </div>

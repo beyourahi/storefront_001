@@ -49,9 +49,7 @@ export const LegalPageLayout = ({title, description, content, policyExtension}: 
             {hasExtension && (
                 <section className="mx-auto max-w-3xl px-4 pb-8 sm:px-6 lg:px-8">
                     <div className="rounded-xl border border-border bg-card p-6">
-                        <h2 className="mb-4 font-serif text-xl font-semibold text-foreground">
-                            Quick Answers
-                        </h2>
+                        <h2 className="mb-4 font-serif text-xl font-semibold text-foreground">Quick Answers</h2>
                         <Accordion type="multiple" className="w-full">
                             {policyExtension!.map((entry, index) => (
                                 <AccordionItem

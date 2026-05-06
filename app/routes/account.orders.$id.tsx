@@ -64,7 +64,9 @@ const OrderDetailPage = () => {
 
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
                     <div>
-                        <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Order {order.name}</h1>
+                        <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                            Order {order.name}
+                        </h1>
                         <p className="text-sm text-muted-foreground mt-1">{formatDate(order.processedAt)}</p>
                     </div>
                     <Badge variant={getOrderStatusVariant(order.fulfillmentStatus)} className="w-fit">

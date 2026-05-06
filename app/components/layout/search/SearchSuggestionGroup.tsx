@@ -14,11 +14,7 @@ export const SearchSuggestionGroup = ({suggestions, onSuggestionClick}: SearchSu
         <CommandGroup>
             <CommandGroupHeading>Suggestions</CommandGroupHeading>
             {suggestions.map(suggestion => (
-                <CommandItem
-                    key={suggestion.text}
-                    className="py-2"
-                    onClick={e => onSuggestionClick(suggestion, e)}
-                >
+                <CommandItem key={suggestion.text} className="py-2" onClick={e => onSuggestionClick(suggestion, e)}>
                     <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-sm">
                         <span className="text-muted-foreground pointer-events-none text-xs">&#128269;</span>
                     </div>

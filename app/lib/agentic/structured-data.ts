@@ -14,9 +14,7 @@ export type CatalogExtensionFields = {
 };
 
 /** Emit <meta name="ucp:product:*" content="..."> tags for SCE fields */
-export function getCatalogExtensionMeta(
-    fields: CatalogExtensionFields
-): Array<{name: string; content: string}> {
+export function getCatalogExtensionMeta(fields: CatalogExtensionFields): Array<{name: string; content: string}> {
     const metas: Array<{name: string; content: string}> = [];
 
     if (fields.isGiftCard != null) {

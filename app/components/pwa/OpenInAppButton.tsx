@@ -24,7 +24,8 @@ interface OpenInAppButtonProps {
  *    a "switch to home screen" nudge.
  */
 export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) => {
-    const {canInstall, isIOS, isStandalone, isAppDetectedAsInstalled, triggerInstall, appName, appIcon} = usePwaInstall();
+    const {canInstall, isIOS, isStandalone, isAppDetectedAsInstalled, triggerInstall, appName, appIcon} =
+        usePwaInstall();
     const [showIosInstructions, setShowIosInstructions] = useState(false);
     const [showAlreadyInstalled, setShowAlreadyInstalled] = useState(false);
 
@@ -64,7 +65,7 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                     className="flex animate-slide-up-fade max-lg:hidden"
                     style={{
                         animationDelay: "800ms",
-                        animationFillMode: "both",
+                        animationFillMode: "both"
                     }}
                 >
                     <button
@@ -85,14 +86,8 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                         )}
                         aria-label="Install app"
                     >
-                        <Download
-                            className="size-4 shrink-0"
-                            aria-hidden="true"
-                            strokeWidth={1.75}
-                        />
-                        <span className="text-[13px] font-semibold tracking-[0.01em] whitespace-nowrap">
-                            Open App
-                        </span>
+                        <Download className="size-4 shrink-0" aria-hidden="true" strokeWidth={1.75} />
+                        <span className="text-[13px] font-semibold tracking-[0.01em] whitespace-nowrap">Open App</span>
                     </button>
                 </div>
             ) : isNavbar ? (
@@ -111,14 +106,8 @@ export const OpenInAppButton = ({variant = "menu-item"}: OpenInAppButtonProps) =
                     )}
                     aria-label="Install app"
                 >
-                    <Download
-                        className="size-3.5 shrink-0"
-                        aria-hidden="true"
-                        strokeWidth={1.75}
-                    />
-                    <span className="text-[12px] font-semibold tracking-[0.01em] whitespace-nowrap">
-                        Open App
-                    </span>
+                    <Download className="size-3.5 shrink-0" aria-hidden="true" strokeWidth={1.75} />
+                    <span className="text-[12px] font-semibold tracking-[0.01em] whitespace-nowrap">Open App</span>
                 </button>
             ) : (
                 <Button

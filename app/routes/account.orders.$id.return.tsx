@@ -211,7 +211,9 @@ const OrderReturnRoute = () => {
         <div className="space-y-6">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
                 <div>
-                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Request Return</h1>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                        Request Return
+                    </h1>
                     <p className="text-sm text-muted-foreground mt-1">
                         Order {order.name} — Select items you would like to return
                     </p>
@@ -292,7 +294,9 @@ const ReturnableItemCard = ({item}: {item: ReturnableItem}) => {
                         <CardTitle className="text-base">
                             <label htmlFor={`selected_${lineItem.id}`} className="cursor-pointer">
                                 {primary}
-                                {secondary && <span className="font-normal text-muted-foreground text-sm ml-1">{secondary}</span>}
+                                {secondary && (
+                                    <span className="font-normal text-muted-foreground text-sm ml-1">{secondary}</span>
+                                )}
                             </label>
                         </CardTitle>
                         {lineItem.variantTitle && <CardDescription>{lineItem.variantTitle}</CardDescription>}
@@ -364,14 +368,16 @@ const ReturnPolicySection = () => (
                     </div>
                 </div>
                 <div className="flex items-start gap-3">
-                    <CheckCircle className="size-5 shrink-0 text-green-700" /> {/* text-success too light on --surface-canvas; darker variant for 3:1 icon contrast */}
+                    <CheckCircle className="size-5 shrink-0 text-green-700" />{" "}
+                    {/* text-success too light on --surface-canvas; darker variant for 3:1 icon contrast */}
                     <div>
                         <p className="font-medium text-sm">Free Returns</p>
                         <p className="text-sm text-muted-foreground">Prepaid shipping label</p>
                     </div>
                 </div>
                 <div className="flex items-start gap-3">
-                    <XCircle className="size-5 shrink-0 text-amber-700" /> {/* text-warning too light on --surface-canvas; darker variant for 3:1 icon contrast */}
+                    <XCircle className="size-5 shrink-0 text-amber-700" />{" "}
+                    {/* text-warning too light on --surface-canvas; darker variant for 3:1 icon contrast */}
                     <div>
                         <p className="font-medium text-sm">Refund Method</p>
                         <p className="text-sm text-muted-foreground">Original payment or store credit</p>

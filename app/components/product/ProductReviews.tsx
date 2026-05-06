@@ -106,11 +106,7 @@ function getLayoutVariant(count: number): ReviewLayoutVariant {
 function StarRow({rating, max = 5, size = 14}: {rating: number; max?: number; size?: number}) {
     const filled = Math.round(rating);
     return (
-        <div
-            className="flex items-center gap-0.5"
-            role="img"
-            aria-label={`${filled} out of ${max} stars`}
-        >
+        <div className="flex items-center gap-0.5" role="img" aria-label={`${filled} out of ${max} stars`}>
             {Array.from({length: max}, (_, i) => (
                 <svg
                     key={i}
@@ -166,15 +162,7 @@ function RatingBar({label, count, total}: {label: string; count: number; total: 
 // without touching the card's visual design.
 // =============================================================================
 
-function ReviewCard({
-    review,
-    index,
-    className
-}: {
-    review: ReviewNode;
-    index: number;
-    className?: string;
-}) {
+function ReviewCard({review, index, className}: {review: ReviewNode; index: number; className?: string}) {
     const rating = parseRating(review.rating?.value);
     const name = review.reviewerName?.value ?? "Anonymous";
     const title = review.reviewTitle?.value;
@@ -201,24 +189,17 @@ function ReviewCard({
             <div className="flex items-center justify-between gap-2">
                 <StarRow rating={rating} size={14} />
                 {date && (
-                    <time
-                        dateTime={review.date?.value ?? ""}
-                        className="text-xs text-muted-foreground shrink-0"
-                    >
+                    <time dateTime={review.date?.value ?? ""} className="text-xs text-muted-foreground shrink-0">
                         {date}
                     </time>
                 )}
             </div>
 
             {/* Title */}
-            {title && (
-                <p className="text-sm font-semibold leading-snug text-foreground">{title}</p>
-            )}
+            {title && <p className="text-sm font-semibold leading-snug text-foreground">{title}</p>}
 
             {/* Body */}
-            {body && (
-                <p className="text-sm leading-relaxed text-muted-foreground flex-1">{body}</p>
-            )}
+            {body && <p className="text-sm leading-relaxed text-muted-foreground flex-1">{body}</p>}
 
             {/* Reviewer */}
             <div className="flex items-center gap-2 mt-auto pt-3 border-t border-border">
@@ -377,11 +358,7 @@ function ReviewLayoutCarousel({reviews}: {reviews: ReviewNode[]}) {
 
                 {/* Dot indicators — one per Embla scroll snap (responsive count) */}
                 {snapCount > 1 && (
-                    <div
-                        className="flex items-center gap-1.5"
-                        role="tablist"
-                        aria-label="Review carousel position"
-                    >
+                    <div className="flex items-center gap-1.5" role="tablist" aria-label="Review carousel position">
                         {Array.from({length: snapCount}, (_, i) => (
                             <button
                                 key={i}
@@ -432,10 +409,7 @@ export function ProductReviews({reviews}: {reviews: ReviewNode[]}) {
     const variant = getLayoutVariant(reviews.length);
 
     return (
-        <section
-            className="mx-auto max-w-[2000px] px-2 md:px-4 py-12 md:py-16"
-            aria-labelledby="reviews-heading"
-        >
+        <section className="mx-auto max-w-[2000px] px-2 md:px-4 py-12 md:py-16" aria-labelledby="reviews-heading">
             {/* Divider */}
             <div className="mb-10 h-px w-full bg-border" aria-hidden="true" />
 
@@ -451,9 +425,7 @@ export function ProductReviews({reviews}: {reviews: ReviewNode[]}) {
                     {/* Aggregate rating badge */}
                     <div className="flex items-center gap-2 rounded-full px-3 py-1 bg-muted">
                         <StarRow rating={roundedAvg} size={13} />
-                        <span className="text-xs font-medium text-foreground">
-                            {roundedAvg.toFixed(1)}
-                        </span>
+                        <span className="text-xs font-medium text-foreground">{roundedAvg.toFixed(1)}</span>
                     </div>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -481,10 +453,7 @@ export function ProductReviews({reviews}: {reviews: ReviewNode[]}) {
                             </div>
                         </div>
                         {/* Vertical divider (desktop only) */}
-                        <div
-                            className="hidden sm:block w-px self-stretch shrink-0 bg-border"
-                            aria-hidden="true"
-                        />
+                        <div className="hidden sm:block w-px self-stretch shrink-0 bg-border" aria-hidden="true" />
                         {/* Distribution bars */}
                         <div className="flex-1 flex flex-col gap-2">
                             {["5", "4", "3", "2", "1"].map(star => (
@@ -503,19 +472,14 @@ export function ProductReviews({reviews}: {reviews: ReviewNode[]}) {
                 /* ── GRID LAYOUTS (1–3 reviews): sidebar on desktop ── */
                 <div className="flex flex-col gap-10 lg:flex-row lg:gap-14 xl:gap-18">
                     {/* Sidebar — aggregate score + star distribution */}
-                    <aside
-                        className="shrink-0 lg:w-56 xl:w-64"
-                        aria-label="Rating summary"
-                    >
+                    <aside className="shrink-0 lg:w-56 xl:w-64" aria-label="Rating summary">
                         <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-5">
                             <div className="flex flex-col items-start gap-2">
                                 <span className="text-5xl font-bold leading-none tracking-tight text-foreground">
                                     {roundedAvg.toFixed(1)}
                                 </span>
                                 <StarRow rating={roundedAvg} size={18} />
-                                <span className="text-xs text-muted-foreground mt-0.5">
-                                    out of 5
-                                </span>
+                                <span className="text-xs text-muted-foreground mt-0.5">out of 5</span>
                             </div>
                             <div className="flex flex-col gap-2.5">
                                 {["5", "4", "3", "2", "1"].map(star => (

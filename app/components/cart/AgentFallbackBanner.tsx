@@ -60,9 +60,7 @@ export function AgentFallbackBanner({alternatePath = "/search"}: AgentFallbackBa
                 <div className="min-w-0 flex-1">
                     <span className="text-xs font-semibold tracking-wide">{copy.title}</span>
                     {copy.subtitle && (
-                        <span className="ml-2 hidden text-[10px] text-background/60 sm:inline">
-                            {copy.subtitle}
-                        </span>
+                        <span className="ml-2 hidden text-[10px] text-background/60 sm:inline">{copy.subtitle}</span>
                     )}
                 </div>
 

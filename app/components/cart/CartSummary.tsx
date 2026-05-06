@@ -21,7 +21,6 @@ import {formatShopifyMoney} from "~/lib/currency-formatter";
 
 type Cart = OptimisticCart<CartApiQueryFragment>;
 
-
 export function CartSummary({cart}: {cart: Cart}) {
     const totalAmount = cart.cost?.subtotalAmount;
     const noteValue = cart.note;
@@ -204,10 +203,7 @@ function CartOrderNote({noteValue}: {noteValue?: string | null}) {
                                     <Cloud className="h-4 w-4 animate-pulse" />
                                 </div>
                             ) : showSavedConfirmation ? (
-                                <div
-                                    className="text-success sleek absolute top-3 right-3"
-                                    aria-label="Note saved"
-                                >
+                                <div className="text-success sleek absolute top-3 right-3" aria-label="Note saved">
                                     <Check className="h-4 w-4" />
                                 </div>
                             ) : null}
@@ -299,7 +295,8 @@ function CartCheckoutActions({
         >
             <CreditCard className="h-4 w-4" />
             Checkout{totalAmount ? " - " : ""}
-            {totalAmount && (isMutating ? <PriceLoadingIndicator className="ml-0.5" /> : formatShopifyMoney(totalAmount))}
+            {totalAmount &&
+                (isMutating ? <PriceLoadingIndicator className="ml-0.5" /> : formatShopifyMoney(totalAmount))}
         </CheckoutKitEmbed>
     );
 }
@@ -451,7 +448,13 @@ function CartClearConfirmation({
                                 action={CartForm.ACTIONS.LinesRemove}
                                 inputs={{lineIds}}
                             >
-                                <Button type="submit" variant="destructive" className="flex-1" onClick={confirmClear} disabled={isMutating}>
+                                <Button
+                                    type="submit"
+                                    variant="destructive"
+                                    className="flex-1"
+                                    onClick={confirmClear}
+                                    disabled={isMutating}
+                                >
                                     <Trash2 className="mr-2 h-4 w-4" />
                                     Clear All
                                 </Button>

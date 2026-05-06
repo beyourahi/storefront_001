@@ -16,7 +16,7 @@ export function SearchEmptyState({term}: {term: string}) {
         if (term) {
             void fetcher.load(`/search?predictive=true&q=${encodeURIComponent(term)}`);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [term]);
 
     // Show up to 3 alternative suggestions; gracefully shows nothing if fetch is pending or empty

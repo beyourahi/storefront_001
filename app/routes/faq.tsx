@@ -3,7 +3,14 @@ import {getSeoMeta} from "@shopify/hydrogen";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {useFaqItems} from "~/lib/site-content-context";
-import {generateFAQPageSchema, generateBreadcrumbListSchema, getBrandNameFromMatches, getRequiredSocialMeta, buildCanonicalUrl, getSiteUrlFromMatches} from "~/lib/seo";
+import {
+    generateFAQPageSchema,
+    generateBreadcrumbListSchema,
+    getBrandNameFromMatches,
+    getRequiredSocialMeta,
+    buildCanonicalUrl,
+    getSiteUrlFromMatches
+} from "~/lib/seo";
 import {GiantText} from "~/components/common/GiantText";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {cn} from "~/lib/utils";
@@ -26,10 +33,15 @@ export const meta: Route.MetaFunction = ({matches}) => {
             url: buildCanonicalUrl("/faq", siteUrl),
             jsonLd: faqSchema as any
         }) ?? []),
-        {"script:ld+json": generateBreadcrumbListSchema([
-            {name: "Home", url: "/"},
-            {name: "FAQ", url: "/faq"}
-        ], siteUrl) as any},
+        {
+            "script:ld+json": generateBreadcrumbListSchema(
+                [
+                    {name: "Home", url: "/"},
+                    {name: "FAQ", url: "/faq"}
+                ],
+                siteUrl
+            ) as any
+        },
         ...getRequiredSocialMeta("website", brandName)
     ];
 };
@@ -49,19 +61,11 @@ export default function FAQ() {
     const leftItems = hasMoreThanTen ? faqItems.slice(0, mid) : faqItems;
     const rightItems = hasMoreThanTen ? faqItems.slice(mid) : [];
 
-    const renderAccordionItems = (
-        items: typeof faqItems,
-        globalOffset: number,
-        idPrefix: string
-    ) =>
+    const renderAccordionItems = (items: typeof faqItems, globalOffset: number, idPrefix: string) =>
         items.map((item, i) => {
             const itemId = `${idPrefix}-${i}`;
             return (
-                <AccordionItem
-                    key={itemId}
-                    value={itemId}
-                    className="border-0 border-b border-border"
-                >
+                <AccordionItem key={itemId} value={itemId} className="border-0 border-b border-border">
                     <AccordionTrigger className="py-5 sm:py-6 text-left hover:no-underline [&>svg]:hidden gap-0 items-start justify-start">
                         <span className="font-mono text-xs font-semibold text-primary mr-4 mt-1 shrink-0 tabular-nums">
                             {String(globalOffset + i + 1).padStart(2, "0")}
@@ -71,9 +75,7 @@ export default function FAQ() {
                         </span>
                     </AccordionTrigger>
                     <AccordionContent className="pb-5 sm:pb-6">
-                        <p className="pl-10 text-muted-foreground text-base leading-relaxed">
-                            {item.answer}
-                        </p>
+                        <p className="pl-10 text-muted-foreground text-base leading-relaxed">{item.answer}</p>
                     </AccordionContent>
                 </AccordionItem>
             );

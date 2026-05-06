@@ -14,7 +14,7 @@ const AI_REFERRER_MAP: Record<string, string> = {
     "copilot.microsoft.com": "copilot",
     "bing.com": "bing_chat",
     "you.com": "you",
-    "claude.ai": "claude",
+    "claude.ai": "claude"
 };
 
 export interface AiAttribution {
@@ -35,14 +35,16 @@ const EMPTY: AiAttribution = {
  * Detect AI-originated traffic from request headers and URL params.
  * Server-side only — never called on the client.
  */
-export function detectAiAttribution(
-    headers: Headers,
-    searchParams?: URLSearchParams
-): AiAttribution {
+export function detectAiAttribution(headers: Headers, searchParams?: URLSearchParams): AiAttribution {
     const utmSource = searchParams?.get("utm_source") ?? "";
     const utmMedium = searchParams?.get("utm_medium") ?? "";
     if (utmSource && utmMedium === "ai") {
-        return {isAiReferrer: true, utmSource, utmMedium: "ai", utmCampaign: searchParams?.get("utm_campaign") ?? "ai_referral"};
+        return {
+            isAiReferrer: true,
+            utmSource,
+            utmMedium: "ai",
+            utmCampaign: searchParams?.get("utm_campaign") ?? "ai_referral"
+        };
     }
 
     const referer = headers.get("referer") ?? headers.get("referrer") ?? "";

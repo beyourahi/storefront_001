@@ -105,7 +105,10 @@ export const ProductSection = ({
                     </div>
                 ) : (
                     <div className="mb-12">
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin()]}>
+                        <Carousel
+                            opts={{align: "start", loop: false, dragFree: true}}
+                            plugins={[WheelGesturesPlugin()]}
+                        >
                             <CarouselContent className="-ml-2 md:-ml-4">
                                 {products.slice(0, 4).map(product => (
                                     <CarouselItem

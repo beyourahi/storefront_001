@@ -28,22 +28,10 @@ export interface DataAdapter {
         country?: string;
         language?: string;
     }): Promise<UcpProductPage>;
-    lookupProduct(variables: {
-        id: string;
-        country?: string;
-        language?: string;
-    }): Promise<UcpProduct | null>;
+    lookupProduct(variables: {id: string; country?: string; language?: string}): Promise<UcpProduct | null>;
     /** Resolves a product from a variant GID. Returns null if the GID is not a Product node. */
-    lookupByVariant(variables: {
-        variantId: string;
-        country?: string;
-        language?: string;
-    }): Promise<UcpProduct | null>;
-    bulkLookupProducts(variables: {
-        ids: string[];
-        country?: string;
-        language?: string;
-    }): Promise<UcpProduct[]>;
+    lookupByVariant(variables: {variantId: string; country?: string; language?: string}): Promise<UcpProduct | null>;
+    bulkLookupProducts(variables: {ids: string[]; country?: string; language?: string}): Promise<UcpProduct[]>;
 }
 
 export type StorefrontLike = {

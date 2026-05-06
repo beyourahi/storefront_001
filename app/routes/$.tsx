@@ -6,10 +6,7 @@ import type {CollectionCardData} from "~/lib/types/collections";
 import {CollectionCard} from "~/components/display/CollectionCard";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 
-export const meta: Route.MetaFunction = () => [
-    {title: "Page Not Found"},
-    {name: "robots", content: "noindex"}
-];
+export const meta: Route.MetaFunction = () => [{title: "Page Not Found"}, {name: "robots", content: "noindex"}];
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import {WheelGesturesPlugin} from "embla-carousel-wheel-gestures";
@@ -94,7 +91,11 @@ export function ErrorBoundary() {
 
                 {collections.length > 0 && (
                     <div className="relative mt-12 w-full">
-                        <Carousel opts={{align: "start", loop: false, dragFree: true}} plugins={[WheelGesturesPlugin({forceWheelAxis: "x"})]} className="w-full">
+                        <Carousel
+                            opts={{align: "start", loop: false, dragFree: true}}
+                            plugins={[WheelGesturesPlugin({forceWheelAxis: "x"})]}
+                            className="w-full"
+                        >
                             <CarouselContent className="-ml-4">
                                 {collections.map(collection => (
                                     <CarouselItem

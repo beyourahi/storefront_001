@@ -55,7 +55,10 @@ type ActionResponse = {
     error?: string | Record<string, string> | null;
 };
 
-export const meta: Route.MetaFunction = () => [{title: "Account Details"}, {name: "robots", content: "noindex,nofollow"}];
+export const meta: Route.MetaFunction = () => [
+    {title: "Account Details"},
+    {name: "robots", content: "noindex,nofollow"}
+];
 
 export const shouldRevalidate = () => true;
 
@@ -443,7 +446,9 @@ const AccountProfile = () => {
     if (!isAuthenticated || !customer) {
         return (
             <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-20 text-center sm:px-12">
-                <h2 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Sign in to manage your account</h2>
+                <h2 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                    Sign in to manage your account
+                </h2>
                 <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
                     Access your profile, manage addresses, and update your account details.
                 </p>
@@ -507,7 +512,9 @@ const AccountProfile = () => {
                     )}
                 </Avatar>
                 <div>
-                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">{customer.displayName || "Your Profile"}</h1>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                        {customer.displayName || "Your Profile"}
+                    </h1>
                     <p className="text-muted-foreground text-sm">Manage your account details and preferences</p>
                 </div>
                 <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
@@ -564,9 +571,7 @@ const AccountProfile = () => {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Email</p>
-                            <p className="text-sm font-medium">
-                                {customer.emailAddress?.emailAddress ?? "Not set"}
-                            </p>
+                            <p className="text-sm font-medium">{customer.emailAddress?.emailAddress ?? "Not set"}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3 rounded-xl bg-muted/30 p-4">

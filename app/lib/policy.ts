@@ -5,8 +5,7 @@ type PolicySection = {
 };
 
 /** Collapse inter-tag whitespace so SSR and client produce identical HTML strings. */
-const normalizeHtml = (html: string): string =>
-    html.replace(/>\s+</g, "><").trim();
+const normalizeHtml = (html: string): string => html.replace(/>\s+</g, "><").trim();
 
 /**
  * Parse Shopify policy HTML into structured sections split on header elements.

@@ -65,14 +65,15 @@ import {extractImagesFromMedia} from "~/lib/media-utils";
 /** Lightweight stand-in for schema-dts WithContext — avoids TS stack overflow on deep union resolution */
 type JsonLdSchema = Record<string, unknown>;
 
-type SeoSiteSettings = Partial<Pick<SiteSettings, "brandName" | "brandLogo" | "ogImage" | "missionStatement" | "siteUrl">>;
+type SeoSiteSettings = Partial<
+    Pick<SiteSettings, "brandName" | "brandLogo" | "ogImage" | "missionStatement" | "siteUrl">
+>;
 
 const FALLBACK_BRAND_NAME = "Store";
 const FALLBACK_SITE_URL = "";
 const FALLBACK_SEO_TITLE_SUFFIX = "Quality Products";
 const FALLBACK_SEO_TITLE = `${FALLBACK_BRAND_NAME} | ${FALLBACK_SEO_TITLE_SUFFIX}`;
-const FALLBACK_SEO_DESCRIPTION =
-    "Your store. Your story. Built to sell.";
+const FALLBACK_SEO_DESCRIPTION = "Your store. Your story. Built to sell.";
 
 // Site-wide SEO configuration (uses centralized fallbacks, can be overridden with metaobject data)
 export const SEO_CONFIG = {
@@ -139,7 +140,10 @@ export function buildCanonicalUrl(path: string, siteUrl: string = SEO_CONFIG.sit
     if (!siteUrl) {
         // siteUrl not configured — returning path-only canonical
         // Set website_url in site_settings metaobject to generate absolute URLs
-        if (typeof console !== "undefined") console.warn("[SEO] buildCanonicalUrl: siteUrl is empty, returning path-only URL. Configure website_url in site_settings.");
+        if (typeof console !== "undefined")
+            console.warn(
+                "[SEO] buildCanonicalUrl: siteUrl is empty, returning path-only URL. Configure website_url in site_settings."
+            );
         return cleanPath;
     }
     return `${siteUrl}${cleanPath}`;
@@ -216,9 +220,7 @@ export function generateOrganizationSchema(
 /**
  * Generate WebSite schema with search action
  */
-export function generateWebsiteSchema(
-    siteSettings?: SeoSiteSettings | null
-): JsonLdSchema {
+export function generateWebsiteSchema(siteSettings?: SeoSiteSettings | null): JsonLdSchema {
     const defaults = getSeoDefaults(siteSettings);
     return {
         "@context": "https://schema.org",
@@ -250,8 +252,27 @@ export function generateProductSchema(
         productType?: string | null;
         tags?: string[];
         publishedAt?: string | null;
-        media?: {nodes: Array<{__typename: string; image?: {id?: string | null; url: string; altText?: string | null; width?: number | null; height?: number | null} | null}>};
-        images?: {nodes: Array<{id?: string | null; url: string; altText?: string | null; width?: number | null; height?: number | null}>};
+        media?: {
+            nodes: Array<{
+                __typename: string;
+                image?: {
+                    id?: string | null;
+                    url: string;
+                    altText?: string | null;
+                    width?: number | null;
+                    height?: number | null;
+                } | null;
+            }>;
+        };
+        images?: {
+            nodes: Array<{
+                id?: string | null;
+                url: string;
+                altText?: string | null;
+                width?: number | null;
+                height?: number | null;
+            }>;
+        };
     },
     variant?: {
         sku?: string | null;
@@ -296,9 +317,7 @@ export function generateProductSchema(
 
     let aggregateRating: Record<string, unknown> | undefined;
     if (reviews && reviews.length > 0) {
-        const ratings = reviews
-            .map(r => parseFloat(r?.rating?.value ?? ""))
-            .filter(n => !isNaN(n));
+        const ratings = reviews.map(r => parseFloat(r?.rating?.value ?? "")).filter(n => !isNaN(n));
         if (ratings.length > 0) {
             const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
             aggregateRating = {
@@ -336,19 +355,47 @@ export function generateProductSchema(
         additionalProperty.push({"@type": "PropertyValue", propertyID: "isGiftCard", name: "Gift Card", value: true});
     }
     if (extensionFields?.requiresShipping === false) {
-        additionalProperty.push({"@type": "PropertyValue", propertyID: "requiresShipping", name: "Requires Shipping", value: false});
+        additionalProperty.push({
+            "@type": "PropertyValue",
+            propertyID: "requiresShipping",
+            name: "Requires Shipping",
+            value: false
+        });
     }
     if (extensionFields?.sellingPlans?.length) {
-        additionalProperty.push({"@type": "PropertyValue", propertyID: "sellingPlans", name: "Subscription Plans", value: extensionFields.sellingPlans.map(p => p.name).join(", ")});
+        additionalProperty.push({
+            "@type": "PropertyValue",
+            propertyID: "sellingPlans",
+            name: "Subscription Plans",
+            value: extensionFields.sellingPlans.map(p => p.name).join(", ")
+        });
     }
     if (extensionFields?.collections?.length) {
-        additionalProperty.push({"@type": "PropertyValue", propertyID: "collections", name: "Collections", value: extensionFields.collections.map(c => c.title).join(", ")});
+        additionalProperty.push({
+            "@type": "PropertyValue",
+            propertyID: "collections",
+            name: "Collections",
+            value: extensionFields.collections.map(c => c.title).join(", ")
+        });
     }
 
     // Tag-based price explanation
-    if (product.tags && (product.tags.includes("sale") || product.tags.includes("bundle") || product.tags.includes("member-only"))) {
+    if (
+        product.tags &&
+        (product.tags.includes("sale") || product.tags.includes("bundle") || product.tags.includes("member-only"))
+    ) {
         const priceTag = product.tags.find(t => ["sale", "bundle", "member-only"].includes(t));
-        additionalProperty.push({"@type": "PropertyValue", propertyID: "priceExplanation", name: "Price Explanation", value: priceTag === "sale" ? "On sale — reduced from original price" : priceTag === "bundle" ? "Bundle pricing — multiple items included" : "Member exclusive pricing"});
+        additionalProperty.push({
+            "@type": "PropertyValue",
+            propertyID: "priceExplanation",
+            name: "Price Explanation",
+            value:
+                priceTag === "sale"
+                    ? "On sale — reduced from original price"
+                    : priceTag === "bundle"
+                      ? "Bundle pricing — multiple items included"
+                      : "Member exclusive pricing"
+        });
     }
 
     // Staff pick tag
@@ -384,11 +431,13 @@ export function generateProductSchema(
         ...(aggregateRating && {aggregateRating}),
         offers: variant?.price ? offers : undefined,
         ...(variant?.sku && {
-            identifier: [{
-                "@type": "PropertyValue",
-                propertyID: "SKU",
-                value: variant.sku
-            }]
+            identifier: [
+                {
+                    "@type": "PropertyValue",
+                    propertyID: "SKU",
+                    value: variant.sku
+                }
+            ]
         }),
         ...(additionalProperty.length > 0 && {additionalProperty})
     };
@@ -533,9 +582,7 @@ export function getSiteUrlFromMatches(matches: Array<{id: string; data?: unknown
  * Priority: ogImage (dedicated social share image) → brandLogo → /og-default.jpg (1200×630 static fallback).
  * ogImage should be a landscape 1200×630 crop; brandLogo is a UI asset and may be the wrong aspect ratio.
  */
-export function getDefaultOgImage(
-    siteSettings?: SeoSiteSettings | null
-): SeoMedia | undefined {
+export function getDefaultOgImage(siteSettings?: SeoSiteSettings | null): SeoMedia | undefined {
     const og = siteSettings?.ogImage;
     if (og?.url) {
         return {url: og.url, width: og.width ?? undefined, height: og.height ?? undefined, type: "image"};
@@ -581,10 +628,7 @@ export function getRequiredSocialMeta(
  * Returns title + robots:noindex,nofollow
  */
 export function getAccountMeta(label: string): Array<Record<string, string>> {
-    return [
-        {title: label},
-        {name: "robots", content: "noindex, nofollow"}
-    ];
+    return [{title: label}, {name: "robots", content: "noindex, nofollow"}];
 }
 
 // ============================================
@@ -615,10 +659,7 @@ export function generateBreadcrumbListSchema(
  * Generate standalone Brand schema (referenced by Product schema on PDP)
  * Phase 3: Emitted as a separate @graph entry on PDP alongside Product schema
  */
-export function generateBrandSchema(
-    siteSettings?: SeoSiteSettings | null,
-    vendor?: string | null
-): JsonLdSchema {
+export function generateBrandSchema(siteSettings?: SeoSiteSettings | null, vendor?: string | null): JsonLdSchema {
     const defaults = getSeoDefaults(siteSettings);
     const brandName = vendor || defaults.brandName;
     const slugified = brandName.toLowerCase().replace(/\s+/g, "-");
@@ -635,11 +676,7 @@ export function generateBrandSchema(
  * Generate WebPage schema for standalone pages (e.g. policy pages)
  * Phase 3: Emitted on policy routes to provide page-level structured data
  */
-export function generateWebPageSchema(
-    title: string,
-    url: string,
-    dateModified?: string | null
-): JsonLdSchema {
+export function generateWebPageSchema(title: string, url: string, dateModified?: string | null): JsonLdSchema {
     return {
         "@context": "https://schema.org",
         "@type": "WebPage",

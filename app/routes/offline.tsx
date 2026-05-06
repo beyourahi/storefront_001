@@ -5,10 +5,7 @@ import {WifiOff} from "lucide-react";
 import type {MetaFunction} from "react-router";
 import {trackOfflinePageView} from "~/hooks/usePwaAnalytics";
 
-export const meta: MetaFunction = () => [
-    {title: "Offline"},
-    {name: "robots", content: "noindex"}
-];
+export const meta: MetaFunction = () => [{title: "Offline"}, {name: "robots", content: "noindex"}];
 import {getThemeFromStorage} from "~/lib/theme-storage";
 const FALLBACK_ERROR_CONTENT = {
     notFoundHeading: "Page Not Found",

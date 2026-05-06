@@ -83,10 +83,7 @@ export function CheckoutKitEmbed({
             rel={mode === "new-tab" ? "noopener noreferrer" : undefined}
             aria-disabled={disabled || undefined}
             onClick={disabled ? e => e.preventDefault() : undefined}
-            className={cn(
-                disabled && "pointer-events-none cursor-not-allowed opacity-50",
-                className
-            )}
+            className={cn(disabled && "pointer-events-none cursor-not-allowed opacity-50", className)}
         >
             {children}
         </a>

@@ -110,10 +110,7 @@ export type BadgeType = Exclude<SpecialTagType, "pin">;
  * Display configuration for each badge type
  * Used by ProductBadge component for rendering
  */
-export const BADGE_CONFIG: Record<
-    BadgeType,
-    {label: string; className: string; ariaLabel: string}
-> = {
+export const BADGE_CONFIG: Record<BadgeType, {label: string; className: string; ariaLabel: string}> = {
     premium: {
         label: "Premium",
         // Muted dark background with good contrast

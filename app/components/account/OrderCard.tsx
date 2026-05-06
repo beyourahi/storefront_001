@@ -36,14 +36,14 @@ export const OrderCard = ({order}: OrderCardProps) => {
     const variant = getOrderStatusVariant(order.fulfillmentStatus);
 
     return (
-        <Card className={cn("overflow-hidden border-l-4 p-0 transition-shadow hover:shadow-sm", statusBorderMap[variant])}>
+        <Card
+            className={cn("overflow-hidden border-l-4 p-0 transition-shadow hover:shadow-sm", statusBorderMap[variant])}
+        >
             <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between md:p-5">
                 <div className="space-y-1">
                     <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold text-foreground">{order.name}</span>
-                        <Badge variant={variant}>
-                            {formatOrderStatus(order.fulfillmentStatus)}
-                        </Badge>
+                        <Badge variant={variant}>{formatOrderStatus(order.fulfillmentStatus)}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
                         {formatDate(order.processedAt)} &middot; {lineItemCount} item
@@ -51,7 +51,9 @@ export const OrderCard = ({order}: OrderCardProps) => {
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <span className="text-sm font-semibold text-foreground">{formatShopifyMoney(order.totalPrice)}</span>
+                    <span className="text-sm font-semibold text-foreground">
+                        {formatShopifyMoney(order.totalPrice)}
+                    </span>
                     <Button variant="outline" size="sm" asChild>
                         <Link to={`/account/orders/${order.id.split("/").pop()}`}>View Details</Link>
                     </Button>

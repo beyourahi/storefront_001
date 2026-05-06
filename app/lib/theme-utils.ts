@@ -278,16 +278,9 @@ function roundRadius(value: number): number {
  * [`MIN_BORDER_RADIUS_SEED`, `MAX_BORDER_RADIUS_SEED`]. Falls back to `fallback`
  * when the input is non-finite.
  */
-export function sanitizeBorderRadiusSeed(
-    value: unknown,
-    fallback = DEFAULT_BORDER_RADIUS_SEED
-): number {
+export function sanitizeBorderRadiusSeed(value: unknown, fallback = DEFAULT_BORDER_RADIUS_SEED): number {
     const numeric =
-        typeof value === "number"
-            ? value
-            : typeof value === "string"
-              ? Number.parseFloat(value.trim())
-              : Number.NaN;
+        typeof value === "number" ? value : typeof value === "string" ? Number.parseFloat(value.trim()) : Number.NaN;
 
     if (!Number.isFinite(numeric)) {
         return clamp(fallback, MIN_BORDER_RADIUS_SEED, MAX_BORDER_RADIUS_SEED);
@@ -365,9 +358,9 @@ function withValues(color: string, values: Partial<OklchColor>): string {
 }
 
 function makeOklch(lightness: number, chroma: number, hue: number, alpha?: number): string {
-    const base = `oklch(${clamp(lightness, 0, 1).toFixed(4)} ${clamp(chroma, 0, 0.4).toFixed(4)} ${normalizeHue(hue).toFixed(
-        4
-    )}`;
+    const base = `oklch(${clamp(lightness, 0, 1).toFixed(4)} ${clamp(chroma, 0, 0.4).toFixed(4)} ${normalizeHue(
+        hue
+    ).toFixed(4)}`;
     return alpha == null ? `${base})` : `${base} / ${clamp(alpha, 0, 1).toFixed(3)})`;
 }
 
@@ -499,14 +492,14 @@ function normalizeSeeds(inputs: ThemeSeedInputs): {seeds: NormalizedThemeSeeds; 
 
     let canvas = normalizeColorInput(inputs.canvasSeed, canvasFallback, "canvasSeed", diagnostics, {
         maxChroma: 0.018,
-        minLightness: isDark ? 0.10 : 0.94,
+        minLightness: isDark ? 0.1 : 0.94,
         maxLightness: isDark ? 0.22 : 0.995
     });
 
     let ink = normalizeColorInput(inputs.inkSeed, inkFallback, "inkSeed", diagnostics, {
         maxChroma: 0.035,
         minLightness: isDark ? 0.88 : 0.12,
-        maxLightness: isDark ? 0.985 : 0.30
+        maxLightness: isDark ? 0.985 : 0.3
     });
 
     if (getContrastRatio(ink, canvas) < 7) {
@@ -521,9 +514,15 @@ function normalizeSeeds(inputs: ThemeSeedInputs): {seeds: NormalizedThemeSeeds; 
         ink = correctedInk;
     }
 
-    let brandPrimary = normalizeColorInput(inputs.brandPrimarySeed, BRAND_PRIMARY_FALLBACK, "brandPrimarySeed", diagnostics, {
-        maxChroma: 0.24
-    });
+    let brandPrimary = normalizeColorInput(
+        inputs.brandPrimarySeed,
+        BRAND_PRIMARY_FALLBACK,
+        "brandPrimarySeed",
+        diagnostics,
+        {
+            maxChroma: 0.24
+        }
+    );
     let brandSecondary = normalizeColorInput(
         inputs.brandSecondarySeed,
         BRAND_SECONDARY_FALLBACK,
@@ -533,9 +532,15 @@ function normalizeSeeds(inputs: ThemeSeedInputs): {seeds: NormalizedThemeSeeds; 
             maxChroma: 0.18
         }
     );
-    let brandAccent = normalizeColorInput(inputs.brandAccentSeed, BRAND_ACCENT_FALLBACK, "brandAccentSeed", diagnostics, {
-        maxChroma: 0.18
-    });
+    let brandAccent = normalizeColorInput(
+        inputs.brandAccentSeed,
+        BRAND_ACCENT_FALLBACK,
+        "brandAccentSeed",
+        diagnostics,
+        {
+            maxChroma: 0.18
+        }
+    );
 
     const primaryParsed = parseOklch(brandPrimary);
     if (primaryParsed) {
@@ -593,27 +598,33 @@ function normalizeSeeds(inputs: ThemeSeedInputs): {seeds: NormalizedThemeSeeds; 
     };
 }
 
-function deriveSurfaceScale(seeds: NormalizedThemeSeeds): Pick<
+function deriveSurfaceScale(
+    seeds: NormalizedThemeSeeds
+): Pick<
     SemanticScheme,
     "surfaceCanvas" | "surfaceDefault" | "surfaceRaised" | "surfaceMuted" | "surfaceInteractive" | "surfaceOverlay"
 > {
     const canvas = parseOklch(seeds.canvas) ?? parseOklch(seeds.isDark ? DARK_CANVAS_FALLBACK : LIGHT_CANVAS_FALLBACK)!;
-    const structuralChroma = Math.min(0.018, Math.max(0.004, parseOklch(seeds.brandPrimary)?.c ?? 0.02) * 0.10);
+    const structuralChroma = Math.min(0.018, Math.max(0.004, parseOklch(seeds.brandPrimary)?.c ?? 0.02) * 0.1);
 
     if (seeds.isDark) {
         return {
             surfaceCanvas: makeOklch(clamp(canvas.l, 0.11, 0.18), structuralChroma, seeds.neutralHue),
             surfaceDefault: makeOklch(clamp(canvas.l + 0.03, 0.19, 0.22), structuralChroma, seeds.neutralHue),
             surfaceRaised: makeOklch(clamp(canvas.l + 0.06, 0.23, 0.27), structuralChroma + 0.002, seeds.neutralHue),
-            surfaceMuted: makeOklch(clamp(canvas.l + 0.13, 0.30, 0.36), structuralChroma + 0.004, seeds.neutralHue),
-            surfaceInteractive: makeOklch(clamp(canvas.l + 0.19, 0.37, 0.43), structuralChroma + 0.006, seeds.neutralHue),
+            surfaceMuted: makeOklch(clamp(canvas.l + 0.13, 0.3, 0.36), structuralChroma + 0.004, seeds.neutralHue),
+            surfaceInteractive: makeOklch(
+                clamp(canvas.l + 0.19, 0.37, 0.43),
+                structuralChroma + 0.006,
+                seeds.neutralHue
+            ),
             surfaceOverlay: makeOklch(0.02, 0, seeds.neutralHue, 0.58)
         };
     }
 
     return {
         surfaceCanvas: makeOklch(clamp(canvas.l, 0.965, 0.992), structuralChroma, seeds.neutralHue),
-        surfaceDefault: makeOklch(clamp(canvas.l + 0.010, 0.975, 0.996), structuralChroma, seeds.neutralHue),
+        surfaceDefault: makeOklch(clamp(canvas.l + 0.01, 0.975, 0.996), structuralChroma, seeds.neutralHue),
         surfaceRaised: makeOklch(clamp(canvas.l + 0.018, 0.982, 1), structuralChroma + 0.002, seeds.neutralHue),
         surfaceMuted: makeOklch(clamp(canvas.l - 0.055, 0.88, 0.94), structuralChroma + 0.004, seeds.neutralHue),
         surfaceInteractive: makeOklch(clamp(canvas.l - 0.085, 0.82, 0.91), structuralChroma + 0.006, seeds.neutralHue),
@@ -628,7 +639,10 @@ function deriveTextScale(
     const baseInk = parseOklch(seeds.ink) ?? parseOklch(seeds.isDark ? DARK_INK_FALLBACK : LIGHT_INK_FALLBACK)!;
 
     if (seeds.isDark) {
-        const textPrimary = ensureReadableText(withValues(seeds.ink, {l: clamp(baseInk.l, 0.92, 0.98), c: Math.min(baseInk.c, 0.02)}), surfaces.surfaceCanvas);
+        const textPrimary = ensureReadableText(
+            withValues(seeds.ink, {l: clamp(baseInk.l, 0.92, 0.98), c: Math.min(baseInk.c, 0.02)}),
+            surfaces.surfaceCanvas
+        );
         return {
             textPrimary,
             textSecondary: ensureReadableText(makeOklch(0.82, 0.012, seeds.neutralHue), surfaces.surfaceCanvas),
@@ -637,11 +651,14 @@ function deriveTextScale(
         };
     }
 
-    const textPrimary = ensureReadableText(withValues(seeds.ink, {l: clamp(baseInk.l, 0.14, 0.22), c: Math.min(baseInk.c, 0.02)}), surfaces.surfaceCanvas);
+    const textPrimary = ensureReadableText(
+        withValues(seeds.ink, {l: clamp(baseInk.l, 0.14, 0.22), c: Math.min(baseInk.c, 0.02)}),
+        surfaces.surfaceCanvas
+    );
     return {
         textPrimary,
         textSecondary: ensureReadableText(makeOklch(0.34, 0.012, seeds.neutralHue), surfaces.surfaceCanvas),
-        textSubtle: ensureReadableText(makeOklch(0.50, 0.010, seeds.neutralHue), surfaces.surfaceCanvas, 3),
+        textSubtle: ensureReadableText(makeOklch(0.5, 0.01, seeds.neutralHue), surfaces.surfaceCanvas, 3),
         textInverse: makeOklch(0.98, 0, seeds.neutralHue)
     };
 }
@@ -681,10 +698,18 @@ function deriveBrandRoles(
     const primary = seeds.brandPrimary;
     const primaryParsed = parseOklch(primary) ?? parseOklch(BRAND_PRIMARY_FALLBACK)!;
     const secondary = withValues(seeds.brandSecondary, {
-        l: clamp(parseOklch(seeds.brandSecondary)?.l ?? primaryParsed.l, seeds.isDark ? 0.66 : 0.40, seeds.isDark ? 0.84 : 0.72)
+        l: clamp(
+            parseOklch(seeds.brandSecondary)?.l ?? primaryParsed.l,
+            seeds.isDark ? 0.66 : 0.4,
+            seeds.isDark ? 0.84 : 0.72
+        )
     });
     const accent = withValues(seeds.brandAccent, {
-        l: clamp(parseOklch(seeds.brandAccent)?.l ?? primaryParsed.l, seeds.isDark ? 0.70 : 0.42, seeds.isDark ? 0.88 : 0.76)
+        l: clamp(
+            parseOklch(seeds.brandAccent)?.l ?? primaryParsed.l,
+            seeds.isDark ? 0.7 : 0.42,
+            seeds.isDark ? 0.88 : 0.76
+        )
     });
 
     // Canvas-adaptive subtle backgrounds: derive lightness relative to surfaceCanvas
@@ -693,16 +718,32 @@ function deriveBrandRoles(
     const canvasL = parseOklch(surfaces.surfaceCanvas)?.l ?? (seeds.isDark ? 0.15 : 0.98);
 
     const brandPrimarySubtle = seeds.isDark
-        ? makeOklch(clamp(canvasL + 0.08, 0.20, 0.28), Math.min(primaryParsed.c * 0.30, 0.05), primaryParsed.h)
+        ? makeOklch(clamp(canvasL + 0.08, 0.2, 0.28), Math.min(primaryParsed.c * 0.3, 0.05), primaryParsed.h)
         : makeOklch(clamp(canvasL - 0.015, 0.95, 0.98), Math.min(primaryParsed.c * 0.18, 0.03), primaryParsed.h);
 
     const brandSecondarySubtle = seeds.isDark
-        ? makeOklch(clamp(canvasL + 0.06, 0.18, 0.26), Math.min((parseOklch(secondary)?.c ?? primaryParsed.c) * 0.30, 0.04), parseOklch(secondary)?.h ?? primaryParsed.h)
-        : makeOklch(clamp(canvasL - 0.010, 0.96, 0.985), Math.min((parseOklch(secondary)?.c ?? primaryParsed.c) * 0.16, 0.025), parseOklch(secondary)?.h ?? primaryParsed.h);
+        ? makeOklch(
+              clamp(canvasL + 0.06, 0.18, 0.26),
+              Math.min((parseOklch(secondary)?.c ?? primaryParsed.c) * 0.3, 0.04),
+              parseOklch(secondary)?.h ?? primaryParsed.h
+          )
+        : makeOklch(
+              clamp(canvasL - 0.01, 0.96, 0.985),
+              Math.min((parseOklch(secondary)?.c ?? primaryParsed.c) * 0.16, 0.025),
+              parseOklch(secondary)?.h ?? primaryParsed.h
+          );
 
     const brandAccentSubtle = seeds.isDark
-        ? makeOklch(clamp(canvasL + 0.10, 0.22, 0.30), Math.min((parseOklch(accent)?.c ?? primaryParsed.c) * 0.30, 0.06), parseOklch(accent)?.h ?? primaryParsed.h)
-        : makeOklch(clamp(canvasL - 0.020, 0.94, 0.975), Math.min((parseOklch(accent)?.c ?? primaryParsed.c) * 0.18, 0.035), parseOklch(accent)?.h ?? primaryParsed.h);
+        ? makeOklch(
+              clamp(canvasL + 0.1, 0.22, 0.3),
+              Math.min((parseOklch(accent)?.c ?? primaryParsed.c) * 0.3, 0.06),
+              parseOklch(accent)?.h ?? primaryParsed.h
+          )
+        : makeOklch(
+              clamp(canvasL - 0.02, 0.94, 0.975),
+              Math.min((parseOklch(accent)?.c ?? primaryParsed.c) * 0.18, 0.035),
+              parseOklch(accent)?.h ?? primaryParsed.h
+          );
 
     return {
         brandPrimary: primary,
@@ -732,7 +773,7 @@ function deriveStructureRoles(
         return {
             borderSubtle: makeOklch(0.34, structuralChroma, seeds.neutralHue),
             borderStrong: makeOklch(0.46, structuralChroma + 0.002, seeds.neutralHue),
-            inputBorder: makeOklch(0.50, structuralChroma + 0.003, seeds.neutralHue)
+            inputBorder: makeOklch(0.5, structuralChroma + 0.003, seeds.neutralHue)
         };
     }
 
@@ -743,7 +784,9 @@ function deriveStructureRoles(
     };
 }
 
-function deriveSystemRoles(seeds: NormalizedThemeSeeds): Pick<
+function deriveSystemRoles(
+    seeds: NormalizedThemeSeeds
+): Pick<
     SemanticScheme,
     | "success"
     | "successForeground"
@@ -818,7 +861,10 @@ function buildDerivedTheme(scheme: SemanticScheme): DerivedTheme {
  * Useful for per-component color calculations that don't need the full `ResolvedTheme`.
  */
 export function deriveThemeColors(core: ThemeCoreColors): DerivedTheme {
-    return resolveTheme(core, DEFAULT_THEME_FONTS)?.colors ?? buildDerivedTheme(buildSemanticScheme(normalizeSeeds(toThemeSeedInputs(core)).seeds));
+    return (
+        resolveTheme(core, DEFAULT_THEME_FONTS)?.colors ??
+        buildDerivedTheme(buildSemanticScheme(normalizeSeeds(toThemeSeedInputs(core)).seeds))
+    );
 }
 
 // =============================================================================
@@ -895,7 +941,12 @@ function deriveThemeShadowColor(colors: DerivedTheme): string {
     if (!source) return "oklch(0 0 0)";
 
     return toOklchString({
-        l: colors.surfaceCanvas === colors.background && parseOklch(colors.background)?.l && (parseOklch(colors.background)?.l ?? 1) < 0.5 ? 0.72 : 0.42,
+        l:
+            colors.surfaceCanvas === colors.background &&
+            parseOklch(colors.background)?.l &&
+            (parseOklch(colors.background)?.l ?? 1) < 0.5
+                ? 0.72
+                : 0.42,
         c: Math.min(0.05, Math.max(source.c * 0.2, 0.01)),
         h: source.h
     });
@@ -905,11 +956,7 @@ function deriveThemeShadowColor(colors: DerivedTheme): string {
  * Generate the `:root { ... }` CSS block containing all semantic tokens, legacy aliases,
  * system semantics, radius scale, and font-family declarations.
  */
-export function generateThemeCssVariables(
-    colors: DerivedTheme,
-    fonts: ThemeFonts,
-    radius: ThemeRadiusScale
-): string {
+export function generateThemeCssVariables(colors: DerivedTheme, fonts: ThemeFonts, radius: ThemeRadiusScale): string {
     return `:root {
   /* Canonical semantic tokens */
   --surface-canvas: ${colors.surfaceCanvas};

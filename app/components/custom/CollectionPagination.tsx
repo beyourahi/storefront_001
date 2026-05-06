@@ -79,9 +79,7 @@ export const CollectionPagination = ({
             </Button>
 
             <div className="flex size-12 items-center justify-center rounded-full border border-neutral-200 bg-neutral-50/50 shadow-sm">
-                <span className="text-base font-semibold tracking-wide text-neutral-700">
-                    {currentPage}
-                </span>
+                <span className="text-base font-semibold tracking-wide text-neutral-700">{currentPage}</span>
             </div>
 
             <Button

@@ -49,10 +49,7 @@ type ObservabilityEnv = {
     AGENT_ANALYTICS?: AnalyticsEngineDataset;
 };
 
-export function emitAgentEvent(
-    env: ObservabilityEnv | null | undefined,
-    event: AgentEvent
-): void {
+export function emitAgentEvent(env: ObservabilityEnv | null | undefined, event: AgentEvent): void {
     try {
         const payload = {ns: "agentic", ts: Date.now(), ...event};
         console.log(JSON.stringify(payload)); // eslint-disable-line no-console

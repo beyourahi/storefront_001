@@ -194,13 +194,21 @@ function runFixtureAssertions() {
         const resolved = resolveTheme(fixture.seeds, null);
 
         assert(resolved, `${fixture.name} should resolve`);
-        assert(resolved.cssVariables.includes("--surface-canvas:"), `${fixture.name} should emit canonical surface tokens`);
+        assert(
+            resolved.cssVariables.includes("--surface-canvas:"),
+            `${fixture.name} should emit canonical surface tokens`
+        );
         assert(resolved.cssVariables.includes("--background:"), `${fixture.name} should emit legacy alias tokens`);
 
         assertContrast(`${fixture.name} text/background`, resolved.colors.foreground, resolved.colors.background, 4.5);
         assertContrast(`${fixture.name} text/card`, resolved.colors.cardForeground, resolved.colors.card, 4.5);
         assertContrast(`${fixture.name} text/muted`, resolved.colors.mutedForeground, resolved.colors.muted, 4.5);
-        assertContrast(`${fixture.name} brand primary`, resolved.colors.primaryForeground, resolved.colors.primary, 4.5);
+        assertContrast(
+            `${fixture.name} brand primary`,
+            resolved.colors.primaryForeground,
+            resolved.colors.primary,
+            4.5
+        );
         assertContrast(`${fixture.name} input border`, resolved.colors.input, resolved.colors.background, 3);
         assertContrast(`${fixture.name} focus ring`, resolved.colors.ring, resolved.colors.background, 3);
 

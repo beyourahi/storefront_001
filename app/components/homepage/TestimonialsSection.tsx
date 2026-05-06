@@ -77,9 +77,7 @@ export const TestimonialsSection = ({testimonials: externalTestimonials}: Testim
                                 <span className="">{happyCustomers}+ Happy Customers</span>
                             </div>
                         )}
-                        <h2 className="mb-4 font-serif text-2xl font-bold sm:text-3xl">
-                            What Our Customers Say
-                        </h2>
+                        <h2 className="mb-4 font-serif text-2xl font-bold sm:text-3xl">What Our Customers Say</h2>
                         <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm">
                             <StarRating rating={Number(avgRating)} />
                             <span className="font-mono font-medium">{avgRating}/5</span>
@@ -108,9 +106,7 @@ export const TestimonialsSection = ({testimonials: externalTestimonials}: Testim
                                             <div className="space-y-2">
                                                 <StarRating rating={item.rating || 0} />
                                                 <div className="text-sm font-medium">{item.customerName}</div>
-                                                <div className="text-muted-foreground text-xs">
-                                                    {item.location}
-                                                </div>
+                                                <div className="text-muted-foreground text-xs">{item.location}</div>
                                             </div>
                                         </div>
                                     </CarouselItem>

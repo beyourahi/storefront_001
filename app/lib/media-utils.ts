@@ -62,6 +62,6 @@ export function extractImagesFromMedia(mediaNodes: MediaNode[] | undefined): Fla
             url: node.image.url,
             altText: node.image.altText ?? null,
             width: node.image.width ?? null,
-            height: node.image.height ?? null,
+            height: node.image.height ?? null
         }));
 }

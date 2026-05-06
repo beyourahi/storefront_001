@@ -52,8 +52,8 @@ export const AlreadyInstalledInstructions = ({
                         <div className="flex flex-col gap-1">
                             <span className="text-sm font-medium text-foreground">Open from your home screen</span>
                             <span className="text-sm text-muted-foreground">
-                                Find the {appName || "app"} icon on your device home screen or app library for the
-                                best experience.
+                                Find the {appName || "app"} icon on your device home screen or app library for the best
+                                experience.
                             </span>
                         </div>
                     </div>

@@ -194,7 +194,7 @@ export function validateLayeredCompliance(
     passes: boolean;
     type: "normal" | "large" | "ui";
 }> {
-    return elements.map((element) => {
+    return elements.map(element => {
         const result = calculateLayeredContrast(element.foreground, element.layers);
         const ratio = result?.ratio ?? 0;
         const passes = ratio >= element.requirement.ratio;

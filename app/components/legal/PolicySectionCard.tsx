@@ -41,8 +41,7 @@ type PolicySectionCardProps = {
 };
 
 /** Collapse inter-tag whitespace to prevent SSR/client hydration mismatches. */
-const normalizeHtml = (html: string): string =>
-    html.replace(/>\s+</g, "><").trim();
+const normalizeHtml = (html: string): string => html.replace(/>\s+</g, "><").trim();
 
 export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCardProps) => {
     const hasTitle = section.title.trim().length > 0;
@@ -62,10 +61,7 @@ export const PolicySectionCard = ({section, showIndex = false}: PolicySectionCar
                 <CardHeader className="pb-4">
                     <div className="flex items-start gap-3">
                         {showIndex && (
-                            <Badge
-                                variant="secondary"
-                                className="shrink-0 sleek group-hover:bg-primary/20"
-                            >
+                            <Badge variant="secondary" className="shrink-0 sleek group-hover:bg-primary/20">
                                 {section.index}
                             </Badge>
                         )}

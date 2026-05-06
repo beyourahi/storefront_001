@@ -22,11 +22,7 @@ export const Breadcrumbs = ({items, className}: BreadcrumbsProps) => {
         >
             <ol className="flex min-w-0 items-center">
                 <li className="flex shrink-0 items-center">
-                    <Link
-                        to="/"
-                        className="hover:text-foreground sleek flex items-center"
-                        aria-label="Go to homepage"
-                    >
+                    <Link to="/" className="hover:text-foreground sleek flex items-center" aria-label="Go to homepage">
                         <Home className="pointer-events-none h-4 w-4" />
                         <span className="sr-only">Home</span>
                     </Link>

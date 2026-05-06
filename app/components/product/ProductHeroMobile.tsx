@@ -83,7 +83,9 @@ export function ProductHeroMobile({
             id={id}
             className="md:hidden flex flex-col bg-primary px-3 sm:px-4 pb-8 sm:pb-10 pt-6 sm:pt-8 overflow-y-auto"
         >
-            <p className="font-serif text-2xl sm:text-3xl text-primary-foreground mb-6" aria-hidden={true}>{title}</p>
+            <p className="font-serif text-2xl sm:text-3xl text-primary-foreground mb-6" aria-hidden={true}>
+                {title}
+            </p>
 
             {filteredOptions.length > 0 && (
                 <div className="space-y-3 mb-8">

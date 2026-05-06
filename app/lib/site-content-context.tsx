@@ -68,7 +68,12 @@ import type {
     VipPerk,
     LimitedOffer
 } from "types";
-import {DEFAULT_SITE_SETTINGS, DEFAULT_THEME_CONFIG, FALLBACK_AGENT_ARRIVAL_COPY, FALLBACK_AGENT_FALLBACK_COPY} from "~/lib/metaobject-parsers";
+import {
+    DEFAULT_SITE_SETTINGS,
+    DEFAULT_THEME_CONFIG,
+    FALLBACK_AGENT_ARRIVAL_COPY,
+    FALLBACK_AGENT_FALLBACK_COPY
+} from "~/lib/metaobject-parsers";
 import {generateTheme} from "~/lib/theme-utils";
 import {getSwatchBorderColor, getSmartSwatchBorderColor} from "~/lib/color";
 

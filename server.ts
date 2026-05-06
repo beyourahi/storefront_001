@@ -79,10 +79,7 @@ export default {
             // Routes with a default export trigger SSR rendering even when the loader
             // returns a Response — this bypass sends UCP JSON directly to the client.
             const requestUrl = new URL(request.url);
-            if (
-                requestUrl.pathname === "/search" &&
-                requestUrl.searchParams.get("agent") === "true"
-            ) {
+            if (requestUrl.pathname === "/search" && requestUrl.searchParams.get("agent") === "true") {
                 return await handleAgentSearchRequest(request, hydrogenContext);
             }
             if (requestUrl.pathname.startsWith("/products/") && isAgentRequest(request)) {

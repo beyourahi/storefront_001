@@ -12,13 +12,7 @@ import type {RootLoader} from "~/root";
 type CartLineNode = CartApiQueryFragment["lines"]["nodes"][number];
 
 const StarIcon = () => (
-    <svg
-        className="text-primary h-3 w-3"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2.25}
-    >
+    <svg className="text-primary h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.25}>
         <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -45,11 +39,7 @@ export function CartSuggestions({cartLines, className}: {cartLines: CartLineNode
                 {suggestions => {
                     if (!suggestions || !Array.isArray(suggestions) || suggestions.length === 0) return null;
                     return (
-                        <CartSuggestionsContent
-                            suggestions={suggestions}
-                            cartLines={cartLines}
-                            className={className}
-                        />
+                        <CartSuggestionsContent suggestions={suggestions} cartLines={cartLines} className={className} />
                     );
                 }}
             </Await>
@@ -61,7 +51,7 @@ const EMPTY_HEADINGS = [
     "You might like these",
     "Discover something you'll love",
     "Hand-picked just for you",
-    "Something caught your eye?",
+    "Something caught your eye?"
 ];
 
 const POPULATED_HEADINGS = [
@@ -69,7 +59,7 @@ const POPULATED_HEADINGS = [
     "Complete the look",
     "Others also loved",
     "Goes great with your choice",
-    "You may also want",
+    "You may also want"
 ];
 
 function CartSuggestionsContent({

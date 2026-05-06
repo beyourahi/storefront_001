@@ -45,11 +45,7 @@ export const SearchProductGroup = ({products, onProductClick}: SearchProductGrou
             {products.map(product => {
                 const productImage = getProductMainImage(product);
                 return (
-                    <CommandItem
-                        key={product.id}
-                        className="py-2"
-                        onClick={e => onProductClick(product, e)}
-                    >
+                    <CommandItem key={product.id} className="py-2" onClick={e => onProductClick(product, e)}>
                         <div className="flex w-full items-center justify-between">
                             <div className="flex min-w-0 flex-1 items-center gap-3">
                                 {productImage ? (

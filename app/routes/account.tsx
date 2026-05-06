@@ -1,12 +1,5 @@
 import {Suspense} from "react";
-import {
-    data as remixData,
-    NavLink,
-    Outlet,
-    useLoaderData,
-    useRouteError,
-    isRouteErrorResponse
-} from "react-router";
+import {data as remixData, NavLink, Outlet, useLoaderData, useRouteError, isRouteErrorResponse} from "react-router";
 import type {ShouldRevalidateFunction} from "react-router";
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
@@ -31,11 +24,7 @@ export const meta: Route.MetaFunction = () => {
 // Revalidate on pathname changes (sub-route navigation) but not during same-URL
 // hydration. The previous `() => true` caused a Suspense hydration race: the loader
 // re-ran before hydration completed, forcing React to abandon SSR and flash the page.
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-    currentUrl,
-    nextUrl,
-    defaultShouldRevalidate
-}) => {
+export const shouldRevalidate: ShouldRevalidateFunction = ({currentUrl, nextUrl, defaultShouldRevalidate}) => {
     if (currentUrl.pathname !== nextUrl.pathname) return true;
     return defaultShouldRevalidate;
 };
@@ -79,9 +68,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
         );
     }
 
-    const returnsEnabled = checkReturnsEnabled(
-        returnsData?.data?.customer?.orders?.nodes ?? []
-    );
+    const returnsEnabled = checkReturnsEnabled(returnsData?.data?.customer?.orders?.nodes ?? []);
 
     return remixData(
         {customer: data.customer, isAuthenticated: true as const, returnsEnabled},

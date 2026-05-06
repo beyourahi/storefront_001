@@ -5,21 +5,24 @@ import type {
     UcpProduct,
     UcpProductPage,
     UcpLookupBatch,
-    UcpPageInfo,
+    UcpPageInfo
 } from "./ucp-catalog-types";
 import {buildCartPermalink, extractNumericVariantId} from "~/lib/cart-permalink";
 
 // ── Storefront API node types (minimal — shaped for what we actually query) ──
 
-type StorefrontMoney = { amount: string; currencyCode: string } | null | undefined;
+type StorefrontMoney = {amount: string; currencyCode: string} | null | undefined;
 
-type StorefrontImage = {
-    id?: string | null;
-    url: string;
-    altText?: string | null;
-    width?: number | null;
-    height?: number | null;
-} | null | undefined;
+type StorefrontImage =
+    | {
+          id?: string | null;
+          url: string;
+          altText?: string | null;
+          width?: number | null;
+          height?: number | null;
+      }
+    | null
+    | undefined;
 
 type StorefrontVariantNode = {
     id: string;
@@ -29,7 +32,7 @@ type StorefrontVariantNode = {
     quantityAvailable?: number | null;
     price?: StorefrontMoney;
     compareAtPrice?: StorefrontMoney;
-    selectedOptions?: Array<{ name: string; value: string }> | null;
+    selectedOptions?: Array<{name: string; value: string}> | null;
     sku?: string | null;
     requiresShipping?: boolean | null;
     sellingPlanAllocations?: {
@@ -38,7 +41,7 @@ type StorefrontVariantNode = {
                 id: string;
                 name: string;
                 recurringDeliveries?: boolean | null;
-                options: Array<{ name: string; value: string }>;
+                options: Array<{name: string; value: string}>;
             };
         }>;
     } | null;
@@ -55,7 +58,7 @@ type StorefrontProductNode = {
     tags?: string[] | null;
     availableForSale?: boolean | null;
     featuredImage?: StorefrontImage;
-    images?: { nodes: StorefrontImage[] } | null;
+    images?: {nodes: StorefrontImage[]} | null;
     priceRange?: {
         minVariantPrice?: StorefrontMoney;
         maxVariantPrice?: StorefrontMoney;
@@ -65,12 +68,12 @@ type StorefrontProductNode = {
     } | null;
     options?: Array<{
         name: string;
-        optionValues?: Array<{ name: string }> | null;
+        optionValues?: Array<{name: string}> | null;
         values?: string[] | null;
     }> | null;
-    variants?: { nodes: StorefrontVariantNode[] } | null;
+    variants?: {nodes: StorefrontVariantNode[]} | null;
     isGiftCard?: boolean | null;
-    collections?: { nodes: Array<{ id: string; handle: string; title: string }> } | null;
+    collections?: {nodes: Array<{id: string; handle: string; title: string}>} | null;
 };
 
 type StorefrontProductConnection = {
@@ -84,8 +87,8 @@ type StorefrontProductConnection = {
 // ── Scalar helpers ────────────────────────────────────────────────────────────
 
 export function toUcpMoney(node: StorefrontMoney): UcpMoney {
-    if (!node) return { amount: "0.00", currencyCode: "USD" };
-    return { amount: node.amount, currencyCode: node.currencyCode };
+    if (!node) return {amount: "0.00", currencyCode: "USD"};
+    return {amount: node.amount, currencyCode: node.currencyCode};
 }
 
 export function toUcpImage(node: StorefrontImage): UcpMedia | null {
@@ -95,7 +98,7 @@ export function toUcpImage(node: StorefrontImage): UcpMedia | null {
         altText: node.altText ?? null,
         width: node.width ?? null,
         height: node.height ?? null,
-        mediaType: "IMAGE",
+        mediaType: "IMAGE"
     };
 }
 
@@ -117,7 +120,7 @@ export function toUcpVariant(node: StorefrontVariantNode, storeUrl?: string): Uc
             id: plan.id,
             name: plan.name,
             recurringDeliveries: plan.recurringDeliveries ?? false,
-            options: plan.options,
+            options: plan.options
         });
     }
 
@@ -133,7 +136,7 @@ export function toUcpVariant(node: StorefrontVariantNode, storeUrl?: string): Uc
         sku: node.sku ?? null,
         requiresShipping: node.requiresShipping ?? true,
         checkoutUrl,
-        sellingPlans,
+        sellingPlans
     };
 }
 
@@ -155,9 +158,7 @@ export function toUcpProduct(node: StorefrontProductNode, storeUrl?: string): Uc
     // Prefer optionValues[].name; fall back to legacy values[] string array
     const options = (node.options ?? []).map(opt => ({
         name: opt.name,
-        values: opt.optionValues
-            ? opt.optionValues.map(v => v.name)
-            : (opt.values ?? []),
+        values: opt.optionValues ? opt.optionValues.map(v => v.name) : (opt.values ?? [])
     }));
 
     const variants = (node.variants?.nodes ?? []).map(v => toUcpVariant(v, storeUrl));
@@ -178,18 +179,18 @@ export function toUcpProduct(node: StorefrontProductNode, storeUrl?: string): Uc
         images,
         priceRange: {
             minVariantPrice: toUcpMoney(node.priceRange?.minVariantPrice),
-            maxVariantPrice: toUcpMoney(node.priceRange?.maxVariantPrice),
+            maxVariantPrice: toUcpMoney(node.priceRange?.maxVariantPrice)
         },
         compareAtPriceRange: {
             minVariantPrice: node.compareAtPriceRange?.minVariantPrice
                 ? toUcpMoney(node.compareAtPriceRange.minVariantPrice)
-                : null,
+                : null
         },
         options,
         variants,
         seller: {
             name: node.vendor || "Store",
-            url: storeUrl || "#",
+            url: storeUrl || "#"
         },
         extensions: {
             "dev.shopify.catalog.storefront": {
@@ -199,32 +200,26 @@ export function toUcpProduct(node: StorefrontProductNode, storeUrl?: string): Uc
                     collections: collections.map(c => ({
                         id: c.id,
                         handle: c.handle,
-                        title: c.title,
-                    })),
-                },
-            },
-        },
+                        title: c.title
+                    }))
+                }
+            }
+        }
     };
 }
 
 // ── Page-level helpers ────────────────────────────────────────────────────────
 
-export function toUcpProductPage(
-    connection: StorefrontProductConnection,
-    storeUrl?: string
-): UcpProductPage {
+export function toUcpProductPage(connection: StorefrontProductConnection, storeUrl?: string): UcpProductPage {
     const products = connection.nodes.map(n => toUcpProduct(n, storeUrl));
     const pageInfo: UcpPageInfo = {
         hasNextPage: connection.pageInfo?.hasNextPage ?? false,
-        endCursor: connection.pageInfo?.endCursor ?? null,
+        endCursor: connection.pageInfo?.endCursor ?? null
     };
-    return { products, pageInfo };
+    return {products, pageInfo};
 }
 
-export function toUcpLookupBatch(
-    nodes: Array<unknown>,
-    requestedIds: string[]
-): UcpLookupBatch {
+export function toUcpLookupBatch(nodes: Array<unknown>, requestedIds: string[]): UcpLookupBatch {
     const resolvedProducts: UcpProduct[] = [];
     const resolvedIds = new Set<string>();
 
@@ -237,5 +232,5 @@ export function toUcpLookupBatch(
 
     const unresolved = requestedIds.filter(id => !resolvedIds.has(id));
 
-    return { products: resolvedProducts, unresolved };
+    return {products: resolvedProducts, unresolved};
 }

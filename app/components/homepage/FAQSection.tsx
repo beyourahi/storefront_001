@@ -81,9 +81,7 @@ export const FAQSection = ({faqItems, contactEmail, contactPhone}: FAQSectionPro
                 <div className="bg-muted mx-auto max-w-2xl rounded-2xl border p-8 text-center">
                     <div className="space-y-4">
                         <div>
-                            <h3 className="text-foreground mb-2 text-xl font-semibold">
-                                Still have questions?
-                            </h3>
+                            <h3 className="text-foreground mb-2 text-xl font-semibold">Still have questions?</h3>
                             <p className="text-muted-foreground text-sm md:text-base">
                                 Our customer support team is here to help. Reach out through our social media channels
                                 or browse our help center for more detailed information.
@@ -101,7 +99,11 @@ export const FAQSection = ({faqItems, contactEmail, contactPhone}: FAQSectionPro
                                     </Button>
                                 )}
                                 {hasEmail && (
-                                    <Button asChild variant={hasPhone ? "outline" : "default"} className="w-[80vw] sm:w-auto">
+                                    <Button
+                                        asChild
+                                        variant={hasPhone ? "outline" : "default"}
+                                        className="w-[80vw] sm:w-auto"
+                                    >
                                         <a href={`mailto:${email}`}>
                                             <Mail className="mr-2 h-4 w-4" />
                                             Email us

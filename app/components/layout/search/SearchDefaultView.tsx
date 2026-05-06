@@ -138,7 +138,10 @@ export const SearchDefaultView = ({
                                             {product.featuredImage ? (
                                                 <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-sm">
                                                     <Image
-                                                        data={{url: product.featuredImage.url, altText: product.featuredImage.altText ?? product.title}}
+                                                        data={{
+                                                            url: product.featuredImage.url,
+                                                            altText: product.featuredImage.altText ?? product.title
+                                                        }}
                                                         sizes="40px"
                                                         aspectRatio="1/1"
                                                         loading="lazy"

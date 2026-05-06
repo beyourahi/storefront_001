@@ -21,7 +21,7 @@ const STYLE_TAG_MAP: Record<NonNullable<StyleProfile["style"]>, string[]> = {
     formal: ["formal", "professional", "workwear"],
     streetwear: ["streetwear", "urban", "graphic"],
     minimalist: ["minimalist", "clean", "essentials"],
-    eclectic: ["eclectic", "vintage", "pattern"],
+    eclectic: ["eclectic", "vintage", "pattern"]
 };
 
 export function resolveStyleQuery(profile: StyleProfile): StyleResult {
@@ -32,12 +32,10 @@ export function resolveStyleQuery(profile: StyleProfile): StyleResult {
     const query = queryParts.join(" ") || "new arrivals";
 
     const profileKey = [profile.style, profile.fit, profile.color].filter(Boolean).join("-");
-    const label = [
-        profile.style ? `${profile.style} style` : null,
-        profile.fit ? `${profile.fit} fit` : null,
-    ]
-        .filter(Boolean)
-        .join(", ") || "Your style";
+    const label =
+        [profile.style ? `${profile.style} style` : null, profile.fit ? `${profile.fit} fit` : null]
+            .filter(Boolean)
+            .join(", ") || "Your style";
 
     return {query, tags: styleTags, profileKey, label};
 }

@@ -46,10 +46,7 @@ export function parsePaginationParams(url: URL): PaginationParams {
     const page = !isNaN(parsedPage) && parsedPage >= 1 ? parsedPage : 1;
 
     // Validate direction
-    const direction =
-        directionParam === "forward" || directionParam === "backward"
-            ? directionParam
-            : null;
+    const direction = directionParam === "forward" || directionParam === "backward" ? directionParam : null;
 
     return {
         cursor: cursorParam,
@@ -95,10 +92,7 @@ export function buildPaginationVariables(
  * @param currentPage - Current page number
  * @returns Pagination data for components
  */
-export function buildPaginationData(
-    pageInfo: PageInfo,
-    currentPage: number
-): PaginationData {
+export function buildPaginationData(pageInfo: PageInfo, currentPage: number): PaginationData {
     return {
         currentPage,
         hasNextPage: pageInfo.hasNextPage,

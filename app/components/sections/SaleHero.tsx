@@ -76,7 +76,10 @@ export const SaleHero = ({totalCount, maxDiscount, products}: SaleHeroProps) => 
                                     className="sleek group mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                                 >
                                     Browse All Products
-                                    <ArrowRight className="sleek size-4 group-hover:translate-x-0.5" aria-hidden="true" />
+                                    <ArrowRight
+                                        className="sleek size-4 group-hover:translate-x-0.5"
+                                        aria-hidden="true"
+                                    />
                                 </Link>
                             </div>
                         </>

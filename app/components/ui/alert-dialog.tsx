@@ -31,12 +31,7 @@ function AlertDialog({
     useLockBodyScroll(isOpen);
 
     return (
-        <AlertDialogPrimitive.Root
-            data-slot="alert-dialog"
-            open={isOpen}
-            onOpenChange={handleOpenChange}
-            {...props}
-        />
+        <AlertDialogPrimitive.Root data-slot="alert-dialog" open={isOpen} onOpenChange={handleOpenChange} {...props} />
     );
 }
 

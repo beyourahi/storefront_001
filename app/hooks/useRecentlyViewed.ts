@@ -77,9 +77,7 @@ function loadFromStorage(config: RecentlyViewedConfig): RecentlyViewedProduct[] 
                 // and expired entries
                 return parsed.filter(
                     (product): product is RecentlyViewedProduct =>
-                        !isLegacyProduct(product) &&
-                        isFullProduct(product) &&
-                        now - product.timestamp <= expiryTime
+                        !isLegacyProduct(product) && isFullProduct(product) && now - product.timestamp <= expiryTime
                 );
             }
         }
@@ -124,50 +122,56 @@ export function useRecentlyViewed(config: RecentlyViewedConfig = DEFAULT_CONFIG)
         setIsHydrated(true);
     }, [config]);
 
-    const addProduct = useCallback((params: AddProductParams) => {
-        if (!isBrowser || !params.id || !params.handle) return;
+    const addProduct = useCallback(
+        (params: AddProductParams) => {
+            if (!isBrowser || !params.id || !params.handle) return;
 
-        const currentProducts = loadFromStorage(config);
-        const now = Date.now();
-        const existingIndex = currentProducts.findIndex(p => p.id === params.id);
+            const currentProducts = loadFromStorage(config);
+            const now = Date.now();
+            const existingIndex = currentProducts.findIndex(p => p.id === params.id);
 
-        const productData: RecentlyViewedProduct = {
-            id: params.id,
-            handle: params.handle,
-            timestamp: now,
-            title: params.title,
-            imageUrl: params.imageUrl,
-            imageAlt: params.imageAlt,
-            price: params.price,
-            compareAtPrice: params.compareAtPrice
-        };
+            const productData: RecentlyViewedProduct = {
+                id: params.id,
+                handle: params.handle,
+                timestamp: now,
+                title: params.title,
+                imageUrl: params.imageUrl,
+                imageAlt: params.imageAlt,
+                price: params.price,
+                compareAtPrice: params.compareAtPrice
+            };
 
-        let newProducts: RecentlyViewedProduct[];
+            let newProducts: RecentlyViewedProduct[];
 
-        if (existingIndex !== -1) {
-            const updated = [...currentProducts];
-            updated.splice(existingIndex, 1);
-            newProducts = [productData, ...updated];
-        } else {
-            newProducts = [productData, ...currentProducts];
+            if (existingIndex !== -1) {
+                const updated = [...currentProducts];
+                updated.splice(existingIndex, 1);
+                newProducts = [productData, ...updated];
+            } else {
+                newProducts = [productData, ...currentProducts];
 
-            if (newProducts.length > config.maxProducts) {
-                newProducts = newProducts.slice(0, config.maxProducts);
+                if (newProducts.length > config.maxProducts) {
+                    newProducts = newProducts.slice(0, config.maxProducts);
+                }
             }
-        }
 
-        persistToStorage(newProducts, config);
-        setProducts(newProducts);
-    }, [config]);
+            persistToStorage(newProducts, config);
+            setProducts(newProducts);
+        },
+        [config]
+    );
 
-    const removeProduct = useCallback((id: string) => {
-        if (!isBrowser) return;
+    const removeProduct = useCallback(
+        (id: string) => {
+            if (!isBrowser) return;
 
-        const currentProducts = loadFromStorage(config);
-        const newProducts = currentProducts.filter(p => p.id !== id);
-        persistToStorage(newProducts, config);
-        setProducts(newProducts);
-    }, [config]);
+            const currentProducts = loadFromStorage(config);
+            const newProducts = currentProducts.filter(p => p.id !== id);
+            persistToStorage(newProducts, config);
+            setProducts(newProducts);
+        },
+        [config]
+    );
 
     const clear = useCallback(() => {
         if (!isBrowser) return;
@@ -182,18 +186,21 @@ export function useRecentlyViewed(config: RecentlyViewedConfig = DEFAULT_CONFIG)
     const productIds = useMemo(() => products.map(p => p.id), [products]);
     const productHandles = useMemo(() => products.map(p => p.handle), [products]);
 
-    return useMemo(() => ({
-        products,
-        productIds,
-        productHandles,
-        count: products.length,
-        hasProducts: products.length > 0,
-        isHydrated,
-        addProduct,
-        removeProduct,
-        clear,
-        hasProduct
-    }), [products, productIds, productHandles, isHydrated, addProduct, removeProduct, clear, hasProduct]);
+    return useMemo(
+        () => ({
+            products,
+            productIds,
+            productHandles,
+            count: products.length,
+            hasProducts: products.length > 0,
+            isHydrated,
+            addProduct,
+            removeProduct,
+            clear,
+            hasProduct
+        }),
+        [products, productIds, productHandles, isHydrated, addProduct, removeProduct, clear, hasProduct]
+    );
 }
 
 /**

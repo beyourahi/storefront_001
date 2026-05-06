@@ -12,24 +12,22 @@ function Command({className, ...props}: React.ComponentProps<"div">) {
     );
 }
 
-const CommandInput = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-    ({className, ...props}, ref) => {
-        return (
-            <div data-slot="command-input-wrapper" className="flex items-center gap-2 border-b px-3">
-                <Search className="size-4 shrink-0 opacity-50" />
-                <input
-                    ref={ref}
-                    data-slot="command-input"
-                    className={cn(
-                        "motion-interactive placeholder:text-muted-foreground flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50",
-                        className
-                    )}
-                    {...props}
-                />
-            </div>
-        );
-    }
-);
+const CommandInput = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(({className, ...props}, ref) => {
+    return (
+        <div data-slot="command-input-wrapper" className="flex items-center gap-2 border-b px-3">
+            <Search className="size-4 shrink-0 opacity-50" />
+            <input
+                ref={ref}
+                data-slot="command-input"
+                className={cn(
+                    "motion-interactive placeholder:text-muted-foreground flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50",
+                    className
+                )}
+                {...props}
+            />
+        </div>
+    );
+});
 CommandInput.displayName = "CommandInput";
 
 function CommandList({className, ...props}: React.ComponentProps<"div">) {

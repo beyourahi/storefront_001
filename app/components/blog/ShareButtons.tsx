@@ -76,9 +76,7 @@ export const ShareButtons = ({article, variant = "inline", className, shopName}:
                         <h3 className="text-primary font-serif text-base leading-tight font-semibold sm:text-lg">
                             Share this article
                         </h3>
-                        <p className="text-muted-foreground text-xs sm:text-sm">
-                            Enjoyed the read? Pass it along.
-                        </p>
+                        <p className="text-muted-foreground text-xs sm:text-sm">Enjoyed the read? Pass it along.</p>
                     </div>
                 </div>
 

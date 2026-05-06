@@ -62,6 +62,8 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
     # ─────────────────────────────────────────────────────────────────────────
     # HERO SECTION
     # ─────────────────────────────────────────────────────────────────────────
+    heroHeading: field(key: "hero_heading") { value }
+    heroDescription: field(key: "hero_description") { value }
     featuredProductSection: field(key: "featured_product_section") {
       reference {
         ... on Product {

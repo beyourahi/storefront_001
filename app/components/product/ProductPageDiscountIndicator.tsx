@@ -23,7 +23,9 @@ export const ProductPageDiscountIndicator = ({
     if (!hasDiscount) return null;
 
     return (
-        <Badge className={`bg-discount-bg text-discount-text border-discount-icon-bg rounded-[var(--radius)] border px-0.5 pr-1 py-0 text-xs ${className || ""}`}>
+        <Badge
+            className={`bg-discount-bg text-discount-text border-discount-icon-bg rounded-[var(--radius)] border px-0.5 pr-1 py-0 text-xs ${className || ""}`}
+        >
             <span className="text-discount-text flex items-center gap-1 sm:gap-1.5 font-medium">
                 <span className="bg-discount-icon-bg flex items-center justify-center rounded-[var(--radius)] p-0.5 text-sm">
                     <BadgePercent size={12} className="pointer-events-none" />

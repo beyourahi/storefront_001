@@ -62,7 +62,11 @@ export async function action({request, context}: Route.ActionArgs) {
             JSON.stringify({
                 jsonrpc: "2.0",
                 id: null,
-                error: {code: -32001, message: "Unauthorized", data: {reason: "Missing or invalid Authorization header"}}
+                error: {
+                    code: -32001,
+                    message: "Unauthorized",
+                    data: {reason: "Missing or invalid Authorization header"}
+                }
             }),
             {status: 401, headers: {...MCP_HEADERS, "WWW-Authenticate": 'Bearer realm="storefront-mcp"'}}
         );

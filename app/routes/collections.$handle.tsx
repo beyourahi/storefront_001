@@ -3,7 +3,14 @@ import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import type {Route} from "./+types/collections.$handle";
 import {Analytics, getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateCollectionSchema, generateBreadcrumbListSchema} from "~/lib/seo";
+import {
+    buildCanonicalUrl,
+    getBrandNameFromMatches,
+    getRequiredSocialMeta,
+    getSiteUrlFromMatches,
+    generateCollectionSchema,
+    generateBreadcrumbListSchema
+} from "~/lib/seo";
 import {deriveCollectionBreadcrumbs} from "~/lib/seo-breadcrumbs";
 import {CollectionHero} from "~/components/sections/CollectionHero";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
@@ -78,12 +85,12 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     ];
 };
 
-export function links(args?: { data: Awaited<ReturnType<typeof loader>> | null }) {
+export function links(args?: {data: Awaited<ReturnType<typeof loader>> | null}) {
     const data = args?.data;
     // Preload first product's featured image for LCP — first card in collection grid
     const href = (data?.products as any[] | undefined)?.[0]?.featuredImage?.url;
     if (!href) return [];
-    return [{ rel: "preload", as: "image", href }] as const;
+    return [{rel: "preload", as: "image", href}] as const;
 }
 
 export async function loader(args: Route.LoaderArgs) {
@@ -147,20 +154,22 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
         const isAuthenticated = await customerAccount.isLoggedIn();
 
         if (isAuthenticated) {
-            const ordersResponse = await customerAccount.query(CUSTOMER_AFFINITY_ORDERS_QUERY, {
+            const ordersResponse = (await customerAccount.query(CUSTOMER_AFFINITY_ORDERS_QUERY, {
                 variables: {first: 10}
-            }) as any;
+            })) as any;
 
             const orderNodes: any[] = ordersResponse?.data?.customer?.orders?.nodes ?? [];
 
             // Flatten all order line items into AffinitySignal-compatible objects
-            const orderLines = orderNodes.flatMap((order: any) =>
-                (order.lineItems?.nodes ?? []).map((line: any) => ({
-                    productId: line.variant?.product?.id ?? "",
-                    quantity: line.quantity as number,
-                    processedAt: order.processedAt as string
-                }))
-            ).filter((line: any) => line.productId !== "");
+            const orderLines = orderNodes
+                .flatMap((order: any) =>
+                    (order.lineItems?.nodes ?? []).map((line: any) => ({
+                        productId: line.variant?.product?.id ?? "",
+                        quantity: line.quantity as number,
+                        processedAt: order.processedAt as string
+                    }))
+                )
+                .filter((line: any) => line.productId !== "");
 
             if (orderLines.length > 0) {
                 const signals = extractAffinitySignals(orderLines);
@@ -180,8 +189,8 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 
     // Accurate product count from lightweight query (up to 250); main query paginates at 48
     const collectionProductCount =
-        (collectionCountData as {collection?: {products?: {nodes?: {id: string}[]}}})
-            ?.collection?.products?.nodes?.length ?? 0;
+        (collectionCountData as {collection?: {products?: {nodes?: {id: string}[]}}})?.collection?.products?.nodes
+            ?.length ?? 0;
 
     return {
         collection,
@@ -198,12 +207,10 @@ function loadDeferredData({context}: Route.LoaderArgs) {
     const {dataAdapter} = context;
 
     const sidebarData = withTimeoutAndFallback(
-        dataAdapter
-            .query(SIDEBAR_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()})
-            .catch((error: unknown) => {
-                console.error("Failed to load sidebar collections:", error);
-                return null;
-            }),
+        dataAdapter.query(SIDEBAR_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
+            console.error("Failed to load sidebar collections:", error);
+            return null;
+        }),
         null,
         TIMEOUT_DEFAULTS.API
     );
@@ -212,8 +219,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 }
 
 export default function CollectionPage() {
-    const {collection, products, pagination, sort, sortLabel} =
-        useLoaderData<typeof loader>();
+    const {collection, products, pagination, sort, sortLabel} = useLoaderData<typeof loader>();
 
     const normalizedProducts = products.map(fromStorefrontNode);
 
@@ -233,10 +239,7 @@ export default function CollectionPage() {
                 </div>
             </AnimatedSection>
 
-            <SortFilterBar
-                currentSort={sort}
-                totalProducts={normalizedProducts.length}
-            />
+            <SortFilterBar currentSort={sort} totalProducts={normalizedProducts.length} />
 
             {showPagination && (
                 <AnimatedSection animation="fade" threshold={0.12}>

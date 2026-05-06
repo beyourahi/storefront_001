@@ -47,18 +47,12 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
     if (variant === "expanded") {
         return (
             <div className={cn("w-full", className)}>
-                <h3 className="font-serif text-2xl font-semibold text-foreground sm:text-3xl">
-                    Stay in the Loop
-                </h3>
+                <h3 className="font-serif text-2xl font-semibold text-foreground sm:text-3xl">Stay in the Loop</h3>
                 <p className="mt-2 text-muted-foreground">
                     Be the first to know about new arrivals, exclusive offers, and more.
                 </p>
 
-                <fetcher.Form
-                    method="post"
-                    action="/api/newsletter"
-                    className="mt-5 flex flex-col gap-3"
-                >
+                <fetcher.Form method="post" action="/api/newsletter" className="mt-5 flex flex-col gap-3">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                         <div className="relative flex-1">
                             <input
@@ -77,7 +71,8 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                                     "placeholder:text-muted-foreground/60",
                                     "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none",
                                     "disabled:opacity-60",
-                                    isError && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                                    isError &&
+                                        "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
                                 )}
                             />
                         </div>
@@ -133,11 +128,7 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
     // Compact variant (footer)
     return (
         <div className={cn("w-full", className)}>
-            <fetcher.Form
-                method="post"
-                action="/api/newsletter"
-                className="flex items-stretch gap-2"
-            >
+            <fetcher.Form method="post" action="/api/newsletter" className="flex items-stretch gap-2">
                 <div className="relative flex-1">
                     <input
                         type="email"
@@ -155,7 +146,8 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                             "placeholder:text-muted-foreground/60",
                             "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none",
                             "disabled:opacity-60",
-                            isError && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                            isError &&
+                                "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
                         )}
                     />
                 </div>
@@ -170,11 +162,7 @@ export const NewsletterSignup = ({variant = "compact", className}: NewsletterSig
                         "disabled:opacity-60 disabled:pointer-events-none"
                     )}
                 >
-                    {isSubmitting ? (
-                        <ButtonSpinner />
-                    ) : (
-                        <Send className="h-3.5 w-3.5" />
-                    )}
+                    {isSubmitting ? <ButtonSpinner /> : <Send className="h-3.5 w-3.5" />}
                     <span className="hidden sm:inline">Subscribe</span>
                 </button>
             </fetcher.Form>

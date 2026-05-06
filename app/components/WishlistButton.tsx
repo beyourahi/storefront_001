@@ -81,8 +81,7 @@ export const WishlistButton = ({
 
     const label = wishlisted ? "Remove from wishlist" : "Add to wishlist";
 
-    const iconSizeClass =
-        size === "sm" ? "h-5 w-5" : size === "lg" ? "h-7 w-7" : "h-6 w-6";
+    const iconSizeClass = size === "sm" ? "h-5 w-5" : size === "lg" ? "h-7 w-7" : "h-6 w-6";
 
     return (
         <button
@@ -108,9 +107,7 @@ export const WishlistButton = ({
                         ? "fill-wishlist-active text-wishlist-active"
                         : cn(
                               "fill-transparent",
-                              canHover
-                                  ? "text-muted-foreground hover:text-foreground"
-                                  : "text-muted-foreground",
+                              canHover ? "text-muted-foreground hover:text-foreground" : "text-muted-foreground",
                               animateOnParentHover && "group-hover:animate-heart-breathe"
                           ),
                     wishlisted && !isAnimating && "animate-heart-beat",
@@ -118,9 +115,7 @@ export const WishlistButton = ({
                     justAdded && !isAnimating && wishlisted && "animate-heart-glow"
                 )}
             />
-            {showLabel && (
-                <span className="ml-2 text-sm font-medium">{wishlisted ? "Saved" : "Save"}</span>
-            )}
+            {showLabel && <span className="ml-2 text-sm font-medium">{wishlisted ? "Saved" : "Save"}</span>}
         </button>
     );
 };

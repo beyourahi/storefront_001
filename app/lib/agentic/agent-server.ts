@@ -125,18 +125,14 @@ type AgentContext = {
     env: {PUBLIC_STORE_DOMAIN?: string};
 };
 
-export async function handleAgentSearchRequest(
-    request: Request,
-    context: AgentContext
-): Promise<Response> {
+export async function handleAgentSearchRequest(request: Request, context: AgentContext): Promise<Response> {
     const url = new URL(request.url);
     const term = (url.searchParams.get("q") ?? "").trim();
 
     if (!term) {
-        return new Response(
-            JSON.stringify({products: [], pageInfo: {hasNextPage: false, endCursor: null}}),
-            {headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}}
-        );
+        return new Response(JSON.stringify({products: [], pageInfo: {hasNextPage: false, endCursor: null}}), {
+            headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}
+        });
     }
 
     try {
@@ -146,9 +142,7 @@ export async function handleAgentSearchRequest(
         });
 
         const productsConnection = (result as any).products;
-        const storeUrl = context.env.PUBLIC_STORE_DOMAIN
-            ? `https://${context.env.PUBLIC_STORE_DOMAIN}`
-            : "";
+        const storeUrl = context.env.PUBLIC_STORE_DOMAIN ? `https://${context.env.PUBLIC_STORE_DOMAIN}` : "";
 
         const ucpPage = toUcpProductPage(productsConnection as any, storeUrl);
         return new Response(JSON.stringify(ucpPage), {
@@ -156,25 +150,22 @@ export async function handleAgentSearchRequest(
         });
     } catch (error) {
         console.error("[agent-server] Search request failed:", error);
-        return new Response(
-            JSON.stringify({products: [], pageInfo: {hasNextPage: false, endCursor: null}}),
-            {status: 500, headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}}
-        );
+        return new Response(JSON.stringify({products: [], pageInfo: {hasNextPage: false, endCursor: null}}), {
+            status: 500,
+            headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}
+        });
     }
 }
 
-export async function handleAgentProductRequest(
-    request: Request,
-    context: AgentContext
-): Promise<Response> {
+export async function handleAgentProductRequest(request: Request, context: AgentContext): Promise<Response> {
     const url = new URL(request.url);
     const handle = url.pathname.replace(/^\/products\//, "").split("/")[0];
 
     if (!handle) {
-        return new Response(
-            JSON.stringify({error: "Missing product handle"}),
-            {status: 400, headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}}
-        );
+        return new Response(JSON.stringify({error: "Missing product handle"}), {
+            status: 400,
+            headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}
+        });
     }
 
     try {
@@ -185,15 +176,13 @@ export async function handleAgentProductRequest(
 
         const product = (result as any).product;
         if (!product) {
-            return new Response(
-                JSON.stringify({error: "Product not found"}),
-                {status: 404, headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}}
-            );
+            return new Response(JSON.stringify({error: "Product not found"}), {
+                status: 404,
+                headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}
+            });
         }
 
-        const storeUrl = context.env.PUBLIC_STORE_DOMAIN
-            ? `https://${context.env.PUBLIC_STORE_DOMAIN}`
-            : "";
+        const storeUrl = context.env.PUBLIC_STORE_DOMAIN ? `https://${context.env.PUBLIC_STORE_DOMAIN}` : "";
 
         const connection = {nodes: [product], pageInfo: {hasNextPage: false, endCursor: null}};
         const ucpPage = toUcpProductPage(connection as any, storeUrl);
@@ -202,9 +191,9 @@ export async function handleAgentProductRequest(
         });
     } catch (error) {
         console.error("[agent-server] Product request failed:", error);
-        return new Response(
-            JSON.stringify({error: "Internal server error"}),
-            {status: 500, headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}}
-        );
+        return new Response(JSON.stringify({error: "Internal server error"}), {
+            status: 500,
+            headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}
+        });
     }
 }

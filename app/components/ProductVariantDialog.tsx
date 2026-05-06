@@ -2,16 +2,7 @@ import {useCallback, useEffect, useMemo, useRef, useState, type ReactNode} from 
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {useFetcher} from "react-router";
 import {CartForm, Image} from "@shopify/hydrogen";
-import {
-    AlertTriangle,
-    CalendarClock,
-    Check,
-    CreditCard,
-    Minus,
-    Plus,
-    ShoppingCart,
-    X
-} from "lucide-react";
+import {AlertTriangle, CalendarClock, Check, CreditCard, Minus, Plus, ShoppingCart, X} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {formatShopifyMoney, getZeroPrice} from "~/lib/currency-formatter";
@@ -234,7 +225,7 @@ export function ProductVariantDialog({
             <Button
                 type="button"
                 variant="outline"
-                onClick={(e) => {
+                onClick={e => {
                     e.stopPropagation();
                     void handleButtonClick();
                 }}
@@ -323,8 +314,14 @@ function ProductVariantDialogContent({
     const availableVariants = useMemo(() => allVariants.filter(variant => variant.availableForSale), [allVariants]);
     const productImages = useMemo(() => product.images.edges.map(edge => edge.node), [product.images.edges]);
     const hasRealVariants = useMemo(() => hasProductMultipleVariants(allVariants), [allVariants]);
-    const hasRealOptions = useMemo(() => hasRealVariants && product.options.length > 0, [hasRealVariants, product.options.length]);
-    const {primary: titlePrimary, secondary: titleSecondary} = useMemo(() => parseProductTitle(product.title), [product.title]);
+    const hasRealOptions = useMemo(
+        () => hasRealVariants && product.options.length > 0,
+        [hasRealVariants, product.options.length]
+    );
+    const {primary: titlePrimary, secondary: titleSecondary} = useMemo(
+        () => parseProductTitle(product.title),
+        [product.title]
+    );
     const isPreorder = useMemo(() => isPreorderProduct(product), [product]);
 
     useEffect(() => {
@@ -458,11 +455,13 @@ function ProductVariantDialogContent({
         }
 
         const price = formatShopifyMoney(activeVariant.price);
-        const compareAtPrice = activeVariant.compareAtPrice ? formatShopifyMoney(activeVariant.compareAtPrice) : undefined;
+        const compareAtPrice = activeVariant.compareAtPrice
+            ? formatShopifyMoney(activeVariant.compareAtPrice)
+            : undefined;
         const onSale = Boolean(
             compareAtPrice &&
-                activeVariant.compareAtPrice &&
-                parseFloat(activeVariant.compareAtPrice.amount) > parseFloat(activeVariant.price.amount)
+            activeVariant.compareAtPrice &&
+            parseFloat(activeVariant.compareAtPrice.amount) > parseFloat(activeVariant.price.amount)
         );
 
         return {price, compareAtPrice, onSale};
@@ -482,32 +481,42 @@ function ProductVariantDialogContent({
         return Math.round(((originalPrice - salePrice) / originalPrice) * 100);
     }, [selectedVariant]);
 
-    const findMatchingVariant = useCallback((options: Record<string, string>) => {
-        return (
-            allVariants.find(variant => variant.selectedOptions.every(option => options[option.name] === option.value)) ??
-            null
-        );
-    }, [allVariants]);
+    const findMatchingVariant = useCallback(
+        (options: Record<string, string>) => {
+            return (
+                allVariants.find(variant =>
+                    variant.selectedOptions.every(option => options[option.name] === option.value)
+                ) ?? null
+            );
+        },
+        [allVariants]
+    );
 
-    const selectOption = useCallback((optionName: string, value: string) => {
-        const nextSelectedOptions = {...selectedOptions, [optionName]: value};
-        setSelectedOptions(nextSelectedOptions);
-        setSelectedVariant(findMatchingVariant(nextSelectedOptions));
-    }, [selectedOptions, findMatchingVariant]);
+    const selectOption = useCallback(
+        (optionName: string, value: string) => {
+            const nextSelectedOptions = {...selectedOptions, [optionName]: value};
+            setSelectedOptions(nextSelectedOptions);
+            setSelectedVariant(findMatchingVariant(nextSelectedOptions));
+        },
+        [selectedOptions, findMatchingVariant]
+    );
 
-    const getAvailableValuesForOption = useCallback((optionName: string) => {
-        const option = product.options.find(item => item.name === optionName);
+    const getAvailableValuesForOption = useCallback(
+        (optionName: string) => {
+            const option = product.options.find(item => item.name === optionName);
 
-        if (!option) {
-            return [];
-        }
+            if (!option) {
+                return [];
+            }
 
-        return option.values.filter(value => {
-            const nextOptions = {...selectedOptions, [optionName]: value};
-            const matchingVariant = findMatchingVariant(nextOptions);
-            return Boolean(matchingVariant?.availableForSale);
-        });
-    }, [product.options, selectedOptions, findMatchingVariant]);
+            return option.values.filter(value => {
+                const nextOptions = {...selectedOptions, [optionName]: value};
+                const matchingVariant = findMatchingVariant(nextOptions);
+                return Boolean(matchingVariant?.availableForSale);
+            });
+        },
+        [product.options, selectedOptions, findMatchingVariant]
+    );
 
     const selectVariant = useCallback((variant: ShopifyProductVariant) => {
         setSelectedVariant(variant);
@@ -590,7 +599,16 @@ function ProductVariantDialogContent({
             },
             {method: "POST", action: "/cart"}
         );
-    }, [selectedVariant, isBuyingNow, isAddingToCart, quantity, buyNowFetcher, product.id, product.title, product.handle]);
+    }, [
+        selectedVariant,
+        isBuyingNow,
+        isAddingToCart,
+        quantity,
+        buyNowFetcher,
+        product.id,
+        product.title,
+        product.handle
+    ]);
 
     return (
         <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -605,288 +623,299 @@ function ProductVariantDialogContent({
                         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
                         "sm:max-w-[480px] md:w-[700px] md:max-w-2xl lg:w-[900px] xl:w-[1100px] 2xl:w-[1300px]"
                     )}
-                    onClick={(e) => e.stopPropagation()}
-                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={e => e.stopPropagation()}
+                    onPointerDown={e => e.stopPropagation()}
                 >
                     <DialogPrimitive.Title className="sr-only">{product.title}</DialogPrimitive.Title>
                     <DialogPrimitive.Description className="sr-only">
                         Select a variant and quantity, then add this product to the cart or continue to checkout.
                     </DialogPrimitive.Description>
                     <div className="bg-background flex h-full flex-col lg:flex-row">
-                    <div className="border-border/10 hidden max-h-[55vh] flex-shrink-0 border-r lg:block lg:w-2/5">
-                        {productImages.length > 0 ? (
-                            <div className="h-full overflow-x-hidden overflow-y-auto p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                                <div className="space-y-3">
-                                    {productImages.map((image, index) => (
-                                        <div
-                                            key={image.id ?? `${image.url}-${index}`}
-                                            className="relative aspect-square w-full overflow-hidden rounded-lg shadow-md"
-                                        >
-                                            <Image
-                                                data={{url: image.url, altText: image.altText || `${product.title} - Image ${index + 1}`}}
-                                                sizes="(min-width: 1024px) 40vw, 80vw"
-                                                aspectRatio="1/1"
-                                                loading={index === 0 ? "eager" : "lazy"}
-                                                className="sleek h-full w-full object-cover hover:scale-105"
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : (
-                            <ProductImagePlaceholder aspectRatio="square" className="h-full w-full rounded-none" />
-                        )}
-                    </div>
-
-                    <div className="relative flex min-h-0 w-full flex-col lg:w-3/5">
-                        <DialogPrimitive.Close
-                            className="sleek bg-background/90 hover:bg-background absolute top-6 right-6 z-20 rounded-full p-2 opacity-90 shadow-lg backdrop-blur-sm hover:scale-105 hover:opacity-100 disabled:pointer-events-none"
-                            aria-label="Close"
-                        >
-                            <X className="h-4 w-4" />
-                        </DialogPrimitive.Close>
-
-                        <div className="flex flex-1 flex-col p-4">
-                            <div className="flex-1 overflow-y-auto">
-                                {discountPercentage ? (
-                                    <div className="mb-1.5">
-                                        <div className="bg-discount-bg text-discount-text border-discount-icon-bg inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold">
-                                            -{discountPercentage}%
-                                        </div>
-                                    </div>
-                                ) : null}
-
-                                <div className="mb-8 sm:mb-10">
-                                    <div className="flex gap-4 lg:block">
-                                        <div className="flex-shrink-0 overflow-hidden rounded-lg shadow-md lg:hidden">
-                                            {productImages.length > 0 ? (
-                                                <div className="relative h-20 w-20">
-                                                    <Image
-                                                        data={{url: productImages[0].url, altText: productImages[0].altText || product.title}}
-                                                        sizes="80px"
-                                                        aspectRatio="1/1"
-                                                        loading="eager"
-                                                        className="h-full w-full object-cover"
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <ProductImagePlaceholder compact className="h-20 w-20" />
-                                            )}
-                                        </div>
-
-                                        <div className="min-w-0 flex-1">
-                                            <div className="mb-1 sm:mb-1.5">
-                                                <h2 className="text-foreground text-base leading-tight font-semibold tracking-tight 2xl:text-lg">
-                                                    {titlePrimary}
-                                                </h2>
-                                                {titleSecondary ? (
-                                                    <h3 className="text-muted-foreground mt-1 text-xs font-semibold 2xl:text-sm">
-                                                        {titleSecondary}
-                                                    </h3>
-                                                ) : null}
-                                            </div>
-
-                                            <div className="flex items-baseline gap-2 sm:gap-3">
-                                                <span className="text-foreground font-mono text-sm font-bold tracking-tight lg:text-base">
-                                                    {currentPrice.price}
-                                                </span>
-                                                {currentPrice.compareAtPrice ? (
-                                                    <span className="text-muted-foreground font-mono text-sm line-through lg:text-base">
-                                                        {currentPrice.compareAtPrice}
-                                                    </span>
-                                                ) : null}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {hasRealOptions ? (
-                                    <div className="mb-5 space-y-2.5 sm:mb-6 sm:space-y-3">
-                                        {product.options.map(option => (
-                                            <div key={option.id}>
-                                                <h3 className="text-foreground mb-0.5 text-sm font-semibold tracking-wide sm:mb-1">
-                                                    {option.name}
-                                                </h3>
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                    {getAvailableValuesForOption(option.name).map(value => {
-                                                        const isSelected = selectedOptions[option.name] === value;
-
-                                                        return (
-                                                            <Button
-                                                                key={value}
-                                                                type="button"
-                                                                variant={isSelected ? "default" : "outline"}
-                                                                size="sm"
-                                                                onClick={() => selectOption(option.name, value)}
-                                                            >
-                                                                {value}
-                                                            </Button>
-                                                        );
-                                                    })}
-                                                </div>
+                        <div className="border-border/10 hidden max-h-[55vh] flex-shrink-0 border-r lg:block lg:w-2/5">
+                            {productImages.length > 0 ? (
+                                <div className="h-full overflow-x-hidden overflow-y-auto p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                                    <div className="space-y-3">
+                                        {productImages.map((image, index) => (
+                                            <div
+                                                key={image.id ?? `${image.url}-${index}`}
+                                                className="relative aspect-square w-full overflow-hidden rounded-lg shadow-md"
+                                            >
+                                                <Image
+                                                    data={{
+                                                        url: image.url,
+                                                        altText:
+                                                            image.altText || `${product.title} - Image ${index + 1}`
+                                                    }}
+                                                    sizes="(min-width: 1024px) 40vw, 80vw"
+                                                    aspectRatio="1/1"
+                                                    loading={index === 0 ? "eager" : "lazy"}
+                                                    className="sleek h-full w-full object-cover hover:scale-105"
+                                                />
                                             </div>
                                         ))}
-
-                                        {selectedVariant && !selectedVariant.availableForSale ? (
-                                            <div className="bg-destructive/10 border-destructive/20 flex animate-pulse items-center gap-3 rounded-lg border-2 p-4 shadow-sm">
-                                                <AlertTriangle className="text-destructive h-5 w-5 flex-shrink-0" />
-                                                <p className="text-destructive text-sm font-semibold">
-                                                    This combination is currently out of stock.
-                                                </p>
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                ) : hasRealVariants ? (
-                                    <div className="mb-5 sm:mb-6">
-                                        <h3 className="text-foreground mb-0.5 text-sm font-semibold tracking-wide sm:mb-1">
-                                            Options
-                                        </h3>
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            {availableVariants
-                                                .filter(variant => variant.title !== "Default Title")
-                                                .map(variant => (
-                                                    <Button
-                                                        key={variant.id}
-                                                        type="button"
-                                                        variant={selectedVariant?.id === variant.id ? "default" : "outline"}
-                                                        size="sm"
-                                                        onClick={() => selectVariant(variant)}
-                                                    >
-                                                        {variant.selectedOptions[0]?.value !== "Default Title"
-                                                            ? variant.selectedOptions[0]?.value
-                                                            : variant.title}
-                                                    </Button>
-                                                ))}
-                                        </div>
-                                    </div>
-                                ) : null}
-
-                                <div className="mb-8">
-                                    <h3 className="text-foreground mb-0.5 text-sm font-semibold tracking-wide sm:mb-1">
-                                        Quantity
-                                    </h3>
-                                    <div className="flex w-fit items-center overflow-hidden rounded-lg">
-                                        <Button
-                                            type="button"
-                                            className="rounded-r-none border-r-0"
-                                            onClick={decreaseQuantity}
-                                            disabled={quantity <= 1}
-                                        >
-                                            <Minus className="h-4 w-4" />
-                                        </Button>
-                                        <div className="bg-background text-foreground flex h-10 w-10 items-center justify-center text-sm font-medium">
-                                            {quantity}
-                                        </div>
-                                        <Button
-                                            type="button"
-                                            className="rounded-l-none border-l-0"
-                                            onClick={increaseQuantity}
-                                            disabled={quantity >= (selectedVariant?.quantityAvailable || 1)}
-                                        >
-                                            <Plus className="h-4 w-4" />
-                                        </Button>
                                     </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <ProductImagePlaceholder aspectRatio="square" className="h-full w-full rounded-none" />
+                            )}
+                        </div>
 
-                            <div className="border-border/10 flex-shrink-0 space-y-1.5 border-t pt-2 sm:space-y-2">
-                                <Button
-                                    type="button"
-                                    onClick={handleAddToCart}
-                                    className={cn(
-                                        "sleek cta-primary-emphasis h-12 w-full shadow-lg hover:shadow-xl active:scale-[0.98] sm:h-12",
-                                        addToCartState === "success"
-                                            ? "border-success bg-success text-success-foreground hover:border-success hover:bg-success/90"
-                                            : "",
-                                        addToCartState === "adding" ? "cursor-wait" : ""
-                                    )}
-                                    disabled={!selectedVariant || isAddingToCart}
-                                >
-                                    {addToCartState === "adding" ? (
-                                        <ButtonSpinner />
-                                    ) : addToCartState === "success" ? (
-                                        <>
-                                            <div className="animate-pulse">
-                                                <Check className="mr-2 h-4 w-4" />
+                        <div className="relative flex min-h-0 w-full flex-col lg:w-3/5">
+                            <DialogPrimitive.Close
+                                className="sleek bg-background/90 hover:bg-background absolute top-6 right-6 z-20 rounded-full p-2 opacity-90 shadow-lg backdrop-blur-sm hover:scale-105 hover:opacity-100 disabled:pointer-events-none"
+                                aria-label="Close"
+                            >
+                                <X className="h-4 w-4" />
+                            </DialogPrimitive.Close>
+
+                            <div className="flex flex-1 flex-col p-4">
+                                <div className="flex-1 overflow-y-auto">
+                                    {discountPercentage ? (
+                                        <div className="mb-1.5">
+                                            <div className="bg-discount-bg text-discount-text border-discount-icon-bg inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold">
+                                                -{discountPercentage}%
                                             </div>
-                                            ADDED!
-                                        </>
-                                    ) : addToCartState === "returning" ? (
-                                        <>
-                                            <div className="animate-pulse">
-                                                {isPreorder ? (
-                                                    <CalendarClock className="mr-1 h-4 w-4 font-semibold" />
+                                        </div>
+                                    ) : null}
+
+                                    <div className="mb-8 sm:mb-10">
+                                        <div className="flex gap-4 lg:block">
+                                            <div className="flex-shrink-0 overflow-hidden rounded-lg shadow-md lg:hidden">
+                                                {productImages.length > 0 ? (
+                                                    <div className="relative h-20 w-20">
+                                                        <Image
+                                                            data={{
+                                                                url: productImages[0].url,
+                                                                altText: productImages[0].altText || product.title
+                                                            }}
+                                                            sizes="80px"
+                                                            aspectRatio="1/1"
+                                                            loading="eager"
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    </div>
                                                 ) : (
-                                                    <ShoppingCart className="mr-1 h-4 w-4 font-semibold" />
+                                                    <ProductImagePlaceholder compact className="h-20 w-20" />
                                                 )}
                                             </div>
-                                            <span className="font-semibold">
-                                                {isPreorder ? "PRE ORDER" : "ADD TO CART"}
-                                            </span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {isPreorder ? (
-                                                <CalendarClock className="mr-2 h-4 w-4" />
-                                            ) : (
-                                                <ShoppingCart className="mr-2 h-4 w-4" />
-                                            )}
-                                            {isPreorder ? "PRE ORDER" : "ADD TO CART"}
-                                        </>
-                                    )}
-                                </Button>
 
-                                {!isPreorder ? (
-                                    <>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            onClick={handleBuyNow}
-                                            className={cn(
-                                                "sleek h-10 w-full font-medium active:scale-[0.98] sm:h-10",
-                                                buyNowState === "adding" || buyNowState === "redirecting"
-                                                    ? "cursor-wait"
-                                                    : ""
-                                            )}
-                                            disabled={!selectedVariant || isBuyingNow || isAddingToCart}
-                                        >
-                                            {buyNowState === "adding" || buyNowState === "redirecting" ? (
-                                                <ButtonSpinner />
-                                            ) : (
-                                                <>
-                                                    <CreditCard className="mr-2 h-4 w-4" />
-                                                    BUY NOW
-                                                </>
-                                            )}
-                                        </Button>
+                                            <div className="min-w-0 flex-1">
+                                                <div className="mb-1 sm:mb-1.5">
+                                                    <h2 className="text-foreground text-base leading-tight font-semibold tracking-tight 2xl:text-lg">
+                                                        {titlePrimary}
+                                                    </h2>
+                                                    {titleSecondary ? (
+                                                        <h3 className="text-muted-foreground mt-1 text-xs font-semibold 2xl:text-sm">
+                                                            {titleSecondary}
+                                                        </h3>
+                                                    ) : null}
+                                                </div>
 
-                                        {/*
-                                         * CheckoutKitEmbed for Buy Now flow.
-                                         * Rendered hidden once the buyNow fetcher resolves with a checkoutUrl.
-                                         * autoOpen=true causes the popup to open automatically on mount.
-                                         * The visible trigger above remains the user-facing button; this embed
-                                         * only serves as the Checkout Kit popup host.
-                                         */}
-                                        {buyNowCheckoutUrl ? (
-                                            <CheckoutKitEmbed
-                                                checkoutUrl={buyNowCheckoutUrl}
-                                                mode="popup"
-                                                autoOpen={true}
-                                                className="sr-only"
-                                                onComplete={() => {
-                                                    setBuyNowCheckoutUrl(null);
-                                                }}
+                                                <div className="flex items-baseline gap-2 sm:gap-3">
+                                                    <span className="text-foreground font-mono text-sm font-bold tracking-tight lg:text-base">
+                                                        {currentPrice.price}
+                                                    </span>
+                                                    {currentPrice.compareAtPrice ? (
+                                                        <span className="text-muted-foreground font-mono text-sm line-through lg:text-base">
+                                                            {currentPrice.compareAtPrice}
+                                                        </span>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {hasRealOptions ? (
+                                        <div className="mb-5 space-y-2.5 sm:mb-6 sm:space-y-3">
+                                            {product.options.map(option => (
+                                                <div key={option.id}>
+                                                    <h3 className="text-foreground mb-0.5 text-sm font-semibold tracking-wide sm:mb-1">
+                                                        {option.name}
+                                                    </h3>
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        {getAvailableValuesForOption(option.name).map(value => {
+                                                            const isSelected = selectedOptions[option.name] === value;
+
+                                                            return (
+                                                                <Button
+                                                                    key={value}
+                                                                    type="button"
+                                                                    variant={isSelected ? "default" : "outline"}
+                                                                    size="sm"
+                                                                    onClick={() => selectOption(option.name, value)}
+                                                                >
+                                                                    {value}
+                                                                </Button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {selectedVariant && !selectedVariant.availableForSale ? (
+                                                <div className="bg-destructive/10 border-destructive/20 flex animate-pulse items-center gap-3 rounded-lg border-2 p-4 shadow-sm">
+                                                    <AlertTriangle className="text-destructive h-5 w-5 flex-shrink-0" />
+                                                    <p className="text-destructive text-sm font-semibold">
+                                                        This combination is currently out of stock.
+                                                    </p>
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    ) : hasRealVariants ? (
+                                        <div className="mb-5 sm:mb-6">
+                                            <h3 className="text-foreground mb-0.5 text-sm font-semibold tracking-wide sm:mb-1">
+                                                Options
+                                            </h3>
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                {availableVariants
+                                                    .filter(variant => variant.title !== "Default Title")
+                                                    .map(variant => (
+                                                        <Button
+                                                            key={variant.id}
+                                                            type="button"
+                                                            variant={
+                                                                selectedVariant?.id === variant.id
+                                                                    ? "default"
+                                                                    : "outline"
+                                                            }
+                                                            size="sm"
+                                                            onClick={() => selectVariant(variant)}
+                                                        >
+                                                            {variant.selectedOptions[0]?.value !== "Default Title"
+                                                                ? variant.selectedOptions[0]?.value
+                                                                : variant.title}
+                                                        </Button>
+                                                    ))}
+                                            </div>
+                                        </div>
+                                    ) : null}
+
+                                    <div className="mb-8">
+                                        <h3 className="text-foreground mb-0.5 text-sm font-semibold tracking-wide sm:mb-1">
+                                            Quantity
+                                        </h3>
+                                        <div className="flex w-fit items-center overflow-hidden rounded-lg">
+                                            <Button
+                                                type="button"
+                                                className="rounded-r-none border-r-0"
+                                                onClick={decreaseQuantity}
+                                                disabled={quantity <= 1}
                                             >
-                                                {/* Hidden — popup is opened programmatically via autoOpen. */}
-                                                <span>Buy Now</span>
-                                            </CheckoutKitEmbed>
-                                        ) : null}
-                                    </>
-                                ) : null}
+                                                <Minus className="h-4 w-4" />
+                                            </Button>
+                                            <div className="bg-background text-foreground flex h-10 w-10 items-center justify-center text-sm font-medium">
+                                                {quantity}
+                                            </div>
+                                            <Button
+                                                type="button"
+                                                className="rounded-l-none border-l-0"
+                                                onClick={increaseQuantity}
+                                                disabled={quantity >= (selectedVariant?.quantityAvailable || 1)}
+                                            >
+                                                <Plus className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="border-border/10 flex-shrink-0 space-y-1.5 border-t pt-2 sm:space-y-2">
+                                    <Button
+                                        type="button"
+                                        onClick={handleAddToCart}
+                                        className={cn(
+                                            "sleek cta-primary-emphasis h-12 w-full shadow-lg hover:shadow-xl active:scale-[0.98] sm:h-12",
+                                            addToCartState === "success"
+                                                ? "border-success bg-success text-success-foreground hover:border-success hover:bg-success/90"
+                                                : "",
+                                            addToCartState === "adding" ? "cursor-wait" : ""
+                                        )}
+                                        disabled={!selectedVariant || isAddingToCart}
+                                    >
+                                        {addToCartState === "adding" ? (
+                                            <ButtonSpinner />
+                                        ) : addToCartState === "success" ? (
+                                            <>
+                                                <div className="animate-pulse">
+                                                    <Check className="mr-2 h-4 w-4" />
+                                                </div>
+                                                ADDED!
+                                            </>
+                                        ) : addToCartState === "returning" ? (
+                                            <>
+                                                <div className="animate-pulse">
+                                                    {isPreorder ? (
+                                                        <CalendarClock className="mr-1 h-4 w-4 font-semibold" />
+                                                    ) : (
+                                                        <ShoppingCart className="mr-1 h-4 w-4 font-semibold" />
+                                                    )}
+                                                </div>
+                                                <span className="font-semibold">
+                                                    {isPreorder ? "PRE ORDER" : "ADD TO CART"}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {isPreorder ? (
+                                                    <CalendarClock className="mr-2 h-4 w-4" />
+                                                ) : (
+                                                    <ShoppingCart className="mr-2 h-4 w-4" />
+                                                )}
+                                                {isPreorder ? "PRE ORDER" : "ADD TO CART"}
+                                            </>
+                                        )}
+                                    </Button>
+
+                                    {!isPreorder ? (
+                                        <>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                onClick={handleBuyNow}
+                                                className={cn(
+                                                    "sleek h-10 w-full font-medium active:scale-[0.98] sm:h-10",
+                                                    buyNowState === "adding" || buyNowState === "redirecting"
+                                                        ? "cursor-wait"
+                                                        : ""
+                                                )}
+                                                disabled={!selectedVariant || isBuyingNow || isAddingToCart}
+                                            >
+                                                {buyNowState === "adding" || buyNowState === "redirecting" ? (
+                                                    <ButtonSpinner />
+                                                ) : (
+                                                    <>
+                                                        <CreditCard className="mr-2 h-4 w-4" />
+                                                        BUY NOW
+                                                    </>
+                                                )}
+                                            </Button>
+
+                                            {/*
+                                             * CheckoutKitEmbed for Buy Now flow.
+                                             * Rendered hidden once the buyNow fetcher resolves with a checkoutUrl.
+                                             * autoOpen=true causes the popup to open automatically on mount.
+                                             * The visible trigger above remains the user-facing button; this embed
+                                             * only serves as the Checkout Kit popup host.
+                                             */}
+                                            {buyNowCheckoutUrl ? (
+                                                <CheckoutKitEmbed
+                                                    checkoutUrl={buyNowCheckoutUrl}
+                                                    mode="popup"
+                                                    autoOpen={true}
+                                                    className="sr-only"
+                                                    onComplete={() => {
+                                                        setBuyNowCheckoutUrl(null);
+                                                    }}
+                                                >
+                                                    {/* Hidden — popup is opened programmatically via autoOpen. */}
+                                                    <span>Buy Now</span>
+                                                </CheckoutKitEmbed>
+                                            ) : null}
+                                        </>
+                                    ) : null}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 </DialogPrimitive.Content>
             </DialogPrimitive.Portal>
         </DialogPrimitive.Root>

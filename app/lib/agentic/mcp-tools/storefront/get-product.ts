@@ -57,9 +57,7 @@ export const getProductHandler: McpToolHandler = async (params, ctx) => {
     if (selectedOptions && selectedOptions.length > 0) {
         // Attempt to find a variant whose selectedOptions fully match
         const match = ucpProduct.variants.find(v =>
-            selectedOptions.every(opt =>
-                v.selectedOptions.some(vo => vo.name === opt.name && vo.value === opt.value)
-            )
+            selectedOptions.every(opt => v.selectedOptions.some(vo => vo.name === opt.name && vo.value === opt.value))
         );
         if (match) selectionState = "MATCH";
     }

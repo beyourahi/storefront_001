@@ -1,5 +1,11 @@
 import {getSeoMeta} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches, generateBreadcrumbListSchema} from "~/lib/seo";
+import {
+    buildCanonicalUrl,
+    getBrandNameFromMatches,
+    getRequiredSocialMeta,
+    getSiteUrlFromMatches,
+    generateBreadcrumbListSchema
+} from "~/lib/seo";
 import {useLoaderData} from "react-router";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
@@ -19,10 +25,15 @@ export const meta: Route.MetaFunction = ({matches}) => {
             description: "Explore our complete collection through a visual gallery of all product images.",
             url: buildCanonicalUrl("/gallery", siteUrl)
         }) ?? []),
-        {"script:ld+json": generateBreadcrumbListSchema([
-            {name: "Home", url: "/"},
-            {name: "Gallery", url: "/gallery"}
-        ], siteUrl) as any},
+        {
+            "script:ld+json": generateBreadcrumbListSchema(
+                [
+                    {name: "Home", url: "/"},
+                    {name: "Gallery", url: "/gallery"}
+                ],
+                siteUrl
+            ) as any
+        },
         ...getRequiredSocialMeta("website", brandName)
     ];
 };

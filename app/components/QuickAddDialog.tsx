@@ -84,11 +84,12 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
     // back to images so older call sites still render correctly.
     const mediaList: ProductCardMedia[] = useMemo(() => {
         if (product.cardMedia && product.cardMedia.length > 0) return product.cardMedia;
-        const imageNodes = product.images?.nodes && product.images.nodes.length > 0
-            ? product.images.nodes
-            : product.featuredImage
-              ? [product.featuredImage]
-              : [];
+        const imageNodes =
+            product.images?.nodes && product.images.nodes.length > 0
+                ? product.images.nodes
+                : product.featuredImage
+                  ? [product.featuredImage]
+                  : [];
         return imageNodes
             .filter((img): img is QuickAddImage => Boolean(img?.url))
             .map(img => ({
@@ -154,7 +155,10 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
                             {mediaList.length > 0 ? (
                                 mediaList.map((item, index) => (
                                     <div
-                                        key={(item.type === "image" ? item.url : item.sources[0]?.url) ?? `media-${index}`}
+                                        key={
+                                            (item.type === "image" ? item.url : item.sources[0]?.url) ??
+                                            `media-${index}`
+                                        }
                                         className="relative w-full overflow-hidden bg-muted/50 rounded-lg"
                                     >
                                         <div className="aspect-4/5 w-full">

@@ -143,9 +143,7 @@ export const OrderHistorySection = ({orders, products}: OrderHistorySectionProps
     return (
         <section className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="mb-0 text-lg font-semibold text-foreground">
-                    Order History
-                </h2>
+                <h2 className="mb-0 text-lg font-semibold text-foreground">Order History</h2>
                 <Button variant="link" asChild className="group hidden text-primary sm:inline-flex">
                     <Link to="/account/orders" className="flex items-center gap-1.5">
                         View All Orders

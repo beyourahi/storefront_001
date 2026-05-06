@@ -60,8 +60,12 @@ const OrdersPage = () => {
     if (!isAuthenticated || !customer) {
         return (
             <div className="rounded-2xl bg-gradient-to-br from-muted/40 via-card to-muted/20 px-6 py-12 text-center sm:px-12">
-                <h2 className="font-serif text-xl font-medium text-foreground md:text-2xl">Sign in to view your orders</h2>
-                <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">Track your purchases and view order details.</p>
+                <h2 className="font-serif text-xl font-medium text-foreground md:text-2xl">
+                    Sign in to view your orders
+                </h2>
+                <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+                    Track your purchases and view order details.
+                </p>
                 <Button asChild size="lg" className="mt-6">
                     <Link to="/account/login">Sign In</Link>
                 </Button>
@@ -75,7 +79,9 @@ const OrdersPage = () => {
         <div className="space-y-6">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
                 <div>
-                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">Order History</h1>
+                    <h1 className="font-serif text-xl font-medium text-foreground md:text-2xl lg:text-3xl">
+                        Order History
+                    </h1>
                     {orderCount > 0 && (
                         <p className="text-sm text-muted-foreground mt-1">
                             {orderCount} order{orderCount !== 1 ? "s" : ""}
@@ -123,7 +129,9 @@ const OrdersPage = () => {
                         <PackageSearchIcon className="size-7 text-primary" />
                     </div>
                     <h2 className="font-serif text-xl font-medium text-foreground">No orders yet</h2>
-                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">When you place an order, it will appear here.</p>
+                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+                        When you place an order, it will appear here.
+                    </p>
                     <Button asChild className="mt-6">
                         <Link to="/collections">Start Shopping</Link>
                     </Button>

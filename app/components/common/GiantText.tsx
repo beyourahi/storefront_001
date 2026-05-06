@@ -137,7 +137,12 @@ export const GiantText = ({text, className, textClass, style, as: Tag = "div", .
     }, [text, scheduleResize]);
 
     return (
-        <Tag ref={containerRef as any} className={cn("sleek w-full overflow-hidden", className)} style={style} {...restProps}>
+        <Tag
+            ref={containerRef as any}
+            className={cn("sleek w-full overflow-hidden", className)}
+            style={style}
+            {...restProps}
+        >
             {/* leading-none is intentional — the binary-search font-size algorithm measures the container height; line-height > 1 would shift the bounding box and produce an incorrect result */}
             <span
                 ref={textRef}

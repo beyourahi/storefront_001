@@ -9,7 +9,8 @@ import {buildPolicyCorpus, rankCorpus} from "./policy-corpus";
 
 export const searchPoliciesAndFaqsTool: McpTool = {
     name: "search_shop_policies_and_faqs",
-    description: "Search shop policies and FAQs for relevant information. Use this tool to answer questions about shipping, returns, privacy, terms of service, and other store policies.",
+    description:
+        "Search shop policies and FAQs for relevant information. Use this tool to answer questions about shipping, returns, privacy, terms of service, and other store policies.",
     inputSchema: {
         type: "object",
         properties: {

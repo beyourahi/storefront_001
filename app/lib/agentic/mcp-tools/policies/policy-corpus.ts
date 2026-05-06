@@ -174,11 +174,7 @@ function extractSnippet(content: string, queryTokens: string[]): string {
 }
 
 /** Rank corpus entries against query using BM25-lite. Returns top `limit` results. */
-export function rankCorpus(
-    corpus: PolicyCorpusEntry[],
-    query: string,
-    limit: number
-): RankedResult[] {
+export function rankCorpus(corpus: PolicyCorpusEntry[], query: string, limit: number): RankedResult[] {
     if (!query.trim() || corpus.length === 0) return [];
 
     const queryTokens = tokenize(query);

@@ -10,7 +10,12 @@ import {LowStockBadge} from "~/components/product/LowStockBadge";
 import {WishlistButton} from "~/components/WishlistButton";
 import {usePointerCapabilities} from "~/hooks/usePointerCapabilities";
 import {useIntentPress} from "~/hooks/useIntentPress";
-import {getProductCardMedia, getProductDataForCard, OUT_OF_STOCK_LABEL, isProductLowStock} from "~/lib/product/product-card-utils";
+import {
+    getProductCardMedia,
+    getProductDataForCard,
+    OUT_OF_STOCK_LABEL,
+    isProductLowStock
+} from "~/lib/product/product-card-utils";
 import {isPreorderProduct} from "~/lib/product/preorder-utils";
 import {parseProductTitle} from "~/lib/product";
 import {cn} from "~/lib/utils";
@@ -122,9 +127,7 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                     insideCarousel={insideCarousel}
                 />
                 {!insideCarousel && cardMedia.length > 1 && (
-                    <span className="sr-only">
-                        {cardMedia.length} media items. Use arrow buttons to browse.
-                    </span>
+                    <span className="sr-only">{cardMedia.length} media items. Use arrow buttons to browse.</span>
                 )}
 
                 {/* Wishlist button — bottom-left, frosted glass so it reads over any image */}
@@ -139,8 +142,8 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                 <div
                     role="presentation"
                     className="absolute right-1 bottom-1 z-20"
-                    onClick={(e) => e.stopPropagation()}
-                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={e => e.stopPropagation()}
+                    onPointerDown={e => e.stopPropagation()}
                 >
                     {isOutOfStock ? (
                         <button
@@ -171,11 +174,19 @@ export const ProductCard = ({product, viewMode = "grid3", insideCarousel = false
                 </div>
             </div>
 
-            <div className={cn(`${hasSecondPart ? "space-y-2 sm:space-y-3" : "space-y-0.5 sm:space-y-1"} py-3 sm:py-4`, isOutOfStock && "opacity-70")}>
+            <div
+                className={cn(
+                    `${hasSecondPart ? "space-y-2 sm:space-y-3" : "space-y-0.5 sm:space-y-1"} py-3 sm:py-4`,
+                    isOutOfStock && "opacity-70"
+                )}
+            >
                 <div>
                     <Link
                         to={`/products/${product.handle}`}
-                        className={cn("motion-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:rounded-sm", canHover && "group-hover:text-primary")}
+                        className={cn(
+                            "motion-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:rounded-sm",
+                            canHover && "group-hover:text-primary"
+                        )}
                         prefetch="intent"
                         viewTransition
                     >

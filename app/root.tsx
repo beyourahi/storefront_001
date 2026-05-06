@@ -12,12 +12,7 @@ import {
     type ShouldRevalidateFunction
 } from "react-router";
 import type {Route} from "./+types/root";
-import {
-    HEADER_QUERY,
-    CART_SUGGESTIONS_QUERY,
-    FOOTER_QUERY,
-    MENU_COLLECTIONS_QUERY
-} from "~/lib/fragments";
+import {HEADER_QUERY, CART_SUGGESTIONS_QUERY, FOOTER_QUERY, MENU_COLLECTIONS_QUERY} from "~/lib/fragments";
 import {THEME_SETTINGS_QUERY, SITE_CONTENT_QUERY} from "~/lib/metaobject-queries";
 import {parseSiteContent} from "~/lib/metaobject-parsers";
 import {generateTheme, type GeneratedTheme} from "~/lib/theme-utils";
@@ -108,10 +103,7 @@ export const meta: Route.MetaFunction = ({data}) => {
 
     // NOTE: theme-color, PWA, and mobile meta tags are emitted in Layout's static <head>
     // so they persist across child route navigations (child meta() exports replace parent meta).
-    return [
-        ...seoMeta,
-        ...(data?.websiteSchema ? [{"script:ld+json": data.websiteSchema}] : [])
-    ];
+    return [...seoMeta, ...(data?.websiteSchema ? [{"script:ld+json": data.websiteSchema}] : [])];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -137,13 +129,15 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
     }
 
     const [header, menuCollectionsData, themeSettingsData, siteContentData, blogData] = await Promise.all([
-        dataAdapter.query(HEADER_QUERY, {
-            variables: {headerMenuHandle: "main-menu"},
-            cache: dataAdapter.CacheLong()
-        }).catch((error: unknown) => {
-            console.error("Failed to load header:", error);
-            return null;
-        }),
+        dataAdapter
+            .query(HEADER_QUERY, {
+                variables: {headerMenuHandle: "main-menu"},
+                cache: dataAdapter.CacheLong()
+            })
+            .catch((error: unknown) => {
+                console.error("Failed to load header:", error);
+                return null;
+            }),
         dataAdapter.query(MENU_COLLECTIONS_QUERY, {cache: dataAdapter.CacheLong()}).catch((error: unknown) => {
             console.error("Failed to load menu collections:", error);
             return null;
@@ -453,68 +447,82 @@ export default function App() {
 
     // Memoized before the early return guard to satisfy the Rules of Hooks.
     const menuCollections = useMemo(() => data?.menuCollections ?? [], [data?.menuCollections]);
-    const mobileMenuCollections = useMemo(() => menuCollections.map((collection: any) => ({
-        id: collection.id,
-        title: collection.title,
-        handle: collection.handle,
-        description: "",
-        image: collection.image
-            ? {
-                  url: collection.image.url,
-                  altText: collection.image.altText ?? null
-              }
-            : null,
-        productCount: collection.productsCount ?? 0
-    })), [menuCollections]);
-    const searchCollections = useMemo(() => menuCollections.map((collection: any) => ({
-        id: collection.id,
-        title: collection.title,
-        handle: collection.handle,
-        image: collection.image
-            ? {
-                  url: collection.image.url,
-                  altText: collection.image.altText ?? null
-              }
-            : null
-    })), [menuCollections]);
+    const mobileMenuCollections = useMemo(
+        () =>
+            menuCollections.map((collection: any) => ({
+                id: collection.id,
+                title: collection.title,
+                handle: collection.handle,
+                description: "",
+                image: collection.image
+                    ? {
+                          url: collection.image.url,
+                          altText: collection.image.altText ?? null
+                      }
+                    : null,
+                productCount: collection.productsCount ?? 0
+            })),
+        [menuCollections]
+    );
+    const searchCollections = useMemo(
+        () =>
+            menuCollections.map((collection: any) => ({
+                id: collection.id,
+                title: collection.title,
+                handle: collection.handle,
+                image: collection.image
+                    ? {
+                          url: collection.image.url,
+                          altText: collection.image.altText ?? null
+                      }
+                    : null
+            })),
+        [menuCollections]
+    );
 
-    if (!data) return (<><Outlet /><Toaster position="top-center" /></>);
+    if (!data)
+        return (
+            <>
+                <Outlet />
+                <Toaster position="top-center" />
+            </>
+        );
 
     const shopName = data.siteContent.siteSettings.brandName?.trim() || "Store";
 
     return (
         <AgentSurfaceProvider value={data.agentSurface ?? {isAgent: false, source: "none"}}>
-        <SiteContentProvider siteContent={data.siteContent}>
-            <WishlistProvider>
-                <Analytics.Provider cart={data.cart} shop={data.shop} consent={data.consent}>
-                    <GoogleTagManager />
-                    <RecentlyViewedProvider>
-                        <LenisProvider>
-                            <CartDrawerProvider>
-                                <SearchControllerProvider>
-                                    <CartAside />
-                                    <AnnouncementBanner texts={data.siteContent.siteSettings.announcementBanner} />
-                                    <Navbar shopName={shopName} collections={mobileMenuCollections} />
-                                    <SearchOverlay
-                                        shopName={shopName}
-                                        collections={searchCollections}
-                                        popularSearchTerms={data.popularSearchTerms ?? []}
-                                        popularProducts={data.popularProducts ?? []}
-                                    />
-                                    <main className="pt-[var(--total-header-height)] transition-[padding-top] duration-300 ease-in-out">
-                                        <Outlet />
-                                    </main>
-                                    <Footer shopName={shopName} />
-                                    {/* Persistent PWA install banner — shown on mobile when install is available, mounted once at shell level */}
-                                    <FloatingButtonStack />
-                                    <Toaster position="top-center" />
-                                </SearchControllerProvider>
-                            </CartDrawerProvider>
-                        </LenisProvider>
-                    </RecentlyViewedProvider>
-                </Analytics.Provider>
-            </WishlistProvider>
-        </SiteContentProvider>
+            <SiteContentProvider siteContent={data.siteContent}>
+                <WishlistProvider>
+                    <Analytics.Provider cart={data.cart} shop={data.shop} consent={data.consent}>
+                        <GoogleTagManager />
+                        <RecentlyViewedProvider>
+                            <LenisProvider>
+                                <CartDrawerProvider>
+                                    <SearchControllerProvider>
+                                        <CartAside />
+                                        <AnnouncementBanner texts={data.siteContent.siteSettings.announcementBanner} />
+                                        <Navbar shopName={shopName} collections={mobileMenuCollections} />
+                                        <SearchOverlay
+                                            shopName={shopName}
+                                            collections={searchCollections}
+                                            popularSearchTerms={data.popularSearchTerms ?? []}
+                                            popularProducts={data.popularProducts ?? []}
+                                        />
+                                        <main className="pt-[var(--total-header-height)] transition-[padding-top] duration-300 ease-in-out">
+                                            <Outlet />
+                                        </main>
+                                        <Footer shopName={shopName} />
+                                        {/* Persistent PWA install banner — shown on mobile when install is available, mounted once at shell level */}
+                                        <FloatingButtonStack />
+                                        <Toaster position="top-center" />
+                                    </SearchControllerProvider>
+                                </CartDrawerProvider>
+                            </LenisProvider>
+                        </RecentlyViewedProvider>
+                    </Analytics.Provider>
+                </WishlistProvider>
+            </SiteContentProvider>
         </AgentSurfaceProvider>
     );
 }
@@ -574,7 +582,7 @@ function FloatingButtonStack() {
                 // Base bottom: clears the product sticky action bar (0 on non-product pages)
                 // plus a 1rem gutter from the safe-area / viewport edge.
                 bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), 1rem))",
-                transform: offset > 0 ? `translateY(-${offset}px)` : undefined,
+                transform: offset > 0 ? `translateY(-${offset}px)` : undefined
             }}
         >
             {/* Chat widget first → sits above the PWA button in the visual stack */}
@@ -653,8 +661,7 @@ export function ErrorBoundary() {
 
     const errorType = isRouteErrorResponse(error) ? "route_error" : "js_error";
 
-    const title =
-        status === 404 ? "Page Not Found" : status >= 500 ? "Something Went Wrong" : "An Error Occurred";
+    const title = status === 404 ? "Page Not Found" : status >= 500 ? "Something Went Wrong" : "An Error Occurred";
 
     // Content only — React Router 7's Layout export wraps ErrorBoundary
     // with the full <html> document shell, so we must NOT render one here.

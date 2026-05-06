@@ -79,10 +79,7 @@ export function FloatingChatWidget() {
     if (!hasMessenger && !hasWhatsApp) return null;
 
     return (
-        <div
-            className="flex flex-col items-end gap-3"
-            aria-label="Chat support options"
-        >
+        <div className="flex flex-col items-end gap-3" aria-label="Chat support options">
             {/* WhatsApp — renders above Messenger */}
             {hasWhatsApp && (
                 <a

@@ -23,7 +23,10 @@ export function CartAside() {
     if (isMobile) {
         return (
             <Drawer open={isOpen} onOpenChange={(open: boolean) => !open && close()}>
-                <DrawerContent className="cart-drawer border-0 shadow-none" overlayClassName="bg-overlay-dark backdrop-blur-md">
+                <DrawerContent
+                    className="cart-drawer border-0 shadow-none"
+                    overlayClassName="bg-overlay-dark backdrop-blur-md"
+                >
                     <DrawerTitle className="sr-only">Shopping Cart</DrawerTitle>
                     <DrawerDescription className="sr-only">Review and manage items in your cart</DrawerDescription>
                     <div className="flex h-[80dvh] flex-col overflow-hidden">

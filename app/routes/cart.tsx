@@ -10,10 +10,7 @@ import {CartMain, CartLoadingSkeleton} from "~/components/cart/CartMain";
 import type {RootLoader} from "~/root";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 
-export const meta: Route.MetaFunction = () => [
-    {title: "Cart"},
-    {name: "robots", content: "noindex"}
-];
+export const meta: Route.MetaFunction = () => [{title: "Cart"}, {name: "robots", content: "noindex"}];
 
 export const headers: HeadersFunction = ({actionHeaders}) => actionHeaders;
 
@@ -25,10 +22,7 @@ export const action = async ({request, context}: Route.ActionArgs) => {
     const {action, inputs} = CartForm.getFormInput(formData);
 
     if (!action) {
-        return data(
-            {cart: null, errors: ["No cart action provided"], warnings: [], analytics: {}},
-            {status: 400}
-        );
+        return data({cart: null, errors: ["No cart action provided"], warnings: [], analytics: {}}, {status: 400});
     }
 
     let status = 200;
@@ -103,10 +97,10 @@ export const action = async ({request, context}: Route.ActionArgs) => {
         const agentHeaders = new Headers(headers);
         agentHeaders.set("Content-Type", "application/x-ucp+json");
         agentHeaders.set("Cache-Control", "no-cache, no-store, must-revalidate");
-        return new Response(
-            JSON.stringify({cart: cartResult, errors, warnings}),
-            {status: errors?.length ? 422 : 200, headers: agentHeaders}
-        );
+        return new Response(JSON.stringify({cart: cartResult, errors, warnings}), {
+            status: errors?.length ? 422 : 200,
+            headers: agentHeaders
+        });
     }
 
     // Validate redirectTo to prevent open redirect attacks.
@@ -151,15 +145,15 @@ export async function loader({context, request}: Route.LoaderArgs) {
     const hasAgentSession = Boolean(session.get("agentSessionId"));
 
     if (request.headers.get("Accept")?.includes("text/html") && !hasAgentSession) {
-        return new Response(null, {status: 302, headers: {Location: "/", "Cache-Control": "no-cache, no-store, must-revalidate"}});
+        return new Response(null, {
+            status: 302,
+            headers: {Location: "/", "Cache-Control": "no-cache, no-store, must-revalidate"}
+        });
     }
 
     const cartData = await cart.get();
 
-    return data(
-        {...cartData},
-        {headers: {"Cache-Control": "no-cache, no-store, must-revalidate"}}
-    );
+    return data({...cartData}, {headers: {"Cache-Control": "no-cache, no-store, must-revalidate"}});
 }
 
 // =============================================================================
@@ -186,12 +180,7 @@ export default function CartPage() {
         <main className="container mx-auto max-w-3xl px-4 py-8 sm:py-12">
             <Suspense fallback={<CartLoadingSkeleton />}>
                 <Await resolve={rootData.cart}>
-                    {cart => (
-                        <CartMain
-                            cart={cart as CartApiQueryFragment | null}
-                            layout="page"
-                        />
-                    )}
+                    {cart => <CartMain cart={cart as CartApiQueryFragment | null} layout="page" />}
                 </Await>
             </Suspense>
         </main>

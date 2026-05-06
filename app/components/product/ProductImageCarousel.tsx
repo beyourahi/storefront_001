@@ -91,10 +91,22 @@ function normaliseMediaItem(raw: ProductMediaItem): ProductMediaItem {
         };
     }
     if (raw.__typename === "Video") {
-        return {__typename: "Video", id: raw.id, alt: raw.alt ?? null, sources: raw.sources ?? [], previewImage: raw.previewImage ?? null};
+        return {
+            __typename: "Video",
+            id: raw.id,
+            alt: raw.alt ?? null,
+            sources: raw.sources ?? [],
+            previewImage: raw.previewImage ?? null
+        };
     }
     if (raw.__typename === "ExternalVideo") {
-        return {__typename: "ExternalVideo", id: raw.id, alt: raw.alt ?? null, embedUrl: raw.embedUrl, previewImage: raw.previewImage ?? null};
+        return {
+            __typename: "ExternalVideo",
+            id: raw.id,
+            alt: raw.alt ?? null,
+            embedUrl: raw.embedUrl,
+            previewImage: raw.previewImage ?? null
+        };
     }
     return {__typename: "Model3d", id: raw.id, alt: raw.alt ?? null, previewImage: raw.previewImage ?? null};
 }
@@ -181,9 +193,10 @@ export const ProductImageCarousel = ({
         WheelGesturesPlugin({forceWheelAxis: "x"})
     ]);
 
-    const [thumbRef, thumbApi] = useEmblaCarousel({containScroll: "keepSnaps", slidesToScroll: 1, dragFree: false, skipSnaps: false}, [
-        WheelGesturesPlugin({forceWheelAxis: "x"})
-    ]);
+    const [thumbRef, thumbApi] = useEmblaCarousel(
+        {containScroll: "keepSnaps", slidesToScroll: 1, dragFree: false, skipSnaps: false},
+        [WheelGesturesPlugin({forceWheelAxis: "x"})]
+    );
 
     const onMainSelect = useCallback(() => {
         if (!mainApi || !thumbApi) return;
@@ -253,8 +266,14 @@ export const ProductImageCarousel = ({
             >
                 {item.image && (
                     <Image
-                        data={{url: item.image.url, altText: item.alt || item.image.altText || `${productTitle} image ${index + 1}`}}
-                        className={cn("sleek h-full w-full object-cover", availableForSale ? "hover:scale-105" : "grayscale opacity-60")}
+                        data={{
+                            url: item.image.url,
+                            altText: item.alt || item.image.altText || `${productTitle} image ${index + 1}`
+                        }}
+                        className={cn(
+                            "sleek h-full w-full object-cover",
+                            availableForSale ? "hover:scale-105" : "grayscale opacity-60"
+                        )}
                         sizes="(min-width: 1024px) 40vw, 100vw"
                     />
                 )}
@@ -328,7 +347,10 @@ export const ProductImageCarousel = ({
                     <Image
                         data={item.previewImage}
                         alt={item.alt || `Video thumbnail ${index + 1}`}
-                        className={cn("sleek h-full w-full object-cover", availableForSale ? "hover:scale-105" : "grayscale opacity-60")}
+                        className={cn(
+                            "sleek h-full w-full object-cover",
+                            availableForSale ? "hover:scale-105" : "grayscale opacity-60"
+                        )}
                         loading="lazy"
                         sizes="(min-width: 1024px) 50vw, 100vw"
                     />
@@ -336,9 +358,20 @@ export const ProductImageCarousel = ({
                     <div className="h-full w-full bg-muted" />
                 )}
                 {/* Centred play circle */}
-                <div className={cn("absolute inset-0 flex items-center justify-center bg-dark/20 sleek pointer-events-none", availableForSale && "group-hover:bg-dark/35")}>
+                <div
+                    className={cn(
+                        "absolute inset-0 flex items-center justify-center bg-dark/20 sleek pointer-events-none",
+                        availableForSale && "group-hover:bg-dark/35"
+                    )}
+                >
                     <div className="size-16 rounded-full bg-dark/70 flex items-center justify-center">
-                        <svg width="20" height="24" viewBox="0 0 20 24" aria-hidden="true" className="text-light ml-1.5">
+                        <svg
+                            width="20"
+                            height="24"
+                            viewBox="0 0 20 24"
+                            aria-hidden="true"
+                            className="text-light ml-1.5"
+                        >
                             <path d="M0 0L20 12L0 24V0Z" fill="currentColor" />
                         </svg>
                     </div>
@@ -369,7 +402,10 @@ export const ProductImageCarousel = ({
                     <Image
                         data={item.previewImage}
                         alt={item.alt || `3D model ${index + 1}`}
-                        className={cn("sleek h-full w-full object-cover", availableForSale ? "hover:scale-105" : "grayscale opacity-60")}
+                        className={cn(
+                            "sleek h-full w-full object-cover",
+                            availableForSale ? "hover:scale-105" : "grayscale opacity-60"
+                        )}
                         loading="lazy"
                         sizes="(min-width: 1024px) 50vw, 100vw"
                     />
@@ -378,7 +414,15 @@ export const ProductImageCarousel = ({
                 )}
                 {/* 3D badge */}
                 <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-dark/75 text-light text-xs font-medium pointer-events-none select-none">
-                    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1">
+                    <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        aria-hidden="true"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                    >
                         <path d="M6 0.5L11 3.25V8.75L6 11.5L1 8.75V3.25L6 0.5Z" />
                         <path d="M6 0.5V6M6 6L11 3.25M6 6L1 3.25M6 6V11.5" strokeWidth="0.75" />
                     </svg>
@@ -441,7 +485,10 @@ export const ProductImageCarousel = ({
                                 alt=""
                                 width={128}
                                 height={160}
-                                className={cn("sleek h-full w-full object-cover", availableForSale ? "hover:scale-110" : "grayscale opacity-60")}
+                                className={cn(
+                                    "sleek h-full w-full object-cover",
+                                    availableForSale ? "hover:scale-110" : "grayscale opacity-60"
+                                )}
                                 loading="lazy"
                                 sizes="128px"
                             />
@@ -454,7 +501,14 @@ export const ProductImageCarousel = ({
                         {/* Video indicator */}
                         {isVideo && (
                             <div className="absolute inset-0 flex items-center justify-center bg-dark/40">
-                                <svg width="12" height="14" viewBox="0 0 8 9" aria-hidden="true" className="text-light" fill="currentColor">
+                                <svg
+                                    width="12"
+                                    height="14"
+                                    viewBox="0 0 8 9"
+                                    aria-hidden="true"
+                                    className="text-light"
+                                    fill="currentColor"
+                                >
                                     <path d="M0 0L8 4.5L0 9V0Z" />
                                 </svg>
                             </div>
@@ -463,7 +517,15 @@ export const ProductImageCarousel = ({
                         {/* 3D model indicator */}
                         {is3d && (
                             <div className="absolute inset-0 flex items-center justify-center bg-dark/40">
-                                <svg width="16" height="16" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="white" strokeWidth="1">
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 12 12"
+                                    aria-hidden="true"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="1"
+                                >
                                     <path d="M6 0.5L11 3.25V8.75L6 11.5L1 8.75V3.25L6 0.5Z" />
                                     <path d="M6 0.5V6M6 6L11 3.25M6 6L1 3.25M6 6V11.5" strokeWidth="0.75" />
                                 </svg>

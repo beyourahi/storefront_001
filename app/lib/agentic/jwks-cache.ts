@@ -42,14 +42,14 @@ export async function getJwks(jwksUrl: string): Promise<JwksDocument> {
     }
 
     const response = await fetch(jwksUrl, {
-        headers: {"Accept": "application/json"}
+        headers: {Accept: "application/json"}
     });
 
     if (!response.ok) {
         throw new Error(`JWKS fetch failed: ${response.status} ${response.statusText}`);
     }
 
-    const doc = await response.json() as JwksDocument;
+    const doc = (await response.json()) as JwksDocument;
 
     if (!Array.isArray(doc.keys)) {
         throw new Error("JWKS response missing keys array");

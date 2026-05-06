@@ -1,5 +1,14 @@
 import * as React from "react";
-import {Link, useLoaderData, useNavigate, useRouteError, isRouteErrorResponse, useRouteLoaderData, useSearchParams, useFetcher} from "react-router";
+import {
+    Link,
+    useLoaderData,
+    useNavigate,
+    useRouteError,
+    isRouteErrorResponse,
+    useRouteLoaderData,
+    useSearchParams,
+    useFetcher
+} from "react-router";
 import type {Route} from "./+types/search";
 import {Analytics, Image, getSeoMeta} from "@shopify/hydrogen";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
@@ -281,10 +290,9 @@ export async function loader({request, context}: Route.LoaderArgs) {
     if (isAgent) {
         const term = String(url.searchParams.get("q") ?? "").trim();
         if (!term) {
-            return new Response(
-                JSON.stringify({products: [], pageInfo: {hasNextPage: false, endCursor: null}}),
-                {headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}}
-            );
+            return new Response(JSON.stringify({products: [], pageInfo: {hasNextPage: false, endCursor: null}}), {
+                headers: {"Content-Type": "application/x-ucp+json", "Cache-Control": "no-store"}
+            });
         }
         const productsConnection = searchData.products;
         const storeUrl = getStoreUrl(context.env);
@@ -712,7 +720,12 @@ function SearchPageInitialState({
                     </h3>
                     <div className="grid grid-cols-2 gap-2 sm:gap-responsive sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                         {collections.map(collection => (
-                            <Link key={collection.id} to={`/collections/${collection.handle}`} prefetch="viewport" className="group">
+                            <Link
+                                key={collection.id}
+                                to={`/collections/${collection.handle}`}
+                                prefetch="viewport"
+                                className="group"
+                            >
                                 <div className="bg-muted/50 mb-2 aspect-square overflow-hidden rounded-xl sm:mb-3 sm:rounded-2xl">
                                     {collection.image ? (
                                         <Image
@@ -786,31 +799,31 @@ function SearchProductsTab({
                 defaultSortValue={SEARCH_DEFAULT_SORT}
             />
             <InfiniteScrollGrid<SearchProduct>
-            key={`search-products-${layoutMode}-${gridColumns}`}
-            initialProducts={products.nodes}
-            pageInfo={{
-                hasNextPage: products.pageInfo.hasNextPage,
-                endCursor: products.pageInfo.endCursor
-            }}
-            resourcesClassName={resourcesClassName}
-            fetcherKey={`search-products-${term}`}
-            showSkeletons={true}
-            skeletonCount={gridColumns === 2 ? 2 : gridColumns === 3 ? 3 : 4}
-            endMessage="You've seen all results"
-            fetchType="products"
-        >
-            {({node: product, index}) => (
-                <SearchProductItem
-                    key={product.id}
-                    product={product}
-                    term={term}
-                    loading={index < 12 ? "eager" : undefined}
-                    variant={layoutMode === "list" ? "list" : "card"}
-                    index={index}
-                    gridColumns={gridColumns}
-                />
-            )}
-        </InfiniteScrollGrid>
+                key={`search-products-${layoutMode}-${gridColumns}`}
+                initialProducts={products.nodes}
+                pageInfo={{
+                    hasNextPage: products.pageInfo.hasNextPage,
+                    endCursor: products.pageInfo.endCursor
+                }}
+                resourcesClassName={resourcesClassName}
+                fetcherKey={`search-products-${term}`}
+                showSkeletons={true}
+                skeletonCount={gridColumns === 2 ? 2 : gridColumns === 3 ? 3 : 4}
+                endMessage="You've seen all results"
+                fetchType="products"
+            >
+                {({node: product, index}) => (
+                    <SearchProductItem
+                        key={product.id}
+                        product={product}
+                        term={term}
+                        loading={index < 12 ? "eager" : undefined}
+                        variant={layoutMode === "list" ? "list" : "card"}
+                        index={index}
+                        gridColumns={gridColumns}
+                    />
+                )}
+            </InfiniteScrollGrid>
         </>
     );
 }
@@ -1884,7 +1897,7 @@ function getEmptyPredictiveSearchResult() {
  * Derives the store's public origin URL from environment variables.
  * Used to build absolute product URLs in UCP responses for agent consumers.
  */
-function getStoreUrl(env: { PUBLIC_STORE_DOMAIN?: string }): string {
+function getStoreUrl(env: {PUBLIC_STORE_DOMAIN?: string}): string {
     const domain = env.PUBLIC_STORE_DOMAIN;
     return domain ? `https://${domain}` : "";
 }
@@ -1961,21 +1974,21 @@ function AgentSearchResults({term, products}: {term: string; products: SearchPro
         const jsonLd = {
             "@context": "https://schema.org",
             "@type": "ItemList",
-            "name": term ? `Search results for "${term}"` : "Search Results",
-            "numberOfItems": products.length,
-            "itemListElement": products.map((p, i) => ({
+            name: term ? `Search results for "${term}"` : "Search Results",
+            numberOfItems: products.length,
+            itemListElement: products.map((p, i) => ({
                 "@type": "ListItem",
-                "position": i + 1,
-                "item": {
+                position: i + 1,
+                item: {
                     "@type": "Product",
-                    "name": p.title,
-                    "url": `/products/${p.handle}`,
+                    name: p.title,
+                    url: `/products/${p.handle}`,
                     ...(p.featuredImage?.url ? {image: p.featuredImage.url} : {}),
-                    "offers": {
+                    offers: {
                         "@type": "Offer",
-                        "price": p.priceRange.minVariantPrice.amount,
-                        "priceCurrency": p.priceRange.minVariantPrice.currencyCode,
-                        "availability": p.availableForSale
+                        price: p.priceRange.minVariantPrice.amount,
+                        priceCurrency: p.priceRange.minVariantPrice.currencyCode,
+                        availability: p.availableForSale
                             ? "https://schema.org/InStock"
                             : "https://schema.org/OutOfStock"
                     }
@@ -1996,7 +2009,7 @@ function AgentSearchResults({term, products}: {term: string; products: SearchPro
         return () => {
             scriptRef.current?.remove();
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [products.length, term]);
 
     return (
@@ -2020,9 +2033,15 @@ function AgentSearchResults({term, products}: {term: string; products: SearchPro
                 ) : (
                     <div className="border border-border">
                         <div className="grid grid-cols-12 border-b border-border bg-muted/30 px-3 py-1.5">
-                            <span className="col-span-7 text-[10px] uppercase tracking-widest text-muted-foreground">Product</span>
-                            <span className="col-span-3 text-right text-[10px] uppercase tracking-widest text-muted-foreground">Price</span>
-                            <span className="col-span-2 text-right text-[10px] uppercase tracking-widest text-muted-foreground">Stock</span>
+                            <span className="col-span-7 text-[10px] uppercase tracking-widest text-muted-foreground">
+                                Product
+                            </span>
+                            <span className="col-span-3 text-right text-[10px] uppercase tracking-widest text-muted-foreground">
+                                Price
+                            </span>
+                            <span className="col-span-2 text-right text-[10px] uppercase tracking-widest text-muted-foreground">
+                                Stock
+                            </span>
                         </div>
                         {products.map(p => (
                             <div

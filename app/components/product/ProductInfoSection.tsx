@@ -24,7 +24,13 @@ type ProductInfoSectionProps = {
     availableForSale?: boolean;
 };
 
-export const ProductInfoSection = ({isLoading = false, product, discountPercentage, productId, availableForSale = true}: ProductInfoSectionProps) => {
+export const ProductInfoSection = ({
+    isLoading = false,
+    product,
+    discountPercentage,
+    productId,
+    availableForSale = true
+}: ProductInfoSectionProps) => {
     const {badgeTypes} = getSpecialTags(product.tags);
     const isOutOfStock = !availableForSale;
 
@@ -68,11 +74,7 @@ export const ProductInfoSection = ({isLoading = false, product, discountPercenta
                     <ProductPageTitle title={product.title} />
                 ) : null}
                 {!isLoading && productId && (
-                    <WishlistButton
-                        productId={productId}
-                        size="lg"
-                        className="ml-3 shrink-0"
-                    />
+                    <WishlistButton productId={productId} size="lg" className="ml-3 shrink-0" />
                 )}
             </div>
 

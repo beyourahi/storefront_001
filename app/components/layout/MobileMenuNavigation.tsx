@@ -19,10 +19,7 @@ export const MobileMenuNavigation = ({currentPath, onLinkClick}: MobileMenuNavig
     const {canHover} = usePointerCapabilities();
 
     const filteredNavigationLinks = NAVIGATION_LINKS.filter(
-        link =>
-            link.href !== "/collections" &&
-            link.href !== "/gallery" &&
-            link.href !== "/collections/all-products"
+        link => link.href !== "/collections" && link.href !== "/gallery" && link.href !== "/collections/all-products"
     );
 
     if (filteredNavigationLinks.length === 0) return null;

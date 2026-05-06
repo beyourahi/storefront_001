@@ -47,7 +47,6 @@ export const ShopLocation = () => {
     return (
         <section className="bg-[--surface-canvas] py-16 lg:py-24">
             <div className="mx-auto max-w-7xl px-4 md:px-8">
-
                 {/* ── Header ─────────────────────────────────────────────── */}
                 <div className="mb-10">
                     <p className="mb-3 text-xs font-semibold tracking-[0.2em] uppercase text-[--text-subtle]">
@@ -85,10 +84,7 @@ export const ShopLocation = () => {
                                     ].join(" ")}
                                 >
                                     <span className="flex items-center gap-2">
-                                        <Navigation
-                                            className="h-3.5 w-3.5 shrink-0"
-                                            aria-hidden="true"
-                                        />
+                                        <Navigation className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                                         {pair.label}
                                     </span>
                                 </button>

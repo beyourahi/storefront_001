@@ -29,10 +29,13 @@ type RawMediaNode = {
     image?: {url?: string | null; altText?: string | null} | null;
 };
 
-type FallbackImage = {
-    url?: string | null;
-    altText?: string | null;
-} | null | undefined;
+type FallbackImage =
+    | {
+          url?: string | null;
+          altText?: string | null;
+      }
+    | null
+    | undefined;
 
 /**
  * Convert a single raw Storefront media node into the normalized
@@ -54,9 +57,7 @@ const normalize = (node: RawMediaNode | ShopifyMediaNode | null | undefined): Pr
         return {
             type: "video",
             sources: validSources,
-            previewImage: preview?.url
-                ? {url: String(preview.url), altText: preview.altText ?? null}
-                : null,
+            previewImage: preview?.url ? {url: String(preview.url), altText: preview.altText ?? null} : null,
             altText: (node as RawMediaNode).alt ?? null
         };
     }

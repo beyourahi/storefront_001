@@ -1,13 +1,7 @@
 import {useSearchParams, useNavigate} from "react-router";
 import {useCallback} from "react";
 import {ArrowUpDown} from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from "~/components/ui/select";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
 import {SORT_OPTIONS, DEFAULT_SORT, type SortOption} from "~/lib/sort-filter-helpers";
 
 type SortFilterBarProps = {
@@ -27,7 +21,12 @@ type SortFilterBarProps = {
  * State lives entirely in URL search params — changing a value navigates
  * to the same path with updated params (resetting pagination to page 1).
  */
-export function SortFilterBar({currentSort, totalProducts, options = SORT_OPTIONS, defaultSortValue = DEFAULT_SORT}: SortFilterBarProps) {
+export function SortFilterBar({
+    currentSort,
+    totalProducts,
+    options = SORT_OPTIONS,
+    defaultSortValue = DEFAULT_SORT
+}: SortFilterBarProps) {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -87,11 +86,7 @@ export function SortFilterBar({currentSort, totalProducts, options = SORT_OPTION
                     <div className="flex items-center gap-2">
                         <ArrowUpDown className="text-muted-foreground hidden size-4 sm:block" aria-hidden="true" />
                         <Select value={currentSort} onValueChange={handleSortChange}>
-                            <SelectTrigger
-                                size="sm"
-                                className="w-[180px] text-sm"
-                                aria-label="Sort products"
-                            >
+                            <SelectTrigger size="sm" className="w-[180px] text-sm" aria-label="Sort products">
                                 <SelectValue placeholder="Sort by" />
                             </SelectTrigger>
                             <SelectContent>

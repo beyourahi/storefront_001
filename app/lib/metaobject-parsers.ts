@@ -200,7 +200,8 @@ export const FALLBACK_AGENT_ARRIVAL_COPY = {
 /** Copy shown in the AgentFallbackBanner on interactive pages an agent cannot navigate well. */
 export const FALLBACK_AGENT_FALLBACK_COPY = {
     title: "This experience is designed for human shoppers",
-    subtitle: "Interactive quizzes and guided experiences require a browser. Use the search or catalog endpoints below to find products programmatically.",
+    subtitle:
+        "Interactive quizzes and guided experiences require a browser. Use the search or catalog endpoints below to find products programmatically.",
     alternatePathLabel: "Search the catalog"
 } as const;
 
@@ -615,7 +616,11 @@ function parseAnnouncementTexts(announcementField: MetaobjectField | undefined):
     try {
         const parsed = JSON.parse(raw) as unknown;
         // JSON array — standard List of single line text field
-        if (Array.isArray(parsed) && parsed.length > 0 && parsed.every((item): item is string => typeof item === "string")) {
+        if (
+            Array.isArray(parsed) &&
+            parsed.length > 0 &&
+            parsed.every((item): item is string => typeof item === "string")
+        ) {
             return parsed;
         }
         // JSON string (single item stored as quoted string)
@@ -714,7 +719,9 @@ function warnFeaturedProductSection(reason: string) {
     }
 }
 
-function parseFeaturedProductSection(featuredProductField: MetaobjectField | undefined): SiteSettings["featuredProductSection"] {
+function parseFeaturedProductSection(
+    featuredProductField: MetaobjectField | undefined
+): SiteSettings["featuredProductSection"] {
     const reference = featuredProductField?.reference;
 
     if (!reference) return null;
@@ -1181,9 +1188,9 @@ export function parseSiteSettings(rawData: unknown): SiteSettings {
         brandWords: parseBrandWords(data.brandWords),
         featuredProductSection: parseFeaturedProductSection(data.featuredProductSection),
 
-        // Hero Section — content from rotating-content.ts, never from site_settings
-        heroHeading: rotation.heroHeading,
-        heroDescription: rotation.heroDescription,
+        // Hero Section
+        heroHeading: data.heroHeading?.value || DEFAULT_SITE_SETTINGS.heroHeading,
+        heroDescription: data.heroDescription?.value || DEFAULT_SITE_SETTINGS.heroDescription,
         heroMediaMobile: parseHeroMedia(data.heroMediaMobile) || DEFAULT_SITE_SETTINGS.heroMediaMobile,
         heroMediaLargeScreen: parseHeroMedia(data.heroMediaLargeScreen) || DEFAULT_SITE_SETTINGS.heroMediaLargeScreen,
 
@@ -1729,7 +1736,8 @@ export function parseShopBrand(
         };
     };
 
-    const result: Partial<Pick<SiteSettings, "brandName" | "brandLogo" | "ogImage" | "missionStatement" | "siteUrl">> = {};
+    const result: Partial<Pick<SiteSettings, "brandName" | "brandLogo" | "ogImage" | "missionStatement" | "siteUrl">> =
+        {};
 
     if (s.name) result.brandName = s.name as string;
 

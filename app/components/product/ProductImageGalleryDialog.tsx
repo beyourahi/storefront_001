@@ -116,9 +116,7 @@ export const ProductImageGalleryDialog = ({
                 className="!bg-popover/95 !fixed !inset-0 !z-[100] !h-[100dvh] !w-screen !max-w-none !translate-x-0 !translate-y-0 !transform-none !rounded-none !border-none !p-0 !shadow-none data-[state=closed]:!animate-none data-[state=open]:!animate-none"
                 aria-describedby={undefined}
             >
-                <DialogTitle className="sr-only">
-                    {productTitle} — Image Gallery
-                </DialogTitle>
+                <DialogTitle className="sr-only">{productTitle} — Image Gallery</DialogTitle>
                 <div className="relative flex h-[100dvh] w-screen items-center justify-center">
                     <Button
                         variant="ghost"
@@ -204,9 +202,9 @@ export const ProductImageGalleryDialog = ({
                                             activeIndex === index
                                                 ? "border-popover-foreground scale-105 opacity-100"
                                                 : cn(
-                                                    "border-transparent opacity-60",
-                                                    availableForSale && "hover:scale-105 hover:opacity-80"
-                                                )
+                                                      "border-transparent opacity-60",
+                                                      availableForSale && "hover:scale-105 hover:opacity-80"
+                                                  )
                                         )}
                                         onClick={() => emblaApi?.scrollTo(index)}
                                         aria-label={`Go to image ${index + 1}`}

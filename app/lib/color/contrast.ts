@@ -75,7 +75,10 @@ function formatOklch(l: number, c: number, h: number): string {
     return `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(4)})`;
 }
 
-function getPerceptualDistance(base: {l: number; c: number; h: number}, target: {l: number; c: number; h: number}): number {
+function getPerceptualDistance(
+    base: {l: number; c: number; h: number},
+    target: {l: number; c: number; h: number}
+): number {
     const hueDelta = Math.abs(((target.h - base.h + 540) % 360) - 180) / 180;
     return Math.abs(target.l - base.l) + Math.abs(target.c - base.c) * 0.8 + hueDelta * 0.1;
 }

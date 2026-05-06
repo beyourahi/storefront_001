@@ -22,7 +22,15 @@ import {
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateDiscount, formatShopifyMoney} from "~/lib/currency-formatter";
 import {formatProductTitleForMeta} from "~/lib/product";
-import {generateProductSchema, generateBreadcrumbListSchema, generateBrandSchema, buildCanonicalUrl, getBrandNameFromMatches, getRequiredSocialMeta, getSiteUrlFromMatches} from "~/lib/seo";
+import {
+    generateProductSchema,
+    generateBreadcrumbListSchema,
+    generateBrandSchema,
+    buildCanonicalUrl,
+    getBrandNameFromMatches,
+    getRequiredSocialMeta,
+    getSiteUrlFromMatches
+} from "~/lib/seo";
 import {deriveProductBreadcrumbs} from "~/lib/seo-breadcrumbs";
 import {getCatalogExtensionMeta} from "~/lib/agentic/structured-data";
 import {normalizeProductAttributes} from "~/lib/agentic/attribute-normalizer";
@@ -43,11 +51,7 @@ import {useAgentSurface} from "~/lib/agent-surface-context";
 // Revalidate this route's loader whenever the URL search params change (e.g. variant selection).
 // Without this, React Router may skip re-running the loader on search-param-only navigations,
 // leaving adjacentVariants stale and producing wrong variant navigation URLs.
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-    currentUrl,
-    nextUrl,
-    defaultShouldRevalidate
-}) => {
+export const shouldRevalidate: ShouldRevalidateFunction = ({currentUrl, nextUrl, defaultShouldRevalidate}) => {
     if (currentUrl.search !== nextUrl.search) return true;
     return defaultShouldRevalidate;
 };
@@ -77,7 +81,10 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
         isGiftCard: product.isGiftCard,
         collections: product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title})),
         requiresShipping: variant?.requiresShipping,
-        sellingPlans: variant?.sellingPlanAllocations?.nodes?.map((a: any) => ({name: a.sellingPlan?.name ?? "Subscription", recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false}))
+        sellingPlans: variant?.sellingPlanAllocations?.nodes?.map((a: any) => ({
+            name: a.sellingPlan?.name ?? "Subscription",
+            recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false
+        }))
     };
 
     // Normalized attributes for 6th arg
@@ -93,7 +100,9 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const sceMeta = getCatalogExtensionMeta({
         isGiftCard: product.isGiftCard,
         requiresShipping: variant?.requiresShipping,
-        sellingPlans: variant?.sellingPlanAllocations?.nodes?.map((a: any) => ({name: a.sellingPlan?.name ?? "Subscription"})),
+        sellingPlans: variant?.sellingPlanAllocations?.nodes?.map((a: any) => ({
+            name: a.sellingPlan?.name ?? "Subscription"
+        })),
         collections: product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title})),
         quantityAvailable: variant?.quantityAvailable,
         currentlyNotInStock: variant?.currentlyNotInStock
@@ -122,12 +131,12 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     ];
 };
 
-export function links(args?: { data: Awaited<ReturnType<typeof loader>> | null }) {
+export function links(args?: {data: Awaited<ReturnType<typeof loader>> | null}) {
     const data = args?.data;
     // Preload first product image for LCP — this is the dominant above-fold element
     const href = data?.product?.images?.nodes?.[0]?.url;
     if (!href) return [];
-    return [{ rel: "preload", as: "image", href }] as const;
+    return [{rel: "preload", as: "image", href}] as const;
 }
 
 export const loader = async (args: Route.LoaderArgs) => {
@@ -180,9 +189,8 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
     // Pre-compute truncated SEO description in the loader so the serialized value
     // is identical on server and client, preventing hydration mismatches in the meta function.
     const rawSeoDescription = product.seo?.description || product.description || "";
-    const seoDescription = rawSeoDescription.length > 155
-        ? rawSeoDescription.substring(0, 152).trimEnd() + "..."
-        : rawSeoDescription;
+    const seoDescription =
+        rawSeoDescription.length > 155 ? rawSeoDescription.substring(0, 152).trimEnd() + "..." : rawSeoDescription;
 
     return {
         product,
@@ -219,7 +227,8 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
 };
 
 const Product = () => {
-    const {product, recommendations, reviews, selectedSellingPlan, activeCollectionHandle} = useLoaderData<typeof loader>();
+    const {product, recommendations, reviews, selectedSellingPlan, activeCollectionHandle} =
+        useLoaderData<typeof loader>();
     const [quantity, setQuantity] = useState(1);
     const {addProduct} = useRecentlyViewedContext();
 
@@ -274,21 +283,33 @@ const Product = () => {
             }, 1000);
             return () => clearTimeout(timeoutId);
         }
-    }, [product?.id, product?.handle, product?.title, product?.images, selectedVariant?.id, selectedVariant?.price, selectedVariant?.compareAtPrice, addProduct]);
+    }, [
+        product?.id,
+        product?.handle,
+        product?.title,
+        product?.images,
+        selectedVariant?.id,
+        selectedVariant?.price,
+        selectedVariant?.compareAtPrice,
+        addProduct
+    ]);
 
-    const analyticsProductViewData = useMemo(() => ({
-        products: [
-            {
-                id: product.id,
-                title: product.title,
-                price: selectedVariant?.price?.amount || "0",
-                vendor: product.vendor,
-                variantId: selectedVariant?.id || "",
-                variantTitle: selectedVariant?.title || "",
-                quantity: 1
-            }
-        ]
-    }), [product.id, product.title, product.vendor, selectedVariant]);
+    const analyticsProductViewData = useMemo(
+        () => ({
+            products: [
+                {
+                    id: product.id,
+                    title: product.title,
+                    price: selectedVariant?.price?.amount || "0",
+                    vendor: product.vendor,
+                    variantId: selectedVariant?.id || "",
+                    variantTitle: selectedVariant?.title || "",
+                    quantity: 1
+                }
+            ]
+        }),
+        [product.id, product.title, product.vendor, selectedVariant]
+    );
 
     // Build breadcrumb items based on the product's active collection
     const breadcrumbItems = useMemo(() => {
@@ -301,9 +322,7 @@ const Product = () => {
         } else {
             items.push({label: "Products", href: "/collections/all-products"});
         }
-        const breadcrumbTitle = product.title.includes("+")
-            ? product.title.split("+")[0].trim()
-            : product.title;
+        const breadcrumbTitle = product.title.includes("+") ? product.title.split("+")[0].trim() : product.title;
         items.push({label: breadcrumbTitle});
         return items;
     }, [product.collections?.nodes, activeCollectionHandle, product.title]);
@@ -311,11 +330,7 @@ const Product = () => {
     // Agent path: spec-first dense view — no image gallery, no carousels.
     if (agentSurface.isAgent) {
         return (
-            <AgentProductBrief
-                product={product}
-                selectedVariant={selectedVariant}
-                productOptions={productOptions}
-            />
+            <AgentProductBrief product={product} selectedVariant={selectedVariant} productOptions={productOptions} />
         );
     }
 
@@ -330,9 +345,20 @@ const Product = () => {
                 <section className="pt-4 md:pt-6">
                     <div className="mx-auto max-w-[2000px] px-2 md:px-4">
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-12">
-                            <ProductImageSection productImages={productImages} product={product} onSale={onSale} availableForSale={selectedVariant?.availableForSale ?? true} media={(product as any).media?.nodes ?? []} />
+                            <ProductImageSection
+                                productImages={productImages}
+                                product={product}
+                                onSale={onSale}
+                                availableForSale={selectedVariant?.availableForSale ?? true}
+                                media={(product as any).media?.nodes ?? []}
+                            />
 
-                            <ProductMobileTitlePrice product={product} discountPercentage={discountPercentage} productId={product.id} availableForSale={selectedVariant?.availableForSale ?? product.availableForSale} />
+                            <ProductMobileTitlePrice
+                                product={product}
+                                discountPercentage={discountPercentage}
+                                productId={product.id}
+                                availableForSale={selectedVariant?.availableForSale ?? product.availableForSale}
+                            />
 
                             <div className="lg:hidden">
                                 <ProductPurchaseSection
@@ -347,23 +373,45 @@ const Product = () => {
                             </div>
 
                             <div className="hidden lg:col-span-4 lg:block">
-                                <ProductInfoSection product={product} discountPercentage={discountPercentage} productId={product.id} availableForSale={selectedVariant?.availableForSale ?? product.availableForSale} />
+                                <ProductInfoSection
+                                    product={product}
+                                    discountPercentage={discountPercentage}
+                                    productId={product.id}
+                                    availableForSale={selectedVariant?.availableForSale ?? product.availableForSale}
+                                />
                                 <CatalogExtensionDisplay
                                     isGiftCard={product.isGiftCard}
                                     requiresShipping={selectedVariant?.requiresShipping}
-                                    sellingPlans={selectedVariant?.sellingPlanAllocations?.nodes?.map((a: any) => ({name: a.sellingPlan?.name ?? "Subscription", recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false}))}
-                                    collections={product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title}))}
+                                    sellingPlans={selectedVariant?.sellingPlanAllocations?.nodes?.map((a: any) => ({
+                                        name: a.sellingPlan?.name ?? "Subscription",
+                                        recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false
+                                    }))}
+                                    collections={product.collections?.nodes?.map((c: any) => ({
+                                        handle: c.handle,
+                                        title: c.title
+                                    }))}
                                     className="mt-3"
                                 />
                             </div>
 
                             <div className="lg:hidden">
-                                <ProductInfoSection product={product} discountPercentage={discountPercentage} productId={product.id} availableForSale={selectedVariant?.availableForSale ?? product.availableForSale} />
+                                <ProductInfoSection
+                                    product={product}
+                                    discountPercentage={discountPercentage}
+                                    productId={product.id}
+                                    availableForSale={selectedVariant?.availableForSale ?? product.availableForSale}
+                                />
                                 <CatalogExtensionDisplay
                                     isGiftCard={product.isGiftCard}
                                     requiresShipping={selectedVariant?.requiresShipping}
-                                    sellingPlans={selectedVariant?.sellingPlanAllocations?.nodes?.map((a: any) => ({name: a.sellingPlan?.name ?? "Subscription", recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false}))}
-                                    collections={product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title}))}
+                                    sellingPlans={selectedVariant?.sellingPlanAllocations?.nodes?.map((a: any) => ({
+                                        name: a.sellingPlan?.name ?? "Subscription",
+                                        recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false
+                                    }))}
+                                    collections={product.collections?.nodes?.map((c: any) => ({
+                                        handle: c.handle,
+                                        title: c.title
+                                    }))}
                                     className="mt-3"
                                 />
                             </div>
@@ -843,4 +891,3 @@ const RECOMMENDATIONS_QUERY = `#graphql
   }
   ${RECOMMENDED_PRODUCT_FRAGMENT}
 ` as const;
-

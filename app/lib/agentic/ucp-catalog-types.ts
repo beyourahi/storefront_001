@@ -22,7 +22,7 @@ export type UcpVariant = {
     quantityAvailable: number | null;
     price: UcpMoney;
     compareAtPrice: UcpMoney | null;
-    selectedOptions: Array<{ name: string; value: string }>;
+    selectedOptions: Array<{name: string; value: string}>;
     sku: string | null;
     requiresShipping: boolean;
     checkoutUrl: string;
@@ -30,7 +30,7 @@ export type UcpVariant = {
         id: string;
         name: string;
         recurringDeliveries: boolean;
-        options: Array<{ name: string; value: string }>;
+        options: Array<{name: string; value: string}>;
     }>;
 };
 
@@ -68,7 +68,7 @@ export type UcpProduct = {
             version: "2026-04-08";
             fields: {
                 isGiftCard: boolean;
-                collections: Array<{ id: string; handle: string; title: string }>;
+                collections: Array<{id: string; handle: string; title: string}>;
             };
         };
     };

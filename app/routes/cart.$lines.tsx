@@ -2,10 +2,7 @@ import {redirect} from "react-router";
 import type {Route} from "./+types/cart.$lines";
 import {AGENT_SESSION_ID_KEY, AGENT_ARRIVAL_AT_KEY} from "~/lib/session";
 
-export const meta: Route.MetaFunction = () => [
-    {title: "Redirecting..."},
-    {name: "robots", content: "noindex"}
-];
+export const meta: Route.MetaFunction = () => [{title: "Redirecting..."}, {name: "robots", content: "noindex"}];
 
 // Agent arrival detection — UTM sources and explicit agent_id params that signal
 // the buyer was sent here by an AI shopping assistant, not organic navigation.
@@ -69,7 +66,7 @@ export async function loader({request, context, params}: Route.LoaderArgs) {
     // agent state from session (no URL flag needed). Redirect to /cart clean.
     // Non-agent arrivals: preserve original behavior — redirect straight to Shopify checkout.
     if (agentArrival) {
-        context.session.set(AGENT_SESSION_ID_KEY, searchParams.get("agent_id") || ("anon-" + Date.now()));
+        context.session.set(AGENT_SESSION_ID_KEY, searchParams.get("agent_id") || "anon-" + Date.now());
         context.session.set(AGENT_ARRIVAL_AT_KEY, String(Date.now()));
         cartHeaders.append("Set-Cookie", await context.session.commit());
         return redirect("/cart", {headers: cartHeaders});

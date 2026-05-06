@@ -40,10 +40,7 @@ const PRODUCT_EXISTS_QUERY = `#graphql
  * Returns silently if the URL doesn't match or the product doesn't exist,
  * allowing the caller to proceed with its normal 404 flow.
  */
-export async function redirectLegacyProductUrl(
-    request: Request,
-    dataAdapter: DataAdapter
-): Promise<void> {
+export async function redirectLegacyProductUrl(request: Request, dataAdapter: DataAdapter): Promise<void> {
     const url = new URL(request.url);
     const segments = url.pathname.replace(/^\/|\/$/g, "").split("/");
 
@@ -55,13 +52,10 @@ export async function redirectLegacyProductUrl(
     if (KNOWN_ROUTE_PREFIXES.has(prefix) || prefix.includes(".")) return;
 
     try {
-        const {product} = await dataAdapter.query<{product: {id: string} | null}>(
-            PRODUCT_EXISTS_QUERY,
-            {
-                variables: {handle},
-                cache: dataAdapter.CacheLong()
-            }
-        );
+        const {product} = await dataAdapter.query<{product: {id: string} | null}>(PRODUCT_EXISTS_QUERY, {
+            variables: {handle},
+            cache: dataAdapter.CacheLong()
+        });
 
         if (product) {
             throw redirect(`/products/${handle}${url.search}`, 301);

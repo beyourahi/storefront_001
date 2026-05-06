@@ -93,7 +93,11 @@ export const PolicyPageWithTOC = ({sections, showIndexes = false}: PolicyPageWit
                             <div className="lg:col-span-3 lg:py-8">
                                 <div className="space-y-6">
                                     {sections.map(section => (
-                                        <PolicySectionCard key={section.index} section={section} showIndex={showIndexes} />
+                                        <PolicySectionCard
+                                            key={section.index}
+                                            section={section}
+                                            showIndex={showIndexes}
+                                        />
                                     ))}
                                 </div>
                             </div>

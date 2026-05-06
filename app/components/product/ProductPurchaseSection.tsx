@@ -88,10 +88,7 @@ export const ProductPurchaseSection = ({
                     </>
                 ) : (
                     <>
-                        <PriceDisplay
-                            selectedVariant={selectedVariant}
-                            discountPercentage={discountPercentage}
-                        />
+                        <PriceDisplay selectedVariant={selectedVariant} discountPercentage={discountPercentage} />
 
                         <OptionSelector productOptions={productOptions} />
 

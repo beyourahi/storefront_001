@@ -79,7 +79,11 @@ export const ProductCardTitle = ({productTitle, viewMode = "grid3", searchMode =
     return (
         <div>
             <h3 className={`text-foreground font-serif font-semibold ${titleFontSize.primary}`}>{primary}</h3>
-            {secondary && <h3 className={`text-foreground opacity-50 font-serif font-normal ${titleFontSize.secondary}`}>{secondary}</h3>}
+            {secondary && (
+                <h3 className={`text-foreground opacity-50 font-serif font-normal ${titleFontSize.secondary}`}>
+                    {secondary}
+                </h3>
+            )}
         </div>
     );
 };
