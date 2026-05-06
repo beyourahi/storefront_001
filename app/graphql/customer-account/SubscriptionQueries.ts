@@ -244,16 +244,6 @@ export const SUBSCRIPTION_STATUSES = {
 
 export type SubscriptionStatus = keyof typeof SUBSCRIPTION_STATUSES;
 
-// Billing interval display names
-export const BILLING_INTERVALS = {
-    DAY: "day",
-    WEEK: "week",
-    MONTH: "month",
-    YEAR: "year"
-} as const;
-
-export type BillingInterval = keyof typeof BILLING_INTERVALS;
-
 /**
  * Format billing frequency for display
  * e.g., "Every 2 weeks" or "Monthly"

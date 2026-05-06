@@ -197,14 +197,6 @@ export const FALLBACK_AGENT_ARRIVAL_COPY = {
     subtitle: "Review the items below before checking out."
 } as const;
 
-/** Copy shown in the AgentFallbackBanner on interactive pages an agent cannot navigate well. */
-export const FALLBACK_AGENT_FALLBACK_COPY = {
-    title: "This experience is designed for human shoppers",
-    subtitle:
-        "Interactive quizzes and guided experiences require a browser. Use the search or catalog endpoints below to find products programmatically.",
-    alternatePathLabel: "Search the catalog"
-} as const;
-
 const FALLBACK_SITE_SETTINGS: SiteSettings = {
     brandName: "",
     brandLogo: null,

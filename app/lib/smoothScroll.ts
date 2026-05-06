@@ -28,8 +28,6 @@
  *
  * @related
  * - app/lib/LenisProvider.tsx - React provider that wraps app with Lenis
- * - app/lib/useScrolled.ts - Detects scroll position using Lenis
- * - app/lib/useScrollProgress.ts - Tracks scroll progress using Lenis
  * - app/root.tsx - LenisProvider wraps entire app
  */
 

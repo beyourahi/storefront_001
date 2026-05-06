@@ -31,13 +31,3 @@ export function setAppInstalled(): void {
     }
 }
 
-/** Clears the installed flag (useful for testing or re-prompting). */
-export function clearAppInstalled(): void {
-    if (!isBrowser) return;
-
-    try {
-        localStorage.removeItem(STORAGE_KEYS.APP_INSTALLED);
-    } catch {
-        // Silently fail
-    }
-}

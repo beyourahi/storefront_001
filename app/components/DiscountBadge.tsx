@@ -11,8 +11,8 @@ interface DiscountBadgeProps {
 
 /**
  * Animated discount badge with a shimmer label.
- * Accepts either a `DiscountBadgeInfo` object (from `analyzeProductPricing`) or a raw
- * `percentage` number. Renders nothing when there is no discount to show.
+ * Accepts either a `DiscountBadgeInfo` object or a raw `percentage` number.
+ * Renders nothing when there is no discount to show.
  * Use `position="inline"` to suppress the absolute positioning (e.g. inside flex rows).
  */
 export const DiscountBadge = ({discountInfo, percentage, position = "absolute", className}: DiscountBadgeProps) => {

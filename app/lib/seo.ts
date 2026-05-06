@@ -85,19 +85,6 @@ export const SEO_CONFIG = {
     twitterCardType: "summary_large_image" as const
 } as const;
 
-/**
- * Get SEO config with dynamic brand name from metaobjects
- * Call this to get SEO values that include the dynamic brand name
- */
-export function getSeoConfig(brandName?: string) {
-    const name = brandName || FALLBACK_BRAND_NAME;
-    return {
-        ...SEO_CONFIG,
-        siteName: name,
-        defaultTitle: `${name} - ${FALLBACK_SEO_TITLE_SUFFIX}`
-    };
-}
-
 // Type for media in getSeoMeta
 export interface SeoMedia {
     url: string;
@@ -190,32 +177,6 @@ export function formatSchemaDate(date: string | Date): string {
 // ============================================
 // JSON-LD Schema Generators
 // ============================================
-
-/**
- * Generate Organization schema for the homepage
- *
- * NOTE: This emits a thin Organization @graph entry. To also emit a fully-enriched
- * Organization schema (with sameAs social links, logo, description), the homepage
- * route should add a SECOND script:ld+json block manually alongside this one.
- * getSeoMeta() cannot include both — the route meta() must do it explicitly.
- *
- * @param socialLinks - Array of social media URLs from site settings
- */
-export function generateOrganizationSchema(
-    siteSettings?: SeoSiteSettings | null,
-    socialLinks?: Array<{url: string}>
-): JsonLdSchema {
-    const defaults = getSeoDefaults(siteSettings);
-    return {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        name: defaults.brandName,
-        url: defaults.siteUrl,
-        logo: siteSettings?.brandLogo?.url,
-        description: defaults.description,
-        sameAs: socialLinks?.map(link => link.url).filter(Boolean) || []
-    };
-}
 
 /**
  * Generate WebSite schema with search action
@@ -621,14 +582,6 @@ export function getRequiredSocialMeta(
         {name: "twitter:card", content: imageUrl ? "summary_large_image" : "summary"},
         ...(imageUrl ? [{name: "twitter:image", content: imageUrl}] : [])
     ];
-}
-
-/**
- * Get meta tags for account/auth pages.
- * Returns title + robots:noindex,nofollow
- */
-export function getAccountMeta(label: string): Array<Record<string, string>> {
-    return [{title: label}, {name: "robots", content: "noindex, nofollow"}];
 }
 
 // ============================================

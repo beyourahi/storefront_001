@@ -33,15 +33,10 @@
  * - Browser Navigator API
  *
  * @related
- * - app/components/ProductShareButton.tsx - Product sharing UI component
  * - app/components/blog/ShareButtons.tsx - Article sharing UI component
  * - app/routes/api.share.track.tsx - Share analytics tracking endpoint
  * - app/lib/blog-utils.ts - Article share data creation
  */
-
-import type {ProductFragment} from "storefrontapi.generated";
-import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
-import {parseProductTitle} from "~/lib/product";
 
 // Types
 export interface ShareData {
@@ -53,15 +48,6 @@ export interface ShareData {
     shopName?: string;
 }
 
-export interface ShareAnalytics {
-    platform: string;
-    productId: string;
-    productHandle: string;
-    timestamp: number;
-    userAgent?: string;
-    referrer?: string;
-}
-
 export interface SocialSharePlatform {
     id: string;
     name: string;
@@ -69,40 +55,6 @@ export interface SocialSharePlatform {
     url: (shareData: ShareData) => string;
     isNative?: boolean;
     customHandler?: (shareData: ShareData, onSuccess?: () => void, onError?: () => void) => Promise<void>;
-}
-
-/** Format a Shopify Money object into a locale-aware currency string. */
-function formatPrice(price: {amount: string; currencyCode: string}): string {
-    const amount = parseFloat(price.amount);
-    return new Intl.NumberFormat(STORE_FORMAT_LOCALE, {
-        style: "currency",
-        currency: price.currencyCode
-    }).format(amount);
-}
-
-/**
- * Build a `ShareData` object from a Shopify product and the current page URL.
- * Falls back to a generic description when the product has no `description`.
- */
-export function createShareData(
-    product: Pick<ProductFragment, "title" | "description" | "images">,
-    variant: ProductFragment["selectedOrFirstAvailableVariant"],
-    currentUrl: string,
-    shopName?: string
-): ShareData {
-    const firstImage = product.images?.nodes?.[0];
-    const {primary, secondary} = parseProductTitle(product.title);
-
-    return {
-        title: primary,
-        description:
-            product.description ||
-            `Check out ${primary}${secondary ? ` - ${secondary}` : ""} - Premium quality product available now.`,
-        url: currentUrl,
-        imageUrl: firstImage?.url,
-        price: variant?.price ? formatPrice(variant.price) : "",
-        shopName
-    };
 }
 
 /** Append key/value pairs to `baseUrl` as query parameters, skipping empty values. */
@@ -183,98 +135,9 @@ export function openShareWindow(url: string, title: string = "Share"): void {
     window.open(url, title, `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
 }
 
-/** POST share analytics to `/api/share/track`. Fails silently to avoid disrupting the UX. */
-export async function trackShareEvent(analytics: ShareAnalytics): Promise<void> {
-    try {
-        await fetch("/api/share/track", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(analytics)
-        });
-    } catch {
-        // Silently ignore analytics tracking errors to not disrupt user experience
-    }
-}
-
-/** Build a `ShareAnalytics` payload stamped with the current timestamp and browser context. */
-export function createShareAnalytics(platform: string, productId: string, productHandle: string): ShareAnalytics {
-    return {
-        platform,
-        productId,
-        productHandle,
-        timestamp: Date.now(),
-        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
-        referrer: typeof document !== "undefined" ? document.referrer : undefined
-    };
-}
-
 // =============================================================================
 // WEB SHARE API
 // =============================================================================
-
-/**
- * Check if the Web Share API is supported in the current browser.
- * Web Share API provides native OS-level sharing on mobile devices.
- *
- * Support:
- * - iOS Safari 12.1+
- * - Android Chrome 89+
- * - Samsung Internet
- * - Desktop Safari (macOS Sonoma+)
- * - Desktop Chrome (Windows/ChromeOS only)
- * - Firefox: No support
- */
-export function isWebShareSupported(): boolean {
-    return typeof navigator !== "undefined" && "share" in navigator;
-}
-
-/**
- * Trigger native OS share dialog using Web Share API.
- * Falls back gracefully if not supported or user cancels.
- *
- * @param shareData - Data to share (title, description, url)
- * @returns true if share was triggered (even if cancelled), false if not supported
- */
-export async function triggerNativeShare(shareData: ShareData): Promise<boolean> {
-    // Check if Web Share API is available
-    if (!isWebShareSupported()) {
-        return false;
-    }
-
-    // Prepare data for Web Share API
-    const webShareData: ShareDataInit = {
-        title: shareData.title,
-        text: shareData.description,
-        url: shareData.url
-    };
-
-    // Check if we can share this data (some browsers have restrictions)
-    if (navigator.canShare && !navigator.canShare(webShareData)) {
-        return false;
-    }
-
-    try {
-        await navigator.share(webShareData);
-        return true;
-    } catch (error) {
-        // AbortError means user cancelled - not an error, share dialog was shown
-        if ((error as Error).name === "AbortError") {
-            return true;
-        }
-        // Other errors (NotAllowedError, etc.) mean share failed
-        return false;
-    }
-}
-
-// Web Share API type (not included in older TypeScript libs)
-interface ShareDataInit {
-    title?: string;
-    text?: string;
-    url?: string;
-    files?: File[];
-}
 
 // =============================================================================
 // SOCIAL PLATFORM ICONS
@@ -319,15 +182,6 @@ export const LinkIcon = ({className}: {className?: string}) => (
         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
     </svg>
 );
-
-/** Official brand colors for each share platform, used for button styling. */
-export const PLATFORM_COLORS = {
-    facebook: "rgb(24, 119, 242)",
-    x: "rgb(0, 0, 0)",
-    whatsapp: "rgb(37, 211, 102)",
-    pinterest: "rgb(189, 8, 28)",
-    copy: "rgb(107, 114, 128)"
-} as const;
 
 /** Returns the ordered list of share platform descriptors used to render share buttons. */
 export function getSocialSharePlatforms(): SocialSharePlatform[] {

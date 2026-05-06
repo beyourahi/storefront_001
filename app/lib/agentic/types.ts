@@ -103,6 +103,3 @@ export type AgentContext = {
     storefront: StorefrontLike;
     dataAdapter: DataAdapter;
 } | null;
-
-// Environment bindings available in Hydrogen loaders/actions
-export type StorefrontEnv = Record<string, string | undefined>;

@@ -169,13 +169,6 @@ export function isCredit(transaction: StoreCreditTransaction): boolean {
 }
 
 /**
- * Format transaction type for display
- */
-export function formatTransactionType(transaction: StoreCreditTransaction): string {
-    return isCredit(transaction) ? "Credit" : "Debit";
-}
-
-/**
  * Get total balance across all store credit accounts
  * Works with both full StoreCreditAccount and simpler StoreCreditAccountBalance types
  */

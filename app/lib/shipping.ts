@@ -51,25 +51,3 @@ export function parseShippingConfig(
     };
 }
 
-/**
- * Format currency amount for display using the shared CurrencyFormatter.
- * Produces consistent symbol-based formatting (e.g., "৳5,000" for BDT).
- */
-export function formatShippingThreshold(amount: number, currencyCode: string = DEFAULT_CURRENCY_CODE): string {
-    return formatPrice(amount, currencyCode);
-}
-
-/**
- * Check if cart qualifies for free shipping
- */
-export function qualifiesForFreeShipping(cartTotal: number, threshold: number): boolean {
-    return cartTotal >= threshold;
-}
-
-/**
- * Calculate remaining amount for free shipping
- */
-export function remainingForFreeShipping(cartTotal: number, threshold: number): number {
-    const remaining = threshold - cartTotal;
-    return remaining > 0 ? remaining : 0;
-}

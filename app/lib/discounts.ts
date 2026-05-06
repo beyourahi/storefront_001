@@ -24,20 +24,8 @@
  * - @shopify/hydrogen - MoneyV2 type for price data
  *
  * @related
- * - ProductDiscountBadge.tsx - Renders discount badges
  * - sale.tsx - Sale page filtering discounted products
  * - ProductItem.tsx - Displays discount badges on product cards
- *
- * @example
- * ```tsx
- * // Analyze discount for badge display
- * const badgeInfo = analyzeProductDiscount(product);
- * if (badgeInfo.type === 'exact') {
- *   return <Badge>Save {badgeInfo.percentage}%</Badge>;
- * } else if (badgeInfo.type === 'upto') {
- *   return <Badge>Up to {badgeInfo.percentage}% off</Badge>;
- * }
- * ```
  */
 
 import type {MoneyV2} from "@shopify/hydrogen/storefront-api-types";
@@ -55,112 +43,6 @@ import type {MoneyV2} from "@shopify/hydrogen/storefront-api-types";
 export interface DiscountBadgeInfo {
     type: "exact" | "upto" | "none";
     percentage: number;
-}
-
-/**
- * Variant pricing data for discount calculation
- */
-export interface VariantPricing {
-    id: string;
-    availableForSale: boolean;
-    price: {amount: string};
-    compareAtPrice?: {amount: string} | null | undefined;
-}
-
-/**
- * Product with variant pricing for discount analysis
- */
-export interface ProductWithVariants {
-    variants?: {
-        nodes: VariantPricing[];
-    };
-    priceRange?: {
-        minVariantPrice: {amount: string};
-    };
-    compareAtPriceRange?: {
-        minVariantPrice: {amount: string};
-    };
-}
-
-/**
- * Analyze a product's variants to determine discount badge display
- *
- * Logic:
- * - Scenario 1: All discounted variants have the exact same discount % → { type: 'exact', percentage: X }
- * - Scenario 2: Variants have different discount %s → { type: 'upto', percentage: maxX }
- * - Scenario 3: No discounts → { type: 'none', percentage: 0 }
- */
-export function analyzeProductDiscount(product: ProductWithVariants): DiscountBadgeInfo {
-    const variants = product.variants?.nodes;
-
-    // If no variant data available, fall back to price range comparison
-    if (!variants || variants.length === 0) {
-        return analyzeFromPriceRange(product);
-    }
-
-    // Collect all discount percentages from variants with valid discounts
-    const discountPercentages: number[] = [];
-
-    for (const variant of variants) {
-        // Only consider variants that have a compareAtPrice
-        if (!variant.compareAtPrice) {
-            continue;
-        }
-
-        const compareAt = parseFloat(variant.compareAtPrice.amount);
-        const current = parseFloat(variant.price.amount);
-
-        // Check if this variant has a valid discount
-        if (compareAt > current && compareAt > 0) {
-            const percentage = calculateDiscountPercentage(compareAt, current);
-            if (percentage > 0) {
-                discountPercentages.push(percentage);
-            }
-        }
-    }
-
-    // No discounts found
-    if (discountPercentages.length === 0) {
-        return {type: "none", percentage: 0};
-    }
-
-    // Find max and check if all percentages are the same
-    const maxPercentage = Math.max(...discountPercentages);
-    const minPercentage = Math.min(...discountPercentages);
-
-    // All discounted variants have the same percentage
-    if (maxPercentage === minPercentage) {
-        return {type: "exact", percentage: maxPercentage};
-    }
-
-    // Different percentages - show "upto" with max
-    return {type: "upto", percentage: maxPercentage};
-}
-
-/**
- * Fallback: Analyze discount from price range when variant data is not available
- * Uses compareAtPriceRange vs priceRange (less accurate but works for legacy data)
- */
-function analyzeFromPriceRange(product: ProductWithVariants): DiscountBadgeInfo {
-    const compareAtPrice = product.compareAtPriceRange?.minVariantPrice?.amount;
-    const currentPrice = product.priceRange?.minVariantPrice?.amount;
-
-    if (!compareAtPrice || !currentPrice) {
-        return {type: "none", percentage: 0};
-    }
-
-    const compareAt = parseFloat(compareAtPrice);
-    const current = parseFloat(currentPrice);
-
-    if (compareAt <= current || compareAt <= 0) {
-        return {type: "none", percentage: 0};
-    }
-
-    const percentage = calculateDiscountPercentage(compareAt, current);
-
-    // Without variant data, we can't know if all variants have the same discount
-    // Default to 'upto' to be safe (shows "upto X% off")
-    return {type: "upto", percentage};
 }
 
 /**
@@ -349,33 +231,6 @@ export interface LightweightProduct {
     variants: {
         nodes: LightweightVariant[];
     };
-}
-
-/**
- * Variant with price information for discount calculation
- */
-export interface VariantWithPrice {
-    price: {amount: string};
-    compareAtPrice?: {amount: string} | null;
-}
-
-/**
- * Calculate the discount percentage for a specific variant
- * Returns the exact percentage if the variant has a discount, or 0 if no discount
- */
-export function calculateVariantDiscountPercentage(variant: VariantWithPrice | null | undefined): number {
-    if (!variant?.compareAtPrice) {
-        return 0;
-    }
-
-    const compareAt = parseFloat(variant.compareAtPrice.amount);
-    const current = parseFloat(variant.price.amount);
-
-    if (compareAt <= current || compareAt <= 0) {
-        return 0;
-    }
-
-    return calculateDiscountPercentage(compareAt, current);
 }
 
 /**

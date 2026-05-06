@@ -32,7 +32,6 @@
  *
  * @related
  * - app/routes/blogs.$blogHandle.$articleHandle.tsx - Uses reading time and share data
- * - app/components/blog/ReadingTime.tsx - Displays reading time
  * - app/components/blog/ShareButtons.tsx - Uses share data
  * - app/components/blog/RelatedArticles.tsx - Uses related article filtering
  * - app/components/blog/AuthorBio.tsx - Uses author initials
@@ -176,14 +175,6 @@ export function getAuthorInitials(name?: string | null): string {
         .join("")
         .toUpperCase()
         .slice(0, 2);
-}
-
-/**
- * Truncate text to a specified length with ellipsis
- */
-export function truncateText(text: string, maxLength: number): string {
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength).trim() + "...";
 }
 
 /**

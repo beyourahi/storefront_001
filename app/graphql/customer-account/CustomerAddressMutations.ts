@@ -21,7 +21,6 @@
  *
  * @related
  * - account.addresses.tsx - Address management UI
- * - CustomerDetailsQuery.ts - Fetches address list
  *
  * @see https://shopify.dev/docs/api/customer/latest/mutations/customerAddressUpdate
  */

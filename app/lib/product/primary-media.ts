@@ -105,20 +105,3 @@ export const pickPrimaryMedia = (
 
     return null;
 };
-
-/**
- * Convenience: normalize an entire media connection (drops unsupported
- * nodes). Callers that want only the first renderable node should use
- * `pickPrimaryMedia`; this variant is for surfaces that want a full list.
- */
-export const normalizeMediaNodes = (
-    mediaNodes: ReadonlyArray<RawMediaNode | ShopifyMediaNode | null | undefined> | null | undefined
-): ProductCardMedia[] => {
-    if (!Array.isArray(mediaNodes)) return [];
-    const out: ProductCardMedia[] = [];
-    for (const node of mediaNodes) {
-        const normalized = normalize(node);
-        if (normalized) out.push(normalized);
-    }
-    return out;
-};

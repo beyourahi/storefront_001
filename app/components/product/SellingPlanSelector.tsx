@@ -1,13 +1,10 @@
 import {useLocation, useNavigate} from "react-router";
 import {cn} from "~/lib/utils";
 import type {ProductFragment} from "storefrontapi.generated";
-import type {MoneyV2} from "@shopify/hydrogen/storefront-api-types";
 
 export type SellingPlanFragment = NonNullable<
     ProductFragment["sellingPlanGroups"]
 >["nodes"][number]["sellingPlans"]["nodes"][number];
-
-export type SellingPlanGroupFragment = NonNullable<ProductFragment["sellingPlanGroups"]>["nodes"][number];
 
 export type EnrichedSellingPlan = SellingPlanFragment & {
     isSelected: boolean;
@@ -97,38 +94,3 @@ export const SellingPlanSelector = ({
     );
 };
 
-export const calculateSellingPlanPrice = (originalPrice: MoneyV2, sellingPlan: SellingPlanFragment): MoneyV2 => {
-    const amount = parseFloat(originalPrice.amount);
-    const adjustment = sellingPlan.priceAdjustments?.[0]?.adjustmentValue;
-
-    if (!adjustment) return originalPrice;
-
-    let adjustedAmount = amount;
-
-    switch (adjustment.__typename) {
-        case "SellingPlanPercentagePriceAdjustment":
-            adjustedAmount = amount * (1 - adjustment.adjustmentPercentage / 100);
-            break;
-        case "SellingPlanFixedAmountPriceAdjustment":
-            adjustedAmount = amount - parseFloat(adjustment.adjustmentAmount.amount);
-            break;
-        case "SellingPlanFixedPriceAdjustment":
-            adjustedAmount = parseFloat(adjustment.price.amount);
-            break;
-    }
-
-    return {
-        amount: adjustedAmount.toFixed(2),
-        currencyCode: originalPrice.currencyCode
-    };
-};
-
-export const getSellingPlanDiscount = (sellingPlan: SellingPlanFragment): number | null => {
-    const adjustment = sellingPlan.priceAdjustments?.[0]?.adjustmentValue;
-
-    if (adjustment?.__typename === "SellingPlanPercentagePriceAdjustment") {
-        return adjustment.adjustmentPercentage;
-    }
-
-    return null;
-};

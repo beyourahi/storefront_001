@@ -51,31 +51,18 @@ import {createContext, useContext, useMemo, type ReactNode} from "react";
 import type {
     SiteContent,
     SiteSettings,
-    SocialLink,
-    SectionHeadings,
-    Testimonial,
     FAQItem,
-    InstagramMedia,
-    HeroMedia,
-    ThemeFonts,
     ThemeCoreColors,
     ThemeConfig,
-    GeneratedTheme,
-    ContactInfo,
-    PolicyExtension,
     TrafficSourceBanner,
-    HomepageVariant,
-    VipPerk,
-    LimitedOffer
+    HomepageVariant
 } from "types";
 import {
     DEFAULT_SITE_SETTINGS,
     DEFAULT_THEME_CONFIG,
-    FALLBACK_AGENT_ARRIVAL_COPY,
-    FALLBACK_AGENT_FALLBACK_COPY
+    FALLBACK_AGENT_ARRIVAL_COPY
 } from "~/lib/metaobject-parsers";
-import {generateTheme} from "~/lib/theme-utils";
-import {getSwatchBorderColor, getSmartSwatchBorderColor} from "~/lib/color";
+import {getSmartSwatchBorderColor} from "~/lib/color";
 
 // =============================================================================
 // CONTEXT
@@ -112,18 +99,6 @@ export function SiteContentProvider({children, siteContent}: SiteContentProvider
  * Hook to access the full site content
  * Throws an error if used outside of SiteContentProvider
  */
-export function useSiteContent(): SiteContent {
-    const context = useContext(SiteContentContext);
-    if (!context) {
-        throw new Error("useSiteContent must be used within a SiteContentProvider");
-    }
-    return context;
-}
-
-/**
- * Hook to access site content with fallback defaults
- * Safe to use even if provider is not set up (returns defaults)
- */
 export function useSiteContentSafe(): SiteContent {
     const context = useContext(SiteContentContext);
     if (!context) {
@@ -150,75 +125,9 @@ export function useSiteSettings(): SiteSettings {
     return useSiteContentSafe().siteSettings;
 }
 
-/**
- * Hook to access social links (now stored in siteSettings)
- */
-export function useSocialLinks(): SocialLink[] {
-    return useSiteSettings().socialLinks;
-}
-
-/**
- * Hook to access section headings (derived from siteSettings)
- * Provides backward compatibility for components expecting SectionHeadings shape
- */
-export function useSectionHeadings(): SectionHeadings {
-    const settings = useSiteSettings();
-    return useMemo(
-        () => ({
-            blogSectionTitle: settings.blogSectionTitle,
-            collectionsTitle: settings.collectionsTitle,
-            relatedProductsTitle: settings.relatedProductsTitle,
-            recommendedTitle: settings.recommendedTitle,
-            instagramTitle: settings.instagramTitle
-        }),
-        [settings]
-    );
-}
-
-/**
- * Hook to access brand marquee words
- * Returns the brandWords array from site settings
- */
-export function useBrandMarquee(): {words: string[]} {
-    const {brandWords} = useSiteSettings();
-    return useMemo(() => ({words: brandWords}), [brandWords]);
-}
-
-// =============================================================================
-// HOOKS FOR PROMOTIONAL CONTENT
-// =============================================================================
-
-/**
- * Hook to access promotional banner content
- * Returns announcement texts as array (list of single line texts from Shopify)
- */
-export function usePromotionalBanners(): {
-    announcement: string[];
-    bannerOneMedia?: HeroMedia;
-    bannerTwoMedia?: HeroMedia;
-} {
-    const settings = useSiteSettings();
-    return useMemo(
-        () => ({
-            announcement: settings.announcementBanner,
-            bannerOneMedia: settings.promotionalBannerOneMedia,
-            bannerTwoMedia: settings.promotionalBannerTwoMedia
-        }),
-        [settings]
-    );
-}
-
 // =============================================================================
 // HOOKS FOR COLLECTIONS (JSON arrays stored in site_settings)
 // =============================================================================
-
-/**
- * Hook to access testimonials
- * Returns the testimonials array from site settings
- */
-export function useTestimonials(): Testimonial[] {
-    return useSiteSettings().testimonials;
-}
 
 /**
  * Hook to access FAQ items
@@ -226,31 +135,6 @@ export function useTestimonials(): Testimonial[] {
  */
 export function useFaqItems(): FAQItem[] {
     return useSiteSettings().faqItems;
-}
-
-/**
- * Hook to access Instagram media (images and videos)
- * Returns the instagramMedia array from site settings
- */
-export function useInstagramMedia(): InstagramMedia[] {
-    return useSiteSettings().instagramMedia;
-}
-
-/**
- * Hook to access contact information (email, phone, hours, address).
- * Returns typed ContactInfo derived from site_settings metaobject.
- */
-export function useContactInfo(): ContactInfo {
-    const settings = useSiteSettings();
-    return useMemo(
-        () => ({
-            email: settings.contactEmail,
-            phone: settings.contactPhone,
-            businessHours: settings.businessHours,
-            address: settings.address
-        }),
-        [settings]
-    );
 }
 
 /**
@@ -274,14 +158,6 @@ export function useShopLocation(): {embedUrls: string[]; shareLinks: string[]} {
 // =============================================================================
 
 /**
- * Hook to access theme fonts configuration
- * Returns fonts from theme config (sans, serif, mono)
- */
-export function useThemeFonts(): ThemeFonts {
-    return useThemeConfig().fonts;
-}
-
-/**
  * Hook to access core theme colors
  * Returns the 5 core brand colors (primary, secondary, background, foreground, accent)
  */
@@ -289,84 +165,9 @@ export function useThemeColors(): ThemeCoreColors {
     return useThemeConfig().colors;
 }
 
-/**
- * Hook to generate complete theme from theme config
- * Returns generated CSS variables, Google Fonts URL, and font config
- */
-export function useGeneratedTheme(): GeneratedTheme | null {
-    const themeConfig = useThemeConfig();
-
-    return useMemo(
-        () => generateTheme(themeConfig.colors, themeConfig.fonts, themeConfig.borderRadius),
-        [themeConfig.colors, themeConfig.fonts, themeConfig.borderRadius]
-    );
-}
-
 // =============================================================================
 // HOOKS FOR WCAG-COMPLIANT SWATCH STYLING
 // =============================================================================
-
-/**
- * Hook to calculate WCAG-compliant border color for product color swatches
- *
- * This hook ensures color swatches have visible borders that meet WCAG 2.1 Level AA
- * requirements for non-text contrast (3:1 minimum). The border color is dynamically
- * calculated based on both the swatch color and the theme's background color.
- *
- * @param swatchColor - The swatch color from Shopify (HEX format like "#FF6B6B")
- * @param customBackground - Optional override for background color (defaults to theme background)
- * @returns HEX color string for the border that provides sufficient contrast
- *
- * @example
- * ```tsx
- * function ProductSwatch({ color }: { color: string }) {
- *   const borderColor = useSwatchBorderColor(color);
- *   return (
- *     <div
- *       style={{
- *         backgroundColor: color,
- *         borderColor: borderColor,
- *         borderWidth: '1px',
- *         borderStyle: 'solid'
- *       }}
- *     />
- *   );
- * }
- * ```
- *
- * @see getSwatchBorderColor in wcag-contrast.ts for the algorithm details
- */
-export function useSwatchBorderColor(swatchColor: string | null | undefined, customBackground?: string): string {
-    const themeColors = useThemeColors();
-
-    // Use custom background if provided, otherwise use theme background
-    const backgroundColor = customBackground || themeColors.background;
-    return getSwatchBorderColor(swatchColor, backgroundColor);
-}
-
-/**
- * Hook to calculate swatch border color for mobile product hero (coral background)
- *
- * Mobile product hero uses the primary color as background (coral/orange).
- * This hook automatically uses the theme's primary color as the background
- * context for border calculation.
- *
- * @param swatchColor - The swatch color from Shopify (HEX format)
- * @returns HEX color string for the border optimized for primary background
- *
- * @example
- * ```tsx
- * function MobileSwatch({ color }: { color: string }) {
- *   const borderColor = useSwatchBorderColorOnPrimary(color);
- *   // Border will contrast well against both the swatch AND the coral background
- * }
- * ```
- */
-export function useSwatchBorderColorOnPrimary(swatchColor: string | null | undefined): string {
-    const themeColors = useThemeColors();
-
-    return getSwatchBorderColor(swatchColor, themeColors.primary);
-}
 
 /**
  * Smart hook for dynamic swatch border color based on full context
@@ -428,46 +229,6 @@ export function useSmartSwatchBorderColor(
 // =============================================================================
 
 /**
- * Hook to access the brand persona string for AI agents.
- * Returns null when not configured in Shopify Admin.
- */
-export function useAgentPersona(): string | null {
-    return useSiteSettings().agentPersona;
-}
-
-/**
- * Hook to access extended machine-readable policy key/value pairs.
- * Surfaced via the Policies MCP tool in Phase 3.
- */
-export function usePolicyExtension(): PolicyExtension[] | null {
-    return useSiteSettings().policyExtension;
-}
-
-/**
- * Hook to access additional FAQ entries injected into the MCP FAQ tool.
- * Returns [] when not configured (Policies MCP falls back to faqItems).
- */
-export function useFaqExtension(): FAQItem[] {
-    return useSiteSettings().faqExtension;
-}
-
-/**
- * Hook to access the agent-only promotional message.
- * Returns null when not configured — components should render nothing.
- */
-export function useAgentOnlyPromo(): string | null {
-    return useSiteSettings().agentOnlyPromo;
-}
-
-/**
- * Hook to access the free shipping minimum order amount.
- * Returns null when not configured — cart progress bar component hides itself.
- */
-export function useFreeShippingMinimumOrder(): number | null {
-    return useSiteSettings().freeShippingMinimumOrder;
-}
-
-/**
  * Hook to access traffic-source banner overrides keyed by utm_source.
  * Returns null when not configured (Phase 5).
  */
@@ -481,22 +242,6 @@ export function useTrafficSourceBanners(): TrafficSourceBanner[] | null {
  */
 export function useHomepageVariants(): HomepageVariant[] | null {
     return useSiteSettings().homepageVariants;
-}
-
-/**
- * Hook to access VIP tier benefits / perks.
- * Returns null when not configured (Phase 5).
- */
-export function useVipPerks(): VipPerk[] | null {
-    return useSiteSettings().vipPerks;
-}
-
-/**
- * Hook to access time-limited promotional offers with countdown data.
- * Returns null when not configured (Phase 3).
- */
-export function useLimitedOffers(): LimitedOffer[] | null {
-    return useSiteSettings().limitedOffers;
 }
 
 // =============================================================================
@@ -526,11 +271,3 @@ export function useAgentArrivalCopy(): typeof FALLBACK_AGENT_ARRIVAL_COPY {
     return FALLBACK_AGENT_ARRIVAL_COPY;
 }
 
-/**
- * Hook to access agent-fallback surface copy.
- * Returns the fallback constant. When Shopify metaobject support is added for
- * agentFallbackCopy, this hook can read from SiteSettings without changing callers.
- */
-export function useAgentFallbackCopy(): typeof FALLBACK_AGENT_FALLBACK_COPY {
-    return FALLBACK_AGENT_FALLBACK_COPY;
-}

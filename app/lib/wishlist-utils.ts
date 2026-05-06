@@ -76,21 +76,6 @@ export function reconstructGids(numericIds: number[]): string[] {
 // =============================================================================
 
 /**
- * Check if localStorage is available
- * Returns false in SSR, private browsing, or when storage is full
- */
-export function isLocalStorageAvailable(): boolean {
-    try {
-        const testKey = "__wishlist_test__";
-        localStorage.setItem(testKey, "test");
-        localStorage.removeItem(testKey);
-        return true;
-    } catch {
-        return false;
-    }
-}
-
-/**
  * Read wishlist IDs from localStorage
  * Returns empty array if no data or on error
  */
@@ -125,44 +110,6 @@ export function setWishlistIds(ids: number[]): void {
 }
 
 /**
- * Add a product ID to the wishlist
- * @param numericId - The numeric product ID to add
- * @returns The updated wishlist array
- */
-export function addToWishlist(numericId: number): number[] {
-    const current = getWishlistIds();
-
-    // Prevent duplicates
-    if (current.includes(numericId)) {
-        return current;
-    }
-
-    const updated = [...current, numericId];
-    setWishlistIds(updated);
-    return updated;
-}
-
-/**
- * Remove a product ID from the wishlist
- * @param numericId - The numeric product ID to remove
- * @returns The updated wishlist array
- */
-export function removeFromWishlist(numericId: number): number[] {
-    const current = getWishlistIds();
-    const updated = current.filter(id => id !== numericId);
-    setWishlistIds(updated);
-    return updated;
-}
-
-/**
- * Check if a product ID is in the wishlist
- * @param numericId - The numeric product ID to check
- */
-export function isInWishlist(numericId: number): boolean {
-    return getWishlistIds().includes(numericId);
-}
-
-/**
  * Clear all items from the wishlist
  */
 export function clearWishlist(): void {
@@ -171,13 +118,6 @@ export function clearWishlist(): void {
     } catch {
         // Ignore localStorage errors
     }
-}
-
-/**
- * Get the count of items in the wishlist
- */
-export function getWishlistCount(): number {
-    return getWishlistIds().length;
 }
 
 // =============================================================================

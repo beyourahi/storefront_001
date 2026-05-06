@@ -78,38 +78,6 @@ export type PwaAnalyticsEvent =
     // Registration events
     | "pwa_service_worker_registered";
 
-/**
- * Data payload for error boundary events.
- */
-export interface ErrorBoundaryEventData {
-    error_status: number;
-    error_type: "route_error" | "js_error";
-    is_offline: boolean;
-    route: string;
-}
-
-/**
- * Data payload for service worker error events.
- */
-export interface ServiceWorkerErrorEventData {
-    error_message: string;
-    error_type: "registration_failed" | "update_failed" | "activation_failed";
-}
-
-/**
- * Data payload for offline page view events.
- */
-export interface OfflinePageViewEventData {
-    referrer: string;
-}
-
-/**
- * Data payload for cache miss events.
- */
-export interface CacheMissEventData {
-    url: string;
-}
-
 // =============================================================================
 // ANALYTICS FUNCTIONS
 // =============================================================================
@@ -142,25 +110,6 @@ export function trackPwaEvent(event: PwaAnalyticsEvent, data?: Record<string, un
 // =============================================================================
 // ERROR TRACKING
 // =============================================================================
-
-/**
- * Track an error boundary trigger with full context.
- * Convenience wrapper for error boundary events.
- *
- * @param statusCode - HTTP status code (404, 500, etc.)
- * @param errorType - Whether error came from route response or JS exception
- * @param route - Route name where error occurred
- */
-export function trackErrorBoundary(statusCode: number, errorType: "route_error" | "js_error", route: string): void {
-    const isOffline = typeof navigator !== "undefined" ? !navigator.onLine : false;
-
-    trackPwaEvent("pwa_error_boundary_triggered", {
-        error_status: statusCode,
-        error_type: errorType,
-        is_offline: isOffline,
-        route
-    });
-}
 
 /**
  * Track a service worker error.
@@ -205,64 +154,6 @@ export function trackCacheMiss(url: string): void {
     trackPwaEvent("pwa_cache_miss", {
         url
     });
-}
-
-// =============================================================================
-// INSTALL TRACKING
-// =============================================================================
-
-/**
- * Track when the browser install prompt is shown to the user.
- * Fired when the `beforeinstallprompt` event triggers.
- */
-export function trackInstallPrompt(): void {
-    trackPwaEvent("pwa_install_prompt_shown");
-}
-
-/**
- * Track when the user accepts the PWA install prompt.
- */
-export function trackInstallAccepted(): void {
-    trackPwaEvent("pwa_install_accepted");
-}
-
-/**
- * Track when the user dismisses the PWA install prompt.
- */
-export function trackInstallDismissed(): void {
-    trackPwaEvent("pwa_install_dismissed");
-}
-
-// =============================================================================
-// UPDATE TRACKING
-// =============================================================================
-
-/**
- * Track when a new service worker version is available.
- * Fired when `updatefound` detects a new SW in the `installed` state.
- */
-export function trackUpdateAvailable(): void {
-    trackPwaEvent("pwa_update_available");
-}
-
-/**
- * Track when the user applies a service worker update.
- * Fired when the user triggers `skipWaiting()` via the update banner.
- */
-export function trackUpdateApplied(): void {
-    trackPwaEvent("pwa_update_applied");
-}
-
-// =============================================================================
-// REGISTRATION TRACKING
-// =============================================================================
-
-/**
- * Track successful service worker registration.
- * Fired after `navigator.serviceWorker.register()` resolves.
- */
-export function trackServiceWorkerRegistered(): void {
-    trackPwaEvent("pwa_service_worker_registered");
 }
 
 // Note: Window.dataLayer type is declared in ~/components/GoogleTagManager.tsx

@@ -65,21 +65,6 @@ export function deriveCollectionBreadcrumbs(collection: {
     ];
 }
 
-/** Derive breadcrumbs for a blog article: Home > Blog > Blog Title > Article */
-export function deriveArticleBreadcrumbs(
-    blogHandle: string,
-    blogTitle: string,
-    articleHandle: string,
-    articleTitle: string
-): Array<{name: string; url: string}> {
-    return [
-        {name: "Home", url: "/"},
-        {name: "Blog", url: "/blogs"},
-        {name: blogTitle, url: `/blogs/${blogHandle}`},
-        {name: articleTitle, url: `/blogs/${blogHandle}/${articleHandle}`}
-    ];
-}
-
 /** Derive breadcrumbs for a policy page: Home > Policies > Policy */
 export function derivePolicyBreadcrumbs(policyHandle: string, policyTitle: string): Array<{name: string; url: string}> {
     return [

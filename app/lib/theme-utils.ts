@@ -213,56 +213,6 @@ export function toOklchString(color: OklchColor): string {
     return `oklch(${color.l.toFixed(4)} ${color.c.toFixed(4)} ${normalizeHue(color.h).toFixed(4)})`;
 }
 
-/** Shift the lightness of a color by `delta` (clamped to [0, 1]). */
-export function adjustLightness(color: string, delta: number): string {
-    const parsed = parseOklch(color);
-    if (!parsed) return color;
-
-    return toOklchString({
-        ...parsed,
-        l: clamp(parsed.l + delta, 0, 1)
-    });
-}
-
-/** Multiply the chroma of a color by `factor` (result clamped to [0, 0.4]). */
-export function adjustChroma(color: string, factor: number): string {
-    const parsed = parseOklch(color);
-    if (!parsed) return color;
-
-    return toOklchString({
-        ...parsed,
-        c: clamp(parsed.c * factor, 0, 0.4)
-    });
-}
-
-/** Rotate the hue of a color by `degrees`, normalizing the result to [0, 360). */
-export function rotateHue(color: string, degrees: number): string {
-    const parsed = parseOklch(color);
-    if (!parsed) return color;
-
-    return toOklchString({
-        ...parsed,
-        h: normalizeHue(parsed.h + degrees)
-    });
-}
-
-/** Desaturate a color strongly and nudge lightness away from the canvas to produce a muted tint. */
-export function toMuted(color: string): string {
-    const parsed = parseOklch(color);
-    if (!parsed) return color;
-
-    return toOklchString({
-        l: parsed.l > 0.5 ? clamp(parsed.l - 0.08, 0, 1) : clamp(parsed.l + 0.08, 0, 1),
-        c: Math.min(parsed.c * 0.28, 0.05),
-        h: parsed.h
-    });
-}
-
-/** Returns true if the string can be parsed to a valid OKLCH color. */
-export function isValidOklch(color: string): boolean {
-    return parseOklch(color) !== null;
-}
-
 export {getContrastForeground, hexToOklch, normalizeToOklch, colorIsValidColor as isValidColor};
 
 function clamp(value: number, min: number, max: number): number {
@@ -857,16 +807,6 @@ function buildDerivedTheme(scheme: SemanticScheme): DerivedTheme {
 }
 
 /**
- * Derive a `DerivedTheme` from five core brand colors without generating CSS or font data.
- * Useful for per-component color calculations that don't need the full `ResolvedTheme`.
- */
-export function deriveThemeColors(core: ThemeCoreColors): DerivedTheme {
-    return (
-        resolveTheme(core, DEFAULT_THEME_FONTS)?.colors ??
-        buildDerivedTheme(buildSemanticScheme(normalizeSeeds(toThemeSeedInputs(core)).seeds))
-    );
-}
-
 // =============================================================================
 // FONT UTILITIES
 // =============================================================================

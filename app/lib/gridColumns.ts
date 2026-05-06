@@ -16,85 +16,17 @@
  * - 3XL (1921px+): 6-col (columns stretch to fill ultrawide)
  * - User can select 2-4 columns on desktop, grid adds columns automatically on larger screens
  *
- * Column Validation:
- * - getValidColumnsForScreenSize(): Returns allowed columns for screen
- * - constrainColumnsToScreenSize(): Adjusts invalid columns to nearest valid
- * - isColumnOptionVisible(): Checks if column button should show in UI
- *
  * Layout Modes:
  * - Grid: 1-4 column grid layouts
  * - List: Single column list layout (stacked items)
  *
- * @dependencies
- * - ~/hooks/useScreenSize - Screen size detection hook
- *
  * @related
  * - app/routes/collections.$handle.tsx - Collection grid with column controls
  * - app/routes/search.tsx - Search results grid
- * - app/hooks/useScreenSize.ts - Detects mobile/tablet/desktop
  */
-
-import type {ScreenSize} from "~/hooks/useScreenSize";
 
 export type GridColumns = 1 | 2 | 3 | 4;
 
-/**
- * Returns valid grid column options for each screen size.
- *
- * - mobile: 2-col only
- * - tablet: 2-col only (3-col requires ≥1024px)
- * - desktop: 2-col, 3-col, 4-col
- */
-export function getValidColumnsForScreenSize(screenSize: ScreenSize): GridColumns[] {
-    switch (screenSize) {
-        case "mobile":
-            return [2];
-        case "tablet":
-            return [2];
-        case "desktop":
-        default:
-            return [2, 3, 4];
-    }
-}
-
-/**
- * Returns the default columns for a screen size.
- */
-export function getDefaultColumnsForScreenSize(screenSize: ScreenSize): GridColumns {
-    switch (screenSize) {
-        case "mobile":
-            return 2;
-        case "tablet":
-            return 2;
-        case "desktop":
-        default:
-            return 3;
-    }
-}
-
-/**
- * Adjusts columns to be valid for the current screen size.
- * Returns the closest valid option if current is invalid.
- */
-export function constrainColumnsToScreenSize(columns: GridColumns, screenSize: ScreenSize): GridColumns {
-    const validOptions = getValidColumnsForScreenSize(screenSize);
-
-    // If current columns is valid, keep it
-    if (validOptions.includes(columns)) {
-        return columns;
-    }
-
-    // Find closest valid option
-    const sorted = [...validOptions].sort((a, b) => Math.abs(a - columns) - Math.abs(b - columns));
-    return sorted[0];
-}
-
-/**
- * Check if a column option should be shown for the current screen size.
- */
-export function isColumnOptionVisible(option: GridColumns, screenSize: ScreenSize): boolean {
-    return getValidColumnsForScreenSize(screenSize).includes(option);
-}
 
 /**
  * Get grid CSS class name based on columns and layout mode (Edge-to-Edge Design).

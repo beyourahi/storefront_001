@@ -195,10 +195,6 @@ export const currencyFormatter = CurrencyFormatter.getInstance();
 
 export const formatPrice = currencyFormatter.format.bind(currencyFormatter);
 export const formatShopifyMoney = currencyFormatter.formatShopifyMoney.bind(currencyFormatter);
-export const formatPriceRange = currencyFormatter.formatPriceRange.bind(currencyFormatter);
 export const formatMinimalisticRange = currencyFormatter.formatMinimalisticRange.bind(currencyFormatter);
 export const calculateDiscount = currencyFormatter.calculateDiscount.bind(currencyFormatter);
 export const getZeroPrice = currencyFormatter.getZeroPrice.bind(currencyFormatter);
-
-export const formatPriceWithLocale = formatPrice;
-export const getZeroFallbackWithCurrency = getZeroPrice;

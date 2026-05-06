@@ -1,7 +1,6 @@
 /**
- * Numeric utility singleton — safe parsing, clamping, rounding, and discount
- * arithmetic. Use the module-level convenience exports (`clamp`, `roundToDecimals`,
- * etc.) rather than instantiating the class directly.
+ * Numeric utility singleton — safe parsing and discount arithmetic.
+ * Use the module-level convenience exports rather than instantiating the class directly.
  */
 export class NumberUtils {
     private static instance: NumberUtils;
@@ -88,13 +87,4 @@ export class NumberUtils {
 
 export const numberUtils = NumberUtils.getInstance();
 
-export const isValidNumber = numberUtils.isValidNumber.bind(numberUtils);
 export const parseNumber = numberUtils.parseNumber.bind(numberUtils);
-export const clamp = numberUtils.clamp.bind(numberUtils);
-export const roundToDecimals = numberUtils.roundToDecimals.bind(numberUtils);
-export const calculatePercentage = numberUtils.calculatePercentage.bind(numberUtils);
-export const calculateTotal = numberUtils.calculateTotal.bind(numberUtils);
-export const calculateSavings = numberUtils.calculateSavings.bind(numberUtils);
-export const formatDecimal = numberUtils.formatDecimal.bind(numberUtils);
-export const ensurePositive = numberUtils.ensurePositive.bind(numberUtils);
-export const ensureInteger = numberUtils.ensureInteger.bind(numberUtils);

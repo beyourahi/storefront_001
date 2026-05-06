@@ -137,29 +137,3 @@ export const useInView = (options: UseInViewOptions = {}): UseInViewReturn => {
     return {ref, inView, triggerInView, mounted};
 };
 
-/**
- * Helper to calculate stagger delay for grid/list items
- * Caps at maxItems to prevent excessive delays
- *
- * @param index - Item index in the list
- * @param delayIncrement - Delay between items in ms (default: 40)
- * @param maxItems - Maximum items to stagger (default: 12)
- * @returns Delay in milliseconds
- */
-export const getStaggerDelay = (index: number, delayIncrement = 40, maxItems = 12): number => {
-    return Math.min(index, maxItems - 1) * delayIncrement;
-};
-
-/**
- * CSS style object for stagger animation delay
- *
- * @param index - Item index
- * @param delayIncrement - Delay increment in ms
- * @param maxItems - Max items to stagger
- * @returns Style object with animationDelay
- */
-export const getStaggerStyle = (index: number, delayIncrement = 40, maxItems = 12): React.CSSProperties => ({
-    animationDelay: `${getStaggerDelay(index, delayIncrement, maxItems)}ms`
-});
-
-export default useInView;

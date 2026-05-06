@@ -43,15 +43,6 @@ export interface OKLCH {
     h: number; // Hue: 0-360 degrees
 }
 
-/**
- * Oklab color space (cartesian form of OKLCH)
- */
-export interface Oklab {
-    L: number; // Lightness: 0-1
-    a: number; // Green-red axis: typically -0.4 to 0.4
-    b: number; // Blue-yellow axis: typically -0.4 to 0.4
-}
-
 // =============================================================================
 // CONTRAST TYPES
 // =============================================================================
@@ -171,30 +162,3 @@ export interface GamutMapOptions {
     targetSpace?: "srgb" | "p3";
 }
 
-/**
- * Result of swatch visibility validation
- */
-export interface SwatchVisibilityResult {
-    /** Whether the swatch meets minimum visibility requirements */
-    isValid: boolean;
-    /** Contrast ratio between swatch and background */
-    contrastRatio: number;
-    /** Recommendation if invalid, null if valid */
-    recommendation: string | null;
-}
-
-// =============================================================================
-// AUDIT TYPES
-// =============================================================================
-
-/**
- * Color pair audit result for batch validation
- */
-export interface ColorPairAudit {
-    foregroundName: string;
-    backgroundName: string;
-    foregroundValue: string;
-    backgroundValue: string;
-    result: ContrastResult | null;
-    comment: string;
-}

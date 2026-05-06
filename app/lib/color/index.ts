@@ -10,7 +10,6 @@
  * ```typescript
  * import {
  *   calculateContrast,
- *   ensureContrastCompliance,
  *   getContrastForeground,
  *   getSwatchBorderColor,
  *   toHex,
@@ -56,16 +55,9 @@ export {
     toOklchString,
     // Gamut checking
     isInSrgbGamut,
-    // OKLCH manipulation
-    adjustLightness,
-    adjustChroma,
-    rotateHue,
-    toMuted,
     // Legacy compatibility
-    parseOklch,
     hexToRgb,
     rgbToHex,
-    parseColorToRgb,
     hexToOklch,
     normalizeToOklch
 } from "./core";
@@ -75,48 +67,28 @@ export {
 // =============================================================================
 
 export {
-    // Main contrast function
     calculateContrast,
-    calculateContrastWithOpacity,
-    meetsContrastRequirement,
-    adjustColorForContrast,
-    lightenColor,
-    darkenColor,
-    // Compliance helpers
-    ensureContrastCompliance,
     getContrastForeground,
-    // Low-level WCAG functions
     relativeLuminance,
-    contrastRatio,
-    blendWithOpacity,
-    // Documentation utilities
-    formatContrastComment,
-    auditColorPair
+    contrastRatio
 } from "./contrast";
 
 // =============================================================================
 // SWATCH UTILITIES
 // =============================================================================
 
-export {getSwatchBorderColor, getSmartSwatchBorderColor, isLightSwatchColor, validateSwatchVisibility} from "./swatch";
+export {getSmartSwatchBorderColor} from "./swatch";
 
 // =============================================================================
 // TYPE EXPORTS
 // =============================================================================
 
 export type {
-    // Color primitives
     RGB,
     OKLCH,
-    Oklab,
-    // Contrast results
     ContrastResult,
     APCAResult,
     ContrastAlgorithm,
-    // Utility options
     SwatchBorderOptions,
-    GamutMapOptions,
-    SwatchVisibilityResult,
-    // Audit types
-    ColorPairAudit
+    GamutMapOptions
 } from "./types";

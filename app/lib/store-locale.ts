@@ -3,7 +3,6 @@
  * onboarding a new client — they drive currency formatting, SEO, sitemap
  * locale tags, and the Hydrogen i18n context.
  */
-export const STORE_COUNTRY_NAME = "Bangladesh" as const;
 export const STORE_COUNTRY_CODE = "BD" as const;
 export const STORE_LANGUAGE_CODE = "EN" as const;
 export const STORE_FORMAT_LOCALE = "en-BD" as const;

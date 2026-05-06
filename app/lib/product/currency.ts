@@ -79,6 +79,3 @@ export const formatShopifyMoney = (money: {amount: string; currencyCode: string}
     return formatPriceWithLocale(amount, money.currencyCode || "USD");
 };
 
-export const getZeroFallbackWithCurrency = (currencyCode: string): string => {
-    return formatPriceWithLocale(0, currencyCode || "USD");
-};

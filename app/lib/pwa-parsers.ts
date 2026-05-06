@@ -131,6 +131,3 @@ export const buildLettermarkIconSvg = (brandName: string): string => {
     ].join("");
 };
 
-export const getThemeColor = (themeConfig: ThemeConfig): string => {
-    return toHexColor(themeConfig.colors.primary);
-};

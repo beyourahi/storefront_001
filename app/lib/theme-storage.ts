@@ -94,46 +94,6 @@ export function getThemeFromStorage(): GeneratedTheme | null {
     }
 }
 
-/** Returns the Unix timestamp (ms) when the theme was last cached, or null if unavailable. */
-export function getThemeCacheTimestamp(): number | null {
-    if (typeof window === "undefined") return null;
-
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (!stored) return null;
-
-        const parsed = JSON.parse(stored) as unknown;
-
-        if (
-            parsed !== null &&
-            typeof parsed === "object" &&
-            "timestamp" in parsed &&
-            typeof parsed.timestamp === "number"
-        ) {
-            return parsed.timestamp;
-        }
-
-        return null;
-    } catch {
-        return null;
-    }
-}
-
-/** Remove the cached theme from localStorage. No-op in SSR. */
-export function clearThemeStorage(): void {
-    if (typeof window === "undefined") return;
-
-    try {
-        localStorage.removeItem(STORAGE_KEY);
-    } catch {
-        // Ignore quota or permission errors
-    }
-}
-
-/** Returns true if a valid cached theme exists in localStorage. */
-export function hasThemeInStorage(): boolean {
-    return getThemeFromStorage() !== null;
-}
 
 /**
  * Ask the active service worker to refresh the `/offline` route cache.

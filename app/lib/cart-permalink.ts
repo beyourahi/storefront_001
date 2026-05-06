@@ -71,25 +71,3 @@ export function buildCartPermalink(
     const query = params.toString();
     return query ? `${base}?${query}` : base;
 }
-
-/**
- * Parse a cart permalink path segment into line objects.
- * Input: "12345:2,67890:1" (the {lines} param from cart.$lines.tsx)
- * Output: [{variantId: "12345", quantity: 2}, {variantId: "67890", quantity: 1}]
- *
- * Invalid or malformed entries are filtered out silently.
- */
-export function parseCartPermalinkPath(path: string): CartPermalinkLine[] {
-    return path
-        .split(",")
-        .map(segment => {
-            const [rawId, rawQty] = segment.split(":");
-            const variantId = rawId?.trim();
-            const quantity = parseInt(rawQty ?? "1", 10);
-            if (!variantId || !/^\d+$/.test(variantId) || !Number.isInteger(quantity) || quantity < 1) {
-                return null;
-            }
-            return {variantId, quantity} satisfies CartPermalinkLine;
-        })
-        .filter((line): line is NonNullable<{variantId: string; quantity: number}> => line !== null);
-}

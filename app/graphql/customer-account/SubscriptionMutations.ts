@@ -172,4 +172,3 @@ export const SUBSCRIPTION_ACTIONS = {
     UNSKIP_CYCLE: "unskipCycle"
 } as const;
 
-export type SubscriptionAction = (typeof SUBSCRIPTION_ACTIONS)[keyof typeof SUBSCRIPTION_ACTIONS];
