@@ -42,6 +42,7 @@
  */
 
 import {DEFAULT_BORDER_RADIUS_SEED, sanitizeBorderRadiusSeed} from "~/lib/theme-utils";
+import {getRotatingVariation} from "~/lib/rotating-content";
 import type {
     SiteSettings,
     SocialLink,
@@ -1159,7 +1160,9 @@ export function parseThemeSettings(rawData: unknown): ThemeConfig {
  * Now contains ALL site configuration including collections
  */
 export function parseSiteSettings(rawData: unknown): SiteSettings {
-    if (!rawData || typeof rawData !== "object") return DEFAULT_SITE_SETTINGS;
+    const rotation = getRotatingVariation();
+
+    if (!rawData || typeof rawData !== "object") return {...DEFAULT_SITE_SETTINGS, ...rotation};
 
     const data = rawData as MetaobjectData;
 
@@ -1178,9 +1181,9 @@ export function parseSiteSettings(rawData: unknown): SiteSettings {
         brandWords: parseBrandWords(data.brandWords),
         featuredProductSection: parseFeaturedProductSection(data.featuredProductSection),
 
-        // Hero Section
-        heroHeading: data.heroHeading?.value || DEFAULT_SITE_SETTINGS.heroHeading,
-        heroDescription: data.heroDescription?.value || DEFAULT_SITE_SETTINGS.heroDescription,
+        // Hero Section — content from rotating-content.ts, never from site_settings
+        heroHeading: rotation.heroHeading,
+        heroDescription: rotation.heroDescription,
         heroMediaMobile: parseHeroMedia(data.heroMediaMobile) || DEFAULT_SITE_SETTINGS.heroMediaMobile,
         heroMediaLargeScreen: parseHeroMedia(data.heroMediaLargeScreen) || DEFAULT_SITE_SETTINGS.heroMediaLargeScreen,
 
@@ -1199,18 +1202,18 @@ export function parseSiteSettings(rawData: unknown): SiteSettings {
             zip: data.zipCode?.value || DEFAULT_SITE_SETTINGS.address.zip
         },
 
-        // Section Headings
-        blogSectionTitle: data.blogSectionTitle?.value || DEFAULT_SITE_SETTINGS.blogSectionTitle,
-        collectionsTitle: data.collectionsTitle?.value || DEFAULT_SITE_SETTINGS.collectionsTitle,
-        relatedProductsTitle: data.relatedProductsTitle?.value || DEFAULT_SITE_SETTINGS.relatedProductsTitle,
-        recommendedTitle: data.recommendedTitle?.value || DEFAULT_SITE_SETTINGS.recommendedTitle,
-        instagramTitle: data.instagramTitle?.value || DEFAULT_SITE_SETTINGS.instagramTitle,
+        // Section Headings — content from rotating-content.ts, never from site_settings
+        blogSectionTitle: rotation.blogSectionTitle,
+        collectionsTitle: rotation.collectionsTitle,
+        relatedProductsTitle: rotation.relatedProductsTitle,
+        recommendedTitle: rotation.recommendedTitle,
+        instagramTitle: rotation.instagramTitle,
 
-        // Page Headings (Gallery & Blog)
-        galleryPageHeading: data.galleryPageHeading?.value || DEFAULT_SITE_SETTINGS.galleryPageHeading,
-        galleryPageDescription: data.galleryPageDescription?.value || DEFAULT_SITE_SETTINGS.galleryPageDescription,
-        blogPageHeading: data.blogPageHeading?.value || DEFAULT_SITE_SETTINGS.blogPageHeading,
-        blogPageDescription: data.blogPageDescription?.value || DEFAULT_SITE_SETTINGS.blogPageDescription,
+        // Page Headings (Gallery & Blog) — content from rotating-content.ts, never from site_settings
+        galleryPageHeading: rotation.galleryPageHeading,
+        galleryPageDescription: rotation.galleryPageDescription,
+        blogPageHeading: rotation.blogPageHeading,
+        blogPageDescription: rotation.blogPageDescription,
 
         // Promotional Banners
         announcementBanner: parseAnnouncementTexts(data.announcementBanner),
