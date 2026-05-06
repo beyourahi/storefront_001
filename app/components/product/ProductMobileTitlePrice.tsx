@@ -39,15 +39,15 @@ export const ProductMobileTitlePrice = ({
                 ) : (
                     <>
                         {product.productType && (
-                            <Badge variant="secondary" className="rounded-[var(--radius-xl)] whitespace-nowrap">
+                            <Badge variant="secondary" className="rounded-[var(--radius)] whitespace-nowrap">
                                 {product.productType}
                             </Badge>
                         )}
                         <ProductPageDiscountIndicator discountPercentage={discountPercentage} />
                         {isOutOfStock && (
-                            <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius-xl)] px-0.5 pr-1 py-0 text-xs">
+                            <Badge className="bg-destructive hover:bg-destructive rounded-[var(--radius)] px-0.5 pr-1 py-0 text-xs">
                                 <span className="text-destructive-foreground flex items-center gap-1.5 font-medium">
-                                    <span className="bg-destructive/80 flex items-center justify-center rounded-[var(--radius-xl)] p-0.5">
+                                    <span className="bg-destructive/80 flex items-center justify-center rounded-[var(--radius)] p-0.5">
                                         <Ban size={12} className="pointer-events-none" aria-hidden="true" />
                                     </span>
                                     <span className="font-medium uppercase">{OUT_OF_STOCK_LABEL}</span>

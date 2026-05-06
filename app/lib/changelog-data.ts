@@ -38,6 +38,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-06",
         category: "Improvement",
+        headline: "Product page badges now match your store's corner style",
+        summary:
+            "Discount, out-of-stock, and product type badges on the product page now use the same corner rounding as the rest of your store's design. Previously they used a fixed pill or extra-large radius regardless of your theme settings."
+    },
+    {
+        date: "2026-05-06",
+        category: "Improvement",
         headline: "Sold-out options are now visible when browsing products",
         summary:
             "Size and color options that are sold out now stay visible across the store — on product pages, quick-add dialogs, and the mobile selection sheet. They appear greyed out with a diagonal strikethrough so you can see the full range of options, and are clearly labelled 'sold out' for screen readers."
