@@ -220,12 +220,15 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
                                                 : undefined;
                                             const hasSwatchData = isColor && hasColorMapping(value.value);
 
+                                            const isOos = !isAvailable;
                                             const buttonClasses = cn(
-                                                "inline-flex min-h-11 min-w-24 select-none items-center justify-center gap-2 rounded-full border-2 px-3 sm:px-4 py-1.5 text-base sm:text-lg font-medium sleek hover:scale-[1.02] hover:shadow-md active:scale-[0.98]",
+                                                "relative overflow-hidden inline-flex min-h-11 min-w-24 select-none items-center justify-center gap-2 rounded-full border-2 px-3 sm:px-4 py-1.5 text-base sm:text-lg font-medium",
                                                 isSelected
                                                     ? "border-primary bg-primary text-primary-foreground"
-                                                    : "border-primary text-primary hover:bg-primary hover:text-primary-foreground",
-                                                !isAvailable && "opacity-50 cursor-not-allowed"
+                                                    : "border-primary text-primary",
+                                                isAvailable
+                                                    ? "sleek hover:bg-primary hover:text-primary-foreground hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
+                                                    : "opacity-45 cursor-not-allowed"
                                             );
 
                                             const optionContent =
@@ -248,6 +251,7 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
                                                     key={value.value}
                                                     type="button"
                                                     disabled={!isAvailable}
+                                                    aria-label={isOos ? `${value.value}, sold out` : undefined}
                                                     onClick={() => {
                                                         if (variant && isAvailable) {
                                                             setSelectedVariantId(variant.id);
@@ -256,6 +260,14 @@ export function QuickAddDialog({product, open, onOpenChange}: QuickAddDialogProp
                                                     className={buttonClasses}
                                                 >
                                                     {optionContent}
+                                                    {isOos && (
+                                                        <span
+                                                            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden rounded-[inherit]"
+                                                            aria-hidden="true"
+                                                        >
+                                                            <span className="block h-[1.5px] w-[150%] rotate-[-28deg] bg-current opacity-30" />
+                                                        </span>
+                                                    )}
                                                 </button>
                                             );
                                         })}
@@ -385,8 +397,8 @@ function QuickAddCartButton({
 
 /**
  * Group variants into per-option-name buckets, tracking availability.
- * Only option groups with more than one available value are included —
- * single-value axes offer no selection choice and are omitted.
+ * All values are included — OOS ones (hasAvailableVariant=false) are rendered disabled.
+ * Single-value axes (only one total option value) are omitted as they offer no choice.
  */
 function groupVariantsByOption(
     variants: QuickAddVariant[]
@@ -404,6 +416,7 @@ function groupVariantsByOption(
                     hasAvailableVariant: variant.availableForSale
                 });
             } else if (variant.availableForSale && !existing.hasAvailableVariant) {
+                // Upgrade to the available variant if a better match is found
                 optionMap.get(option.name)!.set(option.value, {
                     variantId: variant.id,
                     hasAvailableVariant: true
@@ -418,10 +431,13 @@ function groupVariantsByOption(
     }> = [];
 
     for (const [name, values] of optionMap) {
-        const availableValues = Array.from(values.entries())
-            .filter(([, info]) => info.hasAvailableVariant)
-            .map(([value, info]) => ({value, variantId: info.variantId, hasAvailableVariant: info.hasAvailableVariant}));
-        if (availableValues.length > 1) result.push({name, values: availableValues});
+        // Include all values (OOS + in-stock) — single-value axes are hidden as they offer no choice
+        const allValues = Array.from(values.entries()).map(([value, info]) => ({
+            value,
+            variantId: info.variantId,
+            hasAvailableVariant: info.hasAvailableVariant
+        }));
+        if (allValues.length > 1) result.push({name, values: allValues});
     }
 
     return result;

@@ -10,14 +10,18 @@ type OptionSelectorProps = {
 };
 
 /**
- * Variant option picker for the PDP. Two filtering passes apply before render:
- * 1. Removes option values that are unavailable across all variants.
- * 2. Hides entire option axes where only one value is available (no meaningful choice).
+ * Variant option picker for the PDP. Two passes apply before render:
+ * 1. Keeps all option values where the variant exists — OOS values are shown disabled,
+ *    non-existent combinations (exists=false) are hidden.
+ * 2. Hides entire option axes where only one value exists (no meaningful choice).
  *
  * Two rendering paths per value:
  * - `isDifferentProduct === true`: renders a `<Link>` to a separate product URL
  *   (used for combined-listing products that share option names across different SKUs).
  * - Otherwise: navigates within the same product by updating `variantUriQuery` search params.
+ *
+ * OOS values are shown with a diagonal strikethrough, `disabled`, reduced opacity, and a
+ * descriptive `aria-label`. Hover/active states are suppressed for OOS variants.
  *
  * Color options with swatch data (Shopify color metafield or image) render a `<ColorSwatch>`.
  */
@@ -29,7 +33,8 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
             productOptions
                 .map(option => ({
                     ...option,
-                    optionValues: option.optionValues.filter(value => value.available)
+                    // Include OOS variants (exists=true, available=false); hide non-existent combos (exists=false)
+                    optionValues: option.optionValues.filter(value => value.exists !== false)
                 }))
                 .filter(option => option.optionValues.length > 0),
         [productOptions]
@@ -66,6 +71,8 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                     swatch
                                 } = value;
 
+                                const isOos = !available;
+
                                 const swatchImageUrl =
                                     swatch?.image && typeof swatch.image === "object" && "url" in swatch.image
                                         ? (swatch.image as {url: string}).url
@@ -90,13 +97,23 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                     <span className="leading-none">{name}</span>
                                 );
 
+                                // Diagonal strikethrough overlay for OOS variants
+                                const oosOverlay = isOos ? (
+                                    <span
+                                        className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden rounded-[inherit]"
+                                        aria-hidden="true"
+                                    >
+                                        <span className="block h-[1.5px] w-[150%] rotate-[-28deg] bg-current opacity-30" />
+                                    </span>
+                                ) : null;
+
                                 if (isDifferentProduct) {
                                     return (
                                         <Button
                                             key={option.name + name}
                                             variant={selected ? "default" : "secondary"}
                                             size="sm"
-                                            className="min-w-24 h-11 sm:h-8"
+                                            className="relative overflow-hidden min-w-24 h-11 sm:h-8"
                                             asChild
                                         >
                                             <Link
@@ -104,8 +121,10 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                                 preventScrollReset
                                                 replace
                                                 to={`/products/${handle}?${variantUriQuery}`}
+                                                aria-label={isOos ? `${name}, sold out` : undefined}
                                             >
                                                 {optionContent}
+                                                {oosOverlay}
                                             </Link>
                                         </Button>
                                     );
@@ -116,8 +135,9 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                         key={option.name + name}
                                         variant={selected ? "default" : "secondary"}
                                         size="sm"
-                                        className="min-w-24 h-11 sm:h-8"
+                                        className="relative overflow-hidden min-w-24 h-11 sm:h-8"
                                         disabled={!exists || !available}
+                                        aria-label={isOos ? `${name}, sold out` : undefined}
                                         type="button"
                                         onClick={() => {
                                             if (!selected) {
@@ -129,6 +149,7 @@ export const OptionSelector = ({productOptions}: OptionSelectorProps) => {
                                         }}
                                     >
                                         {optionContent}
+                                        {oosOverlay}
                                     </Button>
                                 );
                             })}

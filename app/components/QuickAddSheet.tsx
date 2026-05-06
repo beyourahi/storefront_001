@@ -226,6 +226,7 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                                                         <span>{value.value}</span>
                                                     );
 
+                                                const isOos = !isAvailable;
                                                 return (
                                                     <Button
                                                         key={value.value}
@@ -233,14 +234,23 @@ export function QuickAddSheet({product, open, onOpenChange}: QuickAddSheetProps)
                                                         variant={isSelected ? "default" : "secondary"}
                                                         size="sm"
                                                         disabled={!isAvailable}
+                                                        aria-label={isOos ? `${value.value}, sold out` : undefined}
                                                         onClick={() => {
                                                             if (variant && isAvailable) {
                                                                 setSelectedVariantId(variant.id);
                                                             }
                                                         }}
-                                                        className={cn("min-w-24 h-11 sm:h-8", !isAvailable && "opacity-50 cursor-not-allowed")}
+                                                        className="relative overflow-hidden min-w-24 h-11 sm:h-8"
                                                     >
                                                         {optionContent}
+                                                        {isOos && (
+                                                            <span
+                                                                className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden rounded-[inherit]"
+                                                                aria-hidden="true"
+                                                            >
+                                                                <span className="block h-[1.5px] w-[150%] rotate-[-28deg] bg-current opacity-30" />
+                                                            </span>
+                                                        )}
                                                     </Button>
                                                 );
                                             })}
@@ -401,10 +411,10 @@ function groupVariantsByOption(
     }> = [];
 
     for (const [name, values] of optionMap) {
-        const availableValues = Array.from(values.entries())
-            .filter(([, info]) => info.hasAvailableVariant)
+        // Include all values (OOS + in-stock) — single-value axes are hidden as they offer no choice
+        const allValues = Array.from(values.entries())
             .map(([value, info]) => ({value, variantId: info.variantId, hasAvailableVariant: info.hasAvailableVariant}));
-        if (availableValues.length > 1) result.push({name, values: availableValues});
+        if (allValues.length > 1) result.push({name, values: allValues});
     }
 
     return result;
