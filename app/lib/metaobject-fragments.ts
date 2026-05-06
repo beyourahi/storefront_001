@@ -151,7 +151,7 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
               height
             }
           }
-          variants(first: 100) {
+          variants(first: 250) {
             nodes {
               id
               title
@@ -337,7 +337,7 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
 
     # List of file references (images/videos)
     instagramMediaData: field(key: "instagram_images_data") {
-      references(first: 20) {
+      references(first: 250) {
         nodes {
           ... on MediaImage {
             __typename

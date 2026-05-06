@@ -501,7 +501,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       amount
       currencyCode
     }
-    sellingPlanAllocations(first: 10) {
+    sellingPlanAllocations(first: 250) {
       nodes {
         sellingPlan {
           id
@@ -571,7 +571,7 @@ const PRODUCT_FRAGMENT = `#graphql
         title
       }
     }
-    images(first: 10) {
+    images(first: 250) {
       nodes {
         id
         url
@@ -580,7 +580,7 @@ const PRODUCT_FRAGMENT = `#graphql
         height
       }
     }
-    media(first: 10) {
+    media(first: 250) {
       nodes {
         __typename
         mediaContentType
@@ -634,7 +634,7 @@ const PRODUCT_FRAGMENT = `#graphql
         }
       }
     }
-    variants(first: 10) {
+    variants(first: 250) {
       nodes {
         id
         availableForSale
@@ -676,7 +676,7 @@ const PRODUCT_FRAGMENT = `#graphql
       title
     }
     requiresSellingPlan
-    sellingPlanGroups(first: 5) {
+    sellingPlanGroups(first: 250) {
       nodes {
         name
         appName
@@ -684,7 +684,7 @@ const PRODUCT_FRAGMENT = `#graphql
           name
           values
         }
-        sellingPlans(first: 10) {
+        sellingPlans(first: 250) {
           nodes {
             id
             name
@@ -815,7 +815,7 @@ const PRODUCT_REVIEWS_QUERY = `#graphql
   query ProductReviews($id: ID!) {
     product(id: $id) {
       reviews: metafield(namespace: "custom", key: "reviews") {
-        references(first: 20) {
+        references(first: 250) {
           nodes {
             ... on Metaobject {
               reviewerName: field(key: "reviewer_name") { value }

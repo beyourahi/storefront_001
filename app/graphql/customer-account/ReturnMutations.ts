@@ -55,7 +55,7 @@ export const ORDER_REQUEST_RETURN_MUTATION = `#graphql
         name
         status
         createdAt
-        returnLineItems(first: 20) {
+        returnLineItems(first: 250) {
           nodes {
             id
             quantity

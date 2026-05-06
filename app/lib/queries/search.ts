@@ -37,7 +37,7 @@ export const AGENT_SEARCH_PRODUCT_FRAGMENT = `#graphql
         name
       }
     }
-    variants(first: 5) {
+    variants(first: 250) {
       nodes {
         id
         title

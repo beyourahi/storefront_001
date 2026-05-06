@@ -112,7 +112,7 @@ const GALLERY_PRODUCTS_QUERY = `#graphql
             title
           }
         }
-        images(first: 10) {
+        images(first: 250) {
           nodes {
             id
             url

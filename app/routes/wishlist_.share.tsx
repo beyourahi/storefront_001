@@ -341,7 +341,7 @@ const SHARED_WISHLIST_QUERY = `#graphql
                 currencyCode
             }
         }
-        variants(first: 100) {
+        variants(first: 250) {
             nodes {
                 id
                 title

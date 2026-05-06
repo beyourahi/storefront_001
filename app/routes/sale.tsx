@@ -207,7 +207,7 @@ const SALE_PRODUCT_FRAGMENT = `#graphql
         currencyCode
       }
     }
-    variants(first: 20) {
+    variants(first: 250) {
       nodes {
         ...SaleVariant
         title

@@ -88,7 +88,7 @@ export const STORE_CREDIT_TRANSACTION_FRAGMENT = `#graphql
 // Query for customer's store credit accounts with transactions
 export const CUSTOMER_STORE_CREDIT_QUERY = `#graphql
   query CustomerStoreCredit(
-    $first: Int = 10
+    $first: Int = 250
     $transactionsFirst: Int = 20
     $language: LanguageCode
   ) @inContext(language: $language) {
@@ -197,7 +197,7 @@ export function getTotalBalance(accounts: StoreCreditAccountBalance[]): {amount:
 export const STORE_CREDIT_BALANCE_QUERY = `#graphql
   query CustomerStoreCreditBalance($language: LanguageCode) @inContext(language: $language) {
     customer {
-      storeCreditAccounts(first: 10) {
+      storeCreditAccounts(first: 250) {
         nodes {
           id
           balance {

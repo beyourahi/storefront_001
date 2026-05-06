@@ -65,7 +65,7 @@ export const ORDER_LIST_ITEM_FRAGMENT = `#graphql
       amount
       currencyCode
     }
-    lineItems(first: 20) {
+    lineItems(first: 250) {
       nodes {
         id
         title
@@ -170,7 +170,7 @@ export const ORDER_ITEM_FRAGMENT = `#graphql
     }
 
     # Order-level discounts
-    discountApplications(first: 10) {
+    discountApplications(first: 250) {
       nodes {
         value {
           __typename
@@ -186,7 +186,7 @@ export const ORDER_ITEM_FRAGMENT = `#graphql
     }
 
     # Line items with full details
-    lineItems(first: 50) {
+    lineItems(first: 250) {
       nodes {
         id
         title

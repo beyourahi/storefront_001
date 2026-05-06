@@ -405,7 +405,7 @@ const EXPLORE_COLLECTIONS_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    collections(first: 20) {
+    collections(first: 250) {
       nodes {
         id
         handle
@@ -448,7 +448,7 @@ const COLLECTION_WITH_PRODUCTS_QUERY = `#graphql
           description
           availableForSale
           options { id name values }
-          variants(first: 10) {
+          variants(first: 250) {
             edges {
               node {
                 id

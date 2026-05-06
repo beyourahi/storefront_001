@@ -99,23 +99,23 @@ export const CUSTOMER_ORDER_QUERY = `#graphql
       formatted(withName: true)
       formattedArea
     }
-    discountApplications(first: 100) {
+    discountApplications(first: 250) {
       nodes {
         ...DiscountApplication
       }
     }
-    lineItems(first: 100) {
+    lineItems(first: 250) {
       nodes {
         ...OrderLineItemFull
       }
     }
-    returns(first: 10) {
+    returns(first: 250) {
       nodes {
         id
         name
         status
         createdAt
-        returnLineItems(first: 20) {
+        returnLineItems(first: 250) {
           nodes {
             id
             quantity
@@ -136,7 +136,7 @@ export const CUSTOMER_ORDER_QUERY = `#graphql
       }
     }
     returnInformation {
-      returnableLineItems(first: 100) {
+      returnableLineItems(first: 250) {
         nodes {
           quantity
           lineItem {

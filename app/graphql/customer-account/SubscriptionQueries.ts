@@ -116,7 +116,7 @@ export const SUBSCRIPTION_CONTRACT_FRAGMENT = `#graphql
     deliveryPolicy {
       ...SubscriptionDeliveryPolicy
     }
-    lines(first: 10) {
+    lines(first: 250) {
       nodes {
         ...SubscriptionLine
       }

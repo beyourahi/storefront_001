@@ -55,7 +55,7 @@ export const CUSTOMER_RETURNS_QUERY = `#graphql
     name
     status
     createdAt
-    returnLineItems(first: 20) {
+    returnLineItems(first: 250) {
       nodes {
         ...ReturnLineItem
       }
@@ -66,7 +66,7 @@ export const CUSTOMER_RETURNS_QUERY = `#graphql
     name
     number
     processedAt
-    returns(first: 10) {
+    returns(first: 250) {
       nodes {
         ...ReturnInfo
       }

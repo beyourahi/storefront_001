@@ -522,7 +522,7 @@ export const CART_SUGGESTIONS_QUERY = `#graphql
         }
       }
     }
-    variants(first: 20) {
+    variants(first: 250) {
       nodes {
         id
         title

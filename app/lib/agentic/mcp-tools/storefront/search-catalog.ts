@@ -7,7 +7,7 @@ export const searchCatalogTool: McpTool = {
         type: "object",
         properties: {
             query: {type: "string", description: "Search term"},
-            limit: {type: "integer", minimum: 1, maximum: 50, description: "Number of results (default 10)"},
+            limit: {type: "integer", minimum: 1, maximum: 250, description: "Number of results (default 10)"},
             after: {type: "string", description: "Pagination cursor from previous response"},
             context: {
                 type: "object",
@@ -29,7 +29,7 @@ export const searchCatalogHandler: McpToolHandler = async (params, ctx) => {
 
     return ctx.dataAdapter.searchCatalog({
         term: String(query),
-        first: Math.min(Number(limit) || 10, 50),
+        first: Math.min(Number(limit) || 10, 250),
         after: after ?? undefined,
         country: ctxParams.country ?? "US",
         language: ctxParams.language ?? "EN"

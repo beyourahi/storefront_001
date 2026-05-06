@@ -39,7 +39,7 @@ export const loader = async ({context}: Route.LoaderArgs) => {
 
     const {data, errors} = await customerAccount.query(CUSTOMER_SUBSCRIPTIONS_QUERY, {
         variables: {
-            first: 20,
+            first: 250,
             language: customerAccount.i18n.language
         }
     });

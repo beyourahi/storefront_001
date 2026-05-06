@@ -15,7 +15,7 @@ export const AGENT_PRODUCT_FRAGMENT = `#graphql
       width
       height
     }
-    images(first: 10) {
+    images(first: 250) {
       nodes {
         url
         altText
@@ -45,7 +45,7 @@ export const AGENT_PRODUCT_FRAGMENT = `#graphql
         name
       }
     }
-    variants(first: 20) {
+    variants(first: 250) {
       nodes {
         id
         title
@@ -66,7 +66,7 @@ export const AGENT_PRODUCT_FRAGMENT = `#graphql
           value
         }
         sku
-        sellingPlanAllocations(first: 10) {
+        sellingPlanAllocations(first: 250) {
           nodes {
             sellingPlan {
               id

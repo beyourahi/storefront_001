@@ -247,7 +247,7 @@ const CATALOG_QUERY = `#graphql
             }
           }
         }
-        variants(first: 10) {
+        variants(first: 250) {
           nodes {
             id
             title

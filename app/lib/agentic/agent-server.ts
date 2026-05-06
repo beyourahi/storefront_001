@@ -52,7 +52,7 @@ const AGENT_SEARCH_QUERY = `
             name
             values
           }
-          variants(first: 5) {
+          variants(first: 250) {
             nodes {
               id
               title
@@ -106,7 +106,7 @@ const AGENT_PRODUCT_QUERY = `
         name
         values
       }
-      variants(first: 5) {
+      variants(first: 250) {
         nodes {
           id
           title
@@ -141,7 +141,7 @@ export async function handleAgentSearchRequest(
 
     try {
         const result = await context.dataAdapter.query(AGENT_SEARCH_QUERY, {
-            variables: {term, first: 24},
+            variables: {term, first: 250},
             cache: context.dataAdapter.CacheShort()
         });
 
