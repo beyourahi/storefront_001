@@ -19,6 +19,7 @@
  * - preorder: Pre-order products (shows Pre-Order badge, changes button label)
  * - newArrival: New products (shows New badge)
  * - clearance: Clearance/sale products (shows Clearance badge)
+ * - comingSoon: Products not yet available (shows Coming Soon badge)
  *
  * @usage
  * ```tsx
@@ -87,7 +88,14 @@ export const TAG_CONFIG = {
      * Clearance tag - Products on clearance sale
      * UI: Shows "Clearance" badge with subtle destructive styling
      */
-    clearance: ["clearance", "clearances", "clearancesale", "sale", "onsale"]
+    clearance: ["clearance", "clearances", "clearancesale", "sale", "onsale"],
+
+    /**
+     * Coming Soon tag - Products not yet available for purchase
+     * UI: Shows "Coming Soon" badge with subtle primary styling
+     * Variations: "coming-soon", "coming soon", "coming_soon", "soon", "upcoming", "launching soon"
+     */
+    comingSoon: ["comingsoon", "soon", "upcoming", "launchingsoon"]
 } as const;
 
 /**
@@ -134,6 +142,13 @@ export const BADGE_CONFIG: Record<
         // Maintains readability with foreground text
         className: "bg-destructive/20 text-foreground",
         ariaLabel: "Clearance item"
+    },
+    comingSoon: {
+        label: "Coming Soon",
+        // Subtle primary tint — distinct from all other badges, reads as anticipatory
+        // primary/10 bg keeps it light; primary text ensures contrast against that tint
+        className: "bg-primary/10 text-primary",
+        ariaLabel: "Coming soon"
     }
 };
 
@@ -197,6 +212,8 @@ export interface SpecialTagInfo {
     isNewArrival: boolean;
     /** Product is on clearance */
     isClearance: boolean;
+    /** Product is not yet available for purchase */
+    isComingSoon: boolean;
     /** Array of badge types to display (excludes 'pin') */
     badgeTypes: Exclude<SpecialTagType, "pin">[];
 }
@@ -226,9 +243,12 @@ export function getSpecialTags(tags: string[] | undefined | null): SpecialTagInf
     const isPreorder = hasSpecialTag(tags, "preorder");
     const isNewArrival = hasSpecialTag(tags, "newArrival");
     const isClearance = hasSpecialTag(tags, "clearance");
+    const isComingSoon = hasSpecialTag(tags, "comingSoon");
 
     // Collect badge types (pin doesn't get a badge, it gets an icon)
+    // comingSoon is pushed first — it takes priority in the badge stack
     const badgeTypes: Exclude<SpecialTagType, "pin">[] = [];
+    if (isComingSoon) badgeTypes.push("comingSoon");
     if (isPremium) badgeTypes.push("premium");
     if (isPreorder) badgeTypes.push("preorder");
     if (isNewArrival) badgeTypes.push("newArrival");
@@ -240,6 +260,7 @@ export function getSpecialTags(tags: string[] | undefined | null): SpecialTagInf
         isPreorder,
         isNewArrival,
         isClearance,
+        isComingSoon,
         badgeTypes
     };
 }
