@@ -45,9 +45,15 @@ export const ProductMobileTitlePrice = ({
                         )}
                         <ProductPageDiscountIndicator discountPercentage={discountPercentage} />
                         {isOutOfStock && (
-                            <Badge className="bg-destructive hover:bg-destructive rounded-full px-0.5 pr-1 py-0 text-xs">
+                            <Badge
+                                className="bg-destructive hover:bg-destructive px-0.5 pr-1 py-0 text-xs"
+                                style={{borderRadius: "9999px"}}
+                            >
                                 <span className="text-destructive-foreground flex items-center gap-1.5 font-medium">
-                                    <span className="bg-destructive/80 flex items-center justify-center rounded-full p-0.5">
+                                    <span
+                                        className="bg-destructive/80 flex items-center justify-center p-0.5"
+                                        style={{borderRadius: "9999px"}}
+                                    >
                                         <Ban size={12} className="pointer-events-none" aria-hidden="true" />
                                     </span>
                                     <span className="font-medium uppercase">{OUT_OF_STOCK_LABEL}</span>
