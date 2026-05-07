@@ -1,6 +1,4 @@
-import {Mail, Phone} from "lucide-react";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
-import {Button} from "~/components/ui/button";
 import {parseMarkdownLinks} from "~/lib/text-format";
 import {useSiteSettings} from "~/lib/site-content-context";
 
@@ -12,14 +10,10 @@ type FAQItem = {
 
 type FAQSectionProps = {
     faqItems?: FAQItem[];
-    contactEmail?: string;
-    contactPhone?: string;
 };
 
-const isContactInfoValid = (value?: string | null): boolean => Boolean(value && value.trim().length > 0);
-
 /**
- * Accordion FAQ section with a contact CTA.
+ * Accordion FAQ section.
  * Props take precedence over `useSiteSettings` values so the same component can
  * be rendered standalone on the `/faq` route with explicitly supplied data, or
  * on the homepage where it falls back to the metaobject-driven site settings.
@@ -27,15 +21,10 @@ const isContactInfoValid = (value?: string | null): boolean => Boolean(value && 
  * links to `<a>` tags before being set as inner HTML — content originates from
  * Shopify metaobjects, not user input.
  */
-export const FAQSection = ({faqItems, contactEmail, contactPhone}: FAQSectionProps = {}) => {
-    const {faqItems: settingsFaqItems, contactEmail: settingsEmail, contactPhone: settingsPhone} = useSiteSettings();
+export const FAQSection = ({faqItems}: FAQSectionProps = {}) => {
+    const {faqItems: settingsFaqItems} = useSiteSettings();
     const faqs = faqItems ?? settingsFaqItems;
-    const email = contactEmail ?? settingsEmail;
-    const phone = contactPhone ?? settingsPhone;
 
-    const hasEmail = isContactInfoValid(email);
-    const hasPhone = isContactInfoValid(phone);
-    const contactMethodsCount = (hasEmail ? 1 : 0) + (hasPhone ? 1 : 0);
     const hasFAQs = Array.isArray(faqs) && faqs.length > 0;
 
     if (!hasFAQs) return null;
@@ -75,48 +64,6 @@ export const FAQSection = ({faqItems, contactEmail, contactPhone}: FAQSectionPro
                                 </div>
                             );
                         })}
-                    </div>
-                </div>
-
-                <div className="bg-muted mx-auto max-w-2xl rounded-2xl border p-8 text-center">
-                    <div className="space-y-4">
-                        <div>
-                            <h3 className="text-foreground mb-2 text-xl font-semibold">Still have questions?</h3>
-                            <p className="text-muted-foreground text-sm md:text-base">
-                                Our customer support team is here to help. Reach out through our social media channels
-                                or browse our help center for more detailed information.
-                            </p>
-                        </div>
-
-                        {contactMethodsCount > 0 ? (
-                            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-                                {hasPhone && (
-                                    <Button asChild className="w-[80vw] sm:w-auto">
-                                        <a href={`tel:${phone}`}>
-                                            <Phone className="mr-2 h-4 w-4" />
-                                            Call us
-                                        </a>
-                                    </Button>
-                                )}
-                                {hasEmail && (
-                                    <Button
-                                        asChild
-                                        variant={hasPhone ? "outline" : "default"}
-                                        className="w-[80vw] sm:w-auto"
-                                    >
-                                        <a href={`mailto:${email}`}>
-                                            <Mail className="mr-2 h-4 w-4" />
-                                            Email us
-                                        </a>
-                                    </Button>
-                                )}
-                            </div>
-                        ) : (
-                            <p className="text-muted-foreground text-sm">
-                                Contact information will be available soon. Please check our social media channels below
-                                for updates.
-                            </p>
-                        )}
                     </div>
                 </div>
             </div>
