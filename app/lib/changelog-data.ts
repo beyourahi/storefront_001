@@ -38,6 +38,13 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-07",
         category: "Improvement",
+        headline: "Social icons now cover 15 platforms, including WhatsApp and Discord",
+        summary:
+            "The footer now shows icons for 15 social platforms — including WhatsApp, Telegram, Discord, Reddit, GitHub, and Twitch. Any platform your store links to will display its recognisable icon automatically, and unrecognised platforms still show a safe link icon as a fallback."
+    },
+    {
+        date: "2026-05-07",
+        category: "Improvement",
         headline: "Social media links now appear only when they're configured",
         summary:
             "Social icons in the footer and contact section are now fully data-driven — they only appear when a valid profile URL is set in your store settings. Unconfigured or empty links are hidden automatically, keeping the layout clean."
