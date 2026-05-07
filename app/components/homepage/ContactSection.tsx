@@ -147,9 +147,9 @@ export const ContactSection = () => {
                             <p className="text-muted-foreground mb-4 text-xs font-semibold uppercase tracking-widest">
                                 Why Shop With Us
                             </p>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-2">
                                 {BRAND_PROMISES.map(({icon: Icon, title, desc}) => (
-                                    <div key={title} className="bg-background rounded-xl border p-4">
+                                    <div key={title} className="bg-background rounded-xl border p-3">
                                         <div className="text-primary mb-2">
                                             <Icon className="h-5 w-5" aria-hidden="true" />
                                         </div>
