@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-07",
+        category: "Improvement",
+        headline: "Social media links now appear only when they're configured",
+        summary:
+            "Social icons in the footer and contact section are now fully data-driven — they only appear when a valid profile URL is set in your store settings. Unconfigured or empty links are hidden automatically, keeping the layout clean."
+    },
+    {
+        date: "2026-05-07",
         category: "New Feature",
         headline: "Added a contact section to the homepage",
         summary:

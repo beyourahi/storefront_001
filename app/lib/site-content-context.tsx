@@ -51,6 +51,7 @@ import {createContext, useContext, useMemo, type ReactNode} from "react";
 import type {
     SiteContent,
     SiteSettings,
+    SocialLink,
     FAQItem,
     ThemeCoreColors,
     ThemeConfig,
@@ -63,6 +64,47 @@ import {
     FALLBACK_AGENT_ARRIVAL_COPY
 } from "~/lib/metaobject-parsers";
 import {getSmartSwatchBorderColor} from "~/lib/color";
+
+// =============================================================================
+// SOCIAL LINK VALIDATION
+// =============================================================================
+
+// Bare platform homepage URLs that indicate an unconfigured social link.
+// Comparison is done after normalizing (trim, strip trailing slash, lowercase).
+const GENERIC_SOCIAL_URLS = new Set([
+    "https://www.instagram.com", "https://instagram.com",
+    "http://www.instagram.com", "http://instagram.com",
+    "https://www.facebook.com", "https://facebook.com",
+    "http://www.facebook.com", "http://facebook.com",
+    "https://www.threads.net", "https://threads.net",
+    "https://www.threads.com", "https://threads.com",
+    "https://www.twitter.com", "https://twitter.com",
+    "http://www.twitter.com", "http://twitter.com",
+    "https://www.x.com", "https://x.com",
+    "http://www.x.com", "http://x.com",
+    "https://www.tiktok.com", "https://tiktok.com",
+    "http://www.tiktok.com", "http://tiktok.com",
+    "https://www.youtube.com", "https://youtube.com",
+    "http://www.youtube.com", "http://youtube.com",
+    "https://www.pinterest.com", "https://pinterest.com",
+    "http://www.pinterest.com", "http://pinterest.com",
+    "https://www.linkedin.com", "https://linkedin.com",
+    "http://www.linkedin.com", "http://linkedin.com",
+    "https://www.snapchat.com", "https://snapchat.com",
+    "https://www.whatsapp.com", "https://whatsapp.com",
+    "https://wa.me", "https://www.wa.me"
+]);
+
+function isValidSocialUrl(url: string): boolean {
+    if (!url || !url.trim()) return false;
+    try {
+        new URL(url);
+    } catch {
+        return false;
+    }
+    const normalized = url.trim().replace(/\/+$/, "").toLowerCase();
+    return !GENERIC_SOCIAL_URLS.has(normalized);
+}
 
 // =============================================================================
 // CONTEXT
@@ -135,6 +177,22 @@ export function useSiteSettings(): SiteSettings {
  */
 export function useFaqItems(): FAQItem[] {
     return useSiteSettings().faqItems;
+}
+
+/**
+ * Hook to access validated social links from site_settings.
+ * Filters out empty, malformed, or unconfigured (bare platform homepage) URLs.
+ * Returns sorted by displayOrder — safe to render directly without further filtering.
+ */
+export function useSocialLinks(): SocialLink[] {
+    const {socialLinks} = useSiteSettings();
+    return useMemo(
+        () =>
+            (socialLinks ?? [])
+                .filter(link => isValidSocialUrl(link.url))
+                .sort((a, b) => a.displayOrder - b.displayOrder),
+        [socialLinks]
+    );
 }
 
 /**

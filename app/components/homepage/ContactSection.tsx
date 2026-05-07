@@ -1,5 +1,5 @@
 import {Mail, Phone, MapPin, Clock, ExternalLink, ShieldCheck, RotateCcw, Truck, Headphones} from "lucide-react";
-import {useSiteSettings} from "~/lib/site-content-context";
+import {useSiteSettings, useSocialLinks} from "~/lib/site-content-context";
 import {cn} from "~/lib/utils";
 import type {SocialLink} from "types";
 
@@ -101,7 +101,8 @@ const ContactRow = ({icon, label, children}: ContactRowProps) => (
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export const ContactSection = () => {
-    const {contactEmail, contactPhone, businessHours, address, socialLinks} = useSiteSettings();
+    const {contactEmail, contactPhone, businessHours, address} = useSiteSettings();
+    const socialLinks = useSocialLinks();
 
     const addressParts = [address?.street, address?.city, address?.state, address?.zip].filter(Boolean);
     const fullAddress = addressParts.join(", ");
@@ -110,7 +111,7 @@ export const ContactSection = () => {
     const hasPhone = Boolean(contactPhone);
     const hasAddress = fullAddress.length > 0;
     const hasHours = Boolean(businessHours);
-    const hasSocialLinks = Array.isArray(socialLinks) && socialLinks.length > 0;
+    const hasSocialLinks = socialLinks.length > 0;
 
     const hasContactInfo = hasEmail || hasPhone || hasAddress || hasHours;
 
@@ -183,21 +184,19 @@ export const ContactSection = () => {
                             <>
                                 <h3 className="text-foreground mb-6 text-lg font-semibold">Follow Us</h3>
                                 <div className="mb-6 flex flex-wrap gap-3">
-                                    {[...socialLinks]
-                                        .sort((a: SocialLink, b: SocialLink) => a.displayOrder - b.displayOrder)
-                                        .map((link: SocialLink) => (
-                                            <a
-                                                key={link.id}
-                                                href={link.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                aria-label={`Visit our ${getPlatformLabel(link.platform)} page`}
-                                                className="bg-background border-border text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary inline-flex min-h-[44px] items-center gap-2 rounded-full border px-5 py-2 text-sm font-medium transition-colors"
-                                            >
-                                                <PlatformIcon platform={link.platform} />
-                                                {getPlatformLabel(link.platform)}
-                                            </a>
-                                        ))}
+                                    {socialLinks.map((link: SocialLink) => (
+                                        <a
+                                            key={link.id}
+                                            href={link.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label={`Visit our ${getPlatformLabel(link.platform)} page`}
+                                            className="bg-background border-border text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary inline-flex min-h-[44px] items-center gap-2 rounded-full border px-5 py-2 text-sm font-medium transition-colors"
+                                        >
+                                            <PlatformIcon platform={link.platform} />
+                                            {getPlatformLabel(link.platform)}
+                                        </a>
+                                    ))}
                                 </div>
                             </>
                         )}
