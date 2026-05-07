@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-07",
+        category: "Fix",
+        headline: "Social links only appear when your store has them configured",
+        summary:
+            "Social media buttons in the contact section and footer now stay hidden when your store hasn't set up any social links. Previously, placeholder links could appear even with no real accounts connected — those are now gone."
+    },
+    {
+        date: "2026-05-07",
         category: "Improvement",
         headline: "Social icons now cover 15 platforms, including WhatsApp and Discord",
         summary:

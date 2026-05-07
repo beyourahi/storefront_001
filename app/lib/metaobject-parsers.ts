@@ -99,64 +99,7 @@ const FALLBACK_BRAND_WORDS: string[] = [
     "Premium"
 ];
 
-const FALLBACK_SOCIAL_LINKS: SocialLink[] = [
-    {
-        id: "social-facebook",
-        platform: "Facebook",
-        handle: "/yourbrand",
-        url: "https://facebook.com/yourbrand",
-        displayOrder: 1
-    },
-    {
-        id: "social-instagram",
-        platform: "Instagram",
-        handle: "@yourbrand",
-        url: "https://instagram.com/yourbrand",
-        displayOrder: 2
-    },
-    {
-        id: "social-tiktok",
-        platform: "TikTok",
-        handle: "@yourbrand",
-        url: "https://tiktok.com/@yourbrand",
-        displayOrder: 3
-    },
-    {
-        id: "social-x",
-        platform: "X",
-        handle: "@yourbrand",
-        url: "https://x.com/yourbrand",
-        displayOrder: 4
-    },
-    {
-        id: "social-whatsapp",
-        platform: "WhatsApp",
-        handle: "+15551234567",
-        url: "https://wa.me/15551234567",
-        displayOrder: 5
-    },
-    {
-        id: "social-youtube",
-        platform: "YouTube",
-        handle: "@yourbrand",
-        url: "https://youtube.com/@yourbrand",
-        displayOrder: 6
-    },
-    {
-        id: "social-linkedin",
-        platform: "LinkedIn",
-        handle: "company/yourbrand",
-        url: "https://linkedin.com/company/yourbrand",
-        displayOrder: 7
-    },
-    {
-        id: "social-pinterest",
-        platform: "Pinterest",
-        handle: "@yourbrand",
-        url: "https://pinterest.com/yourbrand",
-        displayOrder: 8
-    }
-];
+const FALLBACK_SOCIAL_LINKS: SocialLink[] = [];
 
 const FALLBACK_THEME_FONTS: ThemeFonts = {
     sans: "Inter",
@@ -1219,8 +1162,9 @@ export function parseSiteSettings(rawData: unknown): SiteSettings {
         promotionalBannerOneMedia: parseHeroMedia(data.promotionalBannerOneMedia),
         promotionalBannerTwoMedia: parseHeroMedia(data.promotionalBannerTwoMedia),
 
-        // Collections - parsers return [] when empty, components handle visibility
-        socialLinks: parsedSocialLinks.length > 0 ? parsedSocialLinks : FALLBACK_SOCIAL_LINKS,
+        // socialLinks is always the parsed result — never falls back to placeholder data.
+        // Components guard on socialLinks.length > 0 and render nothing when empty.
+        socialLinks: parsedSocialLinks,
         testimonials: parsedTestimonials,
         faqItems: parsedFaqItems.length > 0 ? parsedFaqItems : DEFAULT_SITE_SETTINGS.faqItems,
         instagramMedia: parsedInstagramMedia,
