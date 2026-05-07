@@ -52,17 +52,28 @@ import type {
     SiteContent,
     SiteSettings,
     SocialLink,
+    SectionHeadings,
+    Testimonial,
     FAQItem,
+    InstagramMedia,
+    HeroMedia,
+    ThemeFonts,
     ThemeCoreColors,
     ThemeConfig,
+    GeneratedTheme,
+    ContactInfo,
+    PolicyExtension,
     TrafficSourceBanner,
-    HomepageVariant
+    HomepageVariant,
+    VipPerk,
+    LimitedOffer
 } from "types";
 import {
     DEFAULT_SITE_SETTINGS,
     DEFAULT_THEME_CONFIG,
     FALLBACK_AGENT_ARRIVAL_COPY
 } from "~/lib/metaobject-parsers";
+import {generateTheme} from "~/lib/theme-utils";
 import {getSmartSwatchBorderColor} from "~/lib/color";
 
 // =============================================================================
@@ -141,6 +152,18 @@ export function SiteContentProvider({children, siteContent}: SiteContentProvider
  * Hook to access the full site content
  * Throws an error if used outside of SiteContentProvider
  */
+export function useSiteContent(): SiteContent {
+    const context = useContext(SiteContentContext);
+    if (!context) {
+        throw new Error("useSiteContent must be used within a SiteContentProvider");
+    }
+    return context;
+}
+
+/**
+ * Hook to access site content with fallback defaults
+ * Safe to use even if provider is not set up (returns defaults)
+ */
 export function useSiteContentSafe(): SiteContent {
     const context = useContext(SiteContentContext);
     if (!context) {
@@ -196,6 +219,94 @@ export function useSocialLinks(): SocialLink[] {
 }
 
 /**
+ * Hook to access section headings (derived from siteSettings)
+ * Provides backward compatibility for components expecting SectionHeadings shape
+ */
+export function useSectionHeadings(): SectionHeadings {
+    const settings = useSiteSettings();
+    return useMemo(
+        () => ({
+            blogSectionTitle: settings.blogSectionTitle,
+            collectionsTitle: settings.collectionsTitle,
+            relatedProductsTitle: settings.relatedProductsTitle,
+            recommendedTitle: settings.recommendedTitle,
+            instagramTitle: settings.instagramTitle
+        }),
+        [settings]
+    );
+}
+
+/**
+ * Hook to access brand marquee words
+ * Returns the brandWords array from site settings
+ */
+export function useBrandMarquee(): {words: string[]} {
+    const {brandWords} = useSiteSettings();
+    return useMemo(() => ({words: brandWords}), [brandWords]);
+}
+
+// =============================================================================
+// HOOKS FOR PROMOTIONAL CONTENT
+// =============================================================================
+
+/**
+ * Hook to access promotional banner content
+ * Returns announcement texts as array (list of single line texts from Shopify)
+ */
+export function usePromotionalBanners(): {
+    announcement: string[];
+    bannerOneMedia?: HeroMedia;
+    bannerTwoMedia?: HeroMedia;
+} {
+    const settings = useSiteSettings();
+    return useMemo(
+        () => ({
+            announcement: settings.announcementBanner,
+            bannerOneMedia: settings.promotionalBannerOneMedia,
+            bannerTwoMedia: settings.promotionalBannerTwoMedia
+        }),
+        [settings]
+    );
+}
+
+// =============================================================================
+// HOOKS FOR COLLECTIONS (JSON arrays stored in site_settings)
+// =============================================================================
+
+/**
+ * Hook to access testimonials
+ * Returns the testimonials array from site settings
+ */
+export function useTestimonials(): Testimonial[] {
+    return useSiteSettings().testimonials;
+}
+
+/**
+ * Hook to access Instagram media (images and videos)
+ * Returns the instagramMedia array from site settings
+ */
+export function useInstagramMedia(): InstagramMedia[] {
+    return useSiteSettings().instagramMedia;
+}
+
+/**
+ * Hook to access contact information (email, phone, hours, address).
+ * Returns typed ContactInfo derived from site_settings metaobject.
+ */
+export function useContactInfo(): ContactInfo {
+    const settings = useSiteSettings();
+    return useMemo(
+        () => ({
+            email: settings.contactEmail,
+            phone: settings.contactPhone,
+            businessHours: settings.businessHours,
+            address: settings.address
+        }),
+        [settings]
+    );
+}
+
+/**
  * Hook to access shop location data (Google Maps embeds + share links).
  * Returns index-paired arrays — consumers zip them and skip incomplete pairs.
  * Both arrays are empty when no locations are configured in Shopify Admin.
@@ -216,11 +327,32 @@ export function useShopLocation(): {embedUrls: string[]; shareLinks: string[]} {
 // =============================================================================
 
 /**
+ * Hook to access theme fonts configuration
+ * Returns fonts from theme config (sans, serif, mono)
+ */
+export function useThemeFonts(): ThemeFonts {
+    return useThemeConfig().fonts;
+}
+
+/**
  * Hook to access core theme colors
  * Returns the 5 core brand colors (primary, secondary, background, foreground, accent)
  */
 export function useThemeColors(): ThemeCoreColors {
     return useThemeConfig().colors;
+}
+
+/**
+ * Hook to generate complete theme from theme config
+ * Returns generated CSS variables, Google Fonts URL, and font config
+ */
+export function useGeneratedTheme(): GeneratedTheme | null {
+    const themeConfig = useThemeConfig();
+
+    return useMemo(
+        () => generateTheme(themeConfig.colors, themeConfig.fonts, themeConfig.borderRadius),
+        [themeConfig.colors, themeConfig.fonts, themeConfig.borderRadius]
+    );
 }
 
 // =============================================================================
@@ -287,6 +419,46 @@ export function useSmartSwatchBorderColor(
 // =============================================================================
 
 /**
+ * Hook to access the brand persona string for AI agents.
+ * Returns null when not configured in Shopify Admin.
+ */
+export function useAgentPersona(): string | null {
+    return useSiteSettings().agentPersona;
+}
+
+/**
+ * Hook to access extended machine-readable policy key/value pairs.
+ * Surfaced via the Policies MCP tool in Phase 3.
+ */
+export function usePolicyExtension(): PolicyExtension[] | null {
+    return useSiteSettings().policyExtension;
+}
+
+/**
+ * Hook to access additional FAQ entries injected into the MCP FAQ tool.
+ * Returns [] when not configured (Policies MCP falls back to faqItems).
+ */
+export function useFaqExtension(): FAQItem[] {
+    return useSiteSettings().faqExtension;
+}
+
+/**
+ * Hook to access the agent-only promotional message.
+ * Returns null when not configured — components should render nothing.
+ */
+export function useAgentOnlyPromo(): string | null {
+    return useSiteSettings().agentOnlyPromo;
+}
+
+/**
+ * Hook to access the free shipping minimum order amount.
+ * Returns null when not configured — cart progress bar component hides itself.
+ */
+export function useFreeShippingMinimumOrder(): number | null {
+    return useSiteSettings().freeShippingMinimumOrder;
+}
+
+/**
  * Hook to access traffic-source banner overrides keyed by utm_source.
  * Returns null when not configured (Phase 5).
  */
@@ -300,6 +472,22 @@ export function useTrafficSourceBanners(): TrafficSourceBanner[] | null {
  */
 export function useHomepageVariants(): HomepageVariant[] | null {
     return useSiteSettings().homepageVariants;
+}
+
+/**
+ * Hook to access VIP tier benefits / perks.
+ * Returns null when not configured (Phase 5).
+ */
+export function useVipPerks(): VipPerk[] | null {
+    return useSiteSettings().vipPerks;
+}
+
+/**
+ * Hook to access time-limited promotional offers with countdown data.
+ * Returns null when not configured (Phase 3).
+ */
+export function useLimitedOffers(): LimitedOffer[] | null {
+    return useSiteSettings().limitedOffers;
 }
 
 // =============================================================================

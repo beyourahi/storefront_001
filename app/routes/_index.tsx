@@ -50,15 +50,15 @@ export const meta: Route.MetaFunction = ({matches}) => {
                       missionStatement?: string;
                       siteUrl?: string;
                       brandLogo?: {url: string; width?: number; height?: number};
+                      socialLinks?: Array<{url: string}>;
                   };
-                  socialLinks?: Array<{url: string}>;
               };
           }
         | undefined;
     const siteSettings = rootData?.siteContent?.siteSettings;
     const shopName = siteSettings?.brandName ?? "Store";
     const description = siteSettings?.missionStatement ?? "";
-    const socialLinks = rootData?.siteContent?.socialLinks;
+    const socialLinks = rootData?.siteContent?.siteSettings?.socialLinks;
     const siteUrl = getSiteUrlFromMatches(matches);
     const brandName = getBrandNameFromMatches(matches);
     const logoUrl = siteSettings?.brandLogo?.url;
