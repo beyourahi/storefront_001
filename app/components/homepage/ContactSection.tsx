@@ -60,7 +60,7 @@ export const ContactSection = () => {
     if (!hasContactInfo && !hasSocialLinks) return null;
 
     return (
-        <section className="bg-background py-8 lg:py-16">
+        <section id="contact" className="bg-background py-8 lg:py-16">
             <div className="mx-auto max-w-[2000px] px-2 md:px-4">
                 {/* ── Header ──────────────────────────────────────────────── */}
                 <div className="mb-12 text-center">

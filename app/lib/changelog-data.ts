@@ -37,6 +37,13 @@ export type ChangelogEntry = {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-07",
+        category: "New Feature",
+        headline: "Footer Contact link scrolls straight to the contact section",
+        summary:
+            "The footer now includes a Contact link under the Company column. Clicking it from any page takes you directly to the contact section on the homepage — with a smooth scroll when you're already there, and an instant jump when navigating from elsewhere."
+    },
+    {
+        date: "2026-05-07",
         category: "Fix",
         headline: "Social links only appear when your store has them configured",
         summary:

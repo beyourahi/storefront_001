@@ -34,7 +34,8 @@ const SHOP_LINKS = [
 const COMPANY_LINKS = [
     {href: "/faq", label: "FAQ"},
     {href: "/gallery", label: "Gallery"},
-    {href: "/blogs", label: "Blog"}
+    {href: "/blogs", label: "Blog"},
+    {href: "/#contact", label: "Contact"}
 ] as const;
 
 export const Footer = ({shopName}: {shopName: string}) => {
