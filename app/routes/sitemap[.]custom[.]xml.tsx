@@ -8,13 +8,12 @@ export const loader = async ({request}: Route.LoaderArgs) => {
     const url = new URL(request.url);
     const origin = url.origin;
 
+    const today = new Date().toISOString().split("T")[0];
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${origin}/faq</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>${origin}/gallery</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
-  <url><loc>${origin}/sale</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>${origin}/changelog</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
-  <url><loc>${origin}/wishlist</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>${origin}/faq</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>${origin}/gallery</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>${origin}/sale</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>`;
 
     return new Response(xml, {
