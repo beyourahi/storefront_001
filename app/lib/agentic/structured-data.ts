@@ -38,16 +38,3 @@ export function getCatalogExtensionMeta(fields: CatalogExtensionFields): Array<{
 
     return metas;
 }
-
-/** Generate FAQPage JSON-LD for structured data and agent consumption */
-export function generateFAQPageSchema(faqs: Array<{question: string; answer: string}>): object {
-    return {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: faqs.map(({question, answer}) => ({
-            "@type": "Question",
-            name: question,
-            acceptedAnswer: {"@type": "Answer", text: answer}
-        }))
-    };
-}
