@@ -81,21 +81,21 @@ export const Footer = ({shopName}: {shopName: string}) => {
 
                         {/* Social icon buttons — only rendered when valid links exist */}
                         {socialLinks.length > 0 && (
-                            <div className="mt-5 flex flex-wrap gap-2" role="list" aria-label="Social media links">
+                            <ul className="mt-5 flex flex-wrap gap-2 list-none p-0" aria-label="Social media links">
                                 {socialLinks.map(link => (
-                                    <a
-                                        key={link.id}
-                                        href={link.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        role="listitem"
-                                        aria-label={`Follow us on ${getSocialLabel(link.platform)}`}
-                                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                                    >
-                                        <SocialIcon platform={link.platform} />
-                                    </a>
+                                    <li key={link.id}>
+                                        <a
+                                            href={link.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label={`Follow us on ${getSocialLabel(link.platform)}`}
+                                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                                        >
+                                            <SocialIcon platform={link.platform} />
+                                        </a>
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         )}
                     </div>
 
