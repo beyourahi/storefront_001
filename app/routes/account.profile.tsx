@@ -19,6 +19,7 @@ import {
     useNavigation,
     useOutletContext
 } from "react-router";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import {Input} from "~/components/ui/input";
 import {Label} from "~/components/ui/label";
 import {Button} from "~/components/ui/button";
@@ -55,10 +56,17 @@ type ActionResponse = {
     error?: string | Record<string, string> | null;
 };
 
-export const meta: Route.MetaFunction = () => [
-    {title: "Account Details"},
-    {name: "robots", content: "noindex,nofollow"}
-];
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Profile",
+        pathname: "/account/profile",
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
+};
 
 export const shouldRevalidate = () => true;
 

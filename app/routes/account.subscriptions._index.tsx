@@ -1,5 +1,6 @@
 import {data as remixData, Link, useLoaderData, useOutletContext} from "react-router";
 import type {Route} from "./+types/account.subscriptions._index";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import type {AccountOutletContext} from "~/routes/account";
 import {Image, Money} from "@shopify/hydrogen";
 import {
@@ -13,7 +14,17 @@ import {Card, CardContent, CardDescription, CardFooter, CardTitle} from "~/compo
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 
-export const meta: Route.MetaFunction = () => [{title: "Subscriptions"}, {name: "robots", content: "noindex,nofollow"}];
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Subscriptions",
+        pathname: "/account/subscriptions",
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
+};
 
 export const loader = async ({context}: Route.LoaderArgs) => {
     const {customerAccount} = context;

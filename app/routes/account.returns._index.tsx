@@ -1,5 +1,6 @@
 import {data as remixData, redirect, useLoaderData, Link} from "react-router";
 import type {Route} from "./+types/account.returns._index";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import {Image} from "@shopify/hydrogen";
 import {CUSTOMER_RETURNS_QUERY, getReturnStatusConfig} from "~/graphql/customer-account/CustomerReturnsQuery";
 import {RETURNS_AVAILABILITY_QUERY, checkReturnsEnabled} from "~/graphql/customer-account/ReturnsAvailabilityQuery";
@@ -11,8 +12,16 @@ import {PackageX, ArrowRightIcon, CalendarIcon, PackageIcon, PackageSearchIcon, 
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 import {parseProductTitle} from "~/lib/product";
 
-export const meta: Route.MetaFunction = () => {
-    return [{title: "Returns History"}, {name: "robots", content: "noindex,nofollow"}];
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Returns",
+        pathname: "/account/returns",
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
 };
 
 export const loader = async ({context}: Route.LoaderArgs) => {

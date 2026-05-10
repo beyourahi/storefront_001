@@ -1,5 +1,6 @@
 import {data as remixData, Form, useLoaderData, useNavigation, useActionData, Link} from "react-router";
 import type {Route} from "./+types/account.subscriptions.$id";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import {Image, Money} from "@shopify/hydrogen";
 import {
     CUSTOMER_SUBSCRIPTION_QUERY,
@@ -32,11 +33,16 @@ import {
     AlertDialogTrigger
 } from "~/components/ui/alert-dialog";
 
-export const meta: Route.MetaFunction = ({data}) => {
-    return [
-        {title: data?.subscription ? "Subscription Details" : "Subscription Not Found"},
-        {name: "robots", content: "noindex,nofollow"}
-    ];
+export const meta: Route.MetaFunction = ({matches, params}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Subscription Details",
+        pathname: `/account/subscriptions/${params.id ?? ""}`,
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
 };
 
 export const loader = async ({params, context}: Route.LoaderArgs) => {

@@ -2,13 +2,11 @@ import {Suspense} from "react";
 import {useLoaderData, useRouteLoaderData, Await} from "react-router";
 import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
-import {getSeoMeta} from "@shopify/hydrogen";
 import {
-    buildCanonicalUrl,
     generateFAQPageSchema,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
-    getSiteUrlFromMatches
+    getSiteUrlFromMatches,
+    buildMeta
 } from "~/lib/seo";
 const FALLBACK_SPECIAL_COLLECTIONS = {
     featured: "featured",
@@ -58,7 +56,7 @@ export const meta: Route.MetaFunction = ({matches}) => {
     const siteSettings = rootData?.siteContent?.siteSettings;
     const shopName = siteSettings?.brandName ?? "Store";
     const description = siteSettings?.missionStatement ?? "";
-    const socialLinks = rootData?.siteContent?.siteSettings?.socialLinks;
+    const socialLinks = siteSettings?.socialLinks;
     const siteUrl = getSiteUrlFromMatches(matches);
     const brandName = getBrandNameFromMatches(matches);
     const logoUrl = siteSettings?.brandLogo?.url;
@@ -73,18 +71,23 @@ export const meta: Route.MetaFunction = ({matches}) => {
         description: description || undefined,
         sameAs: socialLinks?.map(l => l.url).filter(Boolean) ?? []
     };
-    return [
-        ...(getSeoMeta({
-            title: shopName,
-            titleTemplate: null,
-            description,
-            url: buildCanonicalUrl("/", siteUrl),
-            media: logoUrl ? {url: logoUrl, type: "image" as const} : undefined
-        }) ?? []),
-        ...getRequiredSocialMeta("website", brandName, logoUrl),
-        {"script:ld+json": enrichedOrgSchema as any},
-        ...(faqItems && faqItems.length > 0 ? [{"script:ld+json": generateFAQPageSchema(faqItems) as any}] : [])
-    ];
+
+    const jsonLd: object[] = [enrichedOrgSchema];
+    if (faqItems && faqItems.length > 0) {
+        jsonLd.push(generateFAQPageSchema(faqItems));
+    }
+
+    return buildMeta({
+        title: shopName,
+        titleTemplate: null,
+        description,
+        pathname: "/",
+        siteUrl,
+        brandName,
+        ogImage: logoUrl ? {url: logoUrl} : undefined,
+        ogType: "website",
+        jsonLd
+    }) as any;
 };
 
 export function links(args?: {data: Awaited<ReturnType<typeof loader>> | null}) {

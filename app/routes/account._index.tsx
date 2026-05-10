@@ -1,5 +1,6 @@
 import {data as remixData, Form, Link, useLoaderData, useNavigation, useOutletContext} from "react-router";
 import type {Route} from "./+types/account._index";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import type {CustomerFragment} from "customer-accountapi.generated";
 import type {AccountOutletContext} from "~/routes/account";
 import {CUSTOMER_ORDERS_LIST_QUERY} from "~/graphql/customer-account/CustomerOrdersQuery";
@@ -18,10 +19,17 @@ import {
 } from "~/graphql/customer-account/StoreCreditQueries";
 import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 
-export const meta: Route.MetaFunction = () => [
-    {title: "Account Dashboard"},
-    {name: "robots", content: "noindex,nofollow"}
-];
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Account Dashboard",
+        pathname: "/account",
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
+};
 
 export const loader = async ({context}: Route.LoaderArgs) => {
     const {customerAccount} = context;

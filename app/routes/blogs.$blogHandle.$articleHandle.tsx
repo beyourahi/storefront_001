@@ -1,16 +1,15 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/blogs.$blogHandle.$articleHandle";
-import {Image, getSeoMeta} from "@shopify/hydrogen";
+import {Image} from "@shopify/hydrogen";
 import {ArrowLeft} from "lucide-react";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateReadingTime, formatArticleDate, filterRelatedArticles} from "~/lib/blog-utils";
 import {
     generateBlogPostingSchema,
     generateBreadcrumbListSchema,
-    buildCanonicalUrl,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
-    getSiteUrlFromMatches
+    getSiteUrlFromMatches,
+    buildMeta
 } from "~/lib/seo";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {TagList} from "~/components/blog/TagBadge";
@@ -23,52 +22,44 @@ import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
-    const shopName =
-        (
-            matches.find(m => m?.id === "root") as
-                | {data?: {siteContent?: {siteSettings?: {brandName?: string; siteUrl?: string}}}}
-                | undefined
-        )?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const article = data?.article;
     const blogHandle = data?.blogHandle;
-
     if (!article) return [{title: "Article Not Found"}];
 
     const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
     const title = article.seo?.title || article.title;
     const description = article.seo?.description || (article.excerpt ? article.excerpt.substring(0, 155) : "");
     const articlePath = `/blogs/${blogHandle || "news"}/${article.handle}`;
 
-    const brandName = getBrandNameFromMatches(matches);
-    return [
-        ...(getSeoMeta({
-            title,
-            description,
-            url: buildCanonicalUrl(articlePath, siteUrl),
-            media: article.image?.url
-                ? {
-                      url: article.image.url,
-                      width: article.image.width,
-                      height: article.image.height,
-                      altText: article.image.altText || article.title,
-                      type: "image" as const
-                  }
-                : undefined,
-            jsonLd: generateBlogPostingSchema(article, blogHandle || "news", shopName, siteUrl) as any
-        }) ?? []),
-        {
-            "script:ld+json": generateBreadcrumbListSchema(
-                [
-                    {name: "Home", url: "/"},
-                    {name: "Blog", url: "/blogs"},
-                    {name: blogHandle || "news", url: `/blogs/${blogHandle || "news"}`},
-                    {name: article.title, url: `/blogs/${blogHandle || "news"}/${article.handle}`}
-                ],
-                siteUrl
-            ) as any
-        },
-        ...getRequiredSocialMeta("article", brandName, article.image?.url ?? undefined)
-    ];
+    const blogPostingSchema = generateBlogPostingSchema(article, blogHandle || "news", brandName, siteUrl);
+    const breadcrumbSchema = generateBreadcrumbListSchema(
+        [
+            {name: "Home", url: "/"},
+            {name: "Blog", url: "/blogs"},
+            {name: blogHandle || "news", url: `/blogs/${blogHandle || "news"}`},
+            {name: article.title, url: articlePath}
+        ],
+        siteUrl
+    );
+
+    return buildMeta({
+        title,
+        description,
+        pathname: articlePath,
+        siteUrl,
+        brandName,
+        ogImage: article.image?.url
+            ? {
+                  url: article.image.url,
+                  width: article.image.width ?? undefined,
+                  height: article.image.height ?? undefined,
+                  alt: article.image.altText || article.title
+              }
+            : undefined,
+        ogType: "article",
+        jsonLd: [blogPostingSchema, breadcrumbSchema]
+    }) as any;
 };
 
 export async function loader({context, request, params}: Route.LoaderArgs) {

@@ -1,5 +1,6 @@
 import {data as remixData, redirect, Form, useLoaderData, useNavigation, useActionData, Link} from "react-router";
 import type {Route} from "./+types/account.orders.$id.return";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import {Image} from "@shopify/hydrogen";
 import type {OrderQuery} from "customer-accountapi.generated";
 import {CUSTOMER_ORDER_QUERY} from "~/graphql/customer-account/CustomerOrderQuery";
@@ -23,8 +24,16 @@ import {Clock, CheckCircle, XCircle, Info} from "lucide-react";
 import {ButtonSpinner} from "~/components/ui/button-spinner";
 import {parseProductTitle} from "~/lib/product";
 
-export const meta: Route.MetaFunction = ({data}) => {
-    return [{title: `Return Request - Order ${data?.order?.name}`}, {name: "robots", content: "noindex,nofollow"}];
+export const meta: Route.MetaFunction = ({matches, params}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Return Request",
+        pathname: `/account/orders/${params.id ?? ""}/return`,
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
 };
 
 export const loader = async ({params, context}: Route.LoaderArgs) => {

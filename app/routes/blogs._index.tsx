@@ -1,12 +1,10 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/blogs._index";
-import {getPaginationVariables, getSeoMeta} from "@shopify/hydrogen";
+import {getPaginationVariables} from "@shopify/hydrogen";
 import {
-    buildCanonicalUrl,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
     getSiteUrlFromMatches,
-    generateBreadcrumbListSchema
+    buildMeta
 } from "~/lib/seo";
 import {ArticleCard, type ArticleCardData} from "~/components/blog/ArticleCard";
 import {ArticleHero} from "~/components/blog/ArticleHero";
@@ -33,14 +31,7 @@ interface BlogWithArticles {
 }
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
-    const shopName =
-        (
-            matches.find(m => m?.id === "root") as
-                | {data?: {siteContent?: {siteSettings?: {brandName?: string}}}}
-                | undefined
-        )?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const featuredArticle = data?.featuredArticle;
-
     const rootMatch = matches.find(m => m?.id === "root");
     const rootData = rootMatch?.data as
         | {siteContent?: {siteSettings?: {blogPageHeading?: string; blogPageDescription?: string}}}
@@ -48,40 +39,28 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const pageTitle = rootData?.siteContent?.siteSettings?.blogPageHeading || "The Journal";
     const pageDescription =
         rootData?.siteContent?.siteSettings?.blogPageDescription || "Explore stories, inspiration, and ideas.";
-
-    // getSiteUrlFromMatches reads from root loader data which is always present in matches
-    // (even when the child route's loader throws), so this is reliable for canonical URLs.
-    const siteUrl = getSiteUrlFromMatches(matches) || undefined;
+    const siteUrl = getSiteUrlFromMatches(matches);
     const brandName = getBrandNameFromMatches(matches);
 
     return [
-        ...(getSeoMeta({
+        ...buildMeta({
             title: pageTitle,
             description: pageDescription,
-            // Only emit og:url if siteUrl is non-empty to avoid relative URL in tag
-            url: siteUrl ? buildCanonicalUrl("/blogs", siteUrl) : undefined,
-            media: featuredArticle?.image?.url
+            pathname: "/blogs",
+            siteUrl,
+            brandName,
+            ogImage: featuredArticle?.image?.url
                 ? {
                       url: featuredArticle.image.url,
-                      width: featuredArticle.image.width,
-                      height: featuredArticle.image.height,
-                      altText: featuredArticle.image.altText || `${shopName} ${pageTitle}`,
-                      type: "image" as const
+                      width: featuredArticle.image.width ?? undefined,
+                      height: featuredArticle.image.height ?? undefined,
+                      alt: featuredArticle.image.altText || pageTitle
                   }
-                : undefined
-        }) ?? []),
-        ...getRequiredSocialMeta("website", brandName, featuredArticle?.image?.url ?? undefined),
-        {
-            "script:ld+json": generateBreadcrumbListSchema(
-                [
-                    {name: "Home", url: "/"},
-                    {name: "Blog", url: "/blogs"}
-                ],
-                siteUrl || undefined
-            ) as any
-        },
+                : undefined,
+            ogType: "website"
+        }),
         {rel: "alternate", type: "application/rss+xml", href: "/blogs/feed.xml"}
-    ];
+    ] as any;
 };
 
 export async function loader({context, request}: Route.LoaderArgs) {

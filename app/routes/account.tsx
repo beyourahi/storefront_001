@@ -5,20 +5,22 @@ import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import {WishlistCountInline} from "~/components/WishlistCount";
 import type {Route} from "./+types/account";
-import {getSeoMeta} from "@shopify/hydrogen";
 import {CUSTOMER_DETAILS_QUERY} from "~/graphql/customer-account/customer";
 import {RETURNS_AVAILABILITY_QUERY, checkReturnsEnabled} from "~/graphql/customer-account/ReturnsAvailabilityQuery";
 import {LayoutDashboard, Package, Heart, RotateCcw, User} from "lucide-react";
 import {cn} from "~/lib/utils";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 
-export const meta: Route.MetaFunction = () => {
-    return (
-        getSeoMeta({
-            title: "My Account",
-            description: "Manage your account, orders, addresses, and profile settings.",
-            robots: {noIndex: true, noFollow: true}
-        }) ?? []
-    );
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "My Account",
+        pathname: "/account",
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
 };
 
 // Revalidate on pathname changes (sub-route navigation) but not during same-URL

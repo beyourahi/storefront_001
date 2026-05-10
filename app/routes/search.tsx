@@ -10,7 +10,7 @@ import {
     useFetcher
 } from "react-router";
 import type {Route} from "./+types/search";
-import {Analytics, Image, getSeoMeta} from "@shopify/hydrogen";
+import {Analytics, Image} from "@shopify/hydrogen";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
 import {Button} from "~/components/ui/button";
 import {Alert, AlertDescription} from "~/components/ui/alert";
@@ -39,18 +39,23 @@ import {isAgentRequest} from "~/lib/agentic/agent-request";
 import {toUcpProductPage, toUcpProduct} from "~/lib/agentic/catalog-shapes";
 import {SearchEmptyState} from "~/components/search/SearchEmptyState";
 import {useAgentSurface} from "~/lib/agent-surface-context";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 
-export const meta: Route.MetaFunction = ({data}) => {
+export const meta: Route.MetaFunction = ({data, matches}) => {
     const term = data && typeof data === "object" && "term" in data ? (data as {term: string}).term : "";
     const title = term ? `Search results for "${term}"` : "Search";
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
 
-    return (
-        getSeoMeta({
-            title,
-            description: "Search our collection of products, collections, and articles.",
-            robots: {noIndex: true, noFollow: false}
-        }) ?? []
-    );
+    return buildMeta({
+        title,
+        description: term ? `Search results for "${term}" in our store.` : "Search our store for products.",
+        pathname: "/search",
+        siteUrl,
+        brandName,
+        ogType: "website",
+        robots: {noIndex: true, noFollow: false}
+    }) as any;
 };
 
 export type SearchCollection = {

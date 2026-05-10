@@ -16,8 +16,7 @@ import {
     useOptimisticVariant,
     getProductOptions,
     getAdjacentAndFirstAvailableVariants,
-    useSelectedOptionInUrlParam,
-    getSeoMeta
+    useSelectedOptionInUrlParam
 } from "@shopify/hydrogen";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {calculateDiscount, formatShopifyMoney} from "~/lib/currency-formatter";
@@ -26,10 +25,9 @@ import {
     generateProductSchema,
     generateBreadcrumbListSchema,
     generateBrandSchema,
-    buildCanonicalUrl,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
-    getSiteUrlFromMatches
+    getSiteUrlFromMatches,
+    buildMeta
 } from "~/lib/seo";
 import {deriveProductBreadcrumbs} from "~/lib/seo-breadcrumbs";
 import {getCatalogExtensionMeta} from "~/lib/agentic/structured-data";
@@ -58,25 +56,18 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({currentUrl, nextUrl,
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
     const siteUrl = getSiteUrlFromMatches(matches);
-
     const product = data?.product;
     if (!product) return [{title: "Product Not Found"}];
 
     const variant = product.selectedOrFirstAvailableVariant;
     const seoTitle = product.seo?.title;
     const title = seoTitle || formatProductTitleForMeta(product.title);
-    // Use the pre-truncated description from the loader to avoid server/client mismatch
     const description = data?.seoDescription || "";
     const image = variant?.image || product.images?.nodes?.[0];
-
-    const url = buildCanonicalUrl(`/products/${product.handle}`, siteUrl);
-
     const brandName = getBrandNameFromMatches(matches);
-
     const rootMatch = matches.find((m): m is (typeof matches)[number] & {id: "root"} => m?.id === "root");
     const siteSettings = (rootMatch?.data as any)?.siteContent?.siteSettings;
 
-    // SCE fields for 5th arg
     const extensionFields = {
         isGiftCard: product.isGiftCard,
         collections: product.collections?.nodes?.map((c: any) => ({handle: c.handle, title: c.title})),
@@ -86,13 +77,10 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
             recurringDeliveries: a.sellingPlan?.recurringDeliveries ?? false
         }))
     };
-
-    // Normalized attributes for 6th arg
     const normalizedAttributes = normalizeProductAttributes(
         variant?.selectedOptions ?? [],
         product.metafields?.filter(Boolean) ?? undefined
     );
-
     const productSchema = generateProductSchema(product, variant, null, siteUrl, extensionFields, normalizedAttributes);
     const breadcrumbs = deriveProductBreadcrumbs(product);
     const breadcrumbSchema = generateBreadcrumbListSchema(breadcrumbs, siteUrl);
@@ -109,26 +97,20 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     });
 
     return [
-        ...(getSeoMeta({
+        ...buildMeta({
             title,
             description,
-            url,
-            media: image?.url
-                ? {
-                      url: image.url,
-                      width: image.width,
-                      height: image.height,
-                      altText: image.altText || product.title,
-                      type: "image" as const
-                  }
+            pathname: `/products/${product.handle}`,
+            siteUrl,
+            brandName,
+            ogImage: image?.url
+                ? {url: image.url, width: image.width ?? undefined, height: image.height ?? undefined, alt: image.altText || product.title}
                 : undefined,
-            jsonLd: productSchema as any
-        }) ?? []),
-        {"script:ld+json": breadcrumbSchema as any},
-        {"script:ld+json": brandSchema as any},
-        ...sceMeta,
-        ...getRequiredSocialMeta("product", brandName, image?.url ?? undefined)
-    ];
+            ogType: "product",
+            jsonLd: [productSchema, breadcrumbSchema, brandSchema]
+        }),
+        ...sceMeta
+    ] as any;
 };
 
 export function links(args?: {data: Awaited<ReturnType<typeof loader>> | null}) {

@@ -1,7 +1,8 @@
 import {useState, useEffect, useMemo, useRef} from "react";
 import {Link, useFetcher} from "react-router";
-import type {MetaFunction} from "react-router";
+import type {Route} from "./+types/account.wishlist";
 import {useWishlist} from "~/lib/wishlist-context";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import {reconstructGid, generateShareableWishlistUrl} from "~/lib/wishlist-utils";
 import {WishlistButton} from "~/components/WishlistButton";
 import {CartForm} from "@shopify/hydrogen";
@@ -13,14 +14,16 @@ import {ShareDialog} from "~/components/ShareDialog";
 import {ProductCard} from "~/components/display/ProductCard";
 import {fromWishlistProduct} from "~/lib/product/product-card-normalizers";
 
-export const meta: MetaFunction = ({matches}) => {
-    const rootData = matches.find(m => m.id === "root")?.data as
-        | {
-              siteContent?: {siteSettings?: {brandName?: string}};
-          }
-        | undefined;
-    const shopName = rootData?.siteContent?.siteSettings?.brandName?.trim() || "Store";
-    return [{title: `Wishlist | ${shopName}`}, {name: "robots", content: "noindex,nofollow"}];
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "My Wishlist",
+        pathname: "/account/wishlist",
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
 };
 
 interface WishlistProduct {

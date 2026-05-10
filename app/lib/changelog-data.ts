@@ -36,6 +36,13 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-05-09",
+        category: "Improvement",
+        headline: "Every page now has a proper canonical URL for search engines",
+        summary:
+            "Search engines can now reliably identify the authoritative URL for every page on the storefront. Canonical links were missing site-wide — they are now present on all routes, helping prevent duplicate-content penalties and improving indexing accuracy."
+    },
+    {
         date: "2026-05-07",
         category: "New Feature",
         headline: "Footer Contact link scrolls straight to the contact section",

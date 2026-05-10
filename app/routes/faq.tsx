@@ -1,5 +1,4 @@
 import type {Route} from "./+types/faq";
-import {getSeoMeta} from "@shopify/hydrogen";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "~/components/ui/accordion";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {useFaqItems} from "~/lib/site-content-context";
@@ -7,8 +6,7 @@ import {
     generateFAQPageSchema,
     generateBreadcrumbListSchema,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
-    buildCanonicalUrl,
+    buildMeta,
     getSiteUrlFromMatches
 } from "~/lib/seo";
 import {GiantText} from "~/components/common/GiantText";
@@ -22,28 +20,32 @@ export const meta: Route.MetaFunction = ({matches}) => {
             | undefined
     )?.data;
     const faqItems = rootData?.siteContent?.siteSettings?.faqItems;
-    const faqSchema = faqItems?.length ? generateFAQPageSchema(faqItems) : undefined;
-    const brandName = getBrandNameFromMatches(matches);
     const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
 
-    return [
-        ...(getSeoMeta({
-            title: `Frequently Asked Questions | ${brandName}`,
-            description: "Find answers to common questions about our products, shipping, and policies.",
-            url: buildCanonicalUrl("/faq", siteUrl),
-            jsonLd: faqSchema as any
-        }) ?? []),
-        {
-            "script:ld+json": generateBreadcrumbListSchema(
-                [
-                    {name: "Home", url: "/"},
-                    {name: "FAQ", url: "/faq"}
-                ],
-                siteUrl
-            ) as any
-        },
-        ...getRequiredSocialMeta("website", brandName)
-    ];
+    const jsonLd: object[] = [];
+    if (faqItems?.length) {
+        jsonLd.push(generateFAQPageSchema(faqItems));
+    }
+    jsonLd.push(
+        generateBreadcrumbListSchema(
+            [
+                {name: "Home", url: "/"},
+                {name: "FAQ", url: "/faq"}
+            ],
+            siteUrl
+        )
+    );
+
+    return buildMeta({
+        title: "FAQ",
+        description: "Find answers to frequently asked questions about our products, shipping, returns, and more.",
+        pathname: "/faq",
+        siteUrl,
+        brandName,
+        ogType: "website",
+        jsonLd
+    }) as any;
 };
 
 export default function FAQ() {

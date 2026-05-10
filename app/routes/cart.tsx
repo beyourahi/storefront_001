@@ -2,6 +2,7 @@ import {data, type HeadersFunction} from "react-router";
 import {Suspense} from "react";
 import {Await, useRouteLoaderData} from "react-router";
 import type {Route} from "./+types/cart";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import type {CartQueryDataReturn} from "@shopify/hydrogen";
 import {CartForm} from "@shopify/hydrogen";
 import {isAgentRequest} from "~/lib/agentic/agent-request";
@@ -10,7 +11,17 @@ import {CartMain, CartLoadingSkeleton} from "~/components/cart/CartMain";
 import type {RootLoader} from "~/root";
 import type {CartApiQueryFragment} from "storefrontapi.generated";
 
-export const meta: Route.MetaFunction = () => [{title: "Cart"}, {name: "robots", content: "noindex"}];
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Cart",
+        pathname: "/cart",
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: false}
+    }) as any;
+};
 
 export const headers: HeadersFunction = ({actionHeaders}) => actionHeaders;
 

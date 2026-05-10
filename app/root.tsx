@@ -1,5 +1,5 @@
 import {useEffect, useMemo} from "react";
-import {useNonce, Analytics, getSeoMeta, getShopAnalytics} from "@shopify/hydrogen";
+import {useNonce, Analytics, getShopAnalytics} from "@shopify/hydrogen";
 import {
     Outlet,
     Links,
@@ -44,7 +44,7 @@ import {FloatingChatWidget} from "~/components/FloatingChatWidget";
 import {useFooterClearance} from "~/hooks/useFooterClearance";
 import {OfflineAwareErrorPage} from "~/components/OfflineAwareErrorPage";
 import {SearchControllerProvider} from "~/components/search/SearchControllerProvider";
-import {generateWebsiteSchema, getSeoDefaults} from "~/lib/seo";
+import {generateWebsiteSchema, getSeoDefaults, buildMeta} from "~/lib/seo";
 import {detectAiAttribution} from "~/lib/ai-attribution";
 import {AgentSurfaceProvider} from "~/lib/agent-surface-context";
 import {deriveAgentSurface, type AgentSurface} from "~/lib/agentic/agent-surface";
@@ -92,18 +92,21 @@ export function links() {
 
 export const meta: Route.MetaFunction = ({data}) => {
     const seoDefaults = getSeoDefaults(data?.siteContent?.siteSettings, data?.siteContent?.themeConfig);
-    const seoMeta =
-        getSeoMeta({
-            title: seoDefaults.brandName,
-            titleTemplate: `%s | ${seoDefaults.brandName}`,
-            description: seoDefaults.description,
-            url: seoDefaults.siteUrl || undefined,
-            media: seoDefaults.media
-        }) ?? [];
-
-    // NOTE: theme-color, PWA, and mobile meta tags are emitted in Layout's static <head>
-    // so they persist across child route navigations (child meta() exports replace parent meta).
-    return [...seoMeta, ...(data?.websiteSchema ? [{"script:ld+json": data.websiteSchema}] : [])];
+    return buildMeta({
+        title: seoDefaults.brandName,
+        titleTemplate: null,
+        description: seoDefaults.description,
+        pathname: "/",
+        siteUrl: seoDefaults.siteUrl,
+        brandName: seoDefaults.brandName,
+        ogImage: seoDefaults.media ? {
+            url: seoDefaults.media.url,
+            width: seoDefaults.media.width,
+            height: seoDefaults.media.height
+        } : undefined,
+        ogType: "website",
+        jsonLd: data?.websiteSchema ? [data.websiteSchema] : []
+    }) as any;
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -360,11 +363,8 @@ export function Layout({children}: {children?: React.ReactNode}) {
                 <meta name="apple-mobile-web-app-title" content={seoDefaults.brandName} />
                 <meta name="mobile-web-app-capable" content="yes" />
                 <meta name="format-detection" content="telephone=no" />
-                {/* OG + Twitter tags — static JSX so they survive child route meta() overrides.
-                    og:type defaults to "website"; product/article routes emit their own type additionally. */}
-                <meta property="og:site_name" content={seoDefaults.brandName} />
-                <meta property="og:type" content="website" />
-                <meta name="twitter:card" content="summary_large_image" />
+                {/* NOTE: og:site_name, og:type, and twitter:card are now emitted per-route via buildMeta().
+                    Static OG/Twitter tags were removed to prevent duplicate meta tags. */}
                 {/* Google Fonts: preload hint the browser early; NonBlockingFontLoader
                     appends the actual stylesheet via useEffect — never render-blocking.
                     The &display=swap param makes Google Fonts include font-display:swap in @font-face.

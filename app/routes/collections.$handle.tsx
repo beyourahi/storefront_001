@@ -2,14 +2,13 @@ import {redirect, useLoaderData, useRouteError, isRouteErrorResponse} from "reac
 import {Button} from "~/components/ui/button";
 import {Badge} from "~/components/ui/badge";
 import type {Route} from "./+types/collections.$handle";
-import {Analytics, getSeoMeta} from "@shopify/hydrogen";
+import {Analytics} from "@shopify/hydrogen";
 import {
-    buildCanonicalUrl,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
     getSiteUrlFromMatches,
     generateCollectionSchema,
-    generateBreadcrumbListSchema
+    generateBreadcrumbListSchema,
+    buildMeta
 } from "~/lib/seo";
 import {deriveCollectionBreadcrumbs} from "~/lib/seo-breadcrumbs";
 import {CollectionHero} from "~/components/sections/CollectionHero";
@@ -48,41 +47,38 @@ const redirectIfHandleIsLocalized = (
 };
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
-    if (!data || !data.collection) {
-        return [{title: "Collection"}];
-    }
+    if (!data || !data.collection) return [{title: "Collection"}];
 
     const collection = data.collection;
     const siteUrl = getSiteUrlFromMatches(matches);
     const title = collection.seo?.title || `${collection.title} Collection`;
     const description = collection.seo?.description || collection.description || "";
+    const brandName = getBrandNameFromMatches(matches);
 
     const collectionSchema = generateCollectionSchema(
         collection,
         data.products as unknown as Array<{title: string; handle: string}>,
         siteUrl
     );
-    const brandName = getBrandNameFromMatches(matches);
+    const breadcrumbSchema = generateBreadcrumbListSchema(deriveCollectionBreadcrumbs(collection), siteUrl);
 
-    return [
-        ...(getSeoMeta({
-            title,
-            description,
-            url: buildCanonicalUrl(`/collections/${collection.handle}`, siteUrl),
-            media: collection.image?.url
-                ? {
-                      url: collection.image.url,
-                      width: collection.image.width,
-                      height: collection.image.height,
-                      altText: collection.image.altText || collection.title,
-                      type: "image" as const
-                  }
-                : undefined,
-            jsonLd: collectionSchema as any
-        }) ?? []),
-        {"script:ld+json": generateBreadcrumbListSchema(deriveCollectionBreadcrumbs(collection), siteUrl) as any},
-        ...getRequiredSocialMeta("website", brandName, collection.image?.url ?? undefined)
-    ];
+    return buildMeta({
+        title,
+        description,
+        pathname: `/collections/${collection.handle}`,
+        siteUrl,
+        brandName,
+        ogImage: collection.image?.url
+            ? {
+                  url: collection.image.url,
+                  width: collection.image.width ?? undefined,
+                  height: collection.image.height ?? undefined,
+                  alt: collection.image.altText || collection.title
+              }
+            : undefined,
+        ogType: "website",
+        jsonLd: [collectionSchema, breadcrumbSchema]
+    }) as any;
 };
 
 export function links(args?: {data: Awaited<ReturnType<typeof loader>> | null}) {

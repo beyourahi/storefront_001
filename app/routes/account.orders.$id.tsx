@@ -1,5 +1,6 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/account.orders.$id";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import {CUSTOMER_ORDER_QUERY} from "~/graphql/customer-account/CustomerOrderQuery";
 import {Image} from "@shopify/hydrogen";
 import {Badge} from "~/components/ui/badge";
@@ -12,9 +13,16 @@ import {STORE_FORMAT_LOCALE} from "~/lib/store-locale";
 import {ArrowLeftIcon} from "lucide-react";
 import {parseProductTitle} from "~/lib/product";
 
-export const meta: Route.MetaFunction = ({data}) => {
-    const orderName = data?.order?.name ?? "Order";
-    return [{title: `Order ${orderName}`}, {name: "robots", content: "noindex,nofollow"}];
+export const meta: Route.MetaFunction = ({matches, params}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Order Details",
+        pathname: `/account/orders/${params.id ?? ""}`,
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
 };
 
 export const loader = async ({params, context}: Route.LoaderArgs) => {

@@ -1,6 +1,5 @@
 import {useLoaderData} from "react-router";
 import type {Route} from "./+types/policies.$handle";
-import {getSeoMeta} from "@shopify/hydrogen";
 import type {Shop} from "@shopify/hydrogen/storefront-api-types";
 import {LegalPageLayout} from "~/components/legal";
 import {POLICY_CONTENT_QUERY} from "~/lib/queries/policy";
@@ -10,7 +9,8 @@ import {
     getSiteUrlFromMatches,
     generateBreadcrumbListSchema,
     generateWebPageSchema,
-    generateFAQPageSchema
+    generateFAQPageSchema,
+    buildMeta
 } from "~/lib/seo";
 import {derivePolicyBreadcrumbs} from "~/lib/seo-breadcrumbs";
 import {kebabToCamelCase} from "~/lib/string-utils";
@@ -37,28 +37,30 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
         : `Read our ${policy.title.toLowerCase()} at ${brandName}.`;
 
     const siteUrl = getSiteUrlFromMatches(matches);
-    const policyUrl = buildCanonicalUrl(`/policies/${policy.handle}`, siteUrl);
+    const policyUrl = `/policies/${policy.handle}`;
 
     const breadcrumbs = derivePolicyBreadcrumbs(policy.handle, policy.title);
     const breadcrumbSchema = generateBreadcrumbListSchema(breadcrumbs, siteUrl);
-    const webPageSchema = generateWebPageSchema(policy.title, policyUrl);
+    const webPageSchema = generateWebPageSchema(policy.title, buildCanonicalUrl(policyUrl, siteUrl));
 
-    // Check if root has policyExtension for this policy handle
     const rootData = (matches.find(m => m?.id === "root") as any)?.data;
     const policyExtensions: Array<{key: string; value: string; context?: string}> =
         rootData?.siteContent?.siteSettings?.policyExtension ?? [];
     const matchingExtensions = policyExtensions.filter(ext => !ext.context || ext.context === policy.handle);
-    const faqSchema =
-        matchingExtensions.length > 0
-            ? generateFAQPageSchema(matchingExtensions.map(ext => ({question: ext.key, answer: ext.value})))
-            : null;
+    const jsonLd: object[] = [breadcrumbSchema, webPageSchema];
+    if (matchingExtensions.length > 0) {
+        jsonLd.push(generateFAQPageSchema(matchingExtensions.map(ext => ({question: ext.key, answer: ext.value}))));
+    }
 
-    return [
-        ...(getSeoMeta({title: policy.title, description, url: policyUrl}) ?? []),
-        {"script:ld+json": breadcrumbSchema as any},
-        {"script:ld+json": webPageSchema as any},
-        ...(faqSchema ? [{"script:ld+json": faqSchema as any}] : [])
-    ];
+    return buildMeta({
+        title: policy.title,
+        description,
+        pathname: policyUrl,
+        siteUrl,
+        brandName,
+        ogType: "website",
+        jsonLd
+    }) as any;
 };
 
 export async function loader({params, context}: Route.LoaderArgs) {

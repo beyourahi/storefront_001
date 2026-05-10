@@ -1,4 +1,3 @@
-import {getSeoMeta} from "@shopify/hydrogen";
 import {useState, useMemo} from "react";
 import {useLoaderData} from "react-router";
 import {Search} from "lucide-react";
@@ -6,13 +5,7 @@ import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {GiantText} from "~/components/common/GiantText";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {cn} from "~/lib/utils";
-import {
-    buildCanonicalUrl,
-    getBrandNameFromMatches,
-    getRequiredSocialMeta,
-    getSiteUrlFromMatches,
-    generateBreadcrumbListSchema
-} from "~/lib/seo";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import {CHANGELOG_ENTRIES, type ChangelogEntry} from "~/lib/changelog-data";
 import type {Route} from "./+types/changelog";
 
@@ -21,24 +14,16 @@ import type {Route} from "./+types/changelog";
 export const meta: Route.MetaFunction = ({matches}) => {
     const siteUrl = getSiteUrlFromMatches(matches);
     const brandName = getBrandNameFromMatches(matches);
-    return [
-        ...(getSeoMeta({
-            title: `Changelog | ${brandName}`,
-            description:
-                "See what's new. We're constantly improving your shopping experience — here's a plain-language look at everything we've shipped.",
-            url: buildCanonicalUrl("/changelog", siteUrl)
-        }) ?? []),
-        {
-            "script:ld+json": generateBreadcrumbListSchema(
-                [
-                    {name: "Home", url: "/"},
-                    {name: "Changelog", url: "/changelog"}
-                ],
-                siteUrl
-            ) as any
-        },
-        ...getRequiredSocialMeta("website", brandName)
-    ];
+
+    return buildMeta({
+        title: "Changelog",
+        description: "See what's new — recent updates, improvements, and new features.",
+        pathname: "/changelog",
+        siteUrl,
+        brandName,
+        ogType: "website",
+        robots: {noIndex: true, noFollow: false}
+    }) as any;
 };
 
 // ── Loader ────────────────────────────────────────────────────────────────────

@@ -1,10 +1,8 @@
-import {getSeoMeta} from "@shopify/hydrogen";
 import {
-    buildCanonicalUrl,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
     getSiteUrlFromMatches,
-    generateBreadcrumbListSchema
+    generateBreadcrumbListSchema,
+    buildMeta
 } from "~/lib/seo";
 import {useLoaderData} from "react-router";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
@@ -19,23 +17,24 @@ import type {Route} from "./+types/gallery";
 export const meta: Route.MetaFunction = ({matches}) => {
     const siteUrl = getSiteUrlFromMatches(matches);
     const brandName = getBrandNameFromMatches(matches);
-    return [
-        ...(getSeoMeta({
-            title: `Gallery | ${brandName}`,
-            description: "Explore our complete collection through a visual gallery of all product images.",
-            url: buildCanonicalUrl("/gallery", siteUrl)
-        }) ?? []),
-        {
-            "script:ld+json": generateBreadcrumbListSchema(
+
+    return buildMeta({
+        title: "Gallery",
+        description: "Explore our complete collection through a visual gallery of all product images.",
+        pathname: "/gallery",
+        siteUrl,
+        brandName,
+        ogType: "website",
+        jsonLd: [
+            generateBreadcrumbListSchema(
                 [
                     {name: "Home", url: "/"},
                     {name: "Gallery", url: "/gallery"}
                 ],
                 siteUrl
-            ) as any
-        },
-        ...getRequiredSocialMeta("website", brandName)
-    ];
+            )
+        ]
+    }) as any;
 };
 
 export const loader = async ({context, request}: Route.LoaderArgs) => {

@@ -1,14 +1,12 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/policies._index";
-import {getSeoMeta} from "@shopify/hydrogen";
 import {
     generateBreadcrumbListSchema,
+    generateFAQPageSchema,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
-    buildCanonicalUrl,
-    getSiteUrlFromMatches
+    getSiteUrlFromMatches,
+    buildMeta
 } from "~/lib/seo";
-import {generateFAQPageSchema} from "~/lib/agentic/structured-data";
 import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {POLICY_CONTENT_QUERY} from "~/lib/queries/policy";
@@ -24,32 +22,29 @@ const POLICY_ITEMS = [
 export const meta: Route.MetaFunction = ({matches}) => {
     const brandName = getBrandNameFromMatches(matches);
     const siteUrl = getSiteUrlFromMatches(matches);
+
     const breadcrumbSchema = generateBreadcrumbListSchema(
-        [
-            {name: "Home", url: "/"},
-            {name: "Policies", url: "/policies"}
-        ],
+        [{name: "Home", url: "/"}, {name: "Policies", url: "/policies"}],
         siteUrl
     );
 
     const rootData = (matches.find(m => m?.id === "root") as any)?.data;
     const policyExtensions: Array<{key: string; value: string}> =
         rootData?.siteContent?.siteSettings?.policyExtension ?? [];
-    const faqSchema =
-        policyExtensions.length > 0
-            ? generateFAQPageSchema(policyExtensions.map(ext => ({question: ext.key, answer: ext.value})))
-            : null;
+    const jsonLd: object[] = [breadcrumbSchema];
+    if (policyExtensions.length > 0) {
+        jsonLd.push(generateFAQPageSchema(policyExtensions.map(ext => ({question: ext.key, answer: ext.value}))));
+    }
 
-    return [
-        ...(getSeoMeta({
-            title: `Policies | ${brandName}`,
-            description: `Review our store policies including shipping, returns, privacy, and terms of service.`,
-            url: buildCanonicalUrl("/policies", siteUrl)
-        }) ?? []),
-        {"script:ld+json": breadcrumbSchema as any},
-        ...(faqSchema ? [{"script:ld+json": faqSchema as any}] : []),
-        ...getRequiredSocialMeta("website", brandName)
-    ];
+    return buildMeta({
+        title: "Policies",
+        description: `Review our store policies including shipping, returns, privacy, and terms of service.`,
+        pathname: "/policies",
+        siteUrl,
+        brandName,
+        ogType: "website",
+        jsonLd
+    }) as any;
 };
 
 export async function loader({context}: Route.LoaderArgs) {

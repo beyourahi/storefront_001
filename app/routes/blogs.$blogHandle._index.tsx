@@ -1,7 +1,7 @@
 import {Link, useLoaderData} from "react-router";
 import type {Route} from "./+types/blogs.$blogHandle._index";
-import {getPaginationVariables, getSeoMeta, Pagination} from "@shopify/hydrogen";
-import {buildCanonicalUrl, getSiteUrlFromMatches, generateBreadcrumbListSchema} from "~/lib/seo";
+import {getPaginationVariables, Pagination} from "@shopify/hydrogen";
+import {getSiteUrlFromMatches, getBrandNameFromMatches, buildMeta} from "~/lib/seo";
 import {redirectIfHandleIsLocalized} from "~/lib/redirect";
 import {ArticleCard, type ArticleCardData} from "~/components/blog/ArticleCard";
 import {ArticleHero} from "~/components/blog/ArticleHero";
@@ -13,47 +13,31 @@ import {PageBreadcrumbs} from "~/components/common/PageBreadcrumbs";
 import {cn} from "~/lib/utils";
 
 export const meta: Route.MetaFunction = ({data, matches}) => {
-    const shopName =
-        (
-            matches.find(m => m?.id === "root") as
-                | {data?: {siteContent?: {siteSettings?: {brandName?: string}}}}
-                | undefined
-        )?.data?.siteContent?.siteSettings?.brandName ?? "Store";
     const blog = data?.blog;
     const featuredArticle = data?.featuredArticle;
-
     if (!blog) return [{title: "Blog"}];
 
     const siteUrl = getSiteUrlFromMatches(matches);
-    const title = blog.seo?.title || `${blog.title} | Blog`;
+    const brandName = getBrandNameFromMatches(matches);
+    const title = blog.seo?.title || blog.title;
     const description = blog.seo?.description || `Explore articles from ${blog.title}.`;
 
-    return [
-        ...(getSeoMeta({
-            title,
-            description,
-            url: buildCanonicalUrl(`/blogs/${blog.handle}`, siteUrl),
-            media: featuredArticle?.image?.url
-                ? {
-                      url: featuredArticle.image.url,
-                      width: featuredArticle.image.width,
-                      height: featuredArticle.image.height,
-                      altText: featuredArticle.image.altText || blog.title,
-                      type: "image" as const
-                  }
-                : undefined
-        }) ?? []),
-        {
-            "script:ld+json": generateBreadcrumbListSchema(
-                [
-                    {name: "Home", url: "/"},
-                    {name: "Blog", url: "/blogs"},
-                    {name: blog.title, url: `/blogs/${blog.handle}`}
-                ],
-                siteUrl
-            ) as any
-        }
-    ];
+    return buildMeta({
+        title,
+        description,
+        pathname: `/blogs/${blog.handle}`,
+        siteUrl,
+        brandName,
+        ogImage: featuredArticle?.image?.url
+            ? {
+                  url: featuredArticle.image.url,
+                  width: featuredArticle.image.width ?? undefined,
+                  height: featuredArticle.image.height ?? undefined,
+                  alt: featuredArticle.image.altText || blog.title
+              }
+            : undefined,
+        ogType: "website"
+    }) as any;
 };
 
 export async function loader({context, request, params}: Route.LoaderArgs) {

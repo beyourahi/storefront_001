@@ -1,12 +1,9 @@
 import type {Route} from "./+types/sale";
 import {useLoaderData, redirect} from "react-router";
-import {getSeoMeta} from "@shopify/hydrogen";
 import {
-    buildCanonicalUrl,
     getBrandNameFromMatches,
-    getRequiredSocialMeta,
     getSiteUrlFromMatches,
-    generateBreadcrumbListSchema
+    buildMeta
 } from "~/lib/seo";
 import {filterAndSortDiscountedProducts, type RawDiscountProduct} from "~/lib/discounts";
 import {fromSaleProduct} from "~/lib/product/product-card-normalizers";
@@ -34,21 +31,16 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const description =
         totalCount > 0
             ? `Discover ${totalCount} discounted ${totalCount === 1 ? "item" : "items"} with savings up to ${maxDiscount}% off.`
-            : "Check back soon for sale items and deals.";
+            : "Shop our special offers and discounted items.";
 
-    return [
-        ...(getSeoMeta({title, description, url: buildCanonicalUrl("/sale", siteUrl)}) ?? []),
-        {
-            "script:ld+json": generateBreadcrumbListSchema(
-                [
-                    {name: "Home", url: "/"},
-                    {name: "Sale", url: "/sale"}
-                ],
-                siteUrl
-            ) as any
-        },
-        ...getRequiredSocialMeta("website", brandName)
-    ];
+    return buildMeta({
+        title,
+        description,
+        pathname: "/sale",
+        siteUrl,
+        brandName,
+        ogType: "website"
+    }) as any;
 };
 
 export const loader = async ({context, request}: Route.LoaderArgs) => {

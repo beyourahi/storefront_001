@@ -1,5 +1,6 @@
 import {data as remixData, Link, useLoaderData, useOutletContext} from "react-router";
 import type {Route} from "./+types/account.orders._index";
+import {getBrandNameFromMatches, getSiteUrlFromMatches, buildMeta} from "~/lib/seo";
 import type {AccountOutletContext} from "~/routes/account";
 import {getPaginationVariables} from "@shopify/hydrogen";
 import {CUSTOMER_ORDERS_LIST_QUERY} from "~/graphql/customer-account/CustomerOrdersQuery";
@@ -7,7 +8,17 @@ import {OrderCard} from "~/components/account/OrderCard";
 import {Button} from "~/components/ui/button";
 import {PackageSearchIcon} from "lucide-react";
 
-export const meta: Route.MetaFunction = () => [{title: "Order History"}, {name: "robots", content: "noindex,nofollow"}];
+export const meta: Route.MetaFunction = ({matches}) => {
+    const siteUrl = getSiteUrlFromMatches(matches);
+    const brandName = getBrandNameFromMatches(matches);
+    return buildMeta({
+        title: "Order History",
+        pathname: "/account/orders",
+        siteUrl,
+        brandName,
+        robots: {noIndex: true, noFollow: true}
+    }) as any;
+};
 
 export const loader = async ({request, context}: Route.LoaderArgs) => {
     const {customerAccount} = context;
