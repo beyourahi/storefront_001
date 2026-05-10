@@ -749,6 +749,12 @@ export interface SiteSettings {
     vipPerks: VipPerk[] | null;
     /** Time-limited promotional offers with optional countdown (Phase 3) */
     limitedOffers: LimitedOffer[] | null;
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MARKETING SURFACES
+    // ─────────────────────────────────────────────────────────────────────────
+    /** Discount code revealed by the ScratchCard surface. Empty string = ScratchCard disabled. */
+    discountCode: string;
 }
 
 /**

@@ -1,4 +1,5 @@
-import {useEffect, useMemo} from "react";
+import {useEffect, useMemo, useState} from "react";
+import {Ticket} from "lucide-react";
 import {useNonce, Analytics, getShopAnalytics} from "@shopify/hydrogen";
 import {
     Outlet,
@@ -16,18 +17,20 @@ import {HEADER_QUERY, CART_SUGGESTIONS_QUERY, FOOTER_QUERY, MENU_COLLECTIONS_QUE
 import {THEME_SETTINGS_QUERY, SITE_CONTENT_QUERY} from "~/lib/metaobject-queries";
 import {parseSiteContent} from "~/lib/metaobject-parsers";
 import {generateTheme, type GeneratedTheme} from "~/lib/theme-utils";
-import {SiteContentProvider} from "~/lib/site-content-context";
+import {SiteContentProvider, useSiteSettings} from "~/lib/site-content-context";
 import {WishlistProvider} from "~/lib/wishlist-context";
 import {saveThemeToStorage, getThemeFromStorage, updateOfflinePageCache} from "~/lib/theme-storage";
 import {LenisProvider} from "~/lib/LenisProvider";
 import {withTimeoutAndFallback, TIMEOUT_DEFAULTS} from "~/lib/promise-utils";
 import {parseShippingConfig} from "~/lib/shipping";
+import {FLOATING_ACTION_BUTTON_CLASSES} from "~/lib/floating-action-styles";
 import {extractPopularSearchTerms} from "~/lib/popularSearches";
 import {countDiscountedProducts, type LightweightProduct} from "~/lib/discounts";
 import {STORE_CREDIT_BALANCE_QUERY} from "~/graphql/customer-account/StoreCreditQueries";
 import {CartDrawerProvider} from "~/hooks/useCartDrawer";
 import {RecentlyViewedProvider} from "~/components/RecentlyViewedProvider";
 import {CartAside} from "~/components/cart/CartAside";
+import {ScratchCard} from "~/components/ScratchCard";
 import {Navbar} from "~/components/layout/Navbar";
 import {SearchOverlay} from "~/components/layout/SearchOverlay";
 import {Footer} from "~/components/layout/Footer";
@@ -556,40 +559,64 @@ export default function App() {
  *   ① PWA install button  — last DOM child → lowest in visual stack (lg+ only)
  *   ② Messenger           — bottom of FloatingChatWidget's own flex-col
  *   ③ WhatsApp            — top of FloatingChatWidget's own flex-col
+ *   ④ Scratch card trigger — first DOM child → topmost in visual stack
  *
  * Mobile behaviour:
- *   OpenInAppButton renders `max-lg:hidden` so only the two chat buttons are
- *   visible on viewports narrower than 1024 px.
+ *   OpenInAppButton renders `max-lg:hidden` so only the chat + scratch buttons
+ *   are visible on viewports narrower than 1024 px.
  *
  * @see useFooterClearance   — IO-based dynamic offset hook
  * @see FloatingChatWidget   — Messenger + WhatsApp buttons (no own positioning)
  * @see OpenInAppButton      — PWA install button (no own positioning when variant="desktop-fixed")
+ * @see ScratchCard          — controlled discount-reveal dialog
  */
 function FloatingButtonStack() {
     const offset = useFooterClearance();
+    const {discountCode} = useSiteSettings();
+    const [scratchOpen, setScratchOpen] = useState(false);
 
     return (
-        <div
-            className={[
-                "fixed right-4 z-[var(--z-navbar)]",
-                "flex flex-col items-end gap-3",
-                // Smooth lift when footer bar enters viewport.
-                // Only the transform axis is transitioned — no opacity/scale side-effects.
-                // motion-reduce: instant reposition is acceptable per WCAG 2.3.3.
-                "transition-transform duration-300 ease-in-out motion-reduce:transition-none"
-            ].join(" ")}
-            style={{
-                // Base bottom: clears the product sticky action bar (0 on non-product pages)
-                // plus a 1rem gutter from the safe-area / viewport edge.
-                bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), 1rem))",
-                transform: offset > 0 ? `translateY(-${offset}px)` : undefined
-            }}
-        >
-            {/* Chat widget first → sits above the PWA button in the visual stack */}
-            <FloatingChatWidget />
-            {/* PWA install button last → lowest in the stack, desktop only (max-lg:hidden) */}
-            <OpenInAppButton variant="desktop-fixed" />
-        </div>
+        <>
+            {/* Dialog renders via Radix portal — placement here only governs which subtree owns the open state. */}
+            <ScratchCard open={scratchOpen} onOpenChange={setScratchOpen} />
+            <div
+                className={[
+                    "fixed right-4 z-[var(--z-navbar)]",
+                    "flex flex-col items-end gap-3",
+                    // Smooth lift when footer bar enters viewport.
+                    // Only the transform axis is transitioned — no opacity/scale side-effects.
+                    // motion-reduce: instant reposition is acceptable per WCAG 2.3.3.
+                    "transition-transform duration-300 ease-in-out motion-reduce:transition-none"
+                ].join(" ")}
+                style={{
+                    // Base bottom: clears the product sticky action bar (0 on non-product pages)
+                    // plus a 1rem gutter from the safe-area / viewport edge.
+                    bottom: "calc(var(--product-sticky-bar-height, 0px) + max(env(safe-area-inset-bottom), 1rem))",
+                    transform: offset > 0 ? `translateY(-${offset}px)` : undefined
+                }}
+            >
+                {/* Scratch trigger first → topmost in the stack; only when a discount code is configured. */}
+                {discountCode && (
+                    <button
+                        type="button"
+                        onClick={() => setScratchOpen(true)}
+                        aria-label="Reveal your discount code"
+                        className={[
+                            FLOATING_ACTION_BUTTON_CLASSES,
+                            // Theme-aware: inverts to brand foreground/background → blends with each storefront's palette
+                            "bg-foreground text-background",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        ].join(" ")}
+                    >
+                        <Ticket className="h-6 w-6" aria-hidden="true" />
+                    </button>
+                )}
+                {/* Chat widget → sits above the PWA button in the visual stack */}
+                <FloatingChatWidget />
+                {/* PWA install button last → lowest in the stack, desktop only (max-lg:hidden) */}
+                <OpenInAppButton variant="desktop-fixed" />
+            </div>
+        </>
     );
 }
 

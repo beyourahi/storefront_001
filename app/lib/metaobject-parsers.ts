@@ -214,7 +214,8 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     trafficSourceBanners: FALLBACK_TRAFFIC_SOURCE_BANNERS,
     homepageVariants: FALLBACK_HOMEPAGE_VARIANTS,
     vipPerks: FALLBACK_VIP_PERKS,
-    limitedOffers: FALLBACK_LIMITED_OFFERS
+    limitedOffers: FALLBACK_LIMITED_OFFERS,
+    discountCode: "" // empty = ScratchCard disabled (merchant kill switch)
 };
 
 const FALLBACK_PRODUCT_CONTENT: ProductContent = {
@@ -1193,7 +1194,8 @@ export function parseSiteSettings(rawData: unknown): SiteSettings {
         trafficSourceBanners: parseJsonArray<TrafficSourceBanner>(data.trafficSourceBanners),
         homepageVariants: parseJsonArray<HomepageVariant>(data.homepageVariants),
         vipPerks: parseJsonArray<VipPerk>(data.vipPerks),
-        limitedOffers: parseJsonArray<LimitedOffer>(data.limitedOffers)
+        limitedOffers: parseJsonArray<LimitedOffer>(data.limitedOffers),
+        discountCode: data.discountCode?.value || DEFAULT_SITE_SETTINGS.discountCode
     };
 }
 

@@ -29,6 +29,7 @@
  */
 
 import {useSiteSettings} from "~/lib/site-content-context";
+import {FLOATING_ACTION_BUTTON_CLASSES} from "~/lib/floating-action-styles";
 
 // =============================================================================
 // INLINE SVG ICONS (Lucide does not carry brand icons)
@@ -88,11 +89,9 @@ export function FloatingChatWidget() {
                     rel="noopener noreferrer"
                     aria-label="Chat with us on WhatsApp"
                     className={[
-                        "group flex h-[52px] w-[52px] items-center justify-center",
-                        "rounded-full shadow-lg transition-all duration-200",
+                        FLOATING_ACTION_BUTTON_CLASSES,
                         /* #25D366 — official WhatsApp brand green */
                         "bg-[#25D366] text-white",
-                        "hover:scale-110 hover:shadow-xl",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
                     ].join(" ")}
                 >
@@ -108,11 +107,9 @@ export function FloatingChatWidget() {
                     rel="noopener noreferrer"
                     aria-label="Chat with us on Messenger"
                     className={[
-                        "group flex h-[52px] w-[52px] items-center justify-center",
-                        "rounded-full shadow-lg transition-all duration-200",
+                        FLOATING_ACTION_BUTTON_CLASSES,
                         /* #0099FF — official Messenger brand blue */
                         "bg-[#0099FF] text-white",
-                        "hover:scale-110 hover:shadow-xl",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
                     ].join(" ")}
                 >

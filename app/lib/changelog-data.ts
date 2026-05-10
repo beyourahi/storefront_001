@@ -36,6 +36,27 @@ export type ChangelogEntry = {
 // Newest entries at the top. Add new entries here in the same commit that ships the change.
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
+        date: "2026-05-10",
+        category: "Improvement",
+        headline: "Floating chat and discount buttons feel smoother when you hover them",
+        summary:
+            "The corner buttons for the discount scratch card, WhatsApp, and Messenger now lift gently and glide on hover instead of jumping. The motion matches how product cards respond, so the whole page feels calmer and more polished."
+    },
+    {
+        date: "2026-05-10",
+        category: "Improvement",
+        headline: "Scratch your discount whenever you want — no more waiting for a pop-up",
+        summary:
+            "The discount scratch card no longer appears unannounced. A small ticket button now sits with the chat buttons in the corner of every page. Tap it whenever you're ready to scratch and reveal your code."
+    },
+    {
+        date: "2026-05-09",
+        category: "New Feature",
+        headline: "Scratch to reveal a special discount on your first visit",
+        summary:
+            "A scratch card appears once per session after you've been browsing for a little while. Scratch the panel with your finger or mouse to uncover an exclusive discount code you can copy straight to checkout."
+    },
+    {
         date: "2026-05-09",
         category: "Improvement",
         headline: "Every page now has a proper canonical URL for search engines",

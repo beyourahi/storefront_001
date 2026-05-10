@@ -440,6 +440,10 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
 
     # JSON array: [{id, title, description?, discountCode?, expiresAt?, badgeText?}, ...]
     limitedOffers: field(key: "limited_offers") { value }
+
+    # Single-use discount code revealed by the ScratchCard marketing surface (single_line_text_field)
+    # Empty string = ScratchCard never triggers (merchant kill switch)
+    discountCode: field(key: "scratch_card_discount") { value }
   }
 ` as const;
 
