@@ -58,6 +58,7 @@
  */
 import type {WithContext, Organization, WebSite, Product, ItemList, BlogPosting, FAQPage} from "schema-dts";
 import type {SiteSettings, ThemeConfig} from "types";
+import {getSeoMeta} from "@shopify/hydrogen";
 import {STORE_LOCALE} from "~/lib/store-locale";
 import {toHex} from "~/lib/color";
 import {extractImagesFromMedia} from "~/lib/media-utils";
@@ -637,4 +638,96 @@ export function generateWebPageSchema(title: string, url: string, dateModified?:
         url,
         ...(dateModified && {dateModified: formatSchemaDate(dateModified)})
     };
+}
+
+// ============================================
+// Unified Meta Builder
+// ============================================
+
+export type BuildMetaInput = {
+    /** Page title */
+    title: string;
+    /** Meta description — auto-truncated to 152 chars */
+    description?: string;
+    /** URL pathname (e.g. "/collections/all") — canonical + og:url derived from this */
+    pathname: string;
+    /** Site origin URL (e.g. "https://example.com") — from getSiteUrlFromMatches() */
+    siteUrl?: string;
+    /** Brand name for og:site_name and title template — from getBrandNameFromMatches() */
+    brandName?: string;
+    /** Open Graph / Twitter image */
+    ogImage?: {url: string; width?: number; height?: number; alt?: string};
+    /** og:type — defaults to "website" */
+    ogType?: "website" | "product" | "article";
+    /** Robots directives — noIndex defaults to false */
+    robots?: {noIndex?: boolean; noFollow?: boolean};
+    /** JSON-LD schema objects emitted as <script type="application/ld+json"> */
+    jsonLd?: object[];
+    /**
+     * Title template. Defaults to "%s | brandName".
+     * Pass null to suppress suffix (use for homepage where title IS the brand name).
+     */
+    titleTemplate?: string | null;
+};
+
+/**
+ * Unified meta builder for React Router 7 route meta() exports.
+ *
+ * Wraps getSeoMeta() from @shopify/hydrogen and ensures:
+ * - Exactly one <link rel="canonical"> using our buildCanonicalUrl (getSeoMeta also emits one — we replace it)
+ * - og:type and og:site_name (not emitted by getSeoMeta)
+ * - Additional JSON-LD script tags
+ *
+ * Every route should funnel through this to ensure consistent canonical links
+ * and social tags across all pages.
+ */
+export function buildMeta(input: BuildMetaInput): Array<Record<string, unknown>> {
+    const siteUrl = input.siteUrl || SEO_CONFIG.siteUrl;
+    const brandName = input.brandName || SEO_CONFIG.siteName;
+    const canonical = buildCanonicalUrl(input.pathname, siteUrl);
+    const titleTemplate = input.titleTemplate === undefined ? `%s | ${brandName}` : input.titleTemplate;
+    const description = input.description ? truncateDescription(input.description) : undefined;
+
+    const seoMetaResult = getSeoMeta({
+        title: input.title,
+        titleTemplate,
+        description,
+        url: canonical || undefined,
+        media: input.ogImage
+            ? {
+                  url: input.ogImage.url,
+                  width: input.ogImage.width,
+                  height: input.ogImage.height,
+                  altText: input.ogImage.alt,
+                  type: "image" as const
+              }
+            : undefined,
+        robots: input.robots
+    }) ?? [];
+
+    // getSeoMeta emits its own <link rel="canonical"> when url is provided — strip it so
+    // our version (built from buildCanonicalUrl) is the sole authoritative canonical.
+    const result: Array<Record<string, unknown>> = seoMetaResult.filter(
+        tag =>
+            !(
+                "tagName" in tag &&
+                tag.tagName === "link" &&
+                "rel" in tag &&
+                tag.rel === "canonical"
+            )
+    );
+
+    if (canonical) {
+        result.push({tagName: "link", rel: "canonical", href: canonical});
+    }
+
+    // og:type and og:site_name are not emitted by getSeoMeta
+    result.push({property: "og:type", content: input.ogType ?? "website"});
+    result.push({property: "og:site_name", content: brandName});
+
+    for (const schema of input.jsonLd ?? []) {
+        result.push({"script:ld+json": schema});
+    }
+
+    return result;
 }
