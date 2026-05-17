@@ -17,7 +17,12 @@ export type AgentEventName =
     | "agent_arrival"
     | "jwt_reject"
     | "checkout_handoff"
-    | "fallback_shown";
+    | "fallback_shown"
+    // AI-feature events (Phases H, I, J)
+    | "agent_pdp_qa_query"
+    | "agent_pdp_qa_cache_hit"
+    | "agent_meta_generation"
+    | "agent_query_reformulation";
 
 export type ResponseCategory = "ok" | "not_found" | "rate_limited" | "server_error";
 

@@ -1,0 +1,50 @@
+# .dev.vars — Cloudflare Workers local-dev environment variables
+# Copy to .dev.vars (gitignored) for local Wrangler development.
+# These are LOADED ONLY by `wrangler dev` (i.e. `npm run dev:workers`).
+# For plain `npm run dev` (Vite + Hydrogen), use .env.local instead.
+
+# ============================================================================
+# Required: Shopify Storefront API
+# ============================================================================
+
+SESSION_SECRET=replace-with-openssl-rand-base64-32-chars
+PUBLIC_STORE_DOMAIN=horcrux-demo-store.myshopify.com
+PUBLIC_STOREFRONT_API_TOKEN=586d8fd7c598fea7e1b97a8eff48ed49
+PUBLIC_CHECKOUT_DOMAIN=horcrux-demo-store.myshopify.com
+PRIVATE_STOREFRONT_API_TOKEN=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
+
+# ============================================================================
+# Optional: Customer Account API (for /account routes)
+# ============================================================================
+
+PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID=d59946cb-1d27-415f-bb8e-c8ea32ffb5eb
+PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopify.com/66049638586
+SHOP_ID=66049638586
+
+# ============================================================================
+# AI Features (all default off)
+# Set AI_FEATURES_ENABLED=true to enable the master switch, then turn on
+# individual features. ALSO configure ONE provider below.
+# ============================================================================
+
+# Master switch (default off)
+AI_FEATURES_ENABLED=false
+
+# Per-feature flags (default off)
+AI_PDP_QA_ENABLED=false
+AI_META_DESC_ENABLED=false
+AI_QUERY_REFORMULATION_ENABLED=false
+
+# Provider: pick one
+# Option A: Anthropic (works everywhere, requires key, per-request cost)
+# ANTHROPIC_API_KEY=sk-ant-...
+
+# Option B: Cloudflare Workers AI (free, Workers-only, NOT available on Oxygen)
+# Workers AI is configured via the [ai] binding in wrangler.jsonc, not env vars.
+# See docs/agentic-commerce/setup.md for the binding declaration.
+
+# ============================================================================
+# Optional: Google Tag Manager
+# ============================================================================
+
+# PUBLIC_GTM_CONTAINER_ID=GTM-XXXXXXX

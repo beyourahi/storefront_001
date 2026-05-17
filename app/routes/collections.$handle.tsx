@@ -11,6 +11,7 @@ import {
     buildMeta
 } from "~/lib/seo";
 import {deriveCollectionBreadcrumbs} from "~/lib/seo-breadcrumbs";
+import {resolveMetaDescription} from "~/lib/ai-meta";
 import {CollectionHero} from "~/components/sections/CollectionHero";
 import {ProductsGridSection} from "~/components/sections/ProductsGridSection";
 import {CollectionPagination} from "~/components/custom/CollectionPagination";
@@ -52,8 +53,10 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     const collection = data.collection;
     const siteUrl = getSiteUrlFromMatches(matches);
     const title = collection.seo?.title || `${collection.title} Collection`;
-    const description = collection.seo?.description || collection.description || "";
+    // Prefer loader-derived seoDescription (AI-fallback-applied) when present.
+    const description = data.seoDescription || collection.seo?.description || collection.description || "";
     const brandName = getBrandNameFromMatches(matches);
+    const aiDisclosure = data.aiGeneratedDescription ? [{name: "ai-generated", content: "description"}] : [];
 
     const collectionSchema = generateCollectionSchema(
         collection,
@@ -62,23 +65,26 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
     );
     const breadcrumbSchema = generateBreadcrumbListSchema(deriveCollectionBreadcrumbs(collection), siteUrl);
 
-    return buildMeta({
-        title,
-        description,
-        pathname: `/collections/${collection.handle}`,
-        siteUrl,
-        brandName,
-        ogImage: collection.image?.url
-            ? {
-                  url: collection.image.url,
-                  width: collection.image.width ?? undefined,
-                  height: collection.image.height ?? undefined,
-                  alt: collection.image.altText || collection.title
-              }
-            : undefined,
-        ogType: "website",
-        jsonLd: [collectionSchema, breadcrumbSchema]
-    }) as any;
+    return [
+        ...buildMeta({
+            title,
+            description,
+            pathname: `/collections/${collection.handle}`,
+            siteUrl,
+            brandName,
+            ogImage: collection.image?.url
+                ? {
+                      url: collection.image.url,
+                      width: collection.image.width ?? undefined,
+                      height: collection.image.height ?? undefined,
+                      alt: collection.image.altText || collection.title
+                  }
+                : undefined,
+            ogType: "website",
+            jsonLd: [collectionSchema, breadcrumbSchema]
+        }),
+        ...aiDisclosure
+    ] as any;
 };
 
 export function links(args?: {data: Awaited<ReturnType<typeof loader>> | null}) {
@@ -188,13 +194,44 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
         (collectionCountData as {collection?: {products?: {nodes?: {id: string}[]}}})?.collection?.products?.nodes
             ?.length ?? 0;
 
+    // Resolve SEO description with optional AI fallback. Merchant value always wins.
+    const merchantSeoDescription = collection.seo?.description ?? "";
+    let aiGeneratedDescription = false;
+    let seoDescription = merchantSeoDescription || collection.description || "";
+
+    if (!merchantSeoDescription) {
+        const collectionHint = (productNodes as Array<{title?: string}>)
+            .slice(0, 5)
+            .map(p => p.title)
+            .filter(Boolean)
+            .join(", ");
+        const aiMeta = await resolveMetaDescription(
+            merchantSeoDescription,
+            {
+                entityType: "collection",
+                handle: collection.handle,
+                title: collection.title,
+                description: collection.description ?? null,
+                collectionHint: collectionHint || null
+            },
+            context.env as unknown as Record<string, unknown>,
+            context.waitUntil
+        );
+        if (aiMeta) {
+            seoDescription = aiMeta.description;
+            aiGeneratedDescription = aiMeta.aiGenerated;
+        }
+    }
+
     return {
         collection,
         products: productNodes,
         pagination,
         sort,
         sortLabel,
-        collectionProductCount
+        collectionProductCount,
+        seoDescription,
+        aiGeneratedDescription
     };
 }
 

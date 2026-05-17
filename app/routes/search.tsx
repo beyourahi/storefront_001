@@ -36,6 +36,7 @@ import {cn} from "~/lib/utils";
 import type {RootLoader} from "~/root";
 import {Search, SearchX, AlertCircle, Package, FolderOpen, Newspaper, Clock, TrendingUp, Calendar} from "lucide-react";
 import {isAgentRequest} from "~/lib/agentic/agent-request";
+import {reformulateQuery} from "~/lib/ai-search";
 import {toUcpProductPage, toUcpProduct} from "~/lib/agentic/catalog-shapes";
 import {SearchEmptyState} from "~/components/search/SearchEmptyState";
 import {useAgentSurface} from "~/lib/agent-surface-context";
@@ -310,7 +311,23 @@ export async function loader({request, context}: Route.LoaderArgs) {
         });
     }
 
-    return searchData;
+    // LLM query reformulation — fires only when results are thin AND the AI flag is on.
+    // The utility returns null when the flag is off, cache is cold, or no useful expansion
+    // is found. The UI surfaces a "did you mean" suggestion when this is non-null.
+    let suggestedQuery: string | null = null;
+    const productTotalCount = searchData.products?.totalCount ?? 0;
+    if (productTotalCount < 3 && searchData.term && searchData.term.length > 0) {
+        const reformulated = await reformulateQuery(
+            searchData.term,
+            context.env as unknown as Record<string, unknown>,
+            context.waitUntil
+        );
+        if (reformulated && reformulated.expandedQuery !== searchData.term) {
+            suggestedQuery = reformulated.expandedQuery;
+        }
+    }
+
+    return {...searchData, suggestedQuery};
 }
 
 export default function SearchPage() {
