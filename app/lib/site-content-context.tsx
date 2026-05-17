@@ -71,7 +71,8 @@ import type {
 import {
     DEFAULT_SITE_SETTINGS,
     DEFAULT_THEME_CONFIG,
-    FALLBACK_AGENT_ARRIVAL_COPY
+    FALLBACK_AGENT_ARRIVAL_COPY,
+    FALLBACK_AGENT_FALLBACK_COPY
 } from "~/lib/metaobject-parsers";
 import {generateTheme} from "~/lib/theme-utils";
 import {getSmartSwatchBorderColor} from "~/lib/color";
@@ -515,5 +516,14 @@ export function useLimitedOffers(): LimitedOffer[] | null {
  */
 export function useAgentArrivalCopy(): typeof FALLBACK_AGENT_ARRIVAL_COPY {
     return FALLBACK_AGENT_ARRIVAL_COPY;
+}
+
+/**
+ * Hook to access agent-fallback surface copy.
+ * Returns the fallback constant. When Shopify metaobject support is added for
+ * agentFallbackCopy, this hook can read from SiteSettings without changing callers.
+ */
+export function useAgentFallbackCopy(): typeof FALLBACK_AGENT_FALLBACK_COPY {
+    return FALLBACK_AGENT_FALLBACK_COPY;
 }
 
