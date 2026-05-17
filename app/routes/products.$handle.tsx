@@ -39,8 +39,6 @@ import {ProductMobileTitlePrice} from "~/components/product/ProductMobileTitlePr
 import {ProductPurchaseSection} from "~/components/product/ProductPurchaseSection";
 import {ProductMobileStickyButtons} from "~/components/product/ProductMobileStickyButtons";
 import {ProductRelatedSection} from "~/components/product/ProductRelatedSection";
-import {ProductQA} from "~/components/product/ProductQA";
-import {resolveMetaDescription} from "~/lib/ai-meta";
 import {AnimatedSection} from "~/components/sections/AnimatedSection";
 import {Breadcrumbs} from "~/components/common/Breadcrumbs";
 import {ProductReviews, type ReviewNode} from "~/components/product/ProductReviews";
@@ -98,9 +96,6 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
         currentlyNotInStock: variant?.currentlyNotInStock
     });
 
-    // Disclose AI-generated meta description to crawlers when applicable.
-    const aiDisclosure = data?.aiGeneratedDescription ? [{name: "ai-generated", content: "description"}] : [];
-
     return [
         ...buildMeta({
             title,
@@ -114,7 +109,6 @@ export const meta: Route.MetaFunction = ({data, matches}) => {
             ogType: "product",
             jsonLd: [productSchema, breadcrumbSchema, brandSchema]
         }),
-        ...aiDisclosure,
         ...sceMeta
     ] as any;
 };
@@ -130,9 +124,7 @@ export function links(args?: {data: Awaited<ReturnType<typeof loader>> | null}) 
 export const loader = async (args: Route.LoaderArgs) => {
     const criticalData = await loadCriticalData(args);
     const deferredData = loadDeferredData(args, criticalData.product.id);
-    const env = args.context.env as unknown as Record<string, string | undefined>;
-    const aiQaEnabled = env.AI_FEATURES_ENABLED === "true" && env.AI_PDP_QA_ENABLED === "true";
-    return {...criticalData, ...deferredData, aiQaEnabled};
+    return {...criticalData, ...deferredData};
 };
 
 /**
@@ -178,33 +170,7 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
 
     // Pre-compute truncated SEO description in the loader so the serialized value
     // is identical on server and client, preventing hydration mismatches in the meta function.
-    // Fallback chain: merchant seo.description → AI generation (cache hit) → product.description → empty.
-    const merchantSeoDescription = product.seo?.description ?? "";
-    let aiGeneratedDescription = false;
-    let rawSeoDescription = merchantSeoDescription;
-
-    if (!merchantSeoDescription) {
-        const aiMeta = await resolveMetaDescription(
-            merchantSeoDescription,
-            {
-                entityType: "product",
-                handle: product.handle,
-                title: product.title,
-                description: product.description ?? null,
-                vendor: product.vendor ?? null,
-                price: product.priceRange?.minVariantPrice?.amount ?? null
-            },
-            context.env as unknown as Record<string, unknown>,
-            context.waitUntil
-        );
-        if (aiMeta) {
-            rawSeoDescription = aiMeta.description;
-            aiGeneratedDescription = aiMeta.aiGenerated;
-        } else {
-            rawSeoDescription = product.description ?? "";
-        }
-    }
-
+    const rawSeoDescription = product.seo?.description || product.description || "";
     const seoDescription =
         rawSeoDescription.length > 155 ? rawSeoDescription.substring(0, 152).trimEnd() + "..." : rawSeoDescription;
 
@@ -212,8 +178,7 @@ const loadCriticalData = async ({context, params, request}: Route.LoaderArgs) =>
         product,
         selectedSellingPlan,
         activeCollectionHandle,
-        seoDescription,
-        aiGeneratedDescription
+        seoDescription
     };
 };
 
@@ -248,7 +213,7 @@ const loadDeferredData = ({context}: Route.LoaderArgs, productId: string) => {
 };
 
 const Product = () => {
-    const {product, recommendations, complementaryRecommendations, reviews, selectedSellingPlan, activeCollectionHandle, aiQaEnabled} =
+    const {product, recommendations, complementaryRecommendations, reviews, selectedSellingPlan, activeCollectionHandle} =
         useLoaderData<typeof loader>();
     const [quantity, setQuantity] = useState(1);
     const {addProduct} = useRecentlyViewedContext();
@@ -490,8 +455,6 @@ const Product = () => {
                     </Await>
                 </Suspense>
             </AnimatedSection>
-
-            <ProductQA productHandle={product.handle} enabled={aiQaEnabled} />
 
             <ProductMobileStickyButtons
                 product={product}

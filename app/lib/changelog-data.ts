@@ -38,13 +38,6 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     {
         date: "2026-05-17",
         category: "New Feature",
-        headline: "Ask product questions and get instant AI-powered answers",
-        summary:
-            "Every product page now has an 'Ask about this product' panel. Type any question — about materials, fit, care, compatibility — and an AI assistant answers based on the product's own information. Answers are concise and grounded in real product data, not invented."
-    },
-    {
-        date: "2026-05-17",
-        category: "New Feature",
         headline: "Discover items that pair with what you're viewing",
         summary:
             "Product pages now show a 'These pair beautifully together' carousel below the related-items row. It surfaces complementary picks chosen by Shopify's recommendation engine — pieces that go well with the product you're already looking at."
