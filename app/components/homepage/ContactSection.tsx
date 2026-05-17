@@ -11,7 +11,7 @@ import type {SocialLink} from "types";
 
 const BRAND_PROMISES = [
     {icon: ShieldCheck, title: "Secure Checkout", desc: "SSL encrypted, safe payments"},
-    {icon: RotateCcw, title: "Easy Returns", desc: "Hassle-free 30-day policy"},
+    {icon: RotateCcw, title: "Easy Returns", desc: "Hassle-free returns"},
     {icon: Truck, title: "Fast Shipping", desc: "Orders dispatched daily"},
     {icon: Headphones, title: "Expert Support", desc: "Real people, fast replies"}
 ] as const;
