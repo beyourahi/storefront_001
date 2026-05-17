@@ -180,6 +180,32 @@ export function formatSchemaDate(date: string | Date): string {
 // ============================================
 
 /**
+ * Generate Organization schema with logo, description, and social profile links.
+ *
+ * Mount on the homepage (and optionally at root). Provides AI agents and search
+ * crawlers with a stable identity for the brand — `name`, `url`, `logo`, and
+ * a `sameAs` array linking to verified social profiles for cross-reference.
+ *
+ * `socialLinks` is shaped as `{url: string}[]` to match the SiteSettings
+ * social link parser output; falsy URLs are filtered out.
+ */
+export function generateOrganizationSchema(
+    siteSettings?: SeoSiteSettings | null,
+    socialLinks?: Array<{url: string}>
+): JsonLdSchema {
+    const defaults = getSeoDefaults(siteSettings);
+    return {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: defaults.brandName,
+        url: defaults.siteUrl,
+        logo: siteSettings?.brandLogo?.url,
+        description: defaults.description,
+        sameAs: socialLinks?.map(link => link.url).filter(Boolean) ?? []
+    };
+}
+
+/**
  * Generate WebSite schema with search action
  */
 export function generateWebsiteSchema(siteSettings?: SeoSiteSettings | null): JsonLdSchema {

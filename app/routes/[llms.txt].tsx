@@ -18,7 +18,8 @@
  *
  * @content
  * - Store identity (name, description, URL)
- * - What the store sells
+ * - Top collections + best-selling products (catalog snapshot for agents)
+ * - Policy URLs
  * - MCP endpoints and their capabilities
  * - UCP capability declarations
  * - Usage guidelines for AI agents
@@ -48,6 +49,26 @@ const LLMS_TXT_QUERY = `#graphql
         url
       }
     }
+    collections(first: 5, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        title
+        handle
+        description
+      }
+    }
+    products(first: 10, sortKey: BEST_SELLING) {
+      nodes {
+        title
+        handle
+        description
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+      }
+    }
   }
 ` as const;
 
@@ -55,7 +76,7 @@ export async function loader({request, context}: Route.LoaderArgs) {
     const url = new URL(request.url);
     const origin = url.origin;
 
-    const {shop} = await context.dataAdapter.query(LLMS_TXT_QUERY, {
+    const {shop, collections, products} = await context.dataAdapter.query(LLMS_TXT_QUERY, {
         cache: context.dataAdapter.CacheShort()
     });
 
@@ -67,7 +88,14 @@ export async function loader({request, context}: Route.LoaderArgs) {
         storeName,
         storeDescription,
         storeUrl,
-        origin
+        origin,
+        collections: (collections?.nodes ?? []) as Array<{title: string; handle: string; description?: string | null}>,
+        products: (products?.nodes ?? []) as Array<{
+            title: string;
+            handle: string;
+            description?: string | null;
+            priceRange?: {minVariantPrice?: {amount: string; currencyCode: string}} | null;
+        }>
     });
 
     return new Response(body, {
@@ -80,21 +108,54 @@ export async function loader({request, context}: Route.LoaderArgs) {
 }
 
 /**
- * Builds the llms.txt body from resolved shop data.
- * Outputs a Markdown document describing the store identity, MCP endpoints,
- * and crawling guidelines for AI agents and indexers.
+ * Renders the llms.txt manifest body.
+ *
+ * @param storeName - Display name of the Shopify store
+ * @param storeDescription - Store description from Shopify admin
+ * @param storeUrl - Primary domain URL (from Shopify; may differ from request origin)
+ * @param origin - Request origin URL (used to build absolute endpoint URLs)
+ * @param collections - Top collections from the store (up to 5)
+ * @param products - Best-selling products from the store (up to 10)
+ * @returns Plain-text llms.txt content following the llmstxt.org convention (target < 3 KB)
  */
 function buildLlmsTxt({
     storeName,
     storeDescription,
     storeUrl,
-    origin
+    origin,
+    collections,
+    products
 }: {
     storeName: string;
     storeDescription: string;
     storeUrl: string;
     origin: string;
+    collections: Array<{title: string; handle: string; description?: string | null}>;
+    products: Array<{
+        title: string;
+        handle: string;
+        description?: string | null;
+        priceRange?: {minVariantPrice?: {amount: string; currencyCode: string}} | null;
+    }>;
 }): string {
+    const collectionLines =
+        collections.length > 0
+            ? collections.map(c => `- **${c.title}**: ${origin}/collections/${c.handle}`).join("\n")
+            : "- (No collections found)";
+
+    const productLines =
+        products.length > 0
+            ? products
+                  .map(p => {
+                      const price = p.priceRange?.minVariantPrice;
+                      const priceStr = price
+                          ? ` — from ${parseFloat(price.amount).toFixed(2)} ${price.currencyCode}`
+                          : "";
+                      return `- **${p.title}**${priceStr}: ${origin}/products/${p.handle}`;
+                  })
+                  .join("\n")
+            : "- (No products found)";
+
     return `# ${storeName}
 
 > ${storeDescription}
@@ -107,13 +168,26 @@ This is a Shopify-powered e-commerce storefront. It sells physical products onli
 - **Platform**: Shopify Hydrogen (React)
 - **API Version**: 2026-04 (Shopify Storefront API)
 
+## Collections
+
+${collectionLines}
+
+## Best-Selling Products
+
+${productLines}
+
+## Policies
+
+- **Privacy Policy**: ${origin}/policies/privacy-policy
+- **Shipping Policy**: ${origin}/policies/shipping-policy
+- **Refund Policy**: ${origin}/policies/refund-policy
+- **Terms of Service**: ${origin}/policies/terms-of-service
+
 ## For AI Agents
 
 This storefront exposes machine-readable interfaces for autonomous shopping agents:
 
 ### UCP Discovery
-
-The full capability profile is available at:
 
     GET ${origin}/.well-known/ucp
 
@@ -144,7 +218,6 @@ Both endpoints implement JSON-RPC 2.0. Send \`{"jsonrpc":"2.0","id":1,"method":"
 
 - Products, collections, blogs, and pages are publicly indexable
 - Cart, checkout, and account pages are private — do not crawl
-- Respect crawl-delay directives in robots.txt
 - Prefer MCP tool calls over page scraping for structured data
 `.trim();
 }

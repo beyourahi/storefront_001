@@ -4,6 +4,7 @@ import type {Route} from "./+types/_index";
 import type {RootLoader} from "~/root";
 import {
     generateFAQPageSchema,
+    generateOrganizationSchema,
     getBrandNameFromMatches,
     getSiteUrlFromMatches,
     buildMeta
@@ -62,17 +63,12 @@ export const meta: Route.MetaFunction = ({matches}) => {
     const logoUrl = siteSettings?.brandLogo?.url;
     const faqItems = (siteSettings as {faqItems?: Array<{question: string; answer: string}>} | undefined)?.faqItems;
 
-    const enrichedOrgSchema = {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        name: shopName,
-        url: siteUrl || undefined,
-        logo: logoUrl,
-        description: description || undefined,
-        sameAs: socialLinks?.map(l => l.url).filter(Boolean) ?? []
-    };
+    const organizationSchema = generateOrganizationSchema(
+        siteSettings as Parameters<typeof generateOrganizationSchema>[0],
+        socialLinks
+    );
 
-    const jsonLd: object[] = [enrichedOrgSchema];
+    const jsonLd: object[] = [organizationSchema];
     if (faqItems && faqItems.length > 0) {
         jsonLd.push(generateFAQPageSchema(faqItems));
     }

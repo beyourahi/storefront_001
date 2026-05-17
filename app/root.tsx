@@ -378,6 +378,11 @@ export function Layout({children}: {children?: React.ReactNode}) {
                 <NonBlockingFontLoader url={generatedTheme?.googleFontsUrl} />
                 <Meta />
                 <Links />
+                {/* Agent discovery hint: surface the UCP capability profile in <head> so
+                    crawlers and AI clients can find our agent endpoints via HTML inspection
+                    in addition to robots.txt and llms.txt. The /.well-known/ucp document
+                    contains the full machine-readable manifest including all MCP servers. */}
+                <link rel="alternate" type="application/json" href="/.well-known/ucp" title="UCP Capability Profile" />
                 {generatedTheme?.cssVariables && <ThemeStyleTag css={generatedTheme.cssVariables} />}
                 {/* PWA install-capture script must load synchronously before the browser can fire
                     beforeinstallprompt — removing async ensures the event listener is registered
