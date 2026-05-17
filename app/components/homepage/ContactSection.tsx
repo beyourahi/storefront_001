@@ -42,19 +42,18 @@ const ContactRow = ({icon, label, children}: ContactRowProps) => (
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export const ContactSection = () => {
-    const {contactEmail, contactPhone, businessHours, address} = useSiteSettings();
+    const {contactEmail, contactPhones, businessHours, address} = useSiteSettings();
     const socialLinks = useSocialLinks();
 
-    const addressParts = [address?.street, address?.city, address?.state, address?.zip].filter(Boolean);
-    const fullAddress = addressParts.join(", ");
+    const trimmedAddress = address.trim();
 
     const hasEmail = Boolean(contactEmail);
-    const hasPhone = Boolean(contactPhone);
-    const hasAddress = fullAddress.length > 0;
+    const hasPhones = contactPhones.length > 0;
+    const hasAddress = trimmedAddress.length > 0;
     const hasHours = Boolean(businessHours);
     const hasSocialLinks = socialLinks.length > 0;
 
-    const hasContactInfo = hasEmail || hasPhone || hasAddress || hasHours;
+    const hasContactInfo = hasEmail || hasPhones || hasAddress || hasHours;
 
     // Always render — right panel has trust pillars regardless of data
     if (!hasContactInfo && !hasSocialLinks) return null;
@@ -90,22 +89,31 @@ export const ContactSection = () => {
                                     </ContactRow>
                                 )}
 
-                                {hasPhone && (
-                                    <ContactRow icon={<Phone className="h-5 w-5" />} label="Phone">
-                                        <a
-                                            href={`tel:${contactPhone}`}
-                                            className="text-foreground hover:text-primary text-sm font-medium transition-colors"
-                                            aria-label={`Call us at ${contactPhone}`}
-                                        >
-                                            {contactPhone}
-                                        </a>
+                                {hasPhones && (
+                                    <ContactRow
+                                        icon={<Phone className="h-5 w-5" />}
+                                        label={contactPhones.length > 1 ? "Phone Numbers" : "Phone"}
+                                    >
+                                        <ul className="m-0 flex list-none flex-col gap-1 p-0">
+                                            {contactPhones.map(phone => (
+                                                <li key={phone}>
+                                                    <a
+                                                        href={`tel:${phone.replace(/\s/g, "")}`}
+                                                        className="text-foreground hover:text-primary text-sm font-medium transition-colors"
+                                                        aria-label={`Call us at ${phone}`}
+                                                    >
+                                                        {phone}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </ContactRow>
                                 )}
 
                                 {hasAddress && (
                                     <ContactRow icon={<MapPin className="h-5 w-5" />} label="Address">
-                                        <address className="text-foreground not-italic text-sm font-medium">
-                                            {fullAddress}
+                                        <address className="text-foreground whitespace-pre-line text-sm font-medium not-italic">
+                                            {trimmedAddress}
                                         </address>
                                     </ContactRow>
                                 )}

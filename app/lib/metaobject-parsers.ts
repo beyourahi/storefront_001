@@ -75,6 +75,8 @@ import type {
 /** A single Shopify metaobject field — value, reference, or multi-reference */
 type MetaobjectField = {
     value?: string | null;
+    /** Optional Shopify field type (e.g. "list.single_line_text_field") — selected when the parser needs to distinguish list vs scalar */
+    type?: string | null;
     reference?: Record<string, unknown> | null;
     references?: {nodes: Record<string, unknown>[]} | null;
 };
@@ -164,14 +166,9 @@ const FALLBACK_SITE_SETTINGS: SiteSettings = {
     messengerPageId: "",
     whatsappNumber: "",
     contactEmail: "hello@yourbrand.com",
-    contactPhone: "+1 (555) 000-0000",
+    contactPhones: ["+1 (555) 000-0000"],
     businessHours: "Mon–Fri: 9am–5pm",
-    address: {
-        street: "123 Brand Street",
-        city: "Your City",
-        state: "NY",
-        zip: "10001"
-    },
+    address: "123 Brand Street\nYour City, NY 10001",
     ...FALLBACK_SECTION_HEADINGS,
     galleryPageHeading: "The Gallery",
     galleryPageDescription:
@@ -639,6 +636,42 @@ function parseEmbedUrlList(field: MetaobjectField | undefined): string[] {
     } catch {
         return [];
     }
+}
+
+/**
+ * Parse the `contact_phones` field (list.single_line_text_field).
+ * Shopify returns list values as a JSON-stringified array, e.g. value: '["+1 ...","+1 ..."]'.
+ * Falls back to defaults when missing, empty, or malformed; tolerates a scalar value
+ * defensively in case the field type was misconfigured by the merchant.
+ */
+function parseContactPhones(field: MetaobjectField | undefined, defaults: string[]): string[] {
+    if (!field?.value) return defaults;
+    if (field.type?.startsWith("list.")) {
+        try {
+            const parsed = JSON.parse(field.value) as unknown;
+            if (Array.isArray(parsed)) {
+                const cleaned = parsed.filter(
+                    (item): item is string => typeof item === "string" && item.trim().length > 0
+                );
+                if (cleaned.length > 0) return cleaned;
+            }
+        } catch {
+            // malformed JSON — fall through to defaults
+        }
+        return defaults;
+    }
+    // Defensive: scalar value (shouldn't happen for a list field, but tolerate misconfiguration)
+    return field.value.trim().length > 0 ? [field.value.trim()] : defaults;
+}
+
+/**
+ * Parse the `business_address` field (multi_line_text_field).
+ * Returns the raw merchant-typed string preserving line breaks — the consumer renders
+ * it with `white-space: pre-line` so the address displays exactly as entered.
+ */
+function parseBusinessAddress(field: MetaobjectField | undefined, defaults: string): string {
+    const trimmed = field?.value?.trim();
+    return trimmed && trimmed.length > 0 ? trimmed : defaults;
 }
 
 /**
@@ -1144,14 +1177,9 @@ export function parseSiteSettings(rawData: unknown): SiteSettings {
 
         // Contact Information
         contactEmail: data.contactEmail?.value || DEFAULT_SITE_SETTINGS.contactEmail,
-        contactPhone: data.contactPhone?.value || DEFAULT_SITE_SETTINGS.contactPhone,
+        contactPhones: parseContactPhones(data.contactPhones, DEFAULT_SITE_SETTINGS.contactPhones),
         businessHours: data.businessHours?.value || DEFAULT_SITE_SETTINGS.businessHours,
-        address: {
-            street: data.streetAddress?.value || DEFAULT_SITE_SETTINGS.address.street,
-            city: data.city?.value || DEFAULT_SITE_SETTINGS.address.city,
-            state: data.state?.value || DEFAULT_SITE_SETTINGS.address.state,
-            zip: data.zipCode?.value || DEFAULT_SITE_SETTINGS.address.zip
-        },
+        address: parseBusinessAddress(data.businessAddress, DEFAULT_SITE_SETTINGS.address),
 
         // Section Headings — content from rotating-content.ts, never from site_settings
         blogSectionTitle: rotation.blogSectionTitle,

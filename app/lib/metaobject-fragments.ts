@@ -302,12 +302,11 @@ export const SITE_SETTINGS_FRAGMENT = `#graphql
     # CONTACT INFORMATION
     # ─────────────────────────────────────────────────────────────────────────
     contactEmail: field(key: "contact_email") { value }
-    contactPhone: field(key: "contact_phone") { value }
+    # list.single_line_text_field — value is a JSON-stringified array; parser detects via the type field
+    contactPhones: field(key: "contact_phones") { value type }
     businessHours: field(key: "business_hours") { value }
-    streetAddress: field(key: "street_address") { value }
-    city: field(key: "city") { value }
-    state: field(key: "state_province") { value }
-    zipCode: field(key: "postal_code") { value }
+    # multi_line_text_field — single freeform address, line breaks preserved via white-space: pre-line
+    businessAddress: field(key: "business_address") { value }
 
     # List of links field - Shopify returns [{text, url}, ...] where text is the platform name
     socialLinksData: field(key: "social_links_data") { value }

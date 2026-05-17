@@ -299,7 +299,7 @@ export function useContactInfo(): ContactInfo {
     return useMemo(
         () => ({
             email: settings.contactEmail,
-            phone: settings.contactPhone,
+            phones: settings.contactPhones,
             businessHours: settings.businessHours,
             address: settings.address
         }),

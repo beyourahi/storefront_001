@@ -77,18 +77,46 @@ After deploying this storefront to a client:
 5. **Lighthouse SEO** — run Lighthouse on homepage, a PDP, and a collection page; target ≥90
 6. **Search Console** — submit sitemap URL in Google Search Console after launch
 
+## Contact & Address Fields
+
+The homepage Contact section reads these fields from the `site_settings` metaobject:
+
+| Field key | Type | Used for |
+|-----------|------|----------|
+| `contact_email` | single_line_text | `mailto:` link in Contact section |
+| `contact_phones` | **list.single_line_text** | One `tel:` link per entry, stacked vertically. Max 5 entries recommended. |
+| `business_hours` | single_line_text | Plain text under the Clock icon |
+| `business_address` | **multi_line_text** | Unified multi-line address — line breaks preserved verbatim |
+
+### Migration Notes — May 2026
+
+Earlier versions of this storefront used a single `contact_phone` (one number) and 4 separate address
+fields (`street_address`, `city`, `state_province`, `postal_code`). Those fields have been **replaced**
+by `contact_phones` (list) and `business_address` (single unified textarea).
+
+**One-time migration steps (per Shopify store):**
+
+1. In **Shopify Admin → Content → Metaobjects → site_settings → Edit definition**:
+   - Add `contact_phones` — type `list.single_line_text_field` (set max items: 5)
+   - Add `business_address` — type `multi_line_text_field`
+2. Open the `site_settings` entry and migrate data:
+   - Copy the existing `contact_phone` value into the first slot of `contact_phones`
+   - Combine `street_address`, `city`, `state_province`, `postal_code` into `business_address`
+     as a multi-line string (one segment per line, e.g.):
+     ```
+     123 Brand Street
+     Suite 400
+     New York, NY 10001
+     ```
+3. Delete the old fields (`contact_phone`, `street_address`, `city`, `state_province`, `postal_code`)
+   from the definition once you've verified the new fields render correctly on the homepage.
+
+The storefront falls back to default values if the new fields are absent — so the site won't crash
+during migration — but the merchant-configured content won't appear until the new fields are populated.
+
 ## Optional Schema Enhancements
 
-To unlock `LocalBusiness` schema (for stores with a physical location), add these fields
-to the `site_settings` metaobject:
-
-| Field key | Type | Usage |
-|-----------|------|-------|
-| `address_street` | text | `LocalBusiness.address.streetAddress` |
-| `address_city` | text | `LocalBusiness.address.addressLocality` |
-| `address_region` | text | `LocalBusiness.address.addressRegion` |
-| `address_postal` | text | `LocalBusiness.address.postalCode` |
-| `address_country` | text | `LocalBusiness.address.addressCountry` |
-| `phone` | text | `LocalBusiness.telephone` |
-
-The template degrades gracefully if these fields are absent — no errors, just no LocalBusiness schema.
+`LocalBusiness` JSON-LD is not currently emitted by this template. To add it in a future enhancement,
+parse `business_address` into a `PostalAddress` shape and use the first entry of `contact_phones` as
+`LocalBusiness.telephone`. The data is already available — only the JSON-LD emitter in
+`app/lib/seo.ts` would need to be extended.

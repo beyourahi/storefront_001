@@ -656,16 +656,13 @@ export interface SiteSettings {
     // CONTACT INFORMATION
     // ─────────────────────────────────────────────────────────────────────────
     contactEmail: string;
-    contactPhone: string;
+    /** Multiple contact phone numbers — sourced from list.single_line_text_field. Empty array hides the row. */
+    contactPhones: string[];
     messengerPageId: string;
     whatsappNumber: string;
     businessHours: string;
-    address: {
-        street: string;
-        city: string;
-        state: string;
-        zip: string;
-    };
+    /** Unified multi-line business address — sourced from multi_line_text_field. Rendered with white-space: pre-line. */
+    address: string;
 
     // ─────────────────────────────────────────────────────────────────────────
     // SECTION HEADINGS
@@ -762,14 +759,11 @@ export interface SiteSettings {
  */
 export interface ContactInfo {
     email: string;
-    phone: string;
+    /** Zero or more contact phone numbers, each rendered as its own tel: link */
+    phones: string[];
     businessHours: string;
-    address: {
-        street: string;
-        city: string;
-        state: string;
-        zip: string;
-    };
+    /** Unified multi-line address string with line breaks preserved */
+    address: string;
 }
 
 /**
